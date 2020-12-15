@@ -4,6 +4,8 @@ import html5Logo from "../../../img/html5-logo.svg";
 import css3Logo from "../../../img/css3-logo.svg";
 import reactLogo from "../../../img/react-logo.svg";
 import jsLogo from "../../../img/js-logo.svg";
+import phoneLogo from "../../../img/mobile-logo.svg";
+import gitLogo from "../../../img/git-logo.svg";
 // Styles
 import styled from "styled-components";
 import { About, Description } from "../../styles";
@@ -47,13 +49,13 @@ function ServicesSection() {
           </Card>
           <Card>
             <div className="icon">
-              <img src={reactLogo} alt="icon" />
+              <img src={gitLogo} alt="icon" />
               <h3>Git</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
-              <img src={reactLogo} alt="icon" />
+              <img src={phoneLogo} alt="icon" />
               <h3>Responsive Design</h3>
             </div>
           </Card>
@@ -108,6 +110,7 @@ const Card = styled.div`
     display: flex;
     align-items: center;
     h3 {
+      width: min-content;
       margin-left: 1rem;
       background: #ddd;
       color: black;
