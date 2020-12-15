@@ -1,13 +1,12 @@
 import React from "react";
 // import icons
-import clock from "../../../img/clock.svg";
-import diaphragm from "../../../img/diaphragm.svg";
-import money from "../../../img/money.svg";
-import teamwork from "../../../img/teamwork.svg";
-import home2 from "../../../img/home2.png";
+import html5Logo from "../../../img/html5-logo.svg";
+import css3Logo from "../../../img/css3-logo.svg";
+import reactLogo from "../../../img/react-logo.svg";
+import jsLogo from "../../../img/js-logo.svg";
 // Styles
 import styled from "styled-components";
-import { About, Description, Image } from "../../styles";
+import { About, Description } from "../../styles";
 // Animation
 import { fade } from "../../../animation";
 import { useScroll } from "../../useScroll";
@@ -19,39 +18,50 @@ function ServicesSection() {
     <Services variants={fade} animate={controls} initial="hidden" ref={element}>
       <Description>
         <h2>
-          What I <span>value</span> most.
+          In the <span>toolbelt</span>
         </h2>
         <Cards>
           <Card>
             <div className="icon">
-              <img src={clock} alt="icon" />
-              <h3>My Time</h3>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="icon">
-              <img src={diaphragm} alt="icon" />
-              <h3>Creativity</h3>
+              <img src={html5Logo} alt="icon" />
+              <h3>HTML5</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
-              <img src={money} alt="icon" />
-              <h3>Value</h3>
+              <img src={css3Logo} alt="icon" />
+              <h3>CSS3</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
-              <img src={teamwork} alt="icon" />
-              <h3>Communication</h3>
+              <img src={jsLogo} alt="icon" />
+              <h3>JavaScript</h3>
+            </div>
+          </Card>
+          <Card>
+            <div className="icon">
+              <img src={reactLogo} alt="icon" />
+              <h3>React</h3>
+            </div>
+          </Card>
+          <Card>
+            <div className="icon">
+              <img src={reactLogo} alt="icon" />
+              <h3>Git</h3>
+            </div>
+          </Card>
+          <Card>
+            <div className="icon">
+              <img src={reactLogo} alt="icon" />
+              <h3>Responsive Design</h3>
             </div>
           </Card>
         </Cards>
       </Description>
       <Bio>
         <h2>
-          Everyone has a story.
+          Everyone has a <span>story.</span>
           <br />
           So here's mine...
         </h2>
@@ -61,13 +71,14 @@ function ServicesSection() {
           Business Administration to be a businessman! Yay...I mean yikes.
           <br />
           <br />
-          Fast forward to my <span>24th birthday</span>, I decided to dive head first into becoming
-          a <span>software developer</span> while I sat at home during quarantine. After countless
+          Fast forward to <span>August 2020</span>, I decided to dive head first into becoming a{" "}
+          <span>software developer</span> while I sat at home during quarantine. After countless
           hours of reading language documentation, watching YouTube guides, and banging away on my
-          own projects, I think it's safe to say that I've learned a thing or two.
+          own projects, I think it's safe to say that I've learned a thing or two and I{" "}
+          <span>couldn't be happier</span> with how far I've come.
           <br />
           <br />
-          Want to know the best part? The <span>learning</span> has just begun.
+          Want to know the best part? The <span>learning</span> has only just begun!
         </p>
       </Bio>
     </Services>
@@ -78,10 +89,6 @@ const Services = styled(About)`
   h2 {
     padding-bottom: 5rem;
   }
-  /* p {
-    width: 70%70vh;
-    padding: 2rem 0 4rem 0;
-  } */
 `;
 const Cards = styled.div`
   display: flex;
@@ -102,7 +109,7 @@ const Card = styled.div`
     align-items: center;
     h3 {
       margin-left: 1rem;
-      background: white;
+      background: #ddd;
       color: black;
       padding: 1rem;
     }
@@ -112,11 +119,11 @@ const Card = styled.div`
 const Bio = styled.div`
   margin: auto;
   width: 60%;
-  border-left: 5px solid white;
+  border-left: 5px solid #ccc;
   border-radius: 5px;
   padding-left: 15px;
   h2 {
-    color: white;
+    color: #ccc;
   }
   p {
     line-height: 2.2rem;
@@ -125,7 +132,7 @@ const Bio = styled.div`
     border-left: none;
     padding-left: 0;
     padding-top: 15px;
-    border-top: 5px solid white;
+    border-top: 5px solid #ccc;
     margin-top: 5rem;
     width: 90%;
   }

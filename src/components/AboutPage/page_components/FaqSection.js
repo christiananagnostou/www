@@ -14,31 +14,66 @@ function FaqSection() {
   return (
     <Faq variants={scrollReveal} animate={controls} initial="hidden" ref={element}>
       <h2>
-        Any Questions <span>FAQ</span>
+        <span>Extras</span>
       </h2>
       <AnimateSharedLayout>
-        <Toggle title="How do I start?">
+        <Toggle title="Why teach yourself?">
           <div className="answer">
-            <p>Lorem ipsum dolor sit amet.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa, vero.</p>
+            <p>
+              <span>The choices:</span> College, Bootcamps, and Self-Taught
+            </p>
+            <p>
+              So obviously I chose the <span>self-taught</span> route. Why? Ok, I'll break it down
+              for ya. If you're gonna commit to being a programmer, what is the one thing you need
+              to get used to doing all the time? <span>Learning!</span> So if I was going to be{" "}
+              <span>committed</span> to this journey, why not make it as hard as possible so that I
+              could become better at teaching myself new material.
+            </p>
           </div>
         </Toggle>
-        <Toggle title="Daily Schedule">
+        <Toggle title="What language you workin' with these days?">
           <div className="answer">
-            <p>Lorem ipsum dolor sit amet.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa, vero.</p>
+            <p>
+              I fell in love with <span>React</span> from the minute I started learning about it, so
+              I primarially use that.
+            </p>
+            <p>
+              The <span>simple</span> approach and <span>speed</span> behind React is the reason why
+              I specialized in it. With the lifecycle methods, and now hooks, controling components
+              and interacting with the DOM becomes a breeze. Having the ability to create{" "}
+              <span>reusable</span> UI components and functions just makes life so much easier.
+            </p>
           </div>
         </Toggle>
-        <Toggle title="Different Payment Methods">
+        <Toggle title="What's next on the list to learn?">
           <div className="answer">
-            <p>Lorem ipsum dolor sit amet.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa, vero.</p>
+            <p>
+              More about <span>React</span> and <span>Redux</span>.
+            </p>
+            <p>
+              Mastery is a big word, so I won't use it, but I do plan on continuing to improve my
+              work with React to a much, <span>much</span> greater degree.
+            </p>
           </div>
         </Toggle>
-        <Toggle title="What products do you offer?">
+        <Toggle title="What helped you on your journey to become self-taught?">
           <div className="answer">
-            <p>Lorem ipsum dolor sit amet.</p>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa, vero.</p>
+            <p>The internet!</p>
+            <p>
+              First off, endless <span>motivation</span>, mostly music-induced, in combination with
+              lots of <span>coffee</span>! I started out jumping around with a few different
+              languages before I realized that I needed something with a direct visual output. So
+              with that in mind, I signed up for <span>Codecademy</span> and learned HTML, then CSS,
+              and built TONS of cool looking pages...well I thought they looked cool at the time.
+              After that, I marched on into JavaScript and made some simple games and brought
+              functionality to my "cool looking" web pages. I basically went through the Web
+              Development path on CodecademyPro to learned the basics of Git, Command Line, HTML,
+              CSS, JS, Node.js, and React. From there, I read a lot of forum posts,{" "}
+              <span>stack overflow</span> posts, blogs, and developer notes on how to use React.
+              Other than that, <span>YouTube</span> was and continues to be a great resource for
+              everything from the technical aspects of language patterns to the inspirations for my
+              next project.
+            </p>
           </div>
         </Toggle>
       </AnimateSharedLayout>
@@ -49,9 +84,6 @@ function FaqSection() {
 const Faq = styled(About)`
   display: block;
   color: #fff;
-  span {
-    display: block;
-  }
   h2 {
     padding-bottom: 2rem;
     font-weight: lighter;

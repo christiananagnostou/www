@@ -94,7 +94,7 @@ const AwardStyle = styled.div`
   }
   .line {
     width: 80%;
-    background: #23d997;
+    background:  #fe5a1d;
     height: 0.5rem;
     margin: 1rem 0;
   }

@@ -36,12 +36,12 @@ const GlobalStyle = createGlobalStyle`
     font-size: 1.1rem;
     cursor: pointer;
     padding: 1rem 2rem;
-    border: 3px solid #23d997;
+    border: 3px solid #fe5a1d;
     background: transparent;
     color: white;
     transition: all 0.5s ease;
     &:hover{
-      background: #23d997;
+      background:  #fe5a1d;
       text-shadow: 2px 2px #393939;
     }
   }
@@ -64,7 +64,7 @@ const GlobalStyle = createGlobalStyle`
   }
   span{
     font-weight: bold;
-    color: #23d997; 
+    color:  #fe5a1d; 
   }
   a{
     font-size: 1.1rem;

@@ -27,9 +27,9 @@ function AboutSection() {
           </Hide>
         </motion.div>
         <motion.p variants={fade}>
-          I am a creative front-end developer living in the SF Bay Area.
+          I am a creative <span>front-end</span> developer living in the <span>SF Bay Area.</span>
           <br />
-          Self-taught with a passion for learning whatever gets thrown my way.
+          Self-taught with a passion for <span>learning</span> whatever gets thrown my way.
         </motion.p>
         <Link to="/contact">
           <motion.button variants={fade}>drop me a line</motion.button>
