@@ -3,7 +3,6 @@ import React from "react";
 import GlobalStyle from "./components/GlobalStyle";
 // Components
 import Nav from "./components/Nav";
-
 // Pages
 import AboutMe from "./components/AboutPage/AboutMe";
 import ContactUs from "./components/ContactPage/ContactUs";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import styled, { StyleSheetManager } from "styled-components";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 // Images
 import athlete from "../../img/athlete-small.png";
