@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
       border: transparent;
     }
   }
-  }
+
   html{
     @media (max-width: 1700px){
       font-size: 75%;

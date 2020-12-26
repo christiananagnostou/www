@@ -128,7 +128,8 @@ const Title = styled.div`
   margin-bottom: 2rem;
   color: #505050;
   @media (max-width: 1300px) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: -4rem;
   }
 `;
 
@@ -139,7 +140,6 @@ const FormContainer = styled.div`
   align-items: center;
   width: 50%;
   color: rgb(106, 106, 106);
-  padding: 5rem 0;
   @media (max-width: 1300px) {
     width: 100%;
   }
