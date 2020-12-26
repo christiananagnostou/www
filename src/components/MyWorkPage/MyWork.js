@@ -22,7 +22,7 @@ function MyWork() {
       setStyles({ background: "white" });
       console.log(styles.background);
     }, 1000);
-  }, []);
+  }, [styles.background]);
 
   return (
     <Work variants={pageAnimation} initial="hidden" animate="show" exit="exit" style={styles}>

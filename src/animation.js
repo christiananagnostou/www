@@ -22,12 +22,12 @@ export const pageAnimation = {
 
 export const titleAnim = {
   hidden: {
-    y: 200,
+    y: 220,
   },
   show: {
     y: 0,
     transition: {
-      duration: 0.75,
+      duration: 0.5,
       ease: "easeOut",
     },
   },
