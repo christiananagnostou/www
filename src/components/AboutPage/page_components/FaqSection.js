@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // Styles
 import styled from "styled-components";
 import { About } from "../../styles";

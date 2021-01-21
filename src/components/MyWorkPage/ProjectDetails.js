@@ -9,29 +9,38 @@ import { pageAnimation } from "../../animation";
 function ProjectDetails() {
   const history = useHistory();
   const url = history.location.pathname;
-  const [movies, setMovies] = useState(ProjectState);
-  const [movie, setMovie] = useState(null);
+  // eslint-disable-next-line
+  const [projects, setProjects] = useState(ProjectState);
+  const [project, setProject] = useState(null);
 
   useEffect(() => {
-    const currentMovie = movies.filter((stateMovie) => stateMovie.url === url);
-    setMovie(currentMovie[0]);
-  }, [url, movies]);
+    const currentProject = projects.filter((stateProject) => stateProject.url === url);
+    setProject(currentProject[0]);
+  }, [url, projects]);
 
   return (
     <>
-      {movie && (
+      {project && (
         <Details variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+          <h2>{project.title}</h2>{" "}
+          <motion.a
+            className="live-link"
+            href={project.projectLink}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Live view
+          </motion.a>
           <Headline>
-            <h2>{movie.title}</h2>
-            <img src={movie.mainImg} alt="" />
+            <img src={project.mobileImg} alt="" />
+            <Awards>
+              {project.details.map((award) => (
+                <Award key={award.title} title={award.title} description={award.description} />
+              ))}
+            </Awards>
           </Headline>
-          <Awards>
-            {movie.awards.map((award) => (
-              <Award key={award.title} title={award.title} description={award.description} />
-            ))}
-          </Awards>
           <ImageDisplay>
-            <img src={movie.secondaryImg} alt="" />
+            <img src={project.desktopImg} alt="" />
           </ImageDisplay>
         </Details>
       )}
@@ -52,62 +61,111 @@ const Award = ({ title, description }) => {
 
 // styled components
 const Details = styled(motion.div)`
-  color: white;
-`;
-const Headline = styled.div`
-  min-height: 90vh;
-  padding-top: 20vh;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h2 {
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, -10%);
+    color: #cfcfcf;
+    padding-top: 5vh;
+    margin: auto;
   }
-  img {
-    width: 100%;
-    height: 70vh;
-    object-fit: cover;
-    object-position: 0% 90%;
+  .live-link {
+    display: block;
+    width: fit-content;
+    color: #cfcfcf;
+    text-decoration: none;
+    font-size: 1.5rem;
+    border: 1px solid #cfcfcf;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    cursor: alias;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background: black;
+    }
   }
-  @media (max-width: 1300px) {
+  @media (max-width: 1100px) {
     h2 {
-      width: fit-content;
+      font-size: 2.5em;
     }
   }
 `;
-const Awards = styled.div`
-  min-height: 80vh;
+
+const Headline = styled.div`
+  height: 80vh;
+  width: 80%;
   display: flex;
-  margin: 5rem 10rem;
+  justify-content: center;
   align-items: center;
-  justify-content: space-around;
-  @media (max-width: 1300px) {
-    display: block;
-    margin: 2rem;
+  margin: 5rem 0;
+  img {
+    transform: scale(0.6);
+  }
+  @media (max-width: 1100px) {
+    height: fit-content;
+    margin: 1rem 0;
+    flex-direction: column;
+    img {
+      transform: scale(0.8);
+      display: block;
+    }
+  }
+  @media (max-width: 400px) {
+    img {
+      transform: scale(0.6);
+    }
   }
 `;
+
+const Awards = styled.div`
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2rem;
+  @media (max-width: 1100px) {
+    margin: 0;
+  }
+`;
+
 const AwardStyle = styled.div`
-  padding: 5rem;
+  width: 80%;
   h3 {
     font-size: 2rem;
   }
   .line {
-    width: 80%;
-    background:  #fe5a1d;
+    width: 50%;
+    background: #fe5a1d;
     height: 0.5rem;
     margin: 1rem 0;
   }
   p {
     padding: 2rem 0;
   }
-`;
-const ImageDisplay = styled.div`
-  min-height: 50vh;
-  img {
+  @media (max-width: 1100px) {
     width: 100%;
-    height: 100vh;
-    object-fit: cover;
+    text-align: center;
+    .line {
+      margin: 0.5rem auto;
+    }
+  }
+`;
+
+const ImageDisplay = styled.div`
+  width: 100vw;
+  img {
+    margin: auto;
+    margin-bottom: 2rem;
+    display: block;
+    width: 80%;
+    height: auto;
+  }
+  @media (max-width: 1100px) {
+    img {
+      width: 95%;
+    }
   }
 `;
 
