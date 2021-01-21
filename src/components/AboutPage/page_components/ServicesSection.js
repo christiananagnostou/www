@@ -68,16 +68,16 @@ function ServicesSection() {
           So here's mine...
         </h2>
         <p>
-          I started learning how to code back in <span>high school</span> in my AP Computer Science
-          class. Once we hit OOP, I <span>struggled</span> big time! I went on to get a degree in
-          Business Administration to be a businessman! Yay...I mean yikes.
+          I started learning how to code back in high school in my AP Computer Science class. Once
+          we hit OOP, I struggled big time! I went on to get a degree in Business Administration to
+          be a businessman! Yay...I mean yikes.
           <br />
           <br />
-          Fast forward to <span>August 2020</span>, I decided to dive head first into becoming a{" "}
-          <span>software developer</span> while I sat at home during quarantine. After countless
-          hours of reading language documentation, watching YouTube guides, and banging away on my
-          own projects, I think it's safe to say that I've learned a thing or two and I{" "}
-          <span>couldn't be happier</span> with how far I've come.
+          Fast forward to August 2020, I decided to dive head first into becoming a software
+          developer while I sat at home during quarantine. After countless hours of reading language
+          documentation, watching YouTube guides, and banging away on my own projects, I think it's
+          safe to say that I've learned a thing or two and I couldn't be happier with how far I've
+          come.
           <br />
           <br />
           Want to know the best part? The <span>learning</span> has only just begun!

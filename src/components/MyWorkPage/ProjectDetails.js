@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { MovieState } from "../../movieState";
+import { ProjectState } from "../../projectState";
 // Animations
 import { motion } from "framer-motion";
 import { pageAnimation } from "../../animation";
 
-function MovieDetails() {
+function ProjectDetails() {
   const history = useHistory();
   const url = history.location.pathname;
-  const [movies, setMovies] = useState(MovieState);
+  const [movies, setMovies] = useState(ProjectState);
   const [movie, setMovie] = useState(null);
 
   useEffect(() => {
@@ -111,4 +111,4 @@ const ImageDisplay = styled.div`
   }
 `;
 
-export default MovieDetails;
+export default ProjectDetails;

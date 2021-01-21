@@ -25,9 +25,9 @@ function FaqSection() {
             <p>
               So obviously I chose the <span>self-taught</span> route. Why? Ok, I'll break it down
               for ya. If you're gonna commit to being a programmer, what is the one thing you need
-              to get used to doing all the time? <span>Learning!</span> So if I was going to be{" "}
-              <span>committed</span> to this journey, why not make it as hard as possible so that I
-              could become better at teaching myself new material.
+              to get used to doing all the time? Learning! So if I was going to be committedto this
+              journey, why not make it as hard as possible so that I could become better at teaching
+              myself new material.
             </p>
           </div>
         </Toggle>
@@ -38,10 +38,10 @@ function FaqSection() {
               I primarially use that.
             </p>
             <p>
-              The <span>simple</span> approach and <span>speed</span> behind React is the reason why
-              I specialized in it. With the lifecycle methods, and now hooks, controling components
-              and interacting with the DOM becomes a breeze. Having the ability to create{" "}
-              <span>reusable</span> UI components and functions just makes life so much easier.
+              The simple approach and speed behind React is the reason why I specialized in it. With
+              the lifecycle methods, and now hooks, controling components and interacting with the
+              DOM becomes a breeze. Having the ability to create reusableUI components and functions
+              just makes life so much easier.
             </p>
           </div>
         </Toggle>
@@ -52,7 +52,7 @@ function FaqSection() {
             </p>
             <p>
               Mastery is a big word, so I won't use it, but I do plan on continuing to improve my
-              work with React to a much, <span>much</span> greater degree.
+              work with React to a much, much greater degree.
             </p>
           </div>
         </Toggle>

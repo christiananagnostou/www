@@ -7,7 +7,7 @@ import Nav from "./components/Nav";
 import AboutMe from "./components/AboutPage/AboutMe";
 import ContactUs from "./components/ContactPage/ContactUs";
 import MyWork from "./components/MyWorkPage/MyWork";
-import MovieDetails from "./components/MyWorkPage/MovieDetails";
+import ProjectDetails from "./components/MyWorkPage/ProjectDetails";
 // Router
 import { Switch, Route, useLocation } from "react-router-dom";
 // Animation
@@ -29,7 +29,7 @@ function App() {
             <MyWork />
           </Route>
           <Route path="/work/:id">
-            <MovieDetails />
+            <ProjectDetails />
           </Route>
           <Route path="/contact">
             <ContactUs />

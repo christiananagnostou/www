@@ -16,9 +16,7 @@ function AboutSection() {
             <motion.h2 variants={titleAnim}>Allow me to</motion.h2>
           </Hide>
           <Hide>
-            <motion.h2 variants={titleAnim}>
-              <span>introduce</span> myself.
-            </motion.h2>
+            <motion.h2 variants={titleAnim}>introduce myself.</motion.h2>
           </Hide>
           <Hide>
             <motion.h2 variants={titleAnim}>
@@ -27,9 +25,9 @@ function AboutSection() {
           </Hide>
         </motion.div>
         <motion.p variants={fade}>
-          I am a creative <span>front-end</span> developer living in the <span>SF Bay Area.</span>
+          I am a creative <span>web developer</span> living in the SF Bay Area.
           <br />
-          Self-taught with a passion for <span>learning</span> whatever gets thrown my way.
+          Self-taught with a passion for learning whatever gets thrown my way.
         </motion.p>
         <Link to="/contact">
           <motion.button variants={fade}>drop me a line</motion.button>

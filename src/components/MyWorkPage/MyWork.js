@@ -32,29 +32,29 @@ function MyWork() {
         <Frame3 variants={slider} />
         <Frame4 variants={slider} />
       </motion.div>
-      <Movie>
+      <Project>
         <motion.h2 variants={fade}>Jamming</motion.h2>
         <motion.div variants={lineAnim} className="line"></motion.div>
-        <Link to="/work/the-athlete">
+        <Link to="/work/jamming">
           <Hide>
             <motion.img variants={photoAnim} src={athlete} alt="athlete" />
           </Hide>
         </Link>
-      </Movie>
-      <Movie ref={element} variants={fade} animate={controls} initial="hidden">
+      </Project>
+      <Project ref={element} variants={fade} animate={controls} initial="hidden">
         <h2>LofiWaves</h2>
         <motion.div variants={lineAnim} className="line"></motion.div>
-        <Link to="/work/the-racer">
+        <Link to="/work/lofiwaves">
           <img src={theracer} alt="theracer" />
         </Link>
-      </Movie>
-      <Movie ref={element2} variants={fade} animate={controls2} initial="hidden">
+      </Project>
+      <Project ref={element2} variants={fade} animate={controls2} initial="hidden">
         <h2>Good Times</h2>
         <motion.div variants={lineAnim} className="line"></motion.div>
-        <Link to="/work/good-times">
+        <Link to="/work/neologos">
           <img src={goodtimes} alt="goodtimes" />
         </Link>
-      </Movie>
+      </Project>
       <ScrollTop />
     </Work>
   );
@@ -72,7 +72,7 @@ const Work = styled(motion.div)`
     padding: 2rem;
   }
 `;
-const Movie = styled(motion.div)`
+const Project = styled(motion.div)`
   padding-bottom: 10rem;
   .line {
     height: 0.5rem;

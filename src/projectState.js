@@ -6,13 +6,13 @@ import athlete2 from "./img/athlete2.png";
 import goodtimes2 from "./img/good-times2.jpg";
 import theracer2 from "./img/the-racer2.jpg";
 
-export const MovieState = () => {
+export const ProjectState = () => {
   return [
     {
       title: "The Athlete",
       mainImg: athlete,
       secondaryImg: athlete2,
-      url: "/work/the-athlete",
+      url: "/work/jamming",
       awards: [
         {
           title: "Truly A masterpiece",
@@ -34,7 +34,7 @@ export const MovieState = () => {
     {
       title: "Good Times",
       mainImg: goodtimes,
-      url: "/work/good-times",
+      url: "/work/lofiwaves",
       secondaryImg: goodtimes2,
       awards: [
         {
@@ -57,7 +57,7 @@ export const MovieState = () => {
     {
       title: "The Racer",
       mainImg: theracer,
-      url: "/work/the-racer",
+      url: "/work/neologos",
       secondaryImg: theracer2,
       awards: [
         {
