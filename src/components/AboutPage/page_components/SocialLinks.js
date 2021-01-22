@@ -1,6 +1,8 @@
 import React from "react";
 // Icons
-import { GitHub, LinkedIn, Instagram } from "@material-ui/icons";
+import instagram from "../../../img/instagram.svg";
+import github from "../../../img/github.svg";
+import linkedin from "../../../img/linkedin.svg";
 // Animations
 import styled from "styled-components";
 import { motion } from "framer-motion";
@@ -10,17 +12,17 @@ function SocialLinks() {
     <SocialLinkList>
       <li>
         <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
-          <GitHub className="social-icon" />
+          <img src={instagram} alt="instagram" className="social-icon" />
         </a>
       </li>
       <li>
         <a href="https://www.linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer">
-          <LinkedIn className="social-icon" />
+          <img src={linkedin} alt="linkedin" className="social-icon" />
         </a>
       </li>
       <li>
         <a href="https://www.instagram.com/christian.anagnostou/" target="_blank" rel="noreferrer">
-          <Instagram className="social-icon" />
+          <img src={github} alt="github" className="social-icon" />
         </a>
       </li>
     </SocialLinkList>
@@ -34,9 +36,9 @@ const SocialLinkList = styled(motion.ul)`
   height: 10vh;
   list-style: none;
   a {
-    color: white;
     .social-icon {
-      font-size: 2.5rem;
+      margin: 0 1rem;
+      height: 2.5rem;
       cursor: pointer;
       &:hover {
         color: #fe5a1d;
