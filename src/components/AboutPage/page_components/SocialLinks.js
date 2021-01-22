@@ -12,7 +12,7 @@ function SocialLinks() {
     <SocialLinkList>
       <li>
         <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
-          <img src={instagram} alt="instagram" className="social-icon" />
+          <img src={github} alt="instagram" className="social-icon" />
         </a>
       </li>
       <li>
@@ -22,7 +22,7 @@ function SocialLinks() {
       </li>
       <li>
         <a href="https://www.instagram.com/christian.anagnostou/" target="_blank" rel="noreferrer">
-          <img src={github} alt="github" className="social-icon" />
+          <img src={instagram} alt="instagram" className="social-icon" />
         </a>
       </li>
     </SocialLinkList>
