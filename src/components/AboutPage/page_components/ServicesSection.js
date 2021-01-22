@@ -68,16 +68,17 @@ function ServicesSection() {
           So here's mine...
         </h2>
         <p>
-          I started learning how to code back in high school in my AP Computer Science class. Once
-          we hit OOP, I struggled big time! I went on to get a degree in Business Administration to
-          be a businessman! Yay...I mean yikes.
+          I was first introduced to coding in an AP computer science class in high school. The drive
+          to be in the software industry was sparked right then and there. I went on to take some
+          college level computer science classes, but ended up majoring in business administration.
+          During that time, I found myself comparing every job I had to the thought of being a
+          software developer.
           <br />
           <br />
-          Fast forward to August 2020, I decided to dive head first into becoming a software
-          developer while I sat at home during quarantine. After countless hours of reading language
-          documentation, watching YouTube guides, and banging away on my own projects, I think it's
-          safe to say that I've learned a thing or two and I couldn't be happier with how far I've
-          come.
+          Fast forward to July 2020, I decided to take action on those thoughts and dive head-first
+          into becoming a software developer. After countless hours of reading developer
+          documentation, watching video guides, and banging away on projects of my own, I think it's
+          safe to say that I've learned a thing or two and I'm loving the process.
           <br />
           <br />
           Want to know the best part? The <span>learning</span> has only just begun!
