@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { pageAnimation, titleAnim } from "../../animation";
 import styled from "styled-components";
+import SocialLinks from "../AboutPage/page_components/SocialLinks";
 
 function ContactUs() {
   const initialState = {
@@ -93,7 +94,7 @@ function ContactUs() {
                 <label htmlFor="message">MESSAGE</label>
                 <textarea
                   className="form-input"
-                  rows="10"
+                  rows="6"
                   cols="50"
                   value={formData.message}
                   onChange={onMessageChange}
@@ -112,6 +113,11 @@ function ContactUs() {
           </Hide>
         </form>
       </FormContainer>
+      <Hide>
+        <motion.div variants={titleAnim}>
+          <SocialLinks />
+        </motion.div>
+      </Hide>
     </ContactStyle>
   );
 }
@@ -126,7 +132,7 @@ const ContactStyle = styled(motion.div)`
 
 const Title = styled.div`
   margin-bottom: 2rem;
-  color: #505050;
+  color: #7a7a7a;
   @media (max-width: 1300px) {
     margin-bottom: 1rem;
     margin-top: -4rem;

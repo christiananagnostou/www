@@ -3,6 +3,7 @@ import React from "react";
 import AboutSection from "./page_components/AboutSection";
 import FaqSection from "./page_components/FaqSection";
 import ServicesSection from "./page_components/ServicesSection";
+import SocialLinks from "./page_components/SocialLinks";
 import ScrollTop from "../ScrollTop";
 // Animations
 import { motion } from "framer-motion";
@@ -14,6 +15,7 @@ function AboutMe() {
       <AboutSection />
       <ServicesSection />
       <FaqSection />
+      <SocialLinks />
       <ScrollTop />
     </motion.div>
   );
