@@ -5,8 +5,8 @@ import neologosDesktop1 from "./img/neologos-desktop1.png";
 // import neologosDesktop2 from "./img/neologos-desktop2.png";
 import lofiMobile from "./img/lofiwaves-mobile.png";
 import lofiDesktop from "./img/lofiwaves-desktop.png";
-import spotalistMobile from "./img/spotalist-mobile.png";
-import spotalistDesktop from "./img/spotalist-desktop.png";
+import vibetribeMobile from "./img/vibetribe-mobile.png";
+import vibetribeDesktop from "./img/vibetribe-desktop.png";
 
 export const ProjectState = () => {
   return [
@@ -35,6 +35,28 @@ export const ProjectState = () => {
       ],
     },
     {
+      title: "VibeTribe",
+      desktopImg: vibetribeDesktop,
+      mobileImg: vibetribeMobile,
+      projectLink: "http://vibetribe.surge.sh/",
+      url: "/work/vibetribe",
+      details: [
+        {
+          title: "Front-end",
+          description:
+            "Initially made with React classes. Revisited an refactored to use functional components and redux.",
+        },
+        {
+          title: "Spotify",
+          description: "Features Spotify authentication and full playlist customization",
+        },
+        {
+          title: "Documentation",
+          description: "Fully documented git repository with a complete step-by-step build process",
+        },
+      ],
+    },
+    {
       title: "LofiWaves",
       desktopImg: lofiDesktop,
       mobileImg: lofiMobile,
@@ -55,30 +77,6 @@ export const ProjectState = () => {
           title: "Custom controls",
           description:
             "The app features autoplay and easy-to-use controls for the music player as well as a fully optimized mobile site.",
-        },
-      ],
-    },
-    {
-      title: "Spot-A-List",
-      desktopImg: spotalistDesktop,
-      mobileImg: spotalistMobile,
-      projectLink: "http://spotalist.surge.sh/",
-      url: "/work/spotalist",
-      details: [
-        {
-          title: "Front-end",
-          description:
-            "This project was entirely written in React using tools like React Router and SCSS",
-        },
-        {
-          title: "Fresh look on a brutal sport.",
-          description:
-            "“Lorem Ipsum is simply dummy text of the printing and typesetting industry.”",
-        },
-        {
-          title: "It’s okay lmao.",
-          description:
-            "“Lorem Ipsum is simply dummy text of the printing and typesetting industry.”",
         },
       ],
     },

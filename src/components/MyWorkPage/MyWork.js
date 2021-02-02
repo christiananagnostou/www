@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 // Images
 import lofiwaves from "../../img/lofiwaves-desktop.png";
-import spotAList from "../../img/spotalist-desktop.png";
+import vibetribe from "../../img/vibetribe-desktop.png";
 import neologos from "../../img/neologos-desktop2.png";
 // Animations
 import { motion } from "framer-motion";
@@ -35,14 +35,18 @@ function MyWork() {
       <Project ref={element1} variants={fade} animate={controls1} initial="hidden">
         <div>
           <h2>NeoLogos</h2>
-          <motion.a
-            className="live-link"
-            href="https://neologos.herokuapp.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live view
-          </motion.a>
+          <div className="links">
+            <motion.a href="https://neologos.herokuapp.com/" target="_blank" rel="noreferrer">
+              Live view
+            </motion.a>
+            <motion.a
+              href="https://github.com/ChristianAnagnostou/NeoLogos"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </motion.a>
+          </div>
         </div>
         <motion.div variants={lineAnim} className="line"></motion.div>
         <Link to="/work/neologos">
@@ -51,41 +55,51 @@ function MyWork() {
           </Hide>
         </Link>
       </Project>
+
       <Project ref={element2} variants={fade} animate={controls2} initial="hidden">
         <div>
+          <h2>VibeTribe</h2>
+          <div className="links">
+            <motion.a href="http://vibetribe.surge.sh/" target="_blank" rel="noreferrer">
+              Live view
+            </motion.a>
+            <motion.a
+              href="https://github.com/ChristianAnagnostou/VibeTribe"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </motion.a>
+          </div>
+        </div>
+        <motion.div variants={lineAnim} className="line"></motion.div>
+        <Link to="/work/vibetribe">
+          <Hide>
+            <motion.img variants={photoAnim} src={vibetribe} alt="athlete" />
+          </Hide>
+        </Link>
+      </Project>
+
+      <Project ref={element3} variants={fade} animate={controls3} initial="hidden">
+        <div>
           <h2>LofiWaves</h2>
-          <motion.a
-            className="live-link"
-            href="http://lofiwaves.surge.sh/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live view
-          </motion.a>
+          <div className="links">
+            <motion.a href="http://lofiwaves.surge.sh/" target="_blank" rel="noreferrer">
+              Live view
+            </motion.a>
+            <motion.a
+              href="https://github.com/ChristianAnagnostou/LofiWaves"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </motion.a>
+          </div>
         </div>
         <motion.div variants={lineAnim} className="line"></motion.div>
         <Link to="/work/lofiwaves">
           <Hide>
             <motion.img variants={photoAnim} src={lofiwaves} alt="theracer" />
-          </Hide>
-        </Link>
-      </Project>
-      <Project ref={element3} variants={fade} animate={controls3} initial="hidden">
-        <div>
-          <h2>Spot-A-List</h2>
-          <motion.a
-            className="live-link"
-            href="http://spotalist.surge.sh/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live view
-          </motion.a>
-        </div>
-        <motion.div variants={lineAnim} className="line"></motion.div>
-        <Link to="/work/spotalist">
-          <Hide>
-            <motion.img variants={photoAnim} src={spotAList} alt="athlete" />
           </Hide>
         </Link>
       </Project>
@@ -109,7 +123,7 @@ const Work = styled(motion.div)`
 const Project = styled(motion.div)`
   position: relative;
   padding-bottom: 10rem;
-  width: 80%;
+  width: 70%;
   margin: auto;
   div {
     display: flex;
@@ -119,18 +133,21 @@ const Project = styled(motion.div)`
       display: inline-block;
       width: fit-content;
     }
-    .live-link {
+    .links {
       display: inline-block;
       width: fit-content;
-      color: #4a4a4a;
-      text-decoration: none;
-      font-size: 1.5rem;
-      border: 1px solid #4a4a4a;
-      padding: 0.75rem;
-      cursor: alias;
-      transition: all 0.2s ease-in-out;
-      &:hover {
-        background: #d8d8d8;
+      a {
+        text-decoration: none;
+        font-size: 1.5rem;
+        color: #4a4a4a;
+        border: 1px solid #4a4a4a;
+        padding: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        margin-left: 10px;
+        &:hover {
+          background: #d8d8d8;
+        }
       }
     }
   }

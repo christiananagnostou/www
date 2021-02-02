@@ -96,11 +96,12 @@ const Headline = styled.div`
   height: 80vh;
   width: 80%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin: 5rem 0;
+  overflow: hidden;
   img {
-    transform: scale(0.6);
+    height: 100%;
   }
   @media (max-width: 1100px) {
     height: fit-content;
@@ -113,7 +114,7 @@ const Headline = styled.div`
   }
   @media (max-width: 400px) {
     img {
-      transform: scale(0.6);
+      transform: scale(0.5);
     }
   }
 `;
