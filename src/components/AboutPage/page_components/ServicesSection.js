@@ -44,7 +44,7 @@ function ServicesSection() {
           <Card>
             <div className="icon">
               <img src={reactLogo} alt="icon" />
-              <h3>React</h3>
+              <h3>React / Redux</h3>
             </div>
           </Card>
           <Card>
