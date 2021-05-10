@@ -77,11 +77,11 @@ function ServicesSection() {
           <br />
           Fast forward to July 2020, I decided to take action on those thoughts and dive head-first
           into becoming a software developer. After countless hours of reading developer
-          documentation, watching video guides, and banging away on projects of my own, I think it's
-          safe to say that I've learned a thing or two and I'm loving the process.
+          documentation, following online courses, and banging away on projects of my own, I think
+          it's safe to say that I've learned a thing or two.
           <br />
           <br />
-          Want to know the best part? The <span>learning</span> has only just begun!
+          <span>Learning</span> something new has been the every day has been the key to my success!
         </p>
       </Bio>
     </Services>

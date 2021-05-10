@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// Email connection
+import emailjs from "emailjs-com";
 // Animations
 import { motion } from "framer-motion";
 import { pageAnimation, titleAnim } from "../../animation";
@@ -6,17 +8,40 @@ import styled from "styled-components";
 import SocialLinks from "../AboutPage/page_components/SocialLinks";
 
 function ContactUs() {
-  const initialState = {
+  const initialFormState = {
     name: "",
     email: "",
     subject: "",
     message: "",
   };
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState(initialFormState);
+  const [sentSuccessful, setsentSuccessful] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     console.log(formData);
+
+    let templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      to_name: "Christian",
+      subject: formData.subject,
+      message: formData.message,
+      site: "coding",
+    };
+
+    emailjs
+      .send("service_ifvt3ya", "contact_form", templateParams, "user_ibNdYEIIhE1QQOJprE8Mw")
+      .then(
+        (result) => {
+          setFormData(initialFormState);
+          setsentSuccessful(true);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
   };
 
   const onNameChange = (e) => {
@@ -42,6 +67,7 @@ function ContactUs() {
         </Hide>
       </Title>
       <FormContainer>
+        {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
         <form id="contact-form" onSubmit={handleSubmit} method="POST">
           <Hide>
             <motion.div variants={titleAnim}>

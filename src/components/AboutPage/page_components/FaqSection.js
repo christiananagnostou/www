@@ -24,35 +24,43 @@ function FaqSection() {
             </p>
             <p>
               So obviously I chose the <span>self-taught</span> route. Why? Ok, I'll break it down
-              for ya. If you're gonna commit to being a programmer, what is the one thing you need
-              to get used to doing all the time? Learning! So if I was going to be committedto this
-              journey, why not make it as hard as possible so that I could become better at teaching
-              myself new material.
+              for ya. I've loved working with my computer my whole life and coding has always been a
+              creative outlet for me. After graduating college with a degree in Business Admin, I
+              was accepted to a coding bootcamp, but before accepting, I told myself that if I
+              really wanted to do this, I should be committed enough to teach myself whatever I
+              needed to know so that when I got hired doing this, I would already be good at
+              teaching myself new things.
             </p>
           </div>
         </Toggle>
-        <Toggle title="What language you workin' with these days?">
+        <Toggle title="What have I been working on lately?">
           <div className="answer">
             <p>
-              I fell in love with <span>React</span> from the minute I started learning about it, so
-              I primarially use that.
+              Lately, my go-to has been <span>NextJS</span> for its flexability of server-side and
+              client-side rendering as well as its SEO capabilities.
             </p>
             <p>
-              The simple approach and speed behind React is the reason why I specialized in it. With
-              the lifecycle methods, and now hooks, controling components and interacting with the
-              DOM becomes a breeze. Having the ability to create reusableUI components and functions
-              just makes life so much easier.
+              My latest project is a fitness tracker web app. This is currently in the works and
+              will be deployed for public use this summer. Users will be able to create exercises or
+              choose from a plethora of pre-made ones, add them to a customizable workout, and share
+              them with their friends. This is aimed at allowing anyone to be their own workout
+              trainer. Not only can you share workouts, but you can track your progress to see your
+              gains as you get faster and stronger.
             </p>
           </div>
         </Toggle>
         <Toggle title="What's next on the list to learn?">
           <div className="answer">
             <p>
-              More about <span>React</span> and <span>Redux</span>.
+              <span>Blockchain</span> and <span>Solidity</span>.
             </p>
             <p>
-              Mastery is a big word, so I won't use it, but I do plan on continuing to improve my
-              work with React to a much, much greater degree.
+              Having a solid understanding of website and web app development, I am working to
+              expand my horizons by learning how to interact with the Ethereum blockchain.
+              Currently, I am auditing a blockchain and economics course from MIT and working
+              through a class on programming in Solidity and Web3.js. In the coming months, I will
+              be working on my own DApps and finding new ways to make them beneficial not only in my
+              life, but others lives as well.
             </p>
           </div>
         </Toggle>
@@ -67,12 +75,12 @@ function FaqSection() {
               and built TONS of cool looking pages...well I thought they looked cool at the time.
               After that, I marched on into JavaScript and made some simple games and brought
               functionality to my "cool looking" web pages. I basically went through the Web
-              Development path on CodecademyPro to learned the basics of Git, Command Line, HTML,
-              CSS, JS, Node.js, and React. From there, I read a lot of forum posts,{" "}
-              <span>stack overflow</span> posts, blogs, and developer notes on how to use React.
-              Other than that, <span>YouTube</span> was and continues to be a great resource for
-              everything from the technical aspects of language patterns to the inspirations for my
-              next project.
+              Development path on CodecademyPro to learn the basics of Git, Command Line, HTML, CSS,
+              JS, Node.js, and React. From there, I read a lot of forum posts,{" "}
+              <span>stack overflow</span> posts, blogs, and developer docs on how build with and
+              learn how to use new tools. Other than that, <span>YouTube</span> was and continues to
+              be a great resource for everything from the technical aspects of language patterns to
+              the inspirations for my next project.
             </p>
           </div>
         </Toggle>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { ProjectState } from "../../projectState";
+import { projectState } from "../../projectState";
 // Animations
 import { motion } from "framer-motion";
 import { pageAnimation } from "../../animation";
@@ -9,20 +9,19 @@ import { pageAnimation } from "../../animation";
 function ProjectDetails() {
   const history = useHistory();
   const url = history.location.pathname;
-  // eslint-disable-next-line
-  const [projects, setProjects] = useState(ProjectState);
+
   const [project, setProject] = useState(null);
 
   useEffect(() => {
-    const currentProject = projects.filter((stateProject) => stateProject.url === url);
+    const currentProject = projectState.filter((stateProject) => stateProject.url === url);
     setProject(currentProject[0]);
-  }, [url, projects]);
+  }, [url]);
 
   return (
     <>
       {project && (
-        <Details variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-          <h2>{project.title}</h2>{" "}
+        <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+          <h2>{project.title}</h2>
           <motion.a
             className="live-link"
             href={project.projectLink}
@@ -31,36 +30,47 @@ function ProjectDetails() {
           >
             Live view
           </motion.a>
+
           <Headline>
-            <img src={project.mobileImg} alt="" />
-            <Awards>
-              {project.details.map((award) => (
-                <Award key={award.title} title={award.title} description={award.description} />
+            <div className="mobile-imgs">
+              {project.mobileImgs.map((image, i) => (
+                <MobileImage key={i}>
+                  <img src={image} alt="mobile" />
+                </MobileImage>
               ))}
-            </Awards>
+            </div>
+
+            <Details>
+              {project.details.map(({ title, description }, i) => (
+                <Detail key={i} title={title} description={description} />
+              ))}
+            </Details>
           </Headline>
-          <ImageDisplay>
-            <img src={project.desktopImg} alt="" />
-          </ImageDisplay>
-        </Details>
+
+          {project.desktopImgs.map((image, i) => (
+            <DesktopImage key={i}>
+              <img src={image} alt={`desktop ${i}`} />
+            </DesktopImage>
+          ))}
+        </Container>
       )}
     </>
   );
 }
 
-// Award Component
-const Award = ({ title, description }) => {
+// Detail Component
+const Detail = ({ title, description }) => {
   return (
-    <AwardStyle>
+    <DetailStyle>
       <h3>{title}</h3>
       <div className="line"></div>
       <p>{description}</p>
-    </AwardStyle>
+    </DetailStyle>
   );
 };
 
 // styled components
-const Details = styled(motion.div)`
+const Container = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -93,34 +103,29 @@ const Details = styled(motion.div)`
 `;
 
 const Headline = styled.div`
-  height: 80vh;
   width: 80%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 5rem 0;
   overflow: hidden;
-  img {
-    height: 100%;
+
+  .mobile-imgs {
+    display: flex;
+    justify-content: center;
+    flex: 1;
   }
+
   @media (max-width: 1100px) {
     height: fit-content;
     margin: 1rem 0;
-    flex-direction: column;
-    img {
-      transform: scale(0.8);
-      display: block;
-    }
-  }
-  @media (max-width: 400px) {
-    img {
-      transform: scale(0.5);
-    }
+    flex-direction: column-reverse;
   }
 `;
 
-const Awards = styled.div`
-  height: fit-content;
+const Details = styled.div`
+  flex: 1.5;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -128,10 +133,11 @@ const Awards = styled.div`
   margin-left: 2rem;
   @media (max-width: 1100px) {
     margin: 0;
+    flex: 1;
   }
 `;
 
-const AwardStyle = styled.div`
+const DetailStyle = styled.div`
   width: 80%;
   h3 {
     font-size: 2rem;
@@ -154,7 +160,7 @@ const AwardStyle = styled.div`
   }
 `;
 
-const ImageDisplay = styled.div`
+const DesktopImage = styled.div`
   width: 100vw;
   img {
     margin: auto;
@@ -167,6 +173,22 @@ const ImageDisplay = styled.div`
     img {
       width: 95%;
     }
+  }
+`;
+
+const MobileImage = styled.div`
+  width: 20vw;
+  flex: 1;
+  margin: 0 0.5rem;
+  img {
+    margin: auto;
+    margin-bottom: 2rem;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 1100px) {
+    width: 45%;
   }
 `;
 

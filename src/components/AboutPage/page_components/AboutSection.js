@@ -25,17 +25,17 @@ function AboutSection() {
           </Hide>
         </motion.div>
         <motion.p variants={fade}>
-          I am a creative <span>web developer</span> living in the SF Bay Area.
+          I'm a <span>web developer</span> living in the SF Bay Area
           <br />
-          Self-taught with a passion for learning whatever gets thrown my way.
+          Welcome to my little corner of the web!
         </motion.p>
-        <Link to="/contact">
-          <motion.button variants={fade}>drop me a line</motion.button>
+        <Link to="/work">
+          <motion.button variants={fade}>my latest projects</motion.button>
         </Link>
       </Description>
       <Wave />
       <Image>
-        <motion.img variants={photoAnim} src={profileImg} alt="guy with camera" />
+        <motion.img variants={photoAnim} src={profileImg} alt="home profile image" />
       </Image>
     </About>
   );
