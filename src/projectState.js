@@ -34,7 +34,7 @@ export const projectState = [
       {
         title: "Back-end",
         description:
-          "Backend controlled by the headless CMS, Strapi, for seamless management of product, order, and customer data",
+          "Backend controlled by the headless CMS, Strapi, for seamless management of product, order, and customer data.",
       },
       {
         title: "Features",

@@ -22,14 +22,19 @@ function ProjectDetails() {
       {project && (
         <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
           <h2>{project.title}</h2>
-          <motion.a
-            className="live-link"
-            href={project.projectLink}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live view
-          </motion.a>
+          <div className="link-container">
+            <motion.a
+              className="live-link"
+              href={project.externalLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Live view
+            </motion.a>
+            <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
+              Github Repo
+            </motion.a>
+          </div>
 
           <Headline>
             <div className="mobile-imgs">
@@ -80,21 +85,26 @@ const Container = styled(motion.div)`
     padding-top: 5vh;
     margin: auto;
   }
-  .live-link {
-    display: block;
-    width: fit-content;
-    color: #cfcfcf;
-    text-decoration: none;
-    font-size: 1.5rem;
-    border: 1px solid #cfcfcf;
-    padding: 0.75rem;
-    margin-top: 1rem;
-    cursor: alias;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-      background: black;
+  .link-container {
+    display: flex;
+
+    .live-link {
+      display: block;
+      width: fit-content;
+      color: #cfcfcf;
+      text-decoration: none;
+      font-size: 1.5rem;
+      border: 1px solid #cfcfcf;
+      padding: 0.75rem;
+      margin: 1rem;
+      cursor: alias;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        background: black;
+      }
     }
   }
+
   @media (max-width: 1100px) {
     h2 {
       font-size: 2.5em;
@@ -168,6 +178,7 @@ const DesktopImage = styled.div`
     display: block;
     width: 80%;
     height: auto;
+    border-radius: 10px;
   }
   @media (max-width: 1100px) {
     img {
@@ -186,6 +197,7 @@ const MobileImage = styled.div`
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 10px;
   }
   @media (max-width: 1100px) {
     width: 45%;

@@ -26,7 +26,7 @@ function Nav() {
           <Line
             transition={{ duration: 0.3 }}
             initial={{ width: "0%" }}
-            animate={{ width: pathname === "/work" ? "65%" : "0%" }}
+            animate={{ width: pathname.includes("/work") ? "65%" : "0%" }}
           />
         </li>
         <li>

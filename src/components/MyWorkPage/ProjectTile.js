@@ -16,11 +16,12 @@ export default function ProjectTile({ project }) {
         <h2>{project.title}</h2>
         <div className="links">
           <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
-            Live view
+            Live Site
           </motion.a>
           <motion.a href={project.github} target="_blank" rel="noreferrer">
             GitHub
           </motion.a>
+          <Link to={project.url}>Details</Link>
         </div>
       </div>
       <motion.div variants={lineAnim} className="line"></motion.div>
@@ -52,14 +53,14 @@ const Project = styled(motion.div)`
       a {
         text-decoration: none;
         font-size: 1.5rem;
-        color: #4a4a4a;
-        border: 1px solid #4a4a4a;
+        color: #ccc;
+        border: 1px solid #ccc;
         padding: 0.75rem;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
         margin-left: 10px;
         &:hover {
-          background: #d8d8d8;
+          background: black;
         }
       }
     }
@@ -106,6 +107,6 @@ const Hide = styled.div`
   transition: all 0.5s ease;
   &:hover {
     transform: scale(1.01);
-    box-shadow: 0px 25px 40px #adadad;
+    box-shadow: 0px 25px 40px #000000;
   }
 `;

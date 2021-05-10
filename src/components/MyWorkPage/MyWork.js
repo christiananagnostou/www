@@ -11,13 +11,7 @@ import ScrollTop from "../ScrollTop";
 function MyWork() {
   console.log(projectState);
   return (
-    <Work
-      variants={pageAnimation}
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      style={{ background: "white" }}
-    >
+    <Work variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       {projectState.map((project) => (
         <ProjectTile project={project} key={project.title} />
       ))}
@@ -32,6 +26,7 @@ const Work = styled(motion.div)`
   overflow: hidden;
   padding: 5rem 8rem;
   color: #4a4a4a;
+  color: white;
   h2 {
     padding: 1rem 0;
   }

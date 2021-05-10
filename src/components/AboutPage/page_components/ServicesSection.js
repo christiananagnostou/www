@@ -4,7 +4,8 @@ import html5Logo from "../../../img/html5-logo.svg";
 import css3Logo from "../../../img/css3-logo.svg";
 import reactLogo from "../../../img/react-logo.svg";
 import jsLogo from "../../../img/js-logo.svg";
-import phoneLogo from "../../../img/mobile-logo.svg";
+import nextjsLogo from "../../../img/nextjs-logo.svg";
+import solidityLogo from "../../../img/solidity-logo.svg";
 import gitLogo from "../../../img/git-logo.svg";
 // Styles
 import styled from "styled-components";
@@ -17,7 +18,7 @@ function ServicesSection() {
   const [element, controls] = useScroll();
 
   return (
-    <Services variants={fade} animate={controls} initial="hidden" ref={element}>
+    <About variants={fade} animate={controls} initial="hidden" ref={element}>
       <Description>
         <h2>
           In the <span>toolbelt</span>
@@ -26,46 +27,44 @@ function ServicesSection() {
           <Card>
             <div className="icon">
               <img src={html5Logo} alt="icon" />
-              <h3>HTML5</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
               <img src={css3Logo} alt="icon" />
-              <h3>CSS3</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
               <img src={jsLogo} alt="icon" />
-              <h3>JavaScript</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
               <img src={reactLogo} alt="icon" />
-              <h3>React / Redux</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
               <img src={gitLogo} alt="icon" />
-              <h3>Git</h3>
             </div>
           </Card>
           <Card>
             <div className="icon">
-              <img src={phoneLogo} alt="icon" />
-              <h3>Responsive Design</h3>
+              <img src={nextjsLogo} alt="icon" />
+            </div>
+          </Card>
+          <Card>
+            <div className="icon">
+              <img src={solidityLogo} alt="icon" />
             </div>
           </Card>
         </Cards>
       </Description>
+
       <Bio>
         <h2>
-          Everyone has a <span>story.</span>
-          <br />
-          So here's mine...
+          My journey as a <span>developer</span>.
         </h2>
         <p>
           I was first introduced to coding in an AP computer science class in high school. The drive
@@ -81,18 +80,13 @@ function ServicesSection() {
           it's safe to say that I've learned a thing or two.
           <br />
           <br />
-          <span>Learning</span> something new has been the every day has been the key to my success!
+          <span>Learning</span> something new every day has been the key to my success!
         </p>
       </Bio>
-    </Services>
+    </About>
   );
 }
 
-const Services = styled(About)`
-  h2 {
-    padding-bottom: 5rem;
-  }
-`;
 const Cards = styled.div`
   display: flex;
   gap: 50px;
@@ -106,25 +100,15 @@ const Cards = styled.div`
   }
 `;
 const Card = styled.div`
-  flex-basis: 15rem;
   .icon {
     display: flex;
     align-items: center;
-    h3 {
-      width: min-content;
-      margin-left: 1rem;
-      background: #ddd;
-      color: black;
-      padding: 1rem;
-    }
   }
 `;
 
 const Bio = styled.div`
   margin: auto;
   width: 60%;
-  border-left: 5px solid #ccc;
-  border-radius: 5px;
   padding-left: 15px;
   h2 {
     color: #ccc;

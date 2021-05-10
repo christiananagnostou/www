@@ -28,8 +28,7 @@ function FaqSection() {
               creative outlet for me. After graduating college with a degree in Business Admin, I
               was accepted to a coding bootcamp, but before accepting, I told myself that if I
               really wanted to do this, I should be committed enough to teach myself whatever I
-              needed to know so that when I got hired doing this, I would already be good at
-              teaching myself new things.
+              needed to know. The challenge began there and it has been an amazing journey.
             </p>
           </div>
         </Toggle>
