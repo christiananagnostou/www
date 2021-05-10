@@ -14,7 +14,7 @@ import { About, Description } from "../../styles";
 import { fade } from "../../../animation";
 import { useScroll } from "../../useScroll";
 
-function ServicesSection() {
+function JourneySection() {
   const [element, controls] = useScroll();
 
   return (
@@ -126,4 +126,4 @@ const Bio = styled.div`
   }
 `;
 
-export default ServicesSection;
+export default JourneySection;

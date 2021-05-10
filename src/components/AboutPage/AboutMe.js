@@ -2,7 +2,7 @@ import React from "react";
 // components
 import AboutSection from "./page_components/AboutSection";
 import FaqSection from "./page_components/FaqSection";
-import ServicesSection from "./page_components/ServicesSection";
+import JourneySection from "./page_components/JourneySection";
 import SocialLinks from "./page_components/SocialLinks";
 import ScrollTop from "../ScrollTop";
 // Animations
@@ -13,7 +13,7 @@ function AboutMe() {
   return (
     <motion.div variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <AboutSection />
-      <ServicesSection />
+      <JourneySection />
       <FaqSection />
       <SocialLinks />
       <ScrollTop />

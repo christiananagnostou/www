@@ -9,7 +9,7 @@ function Nav() {
     <StyledNav>
       <h1>
         <Link id="logo" to="/">
-          Christian Anagnostou
+          CA
         </Link>
       </h1>
       <ul>

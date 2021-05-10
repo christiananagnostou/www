@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 // Styles
 import styled from "styled-components";
 import { About } from "../../styles";
@@ -28,7 +29,7 @@ function FaqSection() {
               creative outlet for me. After graduating college with a degree in Business Admin, I
               was accepted to a coding bootcamp, but before accepting, I told myself that if I
               really wanted to do this, I should be committed enough to teach myself whatever I
-              needed to know. The challenge began there and it has been an amazing journey.
+              needed to know. The challenge was on...
             </p>
           </div>
         </Toggle>
@@ -42,9 +43,11 @@ function FaqSection() {
               My latest project is a fitness tracker web app. This is currently in the works and
               will be deployed for public use this summer. Users will be able to create exercises or
               choose from a plethora of pre-made ones, add them to a customizable workout, and share
-              them with their friends. This is aimed at allowing anyone to be their own workout
-              trainer. Not only can you share workouts, but you can track your progress to see your
-              gains as you get faster and stronger.
+              them with a community of other fitness junkies. This is aimed at allowing anyone to be
+              their own workout trainer. Not only can you share workouts, but you can track your
+              progress to see your gains as you get faster and stronger. This project is currently
+              in beta testing. Send me a <Link to="/contact">message</Link> if you'd like access or
+              have interest in being part of the development process.
             </p>
           </div>
         </Toggle>
@@ -110,6 +113,12 @@ const Faq = styled(About)`
     p {
       padding: 1rem 0;
     }
+  }
+
+  a {
+    color: white;
+    font-family: inherit;
+    font-size: inherit;
   }
 `;
 

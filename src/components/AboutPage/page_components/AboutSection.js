@@ -27,7 +27,7 @@ function AboutSection() {
         <motion.p variants={fade}>
           I'm a <span>web developer</span> living in the SF Bay Area
           <br />
-          Welcome to my little corner of the web and GO GIANTS!
+          Welcome to my little corner of the web and <span> GO GIANTS!</span>
         </motion.p>
         <Link to="/work">
           <motion.button variants={fade}>My latest work</motion.button>
