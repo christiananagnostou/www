@@ -13,10 +13,7 @@ function AboutSection() {
       <Description>
         <motion.div className="title">
           <Hide>
-            <motion.h2 variants={titleAnim}>Allow me to</motion.h2>
-          </Hide>
-          <Hide>
-            <motion.h2 variants={titleAnim}>introduce myself.</motion.h2>
+            <motion.h2 variants={titleAnim}>Hey there!</motion.h2>
           </Hide>
           <Hide>
             <motion.h2 variants={titleAnim}>
@@ -24,16 +21,20 @@ function AboutSection() {
             </motion.h2>
           </Hide>
         </motion.div>
+
         <motion.p variants={fade}>
           I'm a <span>web developer</span> living in the SF Bay Area
           <br />
           Welcome to my little corner of the web and <span> GO GIANTS!</span>
         </motion.p>
+
         <Link to="/work">
           <motion.button variants={fade}>My latest work</motion.button>
         </Link>
       </Description>
+
       <Wave />
+
       <Image>
         <motion.img variants={photoAnim} src={profileImg} alt="home profile image" />
       </Image>

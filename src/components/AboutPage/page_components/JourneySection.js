@@ -14,6 +14,8 @@ import { About, Description } from "../../styles";
 import { fade } from "../../../animation";
 import { useScroll } from "../../useScroll";
 
+const icons = [html5Logo, css3Logo, jsLogo, reactLogo, gitLogo, nextjsLogo, solidityLogo];
+
 function JourneySection() {
   const [element, controls] = useScroll();
 
@@ -23,43 +25,16 @@ function JourneySection() {
         <h2>
           In the <span>toolbelt</span>
         </h2>
-        <Cards>
-          <Card>
-            <div className="icon">
-              <img src={html5Logo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={css3Logo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={jsLogo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={reactLogo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={gitLogo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={nextjsLogo} alt="icon" />
-            </div>
-          </Card>
-          <Card>
-            <div className="icon">
-              <img src={solidityLogo} alt="icon" />
-            </div>
-          </Card>
-        </Cards>
+
+        <Icons>
+          {icons.map((icon) => (
+            <Icon>
+              <div className="icon">
+                <img src={icon} alt="icon" />
+              </div>
+            </Icon>
+          ))}
+        </Icons>
       </Description>
 
       <Bio>
@@ -67,27 +42,25 @@ function JourneySection() {
           My journey as a <span>developer</span>.
         </h2>
         <p>
-          I was first introduced to coding in an AP computer science class in high school. The drive
-          to be in the software industry was sparked right then and there. I went on to take some
-          college level computer science classes, but ended up majoring in business administration.
-          During that time, I found myself comparing every job I had to the thought of being a
-          software developer.
+          I was first introduced to programming in highschool in my AP computer science class. From
+          making sudoku in the command line to a working through dense algorithms, I loved it all.
+          Why I didn't choose CS as my major is beyond me, but I never forgot the feeling of
+          compiling my code and seeing my hard work come to life!
           <br />
           <br />
-          Fast forward to July 2020, I decided to take action on those thoughts and dive head-first
-          into becoming a software developer. After countless hours of reading developer
-          documentation, following online courses, and banging away on projects of my own, I think
-          it's safe to say that I've learned a thing or two.
-          <br />
-          <br />
-          <span>Learning</span> something new every day has been the key to my success!
+          Fast forward a couple of years to the end of college, I found myself working on buffing up
+          the website for a winery I had been working at. It was just a Squarespace website, but it
+          reminded me of my programming days. That experience motivated me to put every ounce of
+          effort into honing my coding skills so that I could have a career centered around
+          programming. Here I am, one year later, and I'm doing what I love...building on the web.
+          Best part is, the journey has only just begun.
         </p>
       </Bio>
     </About>
   );
 }
 
-const Cards = styled.div`
+const Icons = styled.div`
   display: flex;
   gap: 50px;
   flex-wrap: wrap;
@@ -99,7 +72,7 @@ const Cards = styled.div`
     margin: auto;
   }
 `;
-const Card = styled.div`
+const Icon = styled.div`
   .icon {
     display: flex;
     align-items: center;
