@@ -1,12 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
 function Nav() {
   const { pathname } = useLocation();
+
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    const threshold = 0;
+    let lastScrollY = window.pageYOffset;
+    let ticking = false;
+
+    const updatehidden = () => {
+      const scrollY = window.pageYOffset;
+
+      if (Math.abs(scrollY - lastScrollY) < threshold) {
+        ticking = false;
+        return;
+      }
+      setHidden(scrollY > lastScrollY ? true : false);
+      lastScrollY = scrollY > 0 ? scrollY : 0;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updatehidden);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [hidden]);
+
   return (
-    <StyledNav>
+    <StyledNav style={hidden ? { top: "-10vh" } : { top: 0 }}>
       <h1>
         <Link id="logo" to="/">
           CA
@@ -43,7 +75,7 @@ function Nav() {
 }
 
 const StyledNav = styled.nav`
-  min-height: 10vh;
+  height: 10vh;
   display: flex;
   margin: auto;
   justify-content: space-between;
@@ -51,8 +83,8 @@ const StyledNav = styled.nav`
   padding: 1rem 10rem;
   background: #282828;
   position: sticky;
-  top: 0;
   z-index: 999;
+  transition: all 0.5s ease;
   a {
     color: white;
     text-decoration: none;
@@ -71,8 +103,7 @@ const StyledNav = styled.nav`
     font-weight: lighter;
   }
   @media (max-width: 1300px) {
-    flex-direction: column;
-    padding: 2rem 1rem;
+    padding: 1rem 1rem;
     #logo {
       text-align: center;
       display: inline-block;
@@ -80,7 +111,6 @@ const StyledNav = styled.nav`
       font-size: 3rem;
     }
     ul {
-      padding: 2rem 1rem 1rem;
       justify-content: space-around;
       width: 100%;
     }
