@@ -64,12 +64,9 @@ function AboutSection() {
         </motion.p>
 
         <motion.p variants={fade}>
-          For work inquiries,{" "}
-          <Link to="/contact">
-            <a href="#">email</a>
-          </Link>{" "}
-          is best. For everything else, pick your poison. I'm happy to correspond about any of my
-          interests — or something you think I'd find interesting.
+          For work inquiries, <Link to="/contact">email</Link> is best. For everything else, pick
+          your poison. I'm happy to correspond about any of my interests — or something you think
+          I'd find interesting.
         </motion.p>
       </Description>
 
