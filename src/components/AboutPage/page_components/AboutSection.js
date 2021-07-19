@@ -19,7 +19,7 @@ function AboutSection() {
           <div className="bullet">
             <p>📍 Location</p>
             <code>
-              <p>San Francisco</p>
+              <p>San Fran</p>
             </code>
           </div>
 
@@ -183,6 +183,11 @@ const Image = styled.div`
   @media (max-width: 600px) {
     width: 15vh;
     height: 15vh;
+    margin: auto;
+  }
+  @media (max-width: 400px) {
+    width: 10vh;
+    height: 10vh;
     margin: auto;
   }
 `;

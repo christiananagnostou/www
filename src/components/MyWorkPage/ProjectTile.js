@@ -26,8 +26,6 @@ export default function ProjectTile({ project }) {
         </div>
       </motion.header>
 
-      {/* <motion.div variants={lineAnim} className="line"></motion.div> */}
-
       <Link to={project.url}>
         <Hide>
           <motion.img variants={photoAnim} src={project.desktopImgs[0]} alt={project.title} />
@@ -59,8 +57,7 @@ const Project = styled(motion.div)`
       font-size: 2rem;
     }
     .links {
-      display: inline-block;
-      min-width: fit-content;
+      /* min-width: max-content; */
       a {
         text-decoration: none;
         font-size: 1.2rem;
@@ -83,6 +80,8 @@ const Project = styled(motion.div)`
     height: 70vh;
     object-fit: cover;
     object-position: left;
+    filter: grayscale(70%);
+    transition: filter 0.3s ease-out;
   }
   @media (max-width: 1000px) {
     width: 95%;
@@ -96,6 +95,12 @@ const Project = styled(motion.div)`
   }
   @media (max-width: 500px) {
     width: 90%;
+
+    header {
+      flex-direction: column;
+      /* align-items: */
+    }
+
     h2 {
       font-size: 1.3rem;
     }
@@ -112,5 +117,8 @@ const Hide = styled.div`
   &:hover {
     transform: scale(1.01);
     box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
+    img {
+      filter: grayscale(0%);
+    }
   }
 `;

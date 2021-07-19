@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import emailjs from "emailjs-com";
 // Animations
 import { motion } from "framer-motion";
-import { pageAnimation, titleAnim } from "../../animation";
+import { fade, pageAnimation, titleAnim } from "../../animation";
 import styled from "styled-components";
 import SocialLinks from "../AboutPage/page_components/SocialLinks";
 
@@ -61,13 +61,17 @@ function ContactUs() {
 
   return (
     <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <Title>
+      <Title variants={fade}>
         <Hide>
-          <motion.h2 variants={titleAnim}>Get in touch</motion.h2>
+          <motion.h2 variants={titleAnim}>lets get in touch!</motion.h2>
+          <motion.p variants={titleAnim}>
+            I like to create things with fun, open-minded peoples, so feel free to drop me line
+          </motion.p>
         </Hide>
       </Title>
       <FormContainer>
         {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
+
         <form id="contact-form" onSubmit={handleSubmit} method="POST">
           <Hide>
             <motion.div variants={titleAnim}>
@@ -156,9 +160,25 @@ const ContactStyle = styled(motion.div)`
   min-height: 90vh;
 `;
 
-const Title = styled.div`
-  margin-bottom: 2rem;
-  color: #7a7a7a;
+const Title = styled(motion.div)`
+  max-width: 90%;
+  text-align: center;
+  margin: 1rem;
+  color: #ccc;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  background: rgba(20, 20, 20, 0.5);
+  box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
+  border: 2px solid #4769ff;
+
+  h2,
+  p {
+    margin: 0;
+    padding: 0.5rem 0;
+  }
+  h2 {
+    font-size: 2rem;
+  }
   @media (max-width: 1300px) {
     margin-bottom: 1rem;
     margin-top: -4rem;
@@ -185,23 +205,34 @@ const FormGroup = styled.div`
     margin: 1rem 0 0.2rem;
   }
   .form-input {
-    border: 1px solid grey;
-    border-radius: 2px;
+    background: rgba(20, 20, 20, 0.5);
+    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
+    border: 2px solid #4769ff;
+
+    border-radius: 5px;
     padding: 0.5rem;
     font-size: 1.25rem;
-    color: rgb(67, 67, 67);
-    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode",
-      Geneva, Verdana, sans-serif;
-    letter-spacing: 1px;
+    color: white;
+    font-family: inherit;
+    letter-spacing: 0.5px;
+
+    &:focus {
+      outline-color: #4769ff;
+      outline-style: solid;
+      outline-width: medium;
+      outline-offset: -5px;
+    }
   }
   textarea {
     resize: none;
     overflow: auto;
+    border-radius: 5px;
   }
   .form-btn {
     padding: 0.7rem;
     color: white;
-    background: rgb(89, 154, 154);
+    background: #4769ff;
+    border-radius: 10px;
     border: none;
     margin-top: 1rem;
     cursor: pointer;

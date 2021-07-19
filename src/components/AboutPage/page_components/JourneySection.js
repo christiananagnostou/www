@@ -117,6 +117,9 @@ const Icon = styled.div`
     display: flex;
     align-items: center;
   }
+  @media (max-width: 800px) {
+    margin: 1rem 1rem;
+  }
 `;
 
 const Bio = styled.div`
