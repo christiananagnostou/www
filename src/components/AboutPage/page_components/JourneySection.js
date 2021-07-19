@@ -17,10 +17,11 @@ const icons = [html5Logo, css3Logo, jsLogo, reactLogo, gitLogo, nextjsLogo];
 
 function JourneySection() {
   const [element, controls] = useScroll();
+  const [element2, controls2] = useScroll();
 
   return (
-    <StyledSection variants={fade} animate={controls} initial="hidden" ref={element}>
-      <ToolsTile>
+    <StyledSection>
+      <ToolsTile variants={fade} animate={controls} initial="hidden" ref={element}>
         <h2>
           In the <span>toolbelt</span>
         </h2>
@@ -35,7 +36,7 @@ function JourneySection() {
         </Icons>
       </ToolsTile>
 
-      <Bio>
+      <Bio variants={fade} animate={controls2} initial="hidden" ref={element2}>
         <h2>
           My journey as a <span>developer</span>.
         </h2>
@@ -58,7 +59,7 @@ function JourneySection() {
 export default JourneySection;
 
 // Styled Component
-export const StyledSection = styled(motion.section)`
+export const StyledSection = styled.section`
   min-height: 90vh;
   width: 100%;
   display: flex;
@@ -77,7 +78,7 @@ export const StyledSection = styled(motion.section)`
   }
 `;
 
-const ToolsTile = styled.div`
+const ToolsTile = styled(motion.div)`
   flex: 0.5;
   color: #cbcbcb;
   border-radius: 10px;
@@ -122,7 +123,7 @@ const Icon = styled.div`
   }
 `;
 
-const Bio = styled.div`
+const Bio = styled(motion.div)`
   border-radius: 10px;
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);

@@ -6,10 +6,20 @@ import LinkedIn from "../../../img/LinkedIn";
 // Animations
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { fade } from "../../../animation";
+import { useScroll } from "../../useScroll";
 
-function SocialLinks() {
+function SocialLinks({ flexDirection = "row" }) {
+  const [element, controls] = useScroll();
+
   return (
-    <SocialLinkList>
+    <SocialLinkList
+      style={{ flexDirection: flexDirection }}
+      ref={element}
+      variants={fade}
+      animate={controls}
+      initial="hidden"
+    >
       <li>
         <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
           <Gitgub />
@@ -43,7 +53,7 @@ const SocialLinkList = styled(motion.ul)`
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
   border: 2px solid #4769ff;
   li {
-    margin: 0 1rem;
+    margin: 0.5rem 1rem;
 
     a {
       display: block;

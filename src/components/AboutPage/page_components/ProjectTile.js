@@ -8,10 +8,10 @@ import { fade, photoAnim, lineAnim } from "../../../animation";
 import { useScroll } from "../../useScroll";
 
 export default function ProjectTile({ project }) {
-  const [element1, controls1] = useScroll();
+  const [element, controls] = useScroll();
 
   return (
-    <Project ref={element1} variants={fade} animate={controls1} initial="hidden">
+    <Project ref={element} variants={fade} animate={controls} initial="hidden">
       <motion.header variants={lineAnim}>
         <h2>{project.title}</h2>
 
@@ -57,7 +57,6 @@ const Project = styled(motion.div)`
       font-size: 2rem;
     }
     .links {
-      /* min-width: max-content; */
       a {
         text-decoration: none;
         font-size: 1.2rem;
@@ -75,12 +74,13 @@ const Project = styled(motion.div)`
     }
   }
   img {
+    display: block;
     width: 100%;
     border-radius: 10px;
     height: 70vh;
     object-fit: cover;
     object-position: left;
-    filter: grayscale(70%);
+    filter: grayscale(50%);
     transition: filter 0.3s ease-out;
   }
   @media (max-width: 1000px) {
@@ -98,7 +98,6 @@ const Project = styled(motion.div)`
 
     header {
       flex-direction: column;
-      /* align-items: */
     }
 
     h2 {
