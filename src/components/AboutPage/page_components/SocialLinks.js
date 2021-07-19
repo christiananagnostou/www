@@ -31,7 +31,7 @@ function SocialLinks() {
 
 const SocialLinkList = styled(motion.ul)`
   width: fit-content;
-  margin: auto;
+  margin: 1rem auto 3rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,7 +42,6 @@ const SocialLinkList = styled(motion.ul)`
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
   border: 2px solid #4769ff;
-  margin-bottom: 3rem;
   li {
     margin: 0 1rem;
 

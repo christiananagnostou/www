@@ -63,86 +63,84 @@ function ContactUs() {
     <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <Title variants={fade}>
         <Hide>
-          <motion.h2 variants={titleAnim}>lets get in touch!</motion.h2>
-          <motion.p variants={titleAnim}>
+          <motion.h2>lets get in touch!</motion.h2>
+          <motion.p>
             I like to create things with fun, open-minded peoples, so feel free to drop me line
           </motion.p>
         </Hide>
       </Title>
-      <FormContainer>
-        {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
+      {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
 
-        <form id="contact-form" onSubmit={handleSubmit} method="POST">
-          <Hide>
-            <motion.div variants={titleAnim}>
-              <FormGroup>
-                <label htmlFor="name">
-                  YOUR NAME <span>(required)</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-input"
-                  required
-                  value={formData.name}
-                  onChange={onNameChange}
-                />
-              </FormGroup>
-            </motion.div>
-          </Hide>
-          <Hide>
-            <motion.div variants={titleAnim}>
-              <FormGroup>
-                <label htmlFor="inputEmail">
-                  EMAIL ADDRESS <span>(required)</span>
-                </label>
-                <input
-                  type="email"
-                  className="form-input"
-                  aria-describedby="email"
-                  value={formData.email}
-                  onChange={onEmailChange}
-                />
-              </FormGroup>
-            </motion.div>
-          </Hide>
-          <Hide>
-            <motion.div variants={titleAnim}>
-              <FormGroup>
-                <label htmlFor="subject">SUBJECT</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={formData.subject}
-                  onChange={onSubjectChange}
-                />
-              </FormGroup>{" "}
-            </motion.div>
-          </Hide>
-          <Hide>
-            <motion.div variants={titleAnim}>
-              <FormGroup>
-                <label htmlFor="message">MESSAGE</label>
-                <textarea
-                  className="form-input"
-                  rows="6"
-                  cols="50"
-                  value={formData.message}
-                  onChange={onMessageChange}
-                ></textarea>
-              </FormGroup>
-            </motion.div>
-          </Hide>
-          <Hide>
-            <motion.div variants={titleAnim}>
-              <FormGroup>
-                <button type="submit" className="form-btn">
-                  SEND
-                </button>
-              </FormGroup>
-            </motion.div>
-          </Hide>
-        </form>
-      </FormContainer>
+      <StyledForm id="contact-form" onSubmit={handleSubmit} method="POST">
+        <Hide>
+          <motion.div variants={titleAnim}>
+            <FormGroup>
+              <label htmlFor="name">
+                YOUR NAME <span>(required)</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                required
+                value={formData.name}
+                onChange={onNameChange}
+              />
+            </FormGroup>
+          </motion.div>
+        </Hide>
+        <Hide>
+          <motion.div variants={titleAnim}>
+            <FormGroup>
+              <label htmlFor="inputEmail">
+                EMAIL ADDRESS <span>(required)</span>
+              </label>
+              <input
+                type="email"
+                className="form-input"
+                aria-describedby="email"
+                value={formData.email}
+                onChange={onEmailChange}
+              />
+            </FormGroup>
+          </motion.div>
+        </Hide>
+        <Hide>
+          <motion.div variants={titleAnim}>
+            <FormGroup>
+              <label htmlFor="subject">SUBJECT</label>
+              <input
+                type="text"
+                className="form-input"
+                value={formData.subject}
+                onChange={onSubjectChange}
+              />
+            </FormGroup>{" "}
+          </motion.div>
+        </Hide>
+        <Hide>
+          <motion.div variants={titleAnim}>
+            <FormGroup>
+              <label htmlFor="message">MESSAGE</label>
+              <textarea
+                className="form-input"
+                rows="6"
+                cols="50"
+                value={formData.message}
+                onChange={onMessageChange}
+              ></textarea>
+            </FormGroup>
+          </motion.div>
+        </Hide>
+        <Hide>
+          <motion.div variants={titleAnim}>
+            <FormGroup>
+              <button type="submit" className="form-btn">
+                SEND
+              </button>
+            </FormGroup>
+          </motion.div>
+        </Hide>
+      </StyledForm>
       <Hide>
         <motion.div variants={titleAnim}>
           <SocialLinks />
@@ -155,13 +153,13 @@ function ContactUs() {
 const ContactStyle = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  min-height: 90vh;
 `;
 
 const Title = styled(motion.div)`
-  max-width: 90%;
+  max-width: 450px;
+  flex: 1;
   text-align: center;
   margin: 1rem;
   color: #ccc;
@@ -179,29 +177,19 @@ const Title = styled(motion.div)`
   h2 {
     font-size: 2rem;
   }
-  @media (max-width: 1300px) {
-    margin-bottom: 1rem;
-    margin-top: -4rem;
-  }
 `;
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 50%;
-  color: rgb(106, 106, 106);
-  @media (max-width: 1300px) {
-    width: 100%;
-  }
+const StyledForm = styled.form`
+  width: 100%;
 `;
 
 const FormGroup = styled.div`
+  width: 100%;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
   label {
-    color: grey;
+    color: #ccc;
     margin: 1rem 0 0.2rem;
   }
   .form-input {
