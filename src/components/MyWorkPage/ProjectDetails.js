@@ -5,6 +5,7 @@ import { projectState } from "../../projectState";
 // Animations
 import { motion } from "framer-motion";
 import { pageAnimation } from "../../animation";
+import ScrollTop from "../ScrollTop";
 
 function ProjectDetails() {
   const history = useHistory();
@@ -19,6 +20,8 @@ function ProjectDetails() {
 
   return (
     <>
+      <ScrollTop />
+
       {project && (
         <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
           <h2>{project.title}</h2>
@@ -154,7 +157,7 @@ const DetailStyle = styled.div`
   }
   .line {
     width: 50%;
-    background: #fe5a1d;
+    background: #4769ff;
     height: 0.5rem;
     margin: 1rem 0;
   }

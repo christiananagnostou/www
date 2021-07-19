@@ -12,8 +12,9 @@ export default function ProjectTile({ project }) {
 
   return (
     <Project ref={element1} variants={fade} animate={controls1} initial="hidden">
-      <div>
+      <motion.header variants={lineAnim}>
         <h2>{project.title}</h2>
+
         <div className="links">
           <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
             Live Site
@@ -23,8 +24,10 @@ export default function ProjectTile({ project }) {
           </motion.a>
           <Link to={project.url}>Details</Link>
         </div>
-      </div>
-      <motion.div variants={lineAnim} className="line"></motion.div>
+      </motion.header>
+
+      {/* <motion.div variants={lineAnim} className="line"></motion.div> */}
+
       <Link to={project.url}>
         <Hide>
           <motion.img variants={photoAnim} src={project.desktopImgs[0]} alt={project.title} />
@@ -39,62 +42,62 @@ const Project = styled(motion.div)`
   padding-bottom: 10rem;
   width: 70%;
   margin: auto;
-  div {
+
+  header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    background: rgba(20, 20, 20, 0.5);
+    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
+    border: 2px solid #4769ff;
+    margin-bottom: 3rem;
     h2 {
       display: inline-block;
-      width: fit-content;
+      min-width: max-content;
+      font-size: 2rem;
     }
     .links {
       display: inline-block;
       min-width: fit-content;
       a {
         text-decoration: none;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: #ccc;
-        border: 1px solid #ccc;
-        padding: 0.75rem;
+        border-bottom: 1px solid #ccc;
+        padding: 0.1rem 0.4rem;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
         margin-left: 10px;
         &:hover {
-          background: black;
+          color: #4769ff;
+          border-bottom: 1px solid #4769ff;
         }
       }
     }
   }
-  .line {
-    height: 0.5rem;
-    background: #fe5a1d;
-    margin-bottom: 3rem;
-  }
   img {
     width: 100%;
+    border-radius: 10px;
     height: 70vh;
     object-fit: cover;
     object-position: left;
   }
   @media (max-width: 1000px) {
-    width: 90%;
+    width: 95%;
     padding-bottom: 5rem;
-    div {
-      h2 {
-        font-size: 3em;
-      }
+    h2 {
+      font-size: 1.5rem;
     }
     img {
       height: 50vh;
     }
   }
   @media (max-width: 500px) {
-    width: 95%;
-    padding-bottom: 10rem;
-    div {
-      h2 {
-        font-size: 2.5em;
-      }
+    width: 90%;
+    h2 {
+      font-size: 1.3rem;
     }
     img {
       height: 35vh;
@@ -104,9 +107,10 @@ const Project = styled(motion.div)`
 
 const Hide = styled.div`
   overflow: hidden;
+  border-radius: 10px;
   transition: all 0.5s ease;
   &:hover {
     transform: scale(1.01);
-    box-shadow: 0px 25px 40px #000000;
+    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
   }
 `;

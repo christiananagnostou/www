@@ -1,13 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 // Styles
 import styled from "styled-components";
-import { About } from "../../styles";
 import Toggle from "./Toggle";
 import { AnimateSharedLayout } from "framer-motion";
 // Animation
 import { useScroll } from "../../useScroll";
 import { fade } from "../../../animation";
+import { motion } from "framer-motion";
 
 function FaqSection() {
   const [element, controls] = useScroll();
@@ -18,7 +17,7 @@ function FaqSection() {
         <span>Extras</span>
       </h2>
       <AnimateSharedLayout>
-        <Toggle title="Why teach yourself?">
+        {/* <Toggle title="Why teach yourself?">
           <div className="answer">
             <p>
               <span>The choices:</span> College, Bootcamps, and Self-Taught
@@ -32,22 +31,20 @@ function FaqSection() {
               needed to know. The challenge was on...
             </p>
           </div>
-        </Toggle>
+        </Toggle> */}
         <Toggle title="What have I been working on lately?">
           <div className="answer">
             <p>
-              Lately, my go-to has been <span>NextJS</span> for its flexability of server-side and
-              client-side rendering as well as its SEO capabilities.
+              Lately, I've been working on a project called <span>Anagnostou Lift Club</span>; a
+              workout-tracking, social fitness app intended to bridge the gap between physical
+              trainers and clients.
             </p>
             <p>
-              My latest project is a fitness tracker web app. This is currently in the works and
-              will be deployed for public use this summer. Users will be able to create exercises or
-              choose from a plethora of pre-made ones, add them to a customizable workout, and share
-              them with a community of other fitness junkies. This is aimed at allowing anyone to be
-              their own workout trainer. Not only can you share workouts, but you can track your
-              progress to see your gains as you get faster and stronger. This project is currently
-              in beta testing. Send me a <Link to="/contact">message</Link> if you'd like access or
-              have interest in being part of the development process.
+              Users are able to create exercises or choose from a plethora of pre-made ones, add
+              them to a customizable workout, and share them with a community of other fitness
+              junkies. This is aimed at allowing anyone to be their own workout trainer. Not only
+              can you share workouts, but you can track your progress to see your gains as you get
+              faster and stronger.
             </p>
           </div>
         </Toggle>
@@ -60,29 +57,24 @@ function FaqSection() {
               Having a solid understanding of website and web app development, I am working to
               expand my horizons by learning how to interact with the Ethereum blockchain.
               Currently, I am auditing a blockchain and economics course from MIT and working
-              through a class on programming in Solidity and Web3.js. In the coming months, I will
-              be working on my own DApps and finding new ways to make them beneficial not only in my
-              life, but others lives as well.
+              through a class on programming in Solidity and Web3.js.
             </p>
           </div>
         </Toggle>
         <Toggle title="What helped you on your journey to become self-taught?">
           <div className="answer">
-            <p>The internet!</p>
             <p>
               First off, endless <span>motivation</span>, mostly music-induced, in combination with
-              lots of <span>coffee</span>! I started out jumping around with a few different
-              languages before I realized that I needed something with a direct visual output. So
-              with that in mind, I signed up for <span>Codecademy</span> and learned HTML, then CSS,
-              and built TONS of cool looking pages...well I thought they looked cool at the time.
-              After that, I marched on into JavaScript and made some simple games and brought
-              functionality to my "cool looking" web pages. I basically went through the Web
-              Development path on CodecademyPro to learn the basics of Git, Command Line, HTML, CSS,
-              JS, Node.js, and React. From there, I read a lot of forum posts,{" "}
-              <span>stack overflow</span> posts, blogs, and developer docs on how build with and
-              learn how to use new tools. Other than that, <span>YouTube</span> was and continues to
-              be a great resource for everything from the technical aspects of language patterns to
-              the inspirations for my next project.
+              lots of <span>coffee</span>. I started out jumping around with a few different
+              languages before I realized that I needed something with a direct visual output. With
+              that in mind, I signed up for <span>Codecademy</span>, learned HTML and CSS, and built
+              TONS of cool looking pages...well I thought they looked cool at the time. After that,
+              I marched on into JavaScript and made some simple games and brought functionality to
+              my "cool looking" web pages. From there, I read a lot of forum posts,
+              <span> stack overflow</span>, blogs, and countless developer docs on how build with
+              and new tools. Other than that, <span>YouTube</span> was and continues to be a great
+              resource for everything from the technical aspects of code to the inspirations for my
+              next project.
             </p>
           </div>
         </Toggle>
@@ -91,9 +83,24 @@ function FaqSection() {
   );
 }
 
-const Faq = styled(About)`
+const Faq = styled(motion.secion)`
+  min-height: 90vh;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 10rem;
   display: block;
   color: #fff;
+
+  p {
+    padding: 1rem;
+  }
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    padding: 2rem;
+    text-align: center;
+  }
+
   h2 {
     padding-bottom: 2rem;
     font-weight: lighter;

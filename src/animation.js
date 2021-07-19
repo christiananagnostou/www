@@ -57,7 +57,7 @@ export const photoAnim = {
 };
 
 export const lineAnim = {
-  hidden: { width: "0%" },
+  hidden: { width: "80%" },
   show: {
     width: "100%",
     transition: {

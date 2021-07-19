@@ -30,31 +30,16 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
   }
-  button{
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 1rem 2rem;
-    border: 3px solid #fe5a1d;
-    background: transparent;
-    color: white;
-    transition: all 0.5s ease;
-    &:hover{
-      background:  #fe5a1d;
-      text-shadow: 2px 2px #393939;
-    }
-  }
   h2{
     font-weight: lighter;
-    font-size: 4rem;
+    font-size: 2.5rem;
   }
   h3{
     color: white;
   }
   h4{
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   p{
     padding: 3rem 0;
@@ -64,10 +49,16 @@ const GlobalStyle = createGlobalStyle`
   }
   span{
     font-weight: bold;
-    color:  #fe5a1d; 
   }
   a{
-    font-size: 1.1rem;
+    font-family: inherit;
+    color: inherit;
+    text-decoration: underline dashed #4769FF;
+
+    &:hover,
+    &:active {
+      color: #4769FF;
+    }
   }
 `;
 

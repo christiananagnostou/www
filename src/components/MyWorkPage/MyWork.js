@@ -1,17 +1,30 @@
 import React from "react";
 import styled from "styled-components";
-
+// State
 import { projectState } from "../../projectState";
+// Components
 import ProjectTile from "./ProjectTile";
 // Animations
 import { motion } from "framer-motion";
-import { pageAnimation } from "../../animation";
+import { fade } from "../../animation";
 import ScrollTop from "../ScrollTop";
+// Hooks
+import { useScroll } from "../useScroll";
 
 function MyWork() {
-  console.log(projectState);
+  const [element, controls] = useScroll();
   return (
-    <Work variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+    <Work id="work">
+      <motion.h2
+        ref={element}
+        variants={fade}
+        animate={controls}
+        initial="hidden"
+        className="title"
+      >
+        My Creations
+      </motion.h2>
+
       {projectState.map((project) => (
         <ProjectTile project={project} key={project.title} />
       ))}
@@ -25,13 +38,17 @@ const Work = styled(motion.div)`
   min-height: 100vh;
   overflow: hidden;
   padding: 5rem 8rem;
-  color: #4a4a4a;
   color: white;
-  h2 {
-    padding: 1rem 0;
+
+  .title {
+    text-align: center;
+    padding-top: 2rem;
+    margin: 0rem 0 2rem;
+    font-size: 2rem;
+    color: #ccc;
   }
   @media (max-width: 1500px) {
-    padding: 2rem 0rem;
+    padding: 0rem;
   }
 `;
 

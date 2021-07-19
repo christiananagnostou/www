@@ -19,7 +19,7 @@ import vibetribeDesktop from "./img/projects/vibetribe-desktop.png";
 
 export const projectState = [
   {
-    title: "Photo Print Store",
+    title: "Photo e-commerce",
     desktopImgs: [wildchristianDesktop1, wildchristianDesktop2, wildchristianDesktop3],
     mobileImgs: [wildchristianMobile1, wildchristianMobile2],
     externalLink: "https://awildchristian.com/",

@@ -41,7 +41,7 @@ const SocialLinkList = styled(motion.ul)`
       height: 2.5rem;
       cursor: pointer;
       &:hover {
-        color: #fe5a1d;
+        color: #4769ff;
       }
     }
   }

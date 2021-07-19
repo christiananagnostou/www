@@ -54,14 +54,6 @@ function Nav() {
           />
         </li>
         <li>
-          <Link to="/work">My Work</Link>
-          <Line
-            transition={{ duration: 0.3 }}
-            initial={{ width: "0%" }}
-            animate={{ width: pathname.includes("/work") ? "65%" : "0%" }}
-          />
-        </li>
-        <li>
           <Link to="/contact">Contact Me</Link>
           <Line
             transition={{ duration: 0.3 }}
@@ -73,6 +65,7 @@ function Nav() {
     </StyledNav>
   );
 }
+export default Nav;
 
 const StyledNav = styled.nav`
   height: 10vh;
@@ -80,8 +73,8 @@ const StyledNav = styled.nav`
   margin: auto;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 10rem;
-  background: #282828;
+  padding: 1rem 8rem;
+  background: rgba(20, 20, 20, 0.9);
   position: sticky;
   z-index: 999;
   transition: all 0.5s ease;
@@ -92,18 +85,19 @@ const StyledNav = styled.nav`
   ul {
     display: flex;
     list-style: none;
+    justify-content: flex-end;
   }
   li {
     padding-left: 8rem;
     position: relative;
+    font-size: 1.2rem;
   }
   #logo {
-    font-size: 2rem;
+    font-size: 3rem;
     font-family: "Lobster", cursive;
     font-weight: lighter;
   }
   @media (max-width: 1300px) {
-    padding: 1rem 1rem;
     #logo {
       text-align: center;
       display: inline-block;
@@ -111,19 +105,20 @@ const StyledNav = styled.nav`
       font-size: 3rem;
     }
     ul {
-      justify-content: space-around;
       width: 100%;
     }
     li {
       padding: 0 0.5rem;
-      transform: scale(1.25);
     }
+  }
+  @media (max-width: 500px) {
+    padding: 1rem 4rem;
   }
 `;
 
 const Line = styled(motion.div)`
-  height: 0.3rem;
-  background: #fe5a1d;
+  height: 0.2rem;
+  background: #4769ff;
   width: 0%;
   position: absolute;
   bottom: -50%;
@@ -133,5 +128,3 @@ const Line = styled(motion.div)`
     left: 20%;
   }
 `;
-
-export default Nav;
