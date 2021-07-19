@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 // State
-import { projectState } from "../../projectState";
+import { projectState } from "../../../projectState";
 // Components
 import ProjectTile from "./ProjectTile";
 // Animations
 import { motion } from "framer-motion";
-import { fade } from "../../animation";
-import ScrollTop from "../ScrollTop";
+import { fade } from "../../../animation";
+import ScrollTop from "../../ScrollTop";
 // Hooks
-import { useScroll } from "../useScroll";
+import { useScroll } from "../../useScroll";
 
 function MyWork() {
   const [element, controls] = useScroll();

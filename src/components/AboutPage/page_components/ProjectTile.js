@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 // Animations
 import { motion } from "framer-motion";
-import { fade, photoAnim, lineAnim } from "../../animation";
-import { useScroll } from "../useScroll";
+import { fade, photoAnim, lineAnim } from "../../../animation";
+import { useScroll } from "../../useScroll";
 
 export default function ProjectTile({ project }) {
   const [element1, controls1] = useScroll();
