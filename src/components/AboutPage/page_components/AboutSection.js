@@ -135,6 +135,7 @@ const StyledInfo = styled(motion.aside)`
   }
 
   @media (max-width: 1000px) {
+    padding: 1rem;
     flex: 0;
     flex-direction: row;
     justify-content: space-between;
@@ -190,13 +191,13 @@ const Image = styled.div`
   @media (max-width: 600px) {
     width: 15vh;
     height: 15vh;
-    margin: auto;
   }
-  @media (max-width: 400px) {
-    width: 10vh;
-    height: 10vh;
+  @media (max-width: 500px) {
+    width: 12vh;
+    height: 12vh;
     margin-right: 1rem;
-    min-width: 10vh;
+    min-width: 12vh;
+    min-height: 12vh;
   }
 `;
 
