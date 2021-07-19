@@ -6,7 +6,7 @@ import Nav from "./components/Nav";
 // Pages
 import AboutMe from "./components/AboutPage/AboutPage";
 import ContactUs from "./components/ContactPage/ContactUs";
-import ProjectDetails from "./components/MyWorkPage/ProjectDetails";
+import ProjectDetails from "./components/ProjectPage/ProjectDetails";
 // Router
 import { Switch, Route, useLocation } from "react-router-dom";
 // Animation
@@ -18,15 +18,19 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
+
       <Nav />
+
       <AnimatePresence exitBeforeEnter>
         <Switch location={location} key={location.pathname}>
           <Route path="/" exact>
             <AboutMe />
           </Route>
+
           <Route path="/work/:id">
             <ProjectDetails />
           </Route>
+
           <Route path="/contact">
             <ContactUs />
           </Route>

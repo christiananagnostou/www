@@ -25,8 +25,8 @@ function JourneySection() {
           In the <span>toolbelt</span>
         </h2>
         <Icons>
-          {icons.map((icon) => (
-            <Icon>
+          {icons.map((icon, i) => (
+            <Icon ley={i}>
               <div className="icon">
                 <img src={icon} alt="icon" />
               </div>

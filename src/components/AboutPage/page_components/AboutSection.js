@@ -18,26 +18,20 @@ function AboutSection() {
         <div className="info">
           <div className="bullet">
             <p>📍 Location</p>
-            <code>
-              <p>San Fran</p>
-            </code>
+            <code>San Fran</code>
           </div>
 
           <div className="bullet">
             <p>👨‍💻 Available</p>
-            <code>
-              <p>Yes</p>
-            </code>
+            <code>Yes</code>
           </div>
 
           <div className="bullet">
             <p>🚧 Building</p>
             <code>
-              <p>
-                <a href="https://workout-logger-omega.vercel.app" target="_blank" rel="noreferrer">
-                  ALC
-                </a>
-              </p>
+              <a href="https://workout-logger-omega.vercel.app" target="_blank" rel="noreferrer">
+                ALC
+              </a>
             </code>
           </div>
         </div>
@@ -111,26 +105,29 @@ const StyledInfo = styled(motion.aside)`
   .info {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 
     .bullet {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: flex-start;
       text-align: left;
       margin: 0.75rem 0;
 
       p,
       code {
-        width: 70%;
-        min-width: max-content;
-        flex: 1;
         padding: 0.1rem 0;
+        color: #ccc;
+        min-width: max-content;
+        font-size: 1.4rem;
+        line-height: 150%;
       }
 
       p {
         color: #adadad;
       }
-      code p {
+      code {
         margin-left: 2rem;
         color: #cbcbcb;
       }
@@ -144,16 +141,26 @@ const StyledInfo = styled(motion.aside)`
     align-items: center;
 
     .info {
-      .bullet {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin: 0.25rem 0;
+      max-width: 250px;
+      flex: 0.75;
+      display: flex;
+      flex-direction: column;
+      margin: 0.25rem 0;
+      justify-content: flex-start;
+      align-items: stretch;
 
-        p,
+      .bullet {
+        flex: 1;
+        flex-direction: row;
+
+        p {
+          flex: 1;
+          margin-right: 1rem;
+        }
         code {
-          width: 100%;
-          flex: 0;
+          flex: 1;
+          text-align: left;
+          margin: 0;
         }
       }
     }
@@ -188,7 +195,8 @@ const Image = styled.div`
   @media (max-width: 400px) {
     width: 10vh;
     height: 10vh;
-    margin: auto;
+    margin-right: 1rem;
+    min-width: 10vh;
   }
 `;
 

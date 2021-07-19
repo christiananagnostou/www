@@ -83,13 +83,12 @@ function FaqSection() {
   );
 }
 
-const Faq = styled(motion.secion)`
+const Faq = styled(motion.section)`
   align-items: center;
   justify-content: space-between;
   padding: 2rem 10rem;
   display: block;
   color: #fff;
-
 
   p {
     padding: 1rem;
