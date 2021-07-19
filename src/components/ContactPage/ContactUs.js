@@ -184,6 +184,7 @@ const StyledForm = styled.form`
 `;
 
 const FormGroup = styled.div`
+  margin: auto;
   width: 100%;
   max-width: 450px;
   display: flex;
