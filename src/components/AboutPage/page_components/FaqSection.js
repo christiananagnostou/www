@@ -84,12 +84,12 @@ function FaqSection() {
 }
 
 const Faq = styled(motion.secion)`
-  min-height: 90vh;
   align-items: center;
   justify-content: space-between;
   padding: 2rem 10rem;
   display: block;
   color: #fff;
+
 
   p {
     padding: 1rem;

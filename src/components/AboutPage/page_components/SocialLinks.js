@@ -1,8 +1,8 @@
 import React from "react";
 // Icons
-import instagram from "../../../img/instagram.svg";
-import github from "../../../img/github.svg";
-import linkedin from "../../../img/linkedin.svg";
+import Instagram from "../../../img/Instagram";
+import Gitgub from "../../../img/GitHub";
+import LinkedIn from "../../../img/LinkedIn";
 // Animations
 import styled from "styled-components";
 import { motion } from "framer-motion";
@@ -12,17 +12,17 @@ function SocialLinks() {
     <SocialLinkList>
       <li>
         <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
-          <img src={github} alt="instagram" className="social-icon" />
+          <Gitgub />
         </a>
       </li>
       <li>
         <a href="https://www.linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer">
-          <img src={linkedin} alt="linkedin" className="social-icon" />
+          <LinkedIn />
         </a>
       </li>
       <li>
         <a href="https://www.instagram.com/christian.anagnostou/" target="_blank" rel="noreferrer">
-          <img src={instagram} alt="instagram" className="social-icon" />
+          <Instagram />
         </a>
       </li>
     </SocialLinkList>
@@ -30,19 +30,27 @@ function SocialLinks() {
 }
 
 const SocialLinkList = styled(motion.ul)`
+  width: fit-content;
+  margin: auto;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  height: 10vh;
   list-style: none;
-  a {
-    .social-icon {
-      margin: 0 1rem;
-      height: 2.5rem;
-      cursor: pointer;
-      &:hover {
-        color: #4769ff;
-      }
+
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  background: rgba(20, 20, 20, 0.5);
+  box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
+  border: 2px solid #4769ff;
+  margin-bottom: 3rem;
+  li {
+    margin: 0 1rem;
+
+    a {
+      display: block;
+    }
+    a[href]:not(:hover) path {
+      fill: #bbb !important;
     }
   }
 `;
