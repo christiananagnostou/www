@@ -155,10 +155,12 @@ const StyledInfo = styled(motion.aside)`
         flex-direction: row;
 
         p {
+          font-size: 1.2rem;
           flex: 1;
           margin-right: 1rem;
         }
         code {
+          font-size: 1.2rem;
           flex: 1;
           text-align: left;
           margin: 0;
