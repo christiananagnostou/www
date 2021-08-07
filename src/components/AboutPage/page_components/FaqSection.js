@@ -35,7 +35,7 @@ function FaqSection() {
         <Toggle title="What have I been working on lately?">
           <div className="answer">
             <p>
-              Lately, I've been working on a project called <span>Anagnostou Lift Club</span>; a
+              Lately, I've been working on a project called <span>Lift Club</span>; a
               workout-tracking, social fitness app intended to bridge the gap between physical
               trainers and clients.
             </p>
