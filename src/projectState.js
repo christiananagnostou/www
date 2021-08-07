@@ -1,21 +1,21 @@
 //Import Images
-import wildchristianDesktop1 from "./img/projects/awildchristian-desktop1.png";
-import wildchristianDesktop2 from "./img/projects/awildchristian-desktop2.png";
-import wildchristianDesktop3 from "./img/projects/awildchristian-desktop3.png";
-import wildchristianMobile1 from "./img/projects/awildchristian-mobile1.png";
-import wildchristianMobile2 from "./img/projects/awildchristian-mobile2.png";
+import wildchristianDesktop1 from "./img/projects/awildchristian-desktop1.jpg";
+import wildchristianDesktop2 from "./img/projects/awildchristian-desktop2.jpg";
+import wildchristianDesktop3 from "./img/projects/awildchristian-desktop3.jpg";
+import wildchristianMobile1 from "./img/projects/awildchristian-mobile1.jpg";
+import wildchristianMobile2 from "./img/projects/awildchristian-mobile2.jpg";
 
-import neologosDesktop1 from "./img/projects/neologos-desktop1.png";
-import neologosDesktop2 from "./img/projects/neologos-desktop2.png";
-import neologosDesktop3 from "./img/projects/neologos-desktop3.png";
-import neologosMobile1 from "./img/projects/neologos-mobile1.png";
-import neologosMobile2 from "./img/projects/neologos-mobile2.png";
+import neologosDesktop1 from "./img/projects/neologos-desktop1.jpg";
+import neologosDesktop2 from "./img/projects/neologos-desktop2.jpg";
+import neologosDesktop3 from "./img/projects/neologos-desktop3.jpg";
+import neologosMobile1 from "./img/projects/neologos-mobile1.jpg";
+import neologosMobile2 from "./img/projects/neologos-mobile2.jpg";
 
-import lofiMobile from "./img/projects/lofiwaves-mobile.png";
-import lofiDesktop from "./img/projects/lofiwaves-desktop.png";
+import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
+import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
 
-import vibetribeMobile from "./img/projects/vibetribe-mobile.png";
-import vibetribeDesktop from "./img/projects/vibetribe-desktop.png";
+import vibetribeMobile from "./img/projects/vibetribe-mobile.jpg";
+import vibetribeDesktop from "./img/projects/vibetribe-desktop.jpg";
 
 export const projectState = [
   {
