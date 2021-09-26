@@ -79,8 +79,7 @@ const Project = styled(motion.div)`
     border-radius: 10px;
     height: 70vh;
     object-fit: cover;
-    object-position: left;
-    filter: grayscale(50%);
+    object-position: center;
     transition: filter 0.3s ease-out;
   }
   @media (max-width: 1000px) {
