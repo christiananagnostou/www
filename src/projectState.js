@@ -16,11 +16,11 @@ import neologosDesktop3 from "./img/projects/neologos-desktop3.jpg";
 import neologosMobile1 from "./img/projects/neologos-mobile1.jpg";
 import neologosMobile2 from "./img/projects/neologos-mobile2.jpg";
 
-import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
-import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
+// import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
+// import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
 
-import vibetribeMobile from "./img/projects/vibetribe-mobile.jpg";
-import vibetribeDesktop from "./img/projects/vibetribe-desktop.jpg";
+// import vibetribeMobile from "./img/projects/vibetribe-mobile.jpg";
+// import vibetribeDesktop from "./img/projects/vibetribe-desktop.jpg";
 
 export const projectState = [
   {
