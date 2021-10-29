@@ -29,7 +29,7 @@ function AboutSection() {
           <div className="bullet">
             <p>🚧 Building</p>
             <code>
-              <a href="https://workout-logger-omega.vercel.app" target="_blank" rel="noreferrer">
+              <a href="https://liftclub.app" target="_blank" rel="noreferrer">
                 Lift Club
               </a>
             </code>

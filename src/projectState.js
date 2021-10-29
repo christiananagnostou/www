@@ -27,7 +27,7 @@ export const projectState = [
     title: "Lift Club",
     desktopImgs: [liftclubMain],
     mobileImgs: [liftclubMobile1, liftclubMobile2],
-    externalLink: "https://workout-logger-omega.vercel.app/",
+    externalLink: "https://lifclub.app/",
     github: "https://github.com/ChristianAnagnostou/workout-logger",
     url: "/work/liftclub",
     details: [
