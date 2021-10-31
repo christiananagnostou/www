@@ -27,8 +27,8 @@ export const projectState = [
     title: "Lift Club",
     desktopImgs: [liftclubMain],
     mobileImgs: [liftclubMobile1, liftclubMobile2],
-    externalLink: "https://lifclub.app/",
-    github: "https://github.com/ChristianAnagnostou/workout-logger",
+    externalLink: "https://liftclub.app/",
+    github: "https://github.com/ChristianAnagnostou/liftclub",
     url: "/work/liftclub",
     details: [
       {
