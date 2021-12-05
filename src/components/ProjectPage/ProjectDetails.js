@@ -51,7 +51,7 @@ function ProjectDetails() {
 
             <Details>
               {project.details.map(({ title, description }, i) => (
-                <Detail key={i} title={title} description={description} />
+                <Detail key={i} title={title} description={description} index={i} />
               ))}
             </Details>
           </MobileAndText>
@@ -68,11 +68,11 @@ function ProjectDetails() {
 }
 
 // Detail Component
-const Detail = ({ title, description }) => {
+const Detail = ({ title, description, index }) => {
   return (
     <DetailStyle>
       <h3>{title}</h3>
-      <div className="line"></div>
+      <div className="line" style={{ width: 15 * (index + 1) + "%" }}></div>
       <p>{description}</p>
     </DetailStyle>
   );
@@ -84,25 +84,30 @@ const Container = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   h2 {
+    width: 80%;
     color: #cfcfcf;
     padding-top: 5vh;
     margin: auto;
-    font-weight: 600;
+    font-size: 5rem;
+    font-weight: 300;
   }
   .link-container {
+    width: 80%;
     display: flex;
     margin: 1rem 0;
 
     .live-link {
       text-decoration: none;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       color: #ccc;
-      border-bottom: 1px solid #ccc;
-      padding: 0.1rem 0.4rem;
+      padding: 0 0.4rem;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       margin-left: 10px;
+      border-bottom: 1px solid #4769ff;
+
       &:hover {
         color: #4769ff;
         border-bottom: 1px solid #4769ff;
@@ -161,25 +166,28 @@ const Details = styled.div`
 `;
 
 const DetailStyle = styled.div`
-  width: 80%;
+  width: 90%;
   border-radius: 10px;
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #4769ff;
+  border: 1px solid #4769ff;
   margin-bottom: 2.5rem;
   h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 300;
   }
   .line {
-    width: 50%;
     background: #4769ff;
-    height: 0.3rem;
-    margin: 1rem 0;
+    height: 1px;
+    margin: 0.5rem;
   }
   p {
     padding: 1rem 0 0;
+    font-weight: 200;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    margin: 0 2rem;
   }
   @media (max-width: 1200px) {
     flex: 1;
