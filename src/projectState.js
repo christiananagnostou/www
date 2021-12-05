@@ -1,8 +1,9 @@
 //Import Images
 
-import liftclubMain from "./img/projects/liftclub-main.jpg";
-import liftclubMobile1 from "./img/projects/liftclub-mobile1.jpg";
-import liftclubMobile2 from "./img/projects/liftclub-mobile2.jpg";
+import liftclubMain from "./img/projects/liftclub-main.jpeg";
+import liftclubWorkoutLog2 from "./img/projects/workout-log-2.png";
+import liftclubUserProfile from "./img/projects/user-profile.png";
+import liftclubPurpose from "./img/projects/liftclub-purpose.png";
 
 import wildchristianDesktop1 from "./img/projects/awildchristian-desktop1.jpg";
 import wildchristianDesktop2 from "./img/projects/awildchristian-desktop2.jpg";
@@ -25,8 +26,8 @@ import neologosMobile2 from "./img/projects/neologos-mobile2.jpg";
 export const projectState = [
   {
     title: "Lift Club",
-    desktopImgs: [liftclubMain],
-    mobileImgs: [liftclubMobile1, liftclubMobile2],
+    desktopImgs: [liftclubMain, liftclubPurpose],
+    mobileImgs: [liftclubUserProfile, liftclubWorkoutLog2],
     externalLink: "https://liftclub.app/",
     github: "https://github.com/ChristianAnagnostou/liftclub",
     url: "/work/liftclub",
@@ -39,12 +40,17 @@ export const projectState = [
       {
         title: "How to join",
         description:
-          "Built to be used as a lightweght PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club anytime, anywhere",
+          "Best experienced as a lightweght PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.",
       },
       {
         title: "Features",
         description:
-          "Build workouts from an extensive list of exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine.",
+          "Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.",
+      },
+      {
+        title: "Documented",
+        description:
+          "Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.",
       },
     ],
   },
