@@ -11,6 +11,7 @@ import wildchristianDesktop3 from "./img/projects/awildchristian-desktop3.jpg";
 import wildchristianMobile1 from "./img/projects/awildchristian-mobile1.jpg";
 import wildchristianMobile2 from "./img/projects/awildchristian-mobile2.jpg";
 
+import neologosMain from "./img/projects/neologos-main.jpeg";
 import neologosDesktop1 from "./img/projects/neologos-desktop1.jpg";
 import neologosDesktop2 from "./img/projects/neologos-desktop2.jpg";
 import neologosDesktop3 from "./img/projects/neologos-desktop3.jpg";
@@ -81,7 +82,7 @@ export const projectState = [
   },
   {
     title: "NeoLogos",
-    desktopImgs: [neologosDesktop1, neologosDesktop2, neologosDesktop3],
+    desktopImgs: [neologosMain, neologosDesktop1, neologosDesktop2, neologosDesktop3],
     mobileImgs: [neologosMobile1, neologosMobile2],
     externalLink: "https://neologos.herokuapp.com/",
     github: "https://github.com/ChristianAnagnostou/NeoLogos",
