@@ -49,8 +49,7 @@ function JourneySection() {
           Fast forward a couple of years to the end of college, I found myself working on buffing up
           the website for a winery I had been working at and it reminded me of my programming days.
           That experience motivated me to put every ounce of effort into honing my coding skills.
-          Here I am, doing what I love...building on the web. Best part is, the journey has only
-          just begun.
+          Here I am, doing what I love...building on the web.
         </p>
       </Bio>
     </StyledSection>

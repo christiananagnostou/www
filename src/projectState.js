@@ -4,7 +4,11 @@ import liftclubMain from "./img/projects/liftclub-main.jpeg";
 import liftclubWorkoutLog2 from "./img/projects/workout-log-2.png";
 import liftclubUserProfile from "./img/projects/user-profile.png";
 import liftclubPurpose from "./img/projects/liftclub-purpose.png";
+// import liftclubOldTeam1 from "./img/projects/liftclub-mobile1.jpg";
+// import liftclubOldTeam2 from "./img/projects/liftclub-mobile2.jpg";
+// import liftclubMainOld from "./img/projects/liftclub-main.jpg";
 
+import wildchristianMain from "./img/projects/awildchristian-main.jpeg";
 import wildchristianDesktop1 from "./img/projects/awildchristian-desktop1.jpg";
 import wildchristianDesktop2 from "./img/projects/awildchristian-desktop2.jpg";
 import wildchristianDesktop3 from "./img/projects/awildchristian-desktop3.jpg";
@@ -18,8 +22,9 @@ import neologosDesktop3 from "./img/projects/neologos-desktop3.jpg";
 import neologosMobile1 from "./img/projects/neologos-mobile1.jpg";
 import neologosMobile2 from "./img/projects/neologos-mobile2.jpg";
 
-// import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
-// import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
+import lofiMain from "./img/projects/lofiwaves-main.jpeg";
+import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
+import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
 
 // import vibetribeMobile from "./img/projects/vibetribe-mobile.jpg";
 // import vibetribeDesktop from "./img/projects/vibetribe-desktop.jpg";
@@ -57,7 +62,12 @@ export const projectState = [
   },
   {
     title: "Photo e-commerce",
-    desktopImgs: [wildchristianDesktop1, wildchristianDesktop2, wildchristianDesktop3],
+    desktopImgs: [
+      wildchristianMain,
+      wildchristianDesktop1,
+      wildchristianDesktop2,
+      wildchristianDesktop3,
+    ],
     mobileImgs: [wildchristianMobile1, wildchristianMobile2],
     externalLink: "https://awildchristian.com/",
     github: "https://github.com/ChristianAnagnostou/anagnostou-photography-frontend",
@@ -105,6 +115,31 @@ export const projectState = [
       },
     ],
   },
+  {
+    title: "Music Player",
+    desktopImgs: [lofiMain, lofiDesktop],
+    mobileImgs: [lofiMobile],
+    externalLink: "http://lofiwaves.surge.sh/",
+    github: "https://github.com/ChristianAnagnostou/LofiWaves",
+    url: "/work/lofiwaves",
+    details: [
+      {
+        title: "Front-end",
+        description:
+          "This project was written entirely in React using tools such as: React Router and SCSS.",
+      },
+      {
+        title: "Lofi library",
+        description:
+          "The library consists of lofi beats that I like to listen to while I code. Sit up, zone-in, and code away!",
+      },
+      {
+        title: "Custom controls",
+        description:
+          "The app features autoplay and easy-to-use controls for the music player as well as a fully optimized mobile site.",
+      },
+    ],
+  },
   // {
   //   title: "Spotify Playlist Creator",
   //   desktopImgs: [vibetribeDesktop],
@@ -125,31 +160,6 @@ export const projectState = [
   //     {
   //       title: "Documentation",
   //       description: "Fully documented git repository with a complete step-by-step build process",
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: "Music Player",
-  //   desktopImgs: [lofiDesktop],
-  //   mobileImgs: [lofiMobile],
-  //   externalLink: "http://lofiwaves.surge.sh/",
-  //   github: "https://github.com/ChristianAnagnostou/LofiWaves",
-  //   url: "/work/lofiwaves",
-  //   details: [
-  //     {
-  //       title: "Front-end",
-  //       description:
-  //         "This project was written entirely in React using tools such as: React Router and SCSS.",
-  //     },
-  //     {
-  //       title: "Lofi library",
-  //       description:
-  //         "The library consists of lofi beats that I like to listen to while I code. Sit up, zone-in, and code away!",
-  //     },
-  //     {
-  //       title: "Custom controls",
-  //       description:
-  //         "The app features autoplay and easy-to-use controls for the music player as well as a fully optimized mobile site.",
   //     },
   //   ],
   // },
