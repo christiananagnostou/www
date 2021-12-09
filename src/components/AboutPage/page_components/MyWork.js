@@ -22,7 +22,7 @@ function MyWork() {
         initial="hidden"
         className="title"
       >
-        My Creations
+        My Work
       </motion.h2>
 
       {projectState.map((project) => (
@@ -42,10 +42,11 @@ const Work = styled(motion.div)`
 
   .title {
     text-align: center;
-    padding-top: 2rem;
-    margin: 0rem 0 2rem;
-    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    font-size: 3rem;
     color: #ccc;
+    font-weight: 200;
   }
   @media (max-width: 1500px) {
     padding: 0rem;
