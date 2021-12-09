@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import profileImg from "../../../img/profile-img.jpg";
+import profileImg from "../../../img/profile-img.jpeg";
 // Framer Motion
 import { motion } from "framer-motion";
 import { fade } from "../../../animation";
