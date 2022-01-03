@@ -167,7 +167,7 @@ const Title = styled(motion.div)`
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #6da5ea;
+  border: 2px solid #4769ff;
 
   h2,
   p {
@@ -196,7 +196,7 @@ const FormGroup = styled.div`
   .form-input {
     background: rgba(20, 20, 20, 0.5);
     box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-    border: 2px solid #6da5ea;
+    border: 2px solid #4769ff;
 
     border-radius: 5px;
     padding: 0.5rem;
@@ -206,7 +206,7 @@ const FormGroup = styled.div`
     letter-spacing: 0.5px;
 
     &:focus {
-      outline-color: #6da5ea;
+      outline-color: #4769ff;
       outline-style: solid;
       outline-width: medium;
       outline-offset: -5px;
@@ -220,7 +220,7 @@ const FormGroup = styled.div`
   .form-btn {
     padding: 0.7rem;
     color: white;
-    background: #6da5ea;
+    background: #4769ff;
     border-radius: 10px;
     border: none;
     margin-top: 1rem;

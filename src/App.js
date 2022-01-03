@@ -4,7 +4,7 @@ import GlobalStyle from "./components/GlobalStyle";
 // Components
 import Nav from "./components/Nav";
 // Pages
-import HomePage from "./components/AboutPage/HomePage";
+import AboutMe from "./components/AboutPage/AboutPage";
 import ContactUs from "./components/ContactPage/ContactUs";
 import ProjectDetails from "./components/ProjectPage/ProjectDetails";
 // Router
@@ -24,7 +24,7 @@ function App() {
       <AnimatePresence exitBeforeEnter>
         <Switch location={location} key={location.pathname}>
           <Route path="/" exact>
-            <HomePage />
+            <AboutMe />
           </Route>
 
           <Route path="/work/:id">

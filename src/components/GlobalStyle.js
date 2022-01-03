@@ -26,24 +26,38 @@ const GlobalStyle = createGlobalStyle`
     }
   }
   body{
-    background: #ffffff;
-    font-family:  sans-serif;
-    color: #1b1b1b;
+    background: #1b1b1b;
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    letter-spacing: 0.02em;
   }
-
-  .max-width{
-    max-width: 1200px;
-  } 
-
+  h2{
+    font-weight: lighter;
+    font-size: 2.5rem;
+  }
+  h3{
+    color: white;
+  }
+  h4{
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  p{
+    padding: 3rem 0;
+    color: #ccc;
+    font-size: 1.4rem;
+    line-height: 150%;
+  }
+  span{
+    font-weight: bold;
+  }
   a{
     font-family: inherit;
-    color: #6DA5EA;
-    text-decoration: none;
-    
-    &:hover{ 
-      text-decoration: underline dashed #6DA5EA;
+    color: inherit;
+    text-decoration: underline dashed #4769FF;
+
+    &:hover,
+    &:active {
+      color: #4769FF;
     }
   }
 `;
