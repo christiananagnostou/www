@@ -106,11 +106,11 @@ const Container = styled(motion.div)`
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       margin-left: 10px;
-      border-bottom: 1px solid #4769ff;
+      border-bottom: 1px solid #6da5ea;
 
       &:hover {
-        color: #4769ff;
-        border-bottom: 1px solid #4769ff;
+        color: #6da5ea;
+        border-bottom: 1px solid #6da5ea;
       }
     }
   }
@@ -171,14 +171,14 @@ const DetailStyle = styled.div`
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 1px solid #4769ff;
+  border: 1px solid #6da5ea;
   margin-bottom: 2.5rem;
   h3 {
     font-size: 1.5rem;
     font-weight: 300;
   }
   .line {
-    background: #4769ff;
+    background: #6da5ea;
     height: 1px;
     margin: 0.5rem;
   }

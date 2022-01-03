@@ -51,7 +51,7 @@ const SocialLinkList = styled(motion.ul)`
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #4769ff;
+  border: 2px solid #6da5ea;
   li {
     margin: 0 1rem;
 
