@@ -84,7 +84,7 @@ const ToolsTile = styled(motion.div)`
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #6da5ea;
+  border: 2px solid #4769ff;
   margin-right: 5rem;
 
   h2 {
@@ -127,7 +127,7 @@ const Bio = styled(motion.div)`
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #6da5ea;
+  border: 2px solid #4769ff;
   margin: auto;
   flex: 1.5;
   text-align: left;
