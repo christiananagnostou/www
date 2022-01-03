@@ -49,7 +49,7 @@ const Project = styled(motion.div)`
     padding: 1rem 2rem;
     background: rgba(20, 20, 20, 0.5);
     box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-    border: 2px solid #4769ff;
+    border: 2px solid #6da5ea;
     margin-bottom: 3rem;
     h2 {
       display: inline-block;
@@ -67,8 +67,8 @@ const Project = styled(motion.div)`
         transition: all 0.2s ease-in-out;
         margin-left: 10px;
         &:hover {
-          color: #4769ff;
-          border-bottom: 1px solid #4769ff;
+          color: #6da5ea;
+          border-bottom: 1px solid #6da5ea;
         }
       }
     }
