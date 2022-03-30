@@ -33,7 +33,6 @@ function Nav() {
     };
 
     window.addEventListener("scroll", onScroll);
-
     return () => window.removeEventListener("scroll", onScroll);
   }, [hidden]);
 
