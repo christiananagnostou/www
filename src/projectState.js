@@ -61,7 +61,7 @@ export const projectState = [
     ],
   },
   {
-    title: "Photo e-commerce",
+    title: "Photo Shop",
     desktopImgs: [
       wildchristianMain,
       wildchristianDesktop1,

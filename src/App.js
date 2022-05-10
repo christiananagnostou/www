@@ -4,7 +4,7 @@ import GlobalStyle from "./components/GlobalStyle";
 // Components
 import Nav from "./components/Nav";
 // Pages
-import AboutMe from "./components/AboutPage/AboutPage";
+import AboutMe from "./components/HomePage/AboutPage";
 import ContactUs from "./components/ContactPage/ContactUs";
 import ProjectDetails from "./components/ProjectPage/ProjectDetails";
 // Router

@@ -35,7 +35,6 @@ function MyWork() {
 }
 
 const Work = styled(motion.div)`
-  min-height: 100vh;
   overflow: hidden;
   padding: 5rem 8rem;
   color: white;

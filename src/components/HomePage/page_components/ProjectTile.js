@@ -77,7 +77,6 @@ const Project = styled(motion.div)`
     display: block;
     width: 100%;
     border-radius: 10px;
-    height: 70vh;
     object-fit: cover;
     object-position: center;
     transition: filter 0.3s ease-out;
@@ -87,9 +86,6 @@ const Project = styled(motion.div)`
     padding-bottom: 5rem;
     h2 {
       font-size: 1.5rem;
-    }
-    img {
-      height: 50vh;
     }
   }
   @media (max-width: 500px) {
@@ -101,9 +97,6 @@ const Project = styled(motion.div)`
 
     h2 {
       font-size: 1.3rem;
-    }
-    img {
-      height: 35vh;
     }
   }
 `;

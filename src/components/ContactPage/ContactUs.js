@@ -5,7 +5,7 @@ import emailjs from "emailjs-com";
 import { motion } from "framer-motion";
 import { fade, pageAnimation, titleAnim } from "../../animation";
 import styled from "styled-components";
-import SocialLinks from "../AboutPage/page_components/SocialLinks";
+import SocialLinks from "../HomePage/page_components/SocialLinks";
 
 function ContactUs() {
   const initialFormState = {

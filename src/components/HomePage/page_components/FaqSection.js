@@ -48,7 +48,7 @@ function FaqSection() {
             </p>
           </div>
         </Toggle>
-        <Toggle title="What's next on the list to learn?">
+        {/* <Toggle title="What's next on the list to learn?">
           <div className="answer">
             <p>
               <span>Blockchain</span> and <span>Solidity</span>.
@@ -60,7 +60,7 @@ function FaqSection() {
               through a class on programming in Solidity and Web3.js.
             </p>
           </div>
-        </Toggle>
+        </Toggle> */}
         <Toggle title="What helped you on your journey to become self-taught?">
           <div className="answer">
             <p>

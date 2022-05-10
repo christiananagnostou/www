@@ -27,7 +27,7 @@ function JourneySection() {
         </h2>
         <Icons>
           {icons.map((icon, i) => (
-            <Icon ley={i}>
+            <Icon key={i}>
               <div className="icon">
                 <img src={icon} alt="icon" />
               </div>

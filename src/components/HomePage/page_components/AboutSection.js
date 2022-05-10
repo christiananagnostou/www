@@ -20,12 +20,10 @@ function AboutSection() {
             <p>📍 Location</p>
             <code>Bay Area</code>
           </div>
-
-          <div className="bullet">
+          {/* <div className="bullet">
             <p>👨‍💻 Available</p>
             <code>Yes</code>
-          </div>
-
+          </div> */}
           <div className="bullet">
             <p>🚧 Building</p>
             <code>
@@ -42,7 +40,7 @@ function AboutSection() {
 
         <motion.p variants={fade}>
           I love studying the invisible systems that shape our world. It started (and will forever
-          continue) with the web. 
+          continue) with the web.
         </motion.p>
 
         <motion.p variants={fade}>
@@ -69,7 +67,6 @@ function AboutSection() {
 export default AboutSection;
 
 const StyledSection = styled(motion.div)`
-  min-height: 90vh;
   display: flex;
   align-items: stretch;
   justify-content: space-between;

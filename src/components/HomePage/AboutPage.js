@@ -15,7 +15,7 @@ function AboutMe() {
     <motion.div variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <AboutSection />
       <MyWork />
-      <JourneySection />
+      {/* <JourneySection /> */}
       <FaqSection />
       <SocialLinks />
       <ScrollTop />
