@@ -45,7 +45,7 @@ const Project = styled(motion.div)`
 
   hr {
     border: 1px solid #4769ff;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   header {
@@ -56,7 +56,7 @@ const Project = styled(motion.div)`
     padding: 1rem 2rem;
     background: rgba(20, 20, 20, 0.5);
     box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     h2 {
       display: inline-block;
       min-width: max-content;
@@ -92,7 +92,7 @@ const Project = styled(motion.div)`
     padding-bottom: 5rem;
     header {
       h2 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
       }
     }
   }
@@ -103,7 +103,7 @@ const Project = styled(motion.div)`
       flex-direction: column;
 
       h2 {
-        font-size: 1.3rem;
+        margin-bottom: 1rem;
       }
     }
   }
