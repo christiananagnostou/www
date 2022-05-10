@@ -44,7 +44,7 @@ export const projectState = [
           "Lift club is a social fitness app that gives you the power to find well structured workouts and track your progress as you improve.",
       },
       {
-        title: "How to join",
+        title: "Join",
         description:
           "Best experienced as a lightweght PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.",
       },
@@ -54,7 +54,7 @@ export const projectState = [
           "Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.",
       },
       {
-        title: "Documented",
+        title: "Documantation",
         description:
           "Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.",
       },
