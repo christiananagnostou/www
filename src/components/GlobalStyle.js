@@ -54,6 +54,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: inherit;
     color: inherit;
     text-decoration: underline dashed #4769FF;
+    text-underline-offset: 3px;
 
     &:hover,
     &:active {

@@ -16,22 +16,29 @@ function AboutSection() {
         </Image>
 
         <div className="info">
-          <div className="bullet">
-            <p>📍 Location</p>
-            <code>Bay Area</code>
-          </div>
-          {/* <div className="bullet">
-            <p>👨‍💻 Available</p>
-            <code>Yes</code>
-          </div> */}
-          <div className="bullet">
-            <p>🚧 Building</p>
-            <code>
-              <a href="https://liftclub.app" target="_blank" rel="noreferrer">
-                Lift Club
-              </a>
-            </code>
-          </div>
+          <p>
+            <span>📍</span> Location
+          </p>
+          <code>SF Bay Area</code>
+
+          <p>
+            <span>👨‍💻</span> Works @
+          </p>
+          <code>
+            <a href="https://www.drinks.com/" target="_blank" rel="noreferrer">
+              DRINKS
+            </a>
+          </code>
+
+          <p>
+            <span>🚧</span> var currProj =
+          </p>
+
+          <code>
+            <a href="https://liftclub.app" target="_blank" rel="noreferrer">
+              Lift Club
+            </a>
+          </code>
         </div>
       </StyledInfo>
 
@@ -72,10 +79,6 @@ const StyledSection = styled(motion.div)`
   justify-content: space-between;
   padding: 5rem 10rem 10rem;
 
-  p {
-    padding: 0.5rem 2rem;
-  }
-
   @media (max-width: 1000px) {
     flex-direction: column;
     padding: 2rem 6rem;
@@ -95,67 +98,51 @@ const StyledInfo = styled(motion.aside)`
   background: rgba(20, 20, 20, 0.5);
   box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
   border: 2px solid #4769ff;
-  flex: 0.5;
+  flex: 0.3;
   display: flex;
   flex-direction: column;
 
   .info {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    flex: 1;
-    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 3rem auto 0;
 
-    .bullet {
+    p,
+    code {
+      padding: 0.1rem 0;
+      color: #ccc;
+      min-width: max-content;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
-      margin: 0.75rem 0;
-      width: 50%;
-
-      p,
-      code {
-        padding: 0.1rem 0;
-        color: #ccc;
-        min-width: max-content;
-        font-size: 1.1rem;
+    }
+    p {
+      color: #adadad;
+      span {
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
       }
-
-      p {
-        color: #adadad;
-      }
-      code {
-        flex: 1;
-        color: #cbcbcb;
-        margin-left: 1rem;
-      }
+    }
+    code {
+      color: #cbcbcb;
+      margin-left: 1rem;
     }
   }
 
   @media (max-width: 1000px) {
     padding: 1rem;
-    flex: 0;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: start;
     align-items: center;
 
     .info {
       max-width: 250px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin: 0.25rem 0;
-      justify-content: flex-start;
-      align-items: stretch;
+      margin: 0.25rem 0 0.25rem 3rem;
 
-      .bullet {
-        flex: 1;
-        flex-direction: row;
-
-        p,
-        code {
-          font-size: 1.1rem;
-        }
+      p,
+      code {
+        font-size: 1.1rem;
       }
     }
   }
@@ -163,32 +150,27 @@ const StyledInfo = styled(motion.aside)`
 
 const Image = styled.div`
   overflow: hidden;
-  margin: auto;
-  z-index: 2;
-  width: 26vh;
-  height: 26vh;
-  border-radius: 50%;
-  border: 2px solid #4769ff;
 
   img {
+    margin: auto;
+    border-radius: 50%;
+    border: 2px solid #4769ff;
+    display: block;
     border-radius: 50%;
     width: 100%;
     height: 100%;
+    max-width: 200px;
+    max-height: 200px;
     object-fit: cover;
-  }
-  @media (max-width: 1200px) {
-    width: 22vh;
-    height: 22vh;
-  }
-  @media (max-width: 800px) {
-    width: 15vh;
-    height: 15vh;
-  }
-  @media (max-width: 500px) {
-    width: 12vh;
-    height: 12vh;
-    min-width: 12vh;
-    min-height: 12vh;
+
+    @media (max-width: 1200px) {
+      max-width: 150px;
+      max-height: 150px;
+    }
+    @media (max-width: 800px) {
+      max-width: 100px;
+      max-height: 100px;
+    }
   }
 `;
 
@@ -211,20 +193,16 @@ const Description = styled(motion.div)`
   h3 {
     font-weight: 400;
     font-size: 1.75rem;
-    margin-left: 2rem;
   }
 
   p {
     font-weight: 200;
     font-size: 1.2rem;
     line-height: 2rem;
+    padding: 0.5rem 0;
   }
 
   @media (max-width: 1000px) {
     margin: 2rem 0;
-
-    h3 {
-      margin-left: 1rem;
-    }
   }
 `;
