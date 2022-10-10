@@ -116,12 +116,11 @@ const Image = styled.div`
     margin: auto;
     border-radius: 50%;
     display: block;
-    width: 100%;
-    height: 100%;
     max-width: 100%;
     max-height: 100%;
     object-fit: cover;
     height: 30px;
+    width: 30px;
   }
 `;
 
