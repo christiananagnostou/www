@@ -1,8 +1,7 @@
 import React from "react";
 // components
-import AboutSection from "./page_components/AboutSection";
-import MyWork from "./page_components/MyWork";
-import JourneySection from "./page_components/JourneySection";
+import Bio from "./page_components/Bio";
+import ProjectList from "./page_components/ProjectList";
 import FaqSection from "./page_components/FaqSection";
 import SocialLinks from "./page_components/SocialLinks";
 import ScrollTop from "../ScrollTop";
@@ -13,9 +12,8 @@ import { pageAnimation } from "../../animation";
 function AboutMe() {
   return (
     <motion.div variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <AboutSection />
-      <MyWork />
-      {/* <JourneySection /> */}
+      <Bio />
+      <ProjectList />
       <FaqSection />
       <SocialLinks />
       <ScrollTop />

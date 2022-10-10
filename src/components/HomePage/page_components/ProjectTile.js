@@ -13,7 +13,10 @@ export default function ProjectTile({ project }) {
   return (
     <Project ref={element} variants={fade} animate={controls} initial="hidden">
       <motion.header variants={lineAnim}>
-        <h2>{project.title}</h2>
+        <Link to={project.url}>
+          {" "}
+          <h3>{project.title}</h3>
+        </Link>
 
         <div className="links">
           <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
@@ -22,11 +25,8 @@ export default function ProjectTile({ project }) {
           <motion.a href={project.github} target="_blank" rel="noreferrer">
             GitHub
           </motion.a>
-          <Link to={project.url}>Details</Link>
         </div>
       </motion.header>
-
-      <motion.hr variants={lineAnim} />
 
       <Link to={project.url}>
         <Hide>
@@ -39,42 +39,46 @@ export default function ProjectTile({ project }) {
 
 const Project = styled(motion.div)`
   position: relative;
-  padding-bottom: 10rem;
-  width: 70%;
-  margin: auto;
+  margin-bottom: 8rem;
 
-  hr {
-    border: 1px solid #4769ff;
-    margin-bottom: 1rem;
+  @media screen and (min-width: 768px) {
+    margin-bottom: 10rem;
   }
 
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 10px;
-    padding: 1rem 2rem;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
     background: rgba(20, 20, 20, 0.5);
-    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
     margin-bottom: 1rem;
-    h2 {
+
+    h3 {
       display: inline-block;
       min-width: max-content;
-      font-size: 2rem;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--heading);
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        color: white;
+      }
     }
     .links {
       a {
         text-decoration: none;
-        font-size: 1.2rem;
-        color: #ccc;
-        border-bottom: 1px solid #ccc;
+        font-size: 1rem;
+        color: var(--text);
+        border-bottom: 1px solid var(--accent);
         padding: 0.1rem 0.4rem;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
         margin-left: 10px;
         &:hover {
-          color: #4769ff;
-          border-bottom: 1px solid #4769ff;
+          color: var(--heading);
+          border-bottom: 1px solid var(--accent);
         }
       }
     }
@@ -82,30 +86,9 @@ const Project = styled(motion.div)`
   img {
     display: block;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     object-fit: cover;
     object-position: center;
-    transition: filter 0.3s ease-out;
-  }
-  @media (max-width: 1000px) {
-    width: 95%;
-    padding-bottom: 5rem;
-    header {
-      h2 {
-        font-size: 1.6rem;
-      }
-    }
-  }
-  @media (max-width: 500px) {
-    width: 90%;
-
-    header {
-      flex-direction: column;
-
-      h2 {
-        margin-bottom: 1rem;
-      }
-    }
   }
 `;
 
@@ -113,11 +96,8 @@ const Hide = styled.div`
   overflow: hidden;
   border-radius: 10px;
   transition: all 0.5s ease;
+
   &:hover {
-    transform: scale(1.01);
-    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-    img {
-      filter: grayscale(0%);
-    }
+    box-shadow: 0 5px 20px 10px rgba(20, 20, 20, 0.9);
   }
 `;

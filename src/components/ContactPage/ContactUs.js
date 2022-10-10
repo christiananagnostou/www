@@ -63,10 +63,7 @@ function ContactUs() {
     <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <Title variants={fade}>
         <Hide>
-          <motion.h2>lets get in touch!</motion.h2>
-          <motion.p>
-            I like to create things with fun, open-minded peoples, so feel free to drop me line
-          </motion.p>
+          <motion.h3>Let's get in touch!</motion.h3>
         </Hide>
       </Title>
       {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
@@ -76,7 +73,7 @@ function ContactUs() {
           <motion.div variants={titleAnim}>
             <FormGroup>
               <label htmlFor="name">
-                YOUR NAME <span>(required)</span>
+                YOUR NAME <span>*</span>
               </label>
               <input
                 type="text"
@@ -92,7 +89,7 @@ function ContactUs() {
           <motion.div variants={titleAnim}>
             <FormGroup>
               <label htmlFor="inputEmail">
-                EMAIL ADDRESS <span>(required)</span>
+                EMAIL ADDRESS <span>*</span>
               </label>
               <input
                 type="email"
@@ -158,24 +155,22 @@ const ContactStyle = styled(motion.div)`
 `;
 
 const Title = styled(motion.div)`
-  max-width: 450px;
   flex: 1;
   text-align: center;
   margin: 1rem;
-  color: #ccc;
-  border-radius: 10px;
+  color: var(--heading);
+  border-radius: 5px;
   padding: 1rem 2rem;
   background: rgba(20, 20, 20, 0.5);
-  box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-  border: 2px solid #4769ff;
+  border: 1px solid var(--accent);
 
-  h2,
   p {
     margin: 0;
     padding: 0.5rem 0;
   }
-  h2 {
-    font-size: 2rem;
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 300;
   }
 `;
 
@@ -186,27 +181,28 @@ const StyledForm = styled.form`
 const FormGroup = styled.div`
   margin: auto;
   width: 100%;
-  max-width: 450px;
+  max-width: var(--max-w-screen);
   display: flex;
   flex-direction: column;
+
   label {
-    color: #ccc;
+    color: var(--text);
     margin: 1rem 0 0.2rem;
   }
   .form-input {
     background: rgba(20, 20, 20, 0.5);
-    box-shadow: 15px 15px 0 rgba(20, 20, 20, 0.9);
-    border: 2px solid #4769ff;
+    border: 1px solid var(--accent);
 
     border-radius: 5px;
     padding: 0.5rem;
-    font-size: 1.25rem;
-    color: white;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--heading);
     font-family: inherit;
     letter-spacing: 0.5px;
 
     &:focus {
-      outline-color: #4769ff;
+      outline-color: var(--accent);
       outline-style: solid;
       outline-width: medium;
       outline-offset: -5px;
@@ -218,12 +214,13 @@ const FormGroup = styled.div`
     border-radius: 5px;
   }
   .form-btn {
-    padding: 0.7rem;
-    color: white;
-    background: #4769ff;
-    border-radius: 10px;
+    padding: 1rem;
+    color: var(--heading);
+    background: var(--accent);
+    border-radius: 5px;
     border: none;
     margin-top: 1rem;
+    margin-bottom: 3rem;
     cursor: pointer;
   }
   @media (max-width: 1300px) {

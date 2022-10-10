@@ -1,12 +1,25 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
+  :root {
+    --accent: #343b45;
+    --text: #aeaeae;
+    --heading: #cecece;
+    --max-w-screen: 800px;
+  }
+
+  .max-w-screen {
+    width: 100%;
+    max-width: var(--max-w-screen);
+  }
+
   *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     scrollbar-width: thin;
     scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+    
     &::-webkit-scrollbar {
       width: 5px;
     }
@@ -21,8 +34,10 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html{
+    overflow-x: hidden;
+    overflow-y: scroll;
     @media (max-width: 1200px){
-      font-size: 80%;
+      font-size: 95%;
     }
   }
   body{
@@ -35,7 +50,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: 2.5rem;
   }
   h3{
-    color: white;
+    color: var(--heading);
   }
   h4{
     font-weight: bold;
@@ -43,7 +58,7 @@ const GlobalStyle = createGlobalStyle`
   }
   p{
     padding: 3rem 0;
-    color: #ccc;
+    color: var(--text);
     font-size: 1.4rem;
     line-height: 150%;
   }
@@ -53,12 +68,12 @@ const GlobalStyle = createGlobalStyle`
   a{
     font-family: inherit;
     color: inherit;
-    text-decoration: underline dashed #4769FF;
+    text-decoration: underline dashed var(--accent);
     text-underline-offset: 3px;
 
     &:hover,
     &:active {
-      color: #4769FF;
+      color: var(--accent);
     }
   }
 `;

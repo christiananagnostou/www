@@ -13,9 +13,6 @@ function FaqSection() {
 
   return (
     <Faq variants={fade} animate={controls} initial="hidden" ref={element}>
-      <h2>
-        <span>Extras</span>
-      </h2>
       <AnimateSharedLayout>
         {/* <Toggle title="Why teach yourself?">
           <div className="answer">
@@ -86,43 +83,38 @@ function FaqSection() {
 const Faq = styled(motion.section)`
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 10rem;
+  padding: 2rem 1rem;
   display: block;
-  color: #fff;
+  max-width: var(--max-w-screen);
+  margin: auto;
 
   p {
     padding: 1rem;
   }
 
-  @media (max-width: 1000px) {
-    flex-direction: column;
-    padding: 2rem;
-    text-align: center;
-  }
-
-  h2 {
-    padding-bottom: 2rem;
-    font-weight: lighter;
-  }
   .faq-line {
-    background: #ccc;
-    height: 0.2rem;
+    background: var(--accent);
+    height: 1px;
     margin: 2rem 0;
     width: 100%;
   }
   .question {
-    padding: 1rem 0;
     cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--heading);
+    font-weight: 400;
   }
   .answer {
-    padding: 2rem 0;
+    color: var(--text);
+    padding: 2rem 0 0;
     p {
       padding: 1rem 0;
+      font-size: 1rem;
     }
   }
 
   a {
-    color: white;
+    color: var(--heading);
     font-family: inherit;
     font-size: inherit;
   }

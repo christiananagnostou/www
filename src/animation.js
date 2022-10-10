@@ -45,7 +45,7 @@ export const fade = {
 };
 
 export const photoAnim = {
-  hidden: { scale: 1.25, opacity: 0 },
+  hidden: { scale: 1.1, opacity: 0 },
   show: {
     scale: 1,
     opacity: 1,
@@ -57,7 +57,7 @@ export const photoAnim = {
 };
 
 export const lineAnim = {
-  hidden: { width: "80%" },
+  hidden: { width: "90%" },
   show: {
     width: "100%",
     transition: {

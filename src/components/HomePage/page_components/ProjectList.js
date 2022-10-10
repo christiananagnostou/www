@@ -8,22 +8,11 @@ import ProjectTile from "./ProjectTile";
 import { motion } from "framer-motion";
 import { fade } from "../../../animation";
 import ScrollTop from "../../ScrollTop";
-// Hooks
-import { useScroll } from "../../useScroll";
 
-function MyWork() {
-  const [element, controls] = useScroll();
+function ProjectList() {
   return (
-    <Work id="work">
-      <motion.h2
-        ref={element}
-        variants={fade}
-        animate={controls}
-        initial="hidden"
-        className="title"
-      >
-        My Work
-      </motion.h2>
+    <Work id="work" variants={fade}>
+      <motion.h2 className="title">My Work</motion.h2>
 
       {projectState.map((project) => (
         <ProjectTile project={project} key={project.title} />
@@ -36,20 +25,20 @@ function MyWork() {
 
 const Work = styled(motion.div)`
   overflow: hidden;
-  padding: 5rem 8rem;
-  color: white;
+  padding: 5rem 1rem;
+  color: var(--text);
+  max-width: var(--max-w-screen);
+  margin: auto;
 
   .title {
     text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 3rem;
-    font-size: 3rem;
-    color: #ccc;
+    margin-bottom: 2rem;
+    font-size: 1.4rem;
+    color: var(--text);
     font-weight: 200;
-  }
-  @media (max-width: 1500px) {
-    padding: 0rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--accent);
   }
 `;
 
-export default MyWork;
+export default ProjectList;

@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
+import profileImg from "../img/A.webp";
+
 function Nav() {
   const { pathname } = useLocation();
 
@@ -38,92 +40,96 @@ function Nav() {
 
   return (
     <StyledNav style={hidden ? { top: "-10vh" } : { top: 0 }}>
-      <h1>
+      <div className="max-w-screen">
         <Link id="logo" to="/">
-          CA
+          <Image>
+            <img src={profileImg} alt="home profile" />
+          </Image>
         </Link>
-      </h1>
-      <ul>
-        <li>
-          <Link to="/">About Me</Link>
-          <Line
-            transition={{ duration: 0.3 }}
-            initial={{ width: "0%" }}
-            animate={{ width: pathname === "/" ? "63%" : "0%" }}
-          />
-        </li>
-        <li>
-          <Link to="/contact">Contact Me</Link>
-          <Line
-            transition={{ duration: 0.3 }}
-            initial={{ width: "0%" }}
-            animate={{ width: pathname === "/contact" ? "60%" : "0%" }}
-          />
-        </li>
-      </ul>
+        <ul>
+          <li>
+            <Link to="/">About</Link>
+            <Line
+              transition={{ duration: 0.3 }}
+              initial={{ width: "0%" }}
+              animate={{ width: pathname === "/" ? "100%" : "0%" }}
+            />
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+            <Line
+              transition={{ duration: 0.3 }}
+              initial={{ width: "0%" }}
+              animate={{ width: pathname === "/contact" ? "100%" : "0%" }}
+            />
+          </li>
+        </ul>
+      </div>
     </StyledNav>
   );
 }
 export default Nav;
 
 const StyledNav = styled.nav`
-  height: 10vh;
+  height: 50px;
+  padding: 0.2rem 1rem;
+  background: rgba(20, 20, 20, 0.6);
   display: flex;
-  margin: auto;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 8rem;
-  background: rgba(20, 20, 20, 0.9);
   position: sticky;
   z-index: 999;
   transition: all 0.5s ease;
-  a {
-    color: white;
-    text-decoration: none;
+
+  .max-w-screen {
+    display: flex;
+    margin: auto;
+    justify-content: space-between;
+    align-items: center;
   }
+
+  a {
+    color: var(--heading);
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: white;
+    }
+  }
+
   ul {
     display: flex;
     list-style: none;
     justify-content: flex-end;
   }
   li {
-    padding-left: 8rem;
+    margin-left: 1rem;
+    padding: 0.25rem 0.5rem;
     position: relative;
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
-  #logo {
-    font-size: 3rem;
-    font-family: "Lobster", cursive;
-    font-weight: lighter;
-  }
-  @media (max-width: 1300px) {
-    #logo {
-      text-align: center;
-      display: inline-block;
-      margin-top: 0.5rem;
-      font-size: 3rem;
-    }
-    ul {
-      width: 100%;
-    }
-    li {
-      padding: 0 0.5rem;
-    }
-  }
-  @media (max-width: 500px) {
-    padding: 1rem 4rem;
+`;
+
+const Image = styled.div`
+  img {
+    aspect-ratio: 1;
+    margin: auto;
+    border-radius: 50%;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    height: 30px;
   }
 `;
 
 const Line = styled(motion.div)`
-  height: 0.2rem;
-  background: #4769ff;
+  height: 1px;
+  background: var(--accent);
   width: 0%;
   position: absolute;
-  bottom: -50%;
-  left: 50%;
-  border-radius: 2px;
-  @media (max-width: 1300px) {
-    left: 20%;
-  }
+  bottom: -20%;
+  left: 2px;
 `;
