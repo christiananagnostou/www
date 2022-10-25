@@ -1,35 +1,63 @@
-//Import Images
+import electriqAppComposed from "./img/projects/electriq-app/dashboard-composed.webp";
+import electriqGanttChart from "./img/projects/electriq-app/gantt-chart.png";
+import electriqKanbanChart from "./img/projects/electriq-app/kanban-chart.webp";
+import electriqCalendar from "./img/projects/electriq-app/calendar.png";
 
-import liftclubMain from "./img/projects/liftclub-main.jpeg";
-import liftclubWorkoutLog2 from "./img/projects/workout-log-2.png";
-import liftclubUserProfile from "./img/projects/user-profile.png";
-import liftclubPurpose from "./img/projects/liftclub-purpose.png";
-// import liftclubOldTeam1 from "./img/projects/liftclub-mobile1.jpg";
-// import liftclubOldTeam2 from "./img/projects/liftclub-mobile2.jpg";
-// import liftclubMainOld from "./img/projects/liftclub-main.jpg";
+import electriqHomeComposed from "./img/projects/electriq-home/homepage-composed.webp";
+import electriqHomeMain from "./img/projects/electriq-home/hero-main.png";
 
-import wildchristianMain from "./img/projects/awildchristian-main.jpeg";
-import wildchristianDesktop1 from "./img/projects/awildchristian-desktop1.jpg";
-import wildchristianDesktop2 from "./img/projects/awildchristian-desktop2.jpg";
-import wildchristianDesktop3 from "./img/projects/awildchristian-desktop3.jpg";
-import wildchristianMobile1 from "./img/projects/awildchristian-mobile1.jpg";
-import wildchristianMobile2 from "./img/projects/awildchristian-mobile2.jpg";
+import liftclubMain from "./img/projects/liftclub/liftclub-main.jpeg";
+import liftclubWorkoutLog2 from "./img/projects/liftclub/workout-log-2.png";
+import liftclubUserProfile from "./img/projects/liftclub/user-profile.png";
+import liftclubPurpose from "./img/projects/liftclub/liftclub-purpose.png";
 
-import neologosMain from "./img/projects/neologos-main.jpeg";
-import neologosDesktop1 from "./img/projects/neologos-desktop1.jpg";
-import neologosDesktop2 from "./img/projects/neologos-desktop2.jpg";
-import neologosDesktop3 from "./img/projects/neologos-desktop3.jpg";
-import neologosMobile1 from "./img/projects/neologos-mobile1.jpg";
-import neologosMobile2 from "./img/projects/neologos-mobile2.jpg";
+import wildchristianMain from "./img/projects/awildchristian/main.jpeg";
+import wildchristianDesktop1 from "./img/projects/awildchristian/desktop1.jpg";
+import wildchristianDesktop2 from "./img/projects/awildchristian/desktop2.jpg";
+import wildchristianDesktop3 from "./img/projects/awildchristian/desktop3.jpg";
+import wildchristianMobile1 from "./img/projects/awildchristian/mobile1.jpg";
+import wildchristianMobile2 from "./img/projects/awildchristian/mobile2.jpg";
 
-import lofiMain from "./img/projects/lofiwaves-main.jpeg";
-import lofiMobile from "./img/projects/lofiwaves-mobile.jpg";
-import lofiDesktop from "./img/projects/lofiwaves-desktop.jpg";
+import neologosMain from "./img/projects/neologos/neologos-main.jpeg";
+import neologosDesktop1 from "./img/projects/neologos/neologos-desktop1.jpg";
+import neologosDesktop2 from "./img/projects/neologos/neologos-desktop2.jpg";
+import neologosDesktop3 from "./img/projects/neologos/neologos-desktop3.jpg";
+import neologosMobile1 from "./img/projects/neologos/neologos-mobile1.jpg";
+import neologosMobile2 from "./img/projects/neologos/neologos-mobile2.jpg";
 
-// import vibetribeMobile from "./img/projects/vibetribe-mobile.jpg";
-// import vibetribeDesktop from "./img/projects/vibetribe-desktop.jpg";
+import lofiMain from "./img/projects/lofiwaves/lofiwaves-main.jpeg";
+import lofiMobile from "./img/projects/lofiwaves/lofiwaves-mobile.jpg";
+import lofiDesktop from "./img/projects/lofiwaves/lofiwaves-desktop.jpg";
 
 export const projectState = [
+  {
+    title: "Electriq Dashboard",
+    desktopImgs: [electriqAppComposed, electriqGanttChart, electriqKanbanChart],
+    mobileImgs: [electriqCalendar],
+    externalLink: "https://electriq.app/",
+    url: "/work/electriq-app",
+    details: [
+      {
+        title: "Purpose",
+        description:
+          "React web application to give PM's and clients the ability to visualize the progress and make changes to the web department's projects.",
+      },
+    ],
+  },
+  {
+    title: "Electriq Website",
+    desktopImgs: [electriqHomeComposed, electriqHomeMain],
+    mobileImgs: [],
+    externalLink: "https://www.electriqmarketing.com/",
+    url: "/work/electriq-home",
+    details: [
+      {
+        title: "Purpose",
+        description:
+          "React web application to give PM's and clients the ability to visualize the progress and make changes to the web department's projects.",
+      },
+    ],
+  },
   {
     title: "Lift Club",
     desktopImgs: [liftclubMain, liftclubPurpose],

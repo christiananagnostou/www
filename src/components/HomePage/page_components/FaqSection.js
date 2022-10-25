@@ -1,18 +1,13 @@
 import React from "react";
-// Styles
 import styled from "styled-components";
-import Toggle from "./Toggle";
 import { AnimateSharedLayout } from "framer-motion";
-// Animation
-import { useScroll } from "../../useScroll";
-import { fade } from "../../../animation";
 import { motion } from "framer-motion";
+import Toggle from "./Toggle";
+import { fade } from "../../../animation";
 
 function FaqSection() {
-  const [element, controls] = useScroll();
-
   return (
-    <Faq variants={fade} animate={controls} initial="hidden" ref={element}>
+    <Faq variants={fade}>
       <AnimateSharedLayout>
         {/* <Toggle title="Why teach yourself?">
           <div className="answer">

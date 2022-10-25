@@ -3,7 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-import profileImg from "../img/A.webp";
+const Links = [
+  { href: "/", title: "About" },
+  { href: "/projects", title: "Projects" },
+  { href: "/contact", title: "Contact" },
+];
 
 function Nav() {
   const { pathname } = useLocation();
@@ -43,26 +47,20 @@ function Nav() {
       <div className="max-w-screen">
         <Link id="logo" to="/">
           <Image>
-            <img src={profileImg} alt="home profile" />
+            <img src={"/A.webp"} alt="home profile" />
           </Image>
         </Link>
         <ul>
-          <li>
-            <Link to="/">About</Link>
-            <Line
-              transition={{ duration: 0.3 }}
-              initial={{ width: "0%" }}
-              animate={{ width: pathname === "/" ? "100%" : "0%" }}
-            />
-          </li>
-          <li>
-            <Link to="/contact">Contact</Link>
-            <Line
-              transition={{ duration: 0.3 }}
-              initial={{ width: "0%" }}
-              animate={{ width: pathname === "/contact" ? "100%" : "0%" }}
-            />
-          </li>
+          {Links.map(({ href, title }) => (
+            <li key={title}>
+              <Link to={href}>{title}</Link>
+              <Line
+                transition={{ duration: 0.3 }}
+                initial={{ width: "0%" }}
+                animate={{ width: pathname === href ? "100%" : "0%" }}
+              />
+            </li>
+          ))}
         </ul>
       </div>
     </StyledNav>
@@ -89,7 +87,7 @@ const StyledNav = styled.nav`
 
   a {
     color: var(--heading);
-    text-decoration: none;
+    text-decoration: none !important;
     transition: color 0.3s ease;
 
     &:hover {
