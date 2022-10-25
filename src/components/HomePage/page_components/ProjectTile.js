@@ -11,20 +11,23 @@ export default function ProjectTile({ project }) {
   const [element, controls] = useScroll();
 
   return (
-    <Project ref={element} variants={fade} animate={controls} initial="hidden">
+    <Project variants={fade} ref={element} animate={controls} initial="hidden">
       <motion.header variants={lineAnim}>
         <Link to={project.url}>
-          {" "}
           <h3>{project.title}</h3>
         </Link>
 
         <div className="links">
-          <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
-            Live Site
-          </motion.a>
-          <motion.a href={project.github} target="_blank" rel="noreferrer">
-            GitHub
-          </motion.a>
+          {project.externalLink && (
+            <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
+              Live Site
+            </motion.a>
+          )}
+          {project.github && (
+            <motion.a href={project.github} target="_blank" rel="noreferrer">
+              GitHub
+            </motion.a>
+          )}
         </div>
       </motion.header>
 
@@ -39,10 +42,10 @@ export default function ProjectTile({ project }) {
 
 const Project = styled(motion.div)`
   position: relative;
-  margin-bottom: 8rem;
+  margin-bottom: 4rem;
 
   @media screen and (min-width: 768px) {
-    margin-bottom: 10rem;
+    margin-bottom: 6rem;
   }
 
   header {
@@ -50,8 +53,9 @@ const Project = styled(motion.div)`
     justify-content: space-between;
     align-items: center;
     border-radius: 5px;
-    padding: 0.5rem 1rem;
+    padding: 1rem 1rem;
     background: rgba(20, 20, 20, 0.5);
+    border: 1px solid var(--accent);
     margin-bottom: 1rem;
 
     h3 {
@@ -68,17 +72,15 @@ const Project = styled(motion.div)`
     }
     .links {
       a {
-        text-decoration: none;
+        display: inline-block;
         font-size: 1rem;
         color: var(--text);
-        border-bottom: 1px solid var(--accent);
         padding: 0.1rem 0.4rem;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
         margin-left: 10px;
         &:hover {
           color: var(--heading);
-          border-bottom: 1px solid var(--accent);
         }
       }
     }
@@ -86,7 +88,6 @@ const Project = styled(motion.div)`
   img {
     display: block;
     width: 100%;
-    border-radius: 5px;
     object-fit: cover;
     object-position: center;
   }
@@ -94,7 +95,7 @@ const Project = styled(motion.div)`
 
 const Hide = styled.div`
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: all 0.5s ease;
 
   &:hover {

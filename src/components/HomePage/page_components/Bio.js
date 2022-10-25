@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-// Framer Motion
 import { motion } from "framer-motion";
 import { fade } from "../../../animation";
 import Wave from "./Wave";
+import { Link } from "react-router-dom";
 
 function Bio() {
   return (
@@ -12,7 +12,8 @@ function Bio() {
         <h1>Christian Anagnostou</h1>
 
         <motion.p>
-          Crafting polished <em>interfaces</em> for the web
+          <em>Crafting polished interfaces</em>. Experimenting with subtle details to elevate the
+          web experience.
         </motion.p>
 
         <motion.p>
@@ -21,13 +22,16 @@ function Bio() {
         </motion.p>
 
         <motion.p>
-          I spend nearly as much time moving as I do sitting in front of my laptop. Biking, hiking,
-          weightlifting, and snowboarding fill those parts of my day.
+          Currently building websites and apps at{" "}
+          <Link to="https://www.electriqmarketing.com/" target={"_blank"}>
+            <em>Electriq</em>
+          </Link>
         </motion.p>
 
         <motion.p>
-          Other interests include winemaking, photography, and learning how to think and write
-          better.
+          I spend nearly as much time moving as I do sitting in front of my laptop. Cycling,
+          weightlifting, and snowboarding fill those parts of my day. I also dabble with winemaking,
+          photography, and learning how to think and write better.
         </motion.p>
       </Description>
 
@@ -37,7 +41,7 @@ function Bio() {
 }
 export default Bio;
 
-const StyledSection = styled(motion.div)`
+const StyledSection = styled(motion.section)`
   padding: 0 1rem;
   display: flex;
   justify-content: center;
@@ -51,7 +55,7 @@ const StyledSection = styled(motion.div)`
 const Description = styled(motion.div)`
   flex: 1;
   margin: auto;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 1rem;
   background: rgba(20, 20, 20, 0.5);
   border: 1px solid var(--accent);
@@ -62,6 +66,12 @@ const Description = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+
+  em {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
 
   h1 {
     font-size: 1.2rem;

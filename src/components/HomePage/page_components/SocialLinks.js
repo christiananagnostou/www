@@ -1,25 +1,16 @@
 import React from "react";
-// Icons
-import Instagram from "../../../img/Instagram";
-import Gitgub from "../../../img/GitHub";
-import LinkedIn from "../../../img/LinkedIn";
 // Animations
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { fade } from "../../../animation";
-import { useScroll } from "../../useScroll";
+// Icons
+import Instagram from "../../../img/Instagram";
+import Gitgub from "../../../img/GitHub";
+import LinkedIn from "../../../img/LinkedIn";
 
-function SocialLinks({ flexDirection = "row" }) {
-  const [element, controls] = useScroll();
-
+function SocialLinks() {
   return (
-    <SocialLinkList
-      style={{ flexDirection: flexDirection }}
-      ref={element}
-      variants={fade}
-      animate={controls}
-      initial="hidden"
-    >
+    <SocialLinkList variants={fade}>
       <li>
         <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
           <Gitgub />
@@ -47,10 +38,11 @@ const SocialLinkList = styled(motion.ul)`
   align-items: center;
   list-style: none;
 
-  border-radius: 10px;
-  padding: 1rem 2rem;
+  border-radius: 5px;
+  padding: 1rem;
   background: rgba(20, 20, 20, 0.5);
   border: 1px solid var(--accent);
+
   li {
     margin: 0 1rem;
 

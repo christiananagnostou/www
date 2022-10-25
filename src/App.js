@@ -5,10 +5,11 @@ import GlobalStyle from "./components/GlobalStyle";
 import Nav from "./components/Nav";
 // Pages
 import AboutMe from "./components/HomePage/AboutPage";
-import ContactUs from "./components/ContactPage/ContactUs";
+import ProjectList from "./components/HomePage/page_components/ProjectList";
 import ProjectDetails from "./components/ProjectPage/ProjectDetails";
+import ContactUs from "./components/ContactPage/ContactUs";
 // Router
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 // Animation
 import { AnimatePresence } from "framer-motion";
 
@@ -18,23 +19,16 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
-
       <Nav />
+      <div className="blur" aria-hidden="true" />
 
-      <AnimatePresence exitBeforeEnter>
-        <Switch location={location} key={location.pathname}>
-          <Route path="/" exact>
-            <AboutMe />
-          </Route>
-
-          <Route path="/work/:id">
-            <ProjectDetails />
-          </Route>
-
-          <Route path="/contact">
-            <ContactUs />
-          </Route>
-        </Switch>
+      <AnimatePresence exitBeforeEnter initial={false}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<AboutMe />} />
+          <Route path="/projects" element={<ProjectList />} />
+          <Route path="/work/:id" element={<ProjectDetails />} />
+          <Route path="/contact" element={<ContactUs />} />
+        </Routes>
       </AnimatePresence>
     </div>
   );

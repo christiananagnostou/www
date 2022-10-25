@@ -6,12 +6,12 @@ import { projectState } from "../../../projectState";
 import ProjectTile from "./ProjectTile";
 // Animations
 import { motion } from "framer-motion";
-import { fade } from "../../../animation";
+import { pageAnimation } from "../../../animation";
 import ScrollTop from "../../ScrollTop";
 
 function ProjectList() {
   return (
-    <Work id="work" variants={fade}>
+    <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <motion.h2 className="title">My Work</motion.h2>
 
       {projectState.map((project) => (
