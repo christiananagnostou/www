@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { fade } from "../../../animation";
-import Wave from "./Wave";
-import { Link } from "react-router-dom";
 
 function Bio() {
   return (
@@ -12,20 +10,17 @@ function Bio() {
         <h1>Christian Anagnostou</h1>
 
         <motion.p>
-          <em>Crafting polished interfaces</em>. Experimenting with subtle details to elevate the
-          web experience.
+          At work <em>crafting interfaces</em>. Experimenting with subtle details to elevate the web
+          experience.
         </motion.p>
 
-        <motion.p>
-          I love studying the invisible systems that shape our world. It started (and will forever
-          continue) with the web.
-        </motion.p>
+        <motion.p>Studying the invisible systems that shape our world.</motion.p>
 
         <motion.p>
-          Currently building websites and apps at{" "}
-          <Link to="https://www.electriqmarketing.com/" target={"_blank"}>
+          Currently building web solutions at{" "}
+          <a href="https://www.electriqmarketing.com/" target={"_blank"} rel="noreferrer">
             <em>Electriq</em>
-          </Link>
+          </a>
         </motion.p>
 
         <motion.p>
@@ -34,8 +29,6 @@ function Bio() {
           photography, and learning how to think and write better.
         </motion.p>
       </Description>
-
-      <Wave />
     </StyledSection>
   );
 }
