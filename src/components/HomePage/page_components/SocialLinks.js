@@ -39,7 +39,7 @@ const SocialLinkList = styled(motion.ul)`
   list-style: none;
 
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.6rem 0 0.45rem;
   background: rgba(20, 20, 20, 0.5);
   border: 1px solid var(--accent);
 
@@ -48,9 +48,11 @@ const SocialLinkList = styled(motion.ul)`
 
     a {
       display: block;
-    }
-    a[href]:not(:hover) path {
-      fill: #bbb !important;
+      color: var(--accent);
+
+      &:hover {
+        color: #fff;
+      }
     }
   }
 `;
