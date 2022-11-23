@@ -25,7 +25,7 @@ function App() {
       <AnimatePresence exitBeforeEnter initial={false}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<AboutMe />} />
-          <Route path="/projects" element={<ProjectList />} />
+          <Route path="/works" element={<ProjectList />} />
           <Route path="/work/:id" element={<ProjectDetails />} />
           <Route path="/contact" element={<ContactUs />} />
         </Routes>

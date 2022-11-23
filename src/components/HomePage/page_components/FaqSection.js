@@ -9,27 +9,11 @@ function FaqSection() {
   return (
     <Faq variants={fade}>
       <AnimateSharedLayout>
-        {/* <Toggle title="Why teach yourself?">
-          <div className="answer">
-            <p>
-              <span>The choices:</span> College, Bootcamps, and Self-Taught
-            </p>
-            <p>
-              So obviously I chose the <span>self-taught</span> route. Why? Ok, I'll break it down
-              for ya. I've loved working with my computer my whole life and coding has always been a
-              creative outlet for me. After graduating college with a degree in Business Admin, I
-              was accepted to a coding bootcamp, but before accepting, I told myself that if I
-              really wanted to do this, I should be committed enough to teach myself whatever I
-              needed to know. The challenge was on...
-            </p>
-          </div>
-        </Toggle> */}
         <Toggle title="What have I been working on lately?">
           <div className="answer">
             <p>
-              Lately, I've been working on a project called <span>Lift Club</span>; a
-              workout-tracking, social fitness app intended to bridge the gap between physical
-              trainers and clients.
+              Lately, I've been working on an app called <span>Lift Club</span>; a workout-tracking,
+              social fitness app intended to bridge the gap between physical trainers and clients.
             </p>
             <p>
               Users are able to create exercises or choose from a plethora of pre-made ones, add
@@ -40,19 +24,7 @@ function FaqSection() {
             </p>
           </div>
         </Toggle>
-        {/* <Toggle title="What's next on the list to learn?">
-          <div className="answer">
-            <p>
-              <span>Blockchain</span> and <span>Solidity</span>.
-            </p>
-            <p>
-              Having a solid understanding of website and web app development, I am working to
-              expand my horizons by learning how to interact with the Ethereum blockchain.
-              Currently, I am auditing a blockchain and economics course from MIT and working
-              through a class on programming in Solidity and Web3.js.
-            </p>
-          </div>
-        </Toggle> */}
+
         <Toggle title="What helped you on your journey to become self-taught?">
           <div className="answer">
             <p>
@@ -76,9 +48,7 @@ function FaqSection() {
 }
 
 const Faq = styled(motion.section)`
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem 1rem;
+  padding: 1rem;
   display: block;
   max-width: var(--max-w-screen);
   margin: auto;
@@ -90,21 +60,22 @@ const Faq = styled(motion.section)`
   .faq-line {
     background: var(--accent);
     height: 1px;
-    margin: 2rem 0;
+    margin: 1rem 0;
     width: 100%;
   }
   .question {
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--heading);
     font-weight: 400;
   }
   .answer {
     color: var(--text);
-    padding: 2rem 0 0;
+    padding: 1rem 0 0;
     p {
       padding: 1rem 0;
       font-size: 1rem;
+      line-height: 1.5rem;
     }
   }
 
