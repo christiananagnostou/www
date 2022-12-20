@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import emailjs from "emailjs-com";
 // Animations
 import { motion } from "framer-motion";
-import { fade, pageAnimation, titleAnim } from "../../animation";
+import { fade, pageAnimation, staggerFade } from "../../animation";
 import styled from "styled-components";
-import SocialLinks from "../HomePage/page_components/SocialLinks";
+import SocialLinks from "../SocialLinks";
 
 function ContactUs() {
   const initialFormState = {
@@ -19,8 +19,6 @@ function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(formData);
 
     let templateParams = {
       from_name: formData.name,
@@ -61,88 +59,79 @@ function ContactUs() {
 
   return (
     <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <Title variants={fade}>
-        <Hide>
+      <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
+        <Title variants={fade}>
           <motion.h3>Let's get in touch!</motion.h3>
-        </Hide>
-      </Title>
-      {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
+        </Title>
+        {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
 
-      <StyledForm id="contact-form" onSubmit={handleSubmit} method="POST">
-        <Hide>
-          <motion.div variants={titleAnim}>
-            <FormGroup>
-              <label htmlFor="name">
-                YOUR NAME <span>*</span>
-              </label>
-              <input
-                type="text"
-                className="form-input"
-                required
-                value={formData.name}
-                onChange={onNameChange}
-              />
-            </FormGroup>
-          </motion.div>
-        </Hide>
-        <Hide>
-          <motion.div variants={titleAnim}>
-            <FormGroup>
-              <label htmlFor="inputEmail">
-                EMAIL ADDRESS <span>*</span>
-              </label>
-              <input
-                type="email"
-                className="form-input"
-                aria-describedby="email"
-                value={formData.email}
-                onChange={onEmailChange}
-              />
-            </FormGroup>
-          </motion.div>
-        </Hide>
-        <Hide>
-          <motion.div variants={titleAnim}>
-            <FormGroup>
-              <label htmlFor="subject">SUBJECT</label>
-              <input
-                type="text"
-                className="form-input"
-                value={formData.subject}
-                onChange={onSubjectChange}
-              />
-            </FormGroup>{" "}
-          </motion.div>
-        </Hide>
-        <Hide>
-          <motion.div variants={titleAnim}>
-            <FormGroup>
-              <label htmlFor="message">MESSAGE</label>
-              <textarea
-                className="form-input"
-                rows="6"
-                cols="50"
-                value={formData.message}
-                onChange={onMessageChange}
-              ></textarea>
-            </FormGroup>
-          </motion.div>
-        </Hide>
-        <Hide>
-          <motion.div variants={titleAnim}>
-            <FormGroup>
-              <button type="submit" className="form-btn">
-                SEND
-              </button>
-            </FormGroup>
-          </motion.div>
-        </Hide>
-      </StyledForm>
-      <Hide>
-        <motion.div variants={titleAnim}>
-          <SocialLinks />
+        <motion.div variants={fade}>
+          <FormGroup>
+            <label htmlFor="name">
+              YOUR NAME <span>*</span>
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              required
+              value={formData.name}
+              onChange={onNameChange}
+            />
+          </FormGroup>
         </motion.div>
-      </Hide>
+
+        <motion.div variants={fade}>
+          <FormGroup>
+            <label htmlFor="inputEmail">
+              EMAIL ADDRESS <span>*</span>
+            </label>
+            <input
+              type="email"
+              className="form-input"
+              aria-describedby="email"
+              value={formData.email}
+              onChange={onEmailChange}
+            />
+          </FormGroup>
+        </motion.div>
+
+        <motion.div variants={fade}>
+          <FormGroup>
+            <label htmlFor="subject">SUBJECT</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.subject}
+              onChange={onSubjectChange}
+            />
+          </FormGroup>
+        </motion.div>
+
+        <motion.div variants={fade}>
+          <FormGroup>
+            <label htmlFor="message">MESSAGE</label>
+            <textarea
+              className="form-input"
+              rows={6}
+              cols={50}
+              value={formData.message}
+              onChange={onMessageChange}
+            ></textarea>
+          </FormGroup>
+        </motion.div>
+
+        <motion.div variants={fade}>
+          <FormGroup>
+            <button type="submit" className="form-btn">
+              SEND
+            </button>
+          </FormGroup>
+        </motion.div>
+      </StyledForm>
+
+      <motion.div variants={fade}>
+        <SocialLinks />
+      </motion.div>
     </ContactStyle>
   );
 }
@@ -152,6 +141,13 @@ const ContactStyle = styled(motion.div)`
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+
+  max-width: 500px;
+  margin: auto;
+
+  @media screen and (min-width: 768px) {
+    margin: 5rem auto;
+  }
 `;
 
 const Title = styled(motion.div)`
@@ -161,8 +157,6 @@ const Title = styled(motion.div)`
   color: var(--heading);
   border-radius: 5px;
   padding: 1rem 2rem;
-  background: rgba(20, 20, 20, 0.5);
-  border: 1px solid var(--accent);
 
   p {
     margin: 0;
@@ -174,7 +168,7 @@ const Title = styled(motion.div)`
   }
 `;
 
-const StyledForm = styled.form`
+const StyledForm = styled(motion.form)`
   width: 100%;
 `;
 
@@ -232,7 +226,4 @@ const FormGroup = styled.div`
   }
 `;
 
-const Hide = styled.div`
-  overflow: hidden;
-`;
 export default ContactUs;

@@ -11,67 +11,60 @@ function ProjectDetails() {
   const location = useLocation();
   const url = location.pathname;
 
-  const project = projectState.filter((stateProject) => stateProject.url === url)[0];
+  const project = projectState.find((stateProject) => stateProject.url === url);
+
+  if (!project) return <></>;
 
   return (
-    <>
-      <ScrollTop />
+    <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <h2>{project.title}</h2>
 
-      {project && (
-        <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-          <h2>{project.title}</h2>
+      <div className="link-container">
+        {project.externalLink && (
+          <motion.a
+            className="live-link"
+            href={project.externalLink}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Live Site
+          </motion.a>
+        )}
 
-          <div className="link-container">
-            {project.externalLink && (
-              <motion.a
-                className="live-link"
-                href={project.externalLink}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Live view
-              </motion.a>
-            )}
+        {project.github && (
+          <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
+            Github
+          </motion.a>
+        )}
+      </div>
 
-            {project.github && (
-              <motion.a
-                className="live-link"
-                href={project.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Github Repo
-              </motion.a>
-            )}
-          </div>
+      <DesktopImage>
+        <img src={project.desktopImgs[0]} alt="desktop hero" />
+      </DesktopImage>
 
-          <DesktopImage>
-            <img src={project.desktopImgs[0]} alt="desktop hero" />
-          </DesktopImage>
-
-          <MobileAndText>
-            <Details>
-              {project.details.map(({ title, description }, i) => (
-                <Detail key={i} title={title} description={description} index={i} />
-              ))}
-            </Details>
-            <div className="mobile-imgs">
-              {project.mobileImgs.map((image, i) => (
-                <MobileImage key={i}>
-                  <img src={image} alt="mobile" />
-                </MobileImage>
-              ))}
-            </div>
-          </MobileAndText>
-
-          {project.desktopImgs.slice(1).map((image, i) => (
-            <DesktopImage key={i}>
-              <img src={image} alt={`desktop ${i}`} />
-            </DesktopImage>
+      <MobileAndText>
+        <Details>
+          {project.details.map(({ title, description }, i) => (
+            <Detail key={i} title={title} description={description} index={i} />
           ))}
-        </Container>
-      )}
-    </>
+        </Details>
+        <div className="mobile-imgs">
+          {project.mobileImgs.map((image, i) => (
+            <MobileImage key={i}>
+              <img src={image} alt="mobile" />
+            </MobileImage>
+          ))}
+        </div>
+      </MobileAndText>
+
+      {project.desktopImgs.slice(1).map((image, i) => (
+        <DesktopImage key={i}>
+          <img src={image} alt={`desktop ${i}`} />
+        </DesktopImage>
+      ))}
+
+      <ScrollTop />
+    </Container>
   );
 }
 

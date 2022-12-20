@@ -1,18 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 // State
-import { projectState } from "../../../projectState";
+import { projectState } from "../../projectState";
 // Components
 import ProjectTile from "./ProjectTile";
 // Animations
 import { motion } from "framer-motion";
-import { pageAnimation } from "../../../animation";
-import ScrollTop from "../../ScrollTop";
+import { fade, pageAnimation } from "../../animation";
+import ScrollTop from "../ScrollTop";
 
 function ProjectList() {
   return (
     <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <motion.h2 className="title">My Work</motion.h2>
+      <motion.h2 variants={fade} className="title">
+        My Work
+      </motion.h2>
 
       {projectState.map((project) => (
         <ProjectTile project={project} key={project.title} />

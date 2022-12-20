@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { AnimateSharedLayout } from "framer-motion";
 import { motion } from "framer-motion";
 import Toggle from "./Toggle";
-import { fade } from "../../../animation";
+import { fade } from "../../animation";
 
-function FaqSection() {
+function Faq() {
   return (
-    <Faq variants={fade}>
+    <Section variants={fade}>
       <AnimateSharedLayout>
         <Toggle title="What have I been working on lately?">
           <div className="answer">
@@ -43,11 +43,11 @@ function FaqSection() {
           </div>
         </Toggle>
       </AnimateSharedLayout>
-    </Faq>
+    </Section>
   );
 }
 
-const Faq = styled(motion.section)`
+const Section = styled(motion.section)`
   padding: 1rem;
   display: block;
   max-width: var(--max-w-screen);
@@ -86,4 +86,4 @@ const Faq = styled(motion.section)`
   }
 `;
 
-export default FaqSection;
+export default Faq;
