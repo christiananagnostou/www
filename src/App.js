@@ -4,10 +4,11 @@ import GlobalStyle from "./components/GlobalStyle";
 // Components
 import Nav from "./components/Nav";
 // Pages
-import AboutMe from "./components/HomePage/AboutPage";
-import ProjectList from "./components/HomePage/page_components/ProjectList";
-import ProjectDetails from "./components/ProjectPage/ProjectDetails";
-import ContactUs from "./components/ContactPage/ContactUs";
+import Homepage from "./components/HomePage";
+import ProjectList from "./components/WorksListPage/ProjectList";
+import ProjectDetails from "./components/SingleWorkPage";
+import ArtPage from "./components/ArtPage";
+import ContactUs from "./components/ContactPage";
 // Router
 import { Routes, Route, useLocation } from "react-router-dom";
 // Animation
@@ -22,11 +23,12 @@ function App() {
       <Nav />
       <div className="blur" aria-hidden="true" />
 
-      <AnimatePresence exitBeforeEnter initial={false}>
+      <AnimatePresence mode="wait" initial={false}>
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<AboutMe />} />
+          <Route path="/" element={<Homepage />} />
           <Route path="/works" element={<ProjectList />} />
           <Route path="/work/:id" element={<ProjectDetails />} />
+          <Route path="/art" element={<ArtPage />} />
           <Route path="/contact" element={<ContactUs />} />
         </Routes>
       </AnimatePresence>

@@ -2,11 +2,11 @@ import React from "react";
 // Animations
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { fade } from "../../../animation";
+import { fade } from "../animation";
 // Icons
-import Instagram from "../../../img/Instagram";
-import Gitgub from "../../../img/GitHub";
-import LinkedIn from "../../../img/LinkedIn";
+import Instagram from "../img/Instagram";
+import Gitgub from "../img/GitHub";
+import LinkedIn from "../img/LinkedIn";
 
 function SocialLinks() {
   return (

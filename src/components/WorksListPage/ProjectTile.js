@@ -2,10 +2,9 @@ import React from "react";
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-// Animations
 import { motion } from "framer-motion";
-import { fade, photoAnim, lineAnim } from "../../../animation";
-import { useScroll } from "../../useScroll";
+import { fade, photoAnim, lineAnim } from "../../animation";
+import { useScroll } from "../useScroll";
 
 export default function ProjectTile({ project }) {
   const [element, controls] = useScroll();
@@ -19,14 +18,14 @@ export default function ProjectTile({ project }) {
 
         <div className="links">
           {project.externalLink && (
-            <motion.a href={project.externalLink} target="_blank" rel="noreferrer">
+            <a href={project.externalLink} target="_blank" rel="noreferrer">
               Live Site
-            </motion.a>
+            </a>
           )}
           {project.github && (
-            <motion.a href={project.github} target="_blank" rel="noreferrer">
+            <a href={project.github} target="_blank" rel="noreferrer">
               GitHub
-            </motion.a>
+            </a>
           )}
         </div>
       </motion.header>
