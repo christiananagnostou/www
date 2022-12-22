@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { pageAnimation } from "../../animation";
+import { fade, pageAnimation } from "../../animation";
 import ScrollTop from "../ScrollTop";
 import Range from "../shared/Range";
 import Image from "./Image";
@@ -15,7 +15,11 @@ const ArtPage = () => {
 
   return (
     <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <motion.h2 className="title">My Art</motion.h2>
+      <motion.h2 variants={fade} className="title">
+        <span>my adventures</span>
+        <span className="bar"></span>
+        <span>captured forever</span>
+      </motion.h2>
 
       <div className="control-bar">
         <Range
@@ -29,15 +33,15 @@ const ArtPage = () => {
         <span className="col-num">{numColumns}</span>
       </div>
 
-      <section className="col-container">
+      <Columns numColumns={numColumns}>
         {columns.map((col, i) => (
-          <Column key={"column_" + i}>
+          <Column key={"column_" + i} numColumns={numColumns}>
             {col.map((img) => (
               <Image src={`/art/photography/${img}`} key={img} />
             ))}
           </Column>
         ))}
-      </section>
+      </Columns>
 
       <ScrollTop />
     </Container>
@@ -46,19 +50,38 @@ const ArtPage = () => {
 
 const Container = styled(motion.div)`
   overflow: hidden;
-  padding: 5rem 1rem;
   color: var(--text);
   max-width: var(--max-w-screen);
-  margin: auto;
+
+  padding: 0 1rem;
+  margin: 1.5rem auto;
+
+  @media screen and (min-width: 768px) {
+    margin: 5rem auto;
+  }
 
   .title {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-    color: var(--text);
-    font-weight: 200;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (min-width: 768px) {
+      margin-bottom: 2rem;
+    }
+
+    span {
+      font-weight: 200;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .bar {
+      height: 0;
+      flex: 1;
+      margin: 0 1rem;
+      border-bottom: 1px solid var(--accent);
+    }
   }
 
   .control-bar {
@@ -72,18 +95,19 @@ const Container = styled(motion.div)`
       margin-left: 1rem;
     }
   }
+`;
 
-  .col-container {
-    display: flex;
-    gap: 20px;
-  }
+const Columns = styled.section`
+  display: flex;
+  gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
 `;
 
 const Column = styled.div`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
+  flex: 1;
 `;
 
 export default ArtPage;

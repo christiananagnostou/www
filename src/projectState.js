@@ -36,20 +36,34 @@ export const projectState = [
     mobileImgs: [electriqCalendar],
     externalLink: "https://electriq.app/",
     url: "/work/electriq-app",
+    summary: "Project management visualizer for teams using Linear who also like graphs",
     details: [
       {
         title: "Purpose",
         description:
-          "React web application to give PM's and clients the ability to visualize the progress and make changes to the web department's projects.",
+          "A project management app that provides insights into Linear projects through data visualization.",
+      },
+      {
+        title: "Reason",
+        description:
+          "Linear doesn't have timelines for projects and doesn't plan to add them. This does that and more.",
+      },
+
+      {
+        title: "Features",
+        description:
+          "The ability to send live feedback to the teams in charge is built in and incredibly intuitive.",
       },
     ],
   },
   {
-    title: "Electriq Website",
+    title: "Electriq's Website",
     desktopImgs: [electriqHomeComposed, electriqHomeMain],
     mobileImgs: [],
     externalLink: "https://www.electriqmarketing.com/",
     url: "/work/electriq-home",
+    summary:
+      "Collaborated with the agency's in-house design team to craft the rebranding of Electriq",
     details: [
       {
         title: "Purpose",
@@ -65,6 +79,7 @@ export const projectState = [
     externalLink: "https://liftclub.app/",
     github: "https://github.com/ChristianAnagnostou/liftclub",
     url: "/work/liftclub",
+    summary: "Track your workout progress with little effort and get big insights",
     details: [
       {
         title: "Purpose",
@@ -100,6 +115,8 @@ export const projectState = [
     externalLink: "https://awildchristian.com/",
     github: "https://github.com/ChristianAnagnostou/anagnostou-photography-frontend",
     url: "/work/awildchristian",
+    summary:
+      "See the photos on my art page? I'll print them out, sign them, and send them to you if you send me a few shekels",
     details: [
       {
         title: "Front-end",
@@ -122,9 +139,10 @@ export const projectState = [
     title: "NeoLogos",
     desktopImgs: [neologosMain, neologosDesktop1, neologosDesktop2, neologosDesktop3],
     mobileImgs: [neologosMobile1, neologosMobile2],
-    externalLink: "https://neologos.herokuapp.com/",
+    // externalLink: "https://neologos.herokuapp.com/",
     github: "https://github.com/ChristianAnagnostou/NeoLogos",
     url: "/work/neologos",
+    summary: "Ever made of a word for something? Well now you know where to put it.",
     details: [
       {
         title: "Front-end",
@@ -150,6 +168,7 @@ export const projectState = [
     externalLink: "http://lofiwaves.surge.sh/",
     github: "https://github.com/ChristianAnagnostou/LofiWaves",
     url: "/work/lofiwaves",
+    summary: "Like lofi? So do I, so why not checkout out some of my faves here",
     details: [
       {
         title: "Front-end",

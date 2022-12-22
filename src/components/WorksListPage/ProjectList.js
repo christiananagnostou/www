@@ -13,12 +13,16 @@ function ProjectList() {
   return (
     <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <motion.h2 variants={fade} className="title">
-        My Work
+        <span>my curated</span>
+        <span className="bar"></span>
+        <span>web creations</span>
       </motion.h2>
 
-      {projectState.map((project) => (
-        <ProjectTile project={project} key={project.title} />
-      ))}
+      <ProjectListStyle>
+        {projectState.map((project) => (
+          <ProjectTile project={project} key={project.title} />
+        ))}
+      </ProjectListStyle>
 
       <ScrollTop />
     </Work>
@@ -27,20 +31,41 @@ function ProjectList() {
 
 const Work = styled(motion.div)`
   overflow: hidden;
-  padding: 5rem 1rem;
   color: var(--text);
   max-width: var(--max-w-screen);
-  margin: auto;
+
+  padding: 0 1rem;
+  margin: 1.5rem auto;
+
+  @media screen and (min-width: 768px) {
+    margin: 5rem auto;
+  }
 
   .title {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.4rem;
-    color: var(--text);
-    font-weight: 200;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (min-width: 768px) {
+      margin-bottom: 2rem;
+    }
+
+    span {
+      font-weight: 200;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .bar {
+      height: 0;
+      flex: 1;
+      margin: 0 1rem;
+      border-bottom: 1px solid var(--accent);
+    }
   }
 `;
+
+const ProjectListStyle = styled.section``;
 
 export default ProjectList;
