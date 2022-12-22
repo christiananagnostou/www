@@ -24,6 +24,6 @@ const Container = styled(motion.main)`
   padding: 1rem;
 
   @media screen and (min-width: 768px) {
-    padding: 5rem 1rem;
+    padding: 3rem 1rem;
   }
 `;

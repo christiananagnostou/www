@@ -61,7 +61,11 @@ function ContactUs() {
     <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
       <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
         <Title variants={fade}>
-          <motion.h3>Let's get in touch!</motion.h3>
+          <motion.h2 variants={fade} className="title">
+            <span>my dm's</span>
+            <span className="bar"></span>
+            <span>are open</span>
+          </motion.h2>
         </Title>
         {sentSuccessful && <p>Sent successfully. You'll hear from me soon!</p>}
 
@@ -143,7 +147,8 @@ const ContactStyle = styled(motion.div)`
   align-items: center;
 
   max-width: 500px;
-  margin: auto;
+  padding: 0 1rem;
+  margin: 1.5rem auto;
 
   @media screen and (min-width: 768px) {
     margin: 5rem auto;
@@ -151,20 +156,28 @@ const ContactStyle = styled(motion.div)`
 `;
 
 const Title = styled(motion.div)`
-  flex: 1;
-  text-align: center;
-  margin: 1rem;
-  color: var(--heading);
-  border-radius: 5px;
-  padding: 1rem 2rem;
+  .title {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-  p {
-    margin: 0;
-    padding: 0.5rem 0;
-  }
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 300;
+    @media screen and (min-width: 768px) {
+      margin-bottom: 2rem;
+    }
+
+    span {
+      font-weight: 200;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .bar {
+      height: 0;
+      flex: 1;
+      margin: 0 1rem;
+      border-bottom: 1px solid var(--accent);
+    }
   }
 `;
 
@@ -216,13 +229,6 @@ const FormGroup = styled.div`
     margin-top: 1rem;
     margin-bottom: 3rem;
     cursor: pointer;
-  }
-  @media (max-width: 1300px) {
-    width: 90%;
-    margin: auto;
-    .form-input {
-      width: 100%;
-    }
   }
 `;
 
