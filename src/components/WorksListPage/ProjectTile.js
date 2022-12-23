@@ -58,8 +58,9 @@ const Project = styled(motion.div)`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-    background: rgba(20, 20, 20, 0.5);
+    padding: 0.25rem 0;
+    /* background: rgba(20, 20, 20, 0.5); */
+    border-bottom: 1px solid var(--accent);
     border-radius: 5px;
     margin-bottom: 1rem;
 
@@ -78,6 +79,7 @@ const Project = styled(motion.div)`
     .links {
       a,
       span {
+        text-decoration: none;
         display: inline-block;
         font-size: 1rem;
         font-weight: 400;
