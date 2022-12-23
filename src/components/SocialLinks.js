@@ -27,7 +27,7 @@ function SocialLinks() {
         </a>
       </li>
       <li>
-        <a href="https://read.cv/christian.a" target="_blank">
+        <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"

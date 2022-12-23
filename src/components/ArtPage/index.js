@@ -6,12 +6,29 @@ import ScrollTop from "../ScrollTop";
 import Range from "../shared/Range";
 import Image from "./Image";
 
+const categories = ["Camera", "Pencil"];
+
 const ArtPage = () => {
   const [numColumns, setNumColumns] = useState(3);
+  const [selectedCategory, setSelectedCategory] = useState("Images");
 
   const columns = [...new Array(numColumns).fill(0).map((_) => [])];
   // @ts-ignore
-  Images.map((img, i) => columns[i % numColumns].push(img));
+
+  let itemsShown = [];
+
+  switch (selectedCategory) {
+    case "Camera":
+      itemsShown = Photos;
+      break;
+    case "Pencil":
+      itemsShown = Drawings;
+      break;
+    default:
+      itemsShown = Photos;
+  }
+
+  itemsShown.map((img, i) => columns[i % numColumns].push(img));
 
   return (
     <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
@@ -22,22 +39,35 @@ const ArtPage = () => {
       </motion.h2>
 
       <div className="control-bar">
-        <Range
-          type="range"
-          min={1}
-          max={8}
-          value={numColumns}
-          onChange={(e) => setNumColumns(parseInt(e.target.value))}
-        />
+        <div className="range-wrap">
+          <Range
+            type="range"
+            min={1}
+            max={8}
+            value={numColumns}
+            onChange={(e) => setNumColumns(parseInt(e.target.value))}
+          />
 
-        <span className="col-num">{numColumns}</span>
+          <span className="col-num">{numColumns}</span>
+        </div>
+
+        <div className="categories">
+          {categories.map((category) => (
+            <button
+              onClick={() => setSelectedCategory(category)}
+              className={selectedCategory === category ? "highlight" : ""}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
       </div>
 
       <Columns numColumns={numColumns}>
         {columns.map((col, i) => (
           <Column key={"column_" + i} numColumns={numColumns}>
             {col.map((img) => (
-              <Image src={`/art/photography/${img}`} key={img} />
+              <Image src={img} key={img} />
             ))}
           </Column>
         ))}
@@ -87,12 +117,42 @@ const Container = styled(motion.div)`
   .control-bar {
     display: flex;
     align-items: center;
-    max-width: 25%;
+    justify-content: space-between;
     margin-bottom: 1rem;
 
-    .col-num {
-      display: block;
-      margin-left: 1rem;
+    .range-wrap {
+      max-width: 25%;
+      display: flex;
+      align-items: center;
+
+      .col-num {
+        display: block;
+        margin-left: 1rem;
+      }
+    }
+
+    .categories {
+      display: flex;
+
+      button {
+        background: transparent;
+        /* border: 1px solid var(--accent); */
+        border: none;
+        font-size: 1rem;
+        margin-left: 20px;
+
+        color: var(--text);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: white;
+        }
+        &.highlight {
+          color: white;
+        }
+      }
     }
   }
 `;
@@ -110,9 +170,17 @@ const Column = styled.div`
   flex: 1;
 `;
 
+const SVG = styled.div`
+  -webkit-mask: url(${({ svg }) => svg}) no-repeat center;
+  mask: url(${({ svg }) => svg}) no-repeat center;
+  background-color: red;
+`;
+
 export default ArtPage;
 
-const Images = [
+const Drawings = ["the_broken_triplet.svg"].map((photo) => "/art/drawings/" + photo);
+
+const Photos = [
   // Snow
   "ski_lift.jpg",
   "george_snow.jpg",
@@ -181,4 +249,4 @@ const Images = [
   "golden_gate.jpg",
   "skateboard.jpg",
   "dad_soccer.jpg",
-];
+].map((photo) => "/art/photography/" + photo);

@@ -3,7 +3,7 @@ import styled from "styled-components";
 // excess height to improve interactive area / accessibility
 const height = "20px";
 const thumbHeight = 20;
-const trackHeight = "10px";
+const trackHeight = "6px";
 
 // colours
 const upperColor = "var(--accent)";
