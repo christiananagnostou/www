@@ -25,6 +25,13 @@ const GlobalStyle = createGlobalStyle`
     scrollbar-width: thin;
     scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 
+    &:focus {
+      outline-color: var(--accent);
+      outline-style: solid;
+      outline-offset: 2px;
+      outline-width: 1.5px;
+    }
+
     &::-webkit-scrollbar {
       width: 5px;
     }
