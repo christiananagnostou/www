@@ -6,6 +6,7 @@ import { ProjectState } from "../../data/ProjectState";
 import { Project } from "../../types";
 
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 
 type Props = {
   project: Project;
@@ -25,60 +26,68 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const SingleProject = ({ project }: Props) => {
   return (
-    <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <h2>{project.title}</h2>
+    <>
+      <Head>
+        <title>{project.title} - Christian Anagnostou</title>
+        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
 
-      <div className="link-container">
-        {project.externalLink && (
-          <motion.a
-            className="live-link"
-            href={project.externalLink}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live Site
-          </motion.a>
-        )}
+      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <h2>{project.title}</h2>
 
-        {project.github && (
-          <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
-            Github
-          </motion.a>
-        )}
-      </div>
+        <div className="link-container">
+          {project.externalLink && (
+            <motion.a
+              className="live-link"
+              href={project.externalLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Live Site
+            </motion.a>
+          )}
 
-      <DesktopImage>
-        <Image
-          src={project.desktopImgs[0]}
-          alt="desktop hero"
-          width={1000}
-          height={666}
-          loading="eager"
-        />
-      </DesktopImage>
-
-      <MobileAndText>
-        <Details>
-          {project.details.map(({ title, description }, i) => (
-            <Detail key={i} title={title} description={description} index={i} />
-          ))}
-        </Details>
-
-        <div className="mobile-imgs">
-          {project.mobileImgs.map((image, i) => (
-            <MobileImage key={i}>
-              <Image src={image} alt="mobile" height={600} width={300} />
-            </MobileImage>
-          ))}
+          {project.github && (
+            <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
+              Github
+            </motion.a>
+          )}
         </div>
-      </MobileAndText>
 
-      {project.desktopImgs.slice(1).map((image, i) => (
-        <DesktopImage key={i}>
-          <Image src={image} alt={`desktop ${i}`} width={1000} height={666} />
+        <DesktopImage>
+          <Image
+            src={project.desktopImgs[0]}
+            alt="desktop hero"
+            width={1000}
+            height={666}
+            loading="eager"
+          />
         </DesktopImage>
-      ))}
-    </Container>
+
+        <MobileAndText>
+          <Details>
+            {project.details.map(({ title, description }, i) => (
+              <Detail key={i} title={title} description={description} index={i} />
+            ))}
+          </Details>
+
+          <div className="mobile-imgs">
+            {project.mobileImgs.map((image, i) => (
+              <MobileImage key={i}>
+                <Image src={image} alt="mobile" height={600} width={300} />
+              </MobileImage>
+            ))}
+          </div>
+        </MobileAndText>
+
+        {project.desktopImgs.slice(1).map((image, i) => (
+          <DesktopImage key={i}>
+            <Image src={image} alt={`desktop ${i}`} width={1000} height={666} />
+          </DesktopImage>
+        ))}
+      </Container>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { AnimationControls, motion, Variants } from "framer-motion";
+import Head from "next/head";
 import Image, { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -20,49 +21,57 @@ const Art = (props: Props) => {
   ArtState[selectedCategory]?.map((img, i) => columns[i % numColumns].push(img));
 
   return (
-    <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <PageTitle titleLeft="my adventures" titleRight="captured forever" />
+    <>
+      <Head>
+        <title>Art - Christian Anagnostou</title>
+        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
 
-      <div className="control-bar">
-        <div className="range-wrap">
-          <Range
-            type="range"
-            min={1}
-            max={8}
-            value={numColumns}
-            onChange={(e) => setNumColumns(parseInt(e.target.value))}
-          />
+      <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <PageTitle titleLeft="my adventures" titleRight="captured forever" />
 
-          <span className="col-num">{numColumns}</span>
-        </div>
+        <div className="control-bar">
+          <div className="range-wrap">
+            <Range
+              type="range"
+              min={1}
+              max={8}
+              value={numColumns}
+              onChange={(e) => setNumColumns(parseInt(e.target.value))}
+            />
 
-        <div className="categories">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category ? "highlight" : ""}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
+            <span className="col-num">{numColumns}</span>
+          </div>
 
-      <Columns numColumns={numColumns}>
-        {columns.map((col, i) => (
-          <Column
-            key={"column_" + i}
-            numColumns={numColumns}
-            variants={{ show: { transition: { staggerChildren: 0.5 } } }}
-          >
-            {col.map((ImageData) => (
-              <Img imageData={ImageData} key={ImageData.src} />
+          <div className="categories">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={selectedCategory === category ? "highlight" : ""}
+              >
+                {category}
+              </button>
             ))}
-          </Column>
-        ))}
-      </Columns>
-    </Container>
+          </div>
+        </div>
+
+        <Columns numColumns={numColumns}>
+          {columns.map((col, i) => (
+            <Column
+              key={"column_" + i}
+              numColumns={numColumns}
+              variants={{ show: { transition: { staggerChildren: 0.5 } } }}
+            >
+              {col.map((ImageData) => (
+                <Img imageData={ImageData} key={ImageData.src} />
+              ))}
+            </Column>
+          ))}
+        </Columns>
+      </Container>
+    </>
   );
 };
 

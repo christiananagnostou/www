@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Head from "next/head";
 import styled from "styled-components";
 import { pageAnimation } from "../components/animation";
 import PageTitle from "../components/Styles/PageTitle";
@@ -9,15 +10,23 @@ type Props = {};
 
 function works({}: Props) {
   return (
-    <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <PageTitle titleLeft="my curated" titleRight="web creations" />
+    <>
+      <Head>
+        <title>Works - Christian Anagnostou</title>
+        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
 
-      <ProjectListStyle>
-        {ProjectState.map((project) => (
-          <ProjectTile project={project} key={project.title} />
-        ))}
-      </ProjectListStyle>
-    </Work>
+      <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <PageTitle titleLeft="my curated" titleRight="web creations" />
+
+        <ProjectListStyle>
+          {ProjectState.map((project) => (
+            <ProjectTile project={project} key={project.title} />
+          ))}
+        </ProjectListStyle>
+      </Work>
+    </>
   );
 }
 

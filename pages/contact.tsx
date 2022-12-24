@@ -1,6 +1,7 @@
 import emailjs from "emailjs-com";
 import { motion } from "framer-motion";
 import { NextPage } from "next";
+import Head from "next/head";
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import { fade, pageAnimation, staggerFade } from "../components/animation";
@@ -30,7 +31,12 @@ const Contact: NextPage = () => {
     };
 
     emailjs
-      .send(process.env.EMAILJS_SERVICE_ID!, process.env.EMAILJS_TEMPLATE_ID!, templateParams, process.env.EMAILJS_USER_ID!)
+      .send(
+        process.env.EMAILJS_SERVICE_ID!,
+        process.env.EMAILJS_TEMPLATE_ID!,
+        templateParams,
+        process.env.EMAILJS_USER_ID!
+      )
       .then(
         (result) => {
           setFormData(initialFormState);
@@ -58,84 +64,92 @@ const Contact: NextPage = () => {
   };
 
   return (
-    <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-      <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
-        {sentSuccessful ? (
-          <PageTitle titleLeft="you are" titleRight="the goat" />
-        ) : (
-          <PageTitle titleLeft="my dm's" titleRight="are open" />
-        )}
+    <>
+      <Head>
+        <title>Contact - Christian Anagnostou</title>
+        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
 
-        {sentSuccessful && <p>Sent successfully. You&apos;ll hear from me soon!</p>}
+      <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
+          {sentSuccessful ? (
+            <PageTitle titleLeft="you are" titleRight="the goat" />
+          ) : (
+            <PageTitle titleLeft="my dm's" titleRight="are open" />
+          )}
+
+          {sentSuccessful && <p>Sent successfully. You&apos;ll hear from me soon!</p>}
+
+          <motion.div variants={fade}>
+            <FormGroup>
+              <label htmlFor="name">
+                YOUR NAME <span>*</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                required
+                value={formData.name}
+                onChange={onNameChange}
+              />
+            </FormGroup>
+          </motion.div>
+
+          <motion.div variants={fade}>
+            <FormGroup>
+              <label htmlFor="inputEmail">
+                EMAIL ADDRESS <span>*</span>
+              </label>
+              <input
+                type="email"
+                className="form-input"
+                aria-describedby="email"
+                value={formData.email}
+                onChange={onEmailChange}
+              />
+            </FormGroup>
+          </motion.div>
+
+          <motion.div variants={fade}>
+            <FormGroup>
+              <label htmlFor="subject">SUBJECT</label>
+              <input
+                type="text"
+                className="form-input"
+                value={formData.subject}
+                onChange={onSubjectChange}
+              />
+            </FormGroup>
+          </motion.div>
+
+          <motion.div variants={fade}>
+            <FormGroup>
+              <label htmlFor="message">MESSAGE</label>
+              <textarea
+                className="form-input"
+                rows={6}
+                cols={50}
+                value={formData.message}
+                onChange={onMessageChange}
+              ></textarea>
+            </FormGroup>
+          </motion.div>
+
+          <motion.div variants={fade}>
+            <FormGroup>
+              <button type="submit" className="form-btn">
+                SEND
+              </button>
+            </FormGroup>
+          </motion.div>
+        </StyledForm>
 
         <motion.div variants={fade}>
-          <FormGroup>
-            <label htmlFor="name">
-              YOUR NAME <span>*</span>
-            </label>
-            <input
-              type="text"
-              className="form-input"
-              required
-              value={formData.name}
-              onChange={onNameChange}
-            />
-          </FormGroup>
+          <SocialLinks />
         </motion.div>
-
-        <motion.div variants={fade}>
-          <FormGroup>
-            <label htmlFor="inputEmail">
-              EMAIL ADDRESS <span>*</span>
-            </label>
-            <input
-              type="email"
-              className="form-input"
-              aria-describedby="email"
-              value={formData.email}
-              onChange={onEmailChange}
-            />
-          </FormGroup>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormGroup>
-            <label htmlFor="subject">SUBJECT</label>
-            <input
-              type="text"
-              className="form-input"
-              value={formData.subject}
-              onChange={onSubjectChange}
-            />
-          </FormGroup>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormGroup>
-            <label htmlFor="message">MESSAGE</label>
-            <textarea
-              className="form-input"
-              rows={6}
-              cols={50}
-              value={formData.message}
-              onChange={onMessageChange}
-            ></textarea>
-          </FormGroup>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormGroup>
-            <button type="submit" className="form-btn">
-              SEND
-            </button>
-          </FormGroup>
-        </motion.div>
-      </StyledForm>
-
-      <motion.div variants={fade}>
-        <SocialLinks />
-      </motion.div>
-    </ContactStyle>
+      </ContactStyle>
+    </>
   );
 };
 
