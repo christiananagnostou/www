@@ -21,6 +21,7 @@ export default PageTitle;
 
 const Container = styled(motion.h2)`
   margin-bottom: 2rem;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

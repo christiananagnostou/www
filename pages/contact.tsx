@@ -8,44 +8,44 @@ import { fade, pageAnimation, staggerFade } from "../components/animation";
 import SocialLinks from "../components/SocialLinks";
 import PageTitle from "../components/Styles/PageTitle";
 
+const initialFormState = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+};
+
 const Contact: NextPage = () => {
-  const initialFormState = {
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  };
   const [formData, setFormData] = useState(initialFormState);
   const [sentSuccessful, setsentSuccessful] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     let templateParams = {
+      to_name: "Christian",
       from_name: formData.name,
       from_email: formData.email,
-      to_name: "Christian",
       subject: formData.subject,
       message: formData.message,
-      site: "coding",
+      site: "christiancodes.co",
     };
 
-    emailjs
-      .send(
+    try {
+      const res = await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         templateParams,
         process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
-      )
-      .then(
-        (result) => {
-          setFormData(initialFormState);
-          setsentSuccessful(true);
-        },
-        (error) => {
-          console.log(error.text);
-        }
       );
+
+      if (res.status === 200) {
+        setFormData(initialFormState);
+        setsentSuccessful(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,19 +72,17 @@ const Contact: NextPage = () => {
       </Head>
 
       <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        {sentSuccessful ? (
+          <PageTitle titleLeft="you are" titleRight="the goat" />
+        ) : (
+          <PageTitle titleLeft="my dm's" titleRight="are open" />
+        )}
+
         <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
-          {sentSuccessful ? (
-            <PageTitle titleLeft="you are" titleRight="the goat" />
-          ) : (
-            <PageTitle titleLeft="my dm's" titleRight="are open" />
-          )}
-
-          {sentSuccessful && <p>Sent successfully. You&apos;ll hear from me soon!</p>}
-
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="name">
-                YOUR NAME <span>*</span>
+                name <span>*</span>
               </label>
               <input
                 type="text"
@@ -99,7 +97,7 @@ const Contact: NextPage = () => {
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="inputEmail">
-                EMAIL ADDRESS <span>*</span>
+                email <span>*</span>
               </label>
               <input
                 type="email"
@@ -113,7 +111,7 @@ const Contact: NextPage = () => {
 
           <motion.div variants={fade}>
             <FormGroup>
-              <label htmlFor="subject">SUBJECT</label>
+              <label htmlFor="subject">subject</label>
               <input
                 type="text"
                 className="form-input"
@@ -125,7 +123,7 @@ const Contact: NextPage = () => {
 
           <motion.div variants={fade}>
             <FormGroup>
-              <label htmlFor="message">MESSAGE</label>
+              <label htmlFor="message">message</label>
               <textarea
                 className="form-input"
                 rows={6}
@@ -144,6 +142,10 @@ const Contact: NextPage = () => {
             </FormGroup>
           </motion.div>
         </StyledForm>
+
+        <p style={{ opacity: sentSuccessful ? 1 : 0 }} className="success-message">
+          Sent successfully. You&apos;ll hear from me soon!
+        </p>
 
         <motion.div variants={fade}>
           <SocialLinks />
@@ -164,10 +166,19 @@ const ContactStyle = styled(motion.div)`
   max-width: 500px;
   padding: 0 1rem;
   margin: 2rem auto;
+
+  .success-message {
+    transition: opacity 0.3s ease;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
 `;
 
 const StyledForm = styled(motion.form)`
   width: 100%;
+  margin-bottom: 2rem;
+  margin-top: -1rem;
 `;
 
 const FormGroup = styled.div`
@@ -192,13 +203,6 @@ const FormGroup = styled.div`
     color: var(--heading);
     font-family: inherit;
     letter-spacing: 0.5px;
-
-    &:focus {
-      outline-color: var(--accent);
-      outline-style: solid;
-      outline-width: medium;
-      outline-offset: -5px;
-    }
   }
   textarea {
     resize: none;
@@ -212,7 +216,6 @@ const FormGroup = styled.div`
     border-radius: 5px;
     border: none;
     margin-top: 1rem;
-    margin-bottom: 3rem;
     cursor: pointer;
   }
 `;

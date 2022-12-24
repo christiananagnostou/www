@@ -133,13 +133,12 @@ const Container = styled(motion.div)`
 
       button {
         background: transparent;
-        /* border: 1px solid var(--accent); */
         border: none;
         font-size: 1rem;
         margin-left: 20px;
 
         color: var(--text);
-        border-radius: 3px;
+        border-radius: 1px;
         cursor: pointer;
         transition: color 0.2s ease;
 
