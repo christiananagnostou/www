@@ -70,7 +70,7 @@ import Satalite from "../public/img/art/photography/satalite.jpg";
 import Skateboard from "../public/img/art/photography/skateboard.jpg";
 
 // Drawings
-import TheBrokenTriplet from "../public/img/art/Drawings/the_broken_triplet.png";
+import TheBrokenTriplet from "../public/img/art/drawings/the_broken_triplet.png";
 
 interface ArtStateType {
   [name: string]: StaticImageData[];
