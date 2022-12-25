@@ -86,7 +86,7 @@ const Contact: NextPage = () => {
               </label>
               <input
                 type="text"
-                className="form-input"
+                className="form-input custom-focus"
                 required
                 value={formData.name}
                 onChange={onNameChange}
@@ -101,7 +101,7 @@ const Contact: NextPage = () => {
               </label>
               <input
                 type="email"
-                className="form-input"
+                className="form-input custom-focus"
                 aria-describedby="email"
                 value={formData.email}
                 onChange={onEmailChange}
@@ -114,7 +114,7 @@ const Contact: NextPage = () => {
               <label htmlFor="subject">subject</label>
               <input
                 type="text"
-                className="form-input"
+                className="form-input custom-focus"
                 value={formData.subject}
                 onChange={onSubjectChange}
               />
@@ -125,7 +125,7 @@ const Contact: NextPage = () => {
             <FormGroup>
               <label htmlFor="message">message</label>
               <textarea
-                className="form-input"
+                className="form-input custom-focus"
                 rows={6}
                 cols={50}
                 value={formData.message}
@@ -136,7 +136,7 @@ const Contact: NextPage = () => {
 
           <motion.div variants={fade}>
             <FormGroup>
-              <button type="submit" className="form-btn">
+              <button type="submit" className="form-btn custom-focus">
                 SEND
               </button>
             </FormGroup>

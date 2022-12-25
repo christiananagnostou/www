@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image, { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { fade, pageAnimation } from "../components/animation";
+import { pageAnimation, photoAnim } from "../components/animation";
 import { useScroll } from "../components/Hooks/useScroll";
 import Range from "../components/Shared/Range";
 import PageTitle from "../components/Styles/PageTitle";
@@ -81,16 +81,30 @@ const Img = ({ imageData }: { imageData: StaticImageData }) => {
   const [ref, controls] = useScroll();
 
   return (
-    <ImageContainer
-      ref={ref as React.Ref<HTMLDivElement>}
-      variants={fade as Variants}
-      animate={controls as AnimationControls}
-      initial="hidden"
-    >
-      <Image src={imageData} alt="By Christian Anagnostou" blurDataURL={imageData.blurDataURL} />
-    </ImageContainer>
+    <Hide>
+      <ImageContainer
+        ref={ref as React.Ref<HTMLDivElement>}
+        variants={photoAnim as Variants}
+        animate={controls as AnimationControls}
+        initial="hidden"
+      >
+        <Image src={imageData} alt="By Christian Anagnostou" blurDataURL={imageData.blurDataURL} />
+      </ImageContainer>
+    </Hide>
   );
 };
+
+const Hide = styled.div`
+  overflow: hidden;
+  border-radius: 5px;
+  transition: all 0.5s ease;
+  width: 100%;
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 5px 20px 10px rgba(20, 20, 20, 0.9);
+  }
+`;
 
 const ImageContainer = styled(motion.div)`
   position: relative;
