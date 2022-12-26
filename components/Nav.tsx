@@ -47,7 +47,7 @@ function Nav() {
 
   return (
     <StyledNav style={hidden ? { top: "-10vh" } : { top: 0 }}>
-      <div className="max-w-screen">
+      <div className="nav-inner max-w-screen">
         <Link href="/" id="logo">
           <ImageContainer>
             <Image src="/A.webp" alt="home profile" height={30} width={30} />
@@ -73,7 +73,6 @@ export default Nav;
 
 const StyledNav = styled.nav`
   height: 50px;
-  padding: 0.2rem 1rem;
   background: rgba(20, 20, 20, 0.6);
   display: flex;
   align-items: center;
@@ -81,11 +80,12 @@ const StyledNav = styled.nav`
   z-index: 999;
   transition: all 0.5s ease;
 
-  .max-w-screen {
+  .nav-inner {
     display: flex;
     margin: auto;
     justify-content: space-between;
     align-items: center;
+    padding: 0.2rem 1rem;
   }
 
   a {
