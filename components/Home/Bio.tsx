@@ -8,11 +8,9 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        At work <em>crafting interfaces</em>. Experimenting with subtle details to elevate the web
-        experience.
+        Studying the digital systems that shape our world and leaving a trail of <em>elegance</em>{" "}
+        along the way.
       </motion.p>
-
-      <motion.p variants={fade}>Studying the invisible systems that shape our world.</motion.p>
 
       <motion.p variants={fade}>
         While building web solutions at{" "}

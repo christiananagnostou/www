@@ -18,7 +18,7 @@ function works({}: Props) {
       </Head>
 
       <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <PageTitle titleLeft="my curated" titleRight="web creations" />
+        <PageTitle titleLeft="my work" titleRight="ever improving" />
 
         <ProjectListStyle>
           {ProjectState.map((project) => (
