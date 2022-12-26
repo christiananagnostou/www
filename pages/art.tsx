@@ -4,7 +4,7 @@ import Image, { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { pageAnimation, photoAnim } from "../components/animation";
-import { useScroll } from "../components/Hooks/useScroll";
+import { useScroll } from "../components/Hooks";
 import Range from "../components/Shared/Range";
 import PageTitle from "../components/Styles/PageTitle";
 import { ArtState } from "../data/ArtState";

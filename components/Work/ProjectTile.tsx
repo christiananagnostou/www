@@ -3,7 +3,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import { Project } from "../../types";
 import { fade, lineAnim, photoAnim } from "../animation";
-import { useScroll } from "../Hooks/useScroll";
+import { useScroll } from "../Hooks";
 
 type Props = {
   project: Project;

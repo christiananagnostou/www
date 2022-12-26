@@ -1,17 +1,25 @@
 import { motion } from "framer-motion";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fade, pageAnimation, staggerFadeFast } from "../components/animation";
 import Bio from "../components/Home/Bio";
+import { useWindowSize } from "../components/Hooks";
 import SocialLinks from "../components/SocialLinks";
-
-const NumTVBars = 90;
+import LeftArrow from "../components/SVG/LeftArrow";
+import RightArrow from "../components/SVG/RightArrow";
 
 const Sections = ["craft", "imbue", "clarify", "improve", "restart"];
 
 function Home() {
+  const { width } = useWindowSize();
+
   const [sectionIndex, setSectionIndex] = useState(0);
+  const [numTVBars, setNumTVBars] = useState(90);
+
+  useEffect(() => {
+    if (width) setNumTVBars(Math.min(Math.floor(width / 15), 90));
+  }, [width]);
 
   return (
     <>
@@ -26,8 +34,8 @@ function Home() {
 
         <TVControls variants={staggerFadeFast}>
           <div className="grill">
-            {[...new Array(NumTVBars)].map((_, i) => (
-              <TVBar key={i} index={i} variants={fade} />
+            {[...new Array(numTVBars)].map((_, i) => (
+              <TVBar key={i + "_" + numTVBars} index={i} variants={fade} totalBars={numTVBars} />
             ))}
           </div>
 
@@ -50,18 +58,7 @@ function Home() {
                 setSectionIndex((prev) => (prev === 0 ? Sections.length - 1 : prev - 1))
               }
             >
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                stroke-width="0"
-                viewBox="0 0 24 24"
-                height="16px"
-                width="16px"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path fill="none" d="M24 0v24H0V0h24z" opacity=".87"></path>
-                <path d="M14 7l-5 5 5 5V7z"></path>
-              </svg>
+              <LeftArrow />
             </motion.button>
             <motion.button
               variants={fade}
@@ -69,18 +66,7 @@ function Home() {
                 setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1))
               }
             >
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                stroke-width="0"
-                viewBox="0 0 24 24"
-                height="16px"
-                width="16px"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path fill="none" d="M0 0h24v24H0V0z"></path>
-                <path d="M10 17l5-5-5-5v10z"></path>
-              </svg>
+              <RightArrow />
             </motion.button>
           </div>
         </TVControls>
@@ -103,13 +89,13 @@ const Container = styled(motion.main)`
   }
 `;
 
-const TVBar = styled(motion.span)<{ index: number }>`
+const TVBar = styled(motion.span)<{ index: number; totalBars: number }>`
   display: block;
   height: var(--bar-height);
   width: auto;
   position: relative;
   flex: 1;
-  margin-right: 4px;
+  margin-right: var(--item-spacing);
 
   &:before {
     content: "";
@@ -123,49 +109,67 @@ const TVBar = styled(motion.span)<{ index: number }>`
     border-radius: 1px;
     top: 0;
     opacity: 1;
-    animation: lightup ${NumTVBars * 30 * 20 + "ms"} ${({ index }) => index * 30 + "ms"} infinite
-      forwards;
+    animation: lightup ${({ totalBars }) => totalBars * 30 * 5 + "ms"}
+      ${({ index }) => index * 30 + "ms"} infinite forwards;
   }
 
   @keyframes lightup {
-    from {
+    0% {
       opacity: 1;
     }
-    to {
+    50% {
       opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
     }
   }
 `;
 
 const TVControls = styled(motion.div)`
+  --item-spacing: 3.5px;
   padding: 0.5rem 0;
   width: 100%;
   display: flex;
   align-items: stretch;
 
   .grill {
+    --bar-height: 20px;
     display: flex;
     align-items: center;
     flex: 1;
-    --bar-height: 20px;
+
+    /* background: repeating-linear-gradient(
+      to right,
+      var(--accent) 0px,
+      var(--accent) 2px,
+      var(--body-bg) 2px,
+      var(--body-bg) 4px
+    ); */
   }
 
   .current-control {
     display: flex;
     align-items: stretch;
+    gap: var(--item-spacing);
 
     .label {
       height: 100%;
+      display: grid;
+      place-items: center;
       background: rgba(20, 20, 20, 0.5);
       border: 1px solid var(--accent);
       border-radius: 3px;
       padding: 0 1rem;
-      min-width: 100px;
+      min-width: 90px;
       text-align: center;
 
       .inner {
         color: #888;
         font-weight: 200;
+        font-size: 0.9rem;
+        line-height: 1rem;
+
         opacity: 0;
         transition: opacity 0.2s ease;
         animation: fadein 0.5s forwards;
@@ -190,10 +194,6 @@ const TVControls = styled(motion.div)`
       padding: 0;
       display: grid;
       place-items: center;
-
-      @media screen and (min-width: 768px) {
-        margin-left: 4px;
-      }
 
       svg {
         height: 20px;
