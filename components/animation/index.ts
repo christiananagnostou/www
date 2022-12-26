@@ -23,6 +23,14 @@ export const staggerFade = {
   },
 };
 
+export const staggerFadeFast = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { duration: 0.25, ease: "easeOut", staggerChildren: 0.005 },
+  },
+};
+
 export const photoAnim = {
   hidden: { scale: 1.1, opacity: 0 },
   show: {

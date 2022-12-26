@@ -36,7 +36,7 @@ function SocialLinks() {
 
 const SocialLinkList = styled(motion.ul)`
   width: fit-content;
-  margin: 1rem auto 3rem;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
