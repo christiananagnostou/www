@@ -6,6 +6,7 @@ const GlobalStyle = createGlobalStyle`
     --text: #aeaeae;
     --heading: #cecece;
     --body-bg: #1b1b1b;
+    --nav-height: 50px;
     --max-w-screen: 800px;
     --font-fallback: -apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
     --font-serif: "Newsreader","Signifier","Times",serif;
