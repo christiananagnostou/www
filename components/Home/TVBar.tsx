@@ -26,7 +26,7 @@ const Sections = [
 const MaxTVBars = 80;
 
 const TVBar = (props: Props) => {
-  const ticksRef = useRef<HTMLSpanElement>(null);
+  const knobRef = useRef<HTMLDivElement>(null);
   const barsRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -38,21 +38,21 @@ const TVBar = (props: Props) => {
   const [numTVBars, setNumTVBars] = useState(MaxTVBars);
 
   useEffect(() => {
-    if (width) setNumTVBars(Math.min(Math.floor(width / 15), MaxTVBars));
+    if (width) setNumTVBars(Math.min(Math.floor(width / 15), MaxTVBars)); // 15 makes the bar width look good
   }, [width]);
 
   const onKnobPan = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!ticksRef.current || !barsRef.current || !buttonRef.current) return;
+    if (!knobRef.current || !barsRef.current || !buttonRef.current) return;
     const barsContainerWidth = barsRef.current.clientWidth;
 
-    const prevPos = parseFloat(ticksRef.current.dataset.currentDeg || "0");
+    const prevPos = parseFloat(knobRef.current.dataset.currentDeg || "0");
     const newPos = Math.max(Math.min(prevPos + info.delta.x, barsContainerWidth), 0);
 
     const isBarFull = newPos === barsContainerWidth;
     setIsBarFull(isBarFull);
 
-    ticksRef.current.style.rotate = newPos + "deg";
-    ticksRef.current.dataset.currentDeg = newPos.toString();
+    knobRef.current.style.rotate = newPos + "deg";
+    knobRef.current.dataset.currentDeg = newPos.toString();
 
     Array.from(barsRef.current.children as HTMLCollectionOf<HTMLElement>).forEach(
       (bar, i) =>
@@ -63,15 +63,8 @@ const TVBar = (props: Props) => {
 
   return (
     <TVControls variants={staggerFadeFast}>
-      <Knob variants={fade} onPan={onKnobPan}>
-        <span className="inner">
-          <span className="point" />
-          <span className="ticks" ref={ticksRef}>
-            {[...new Array(4)].map((_, i) => (
-              <KnobTick index={i} key={i} />
-            ))}
-          </span>
-        </span>
+      <Knob variants={fade} onPan={onKnobPan} ref={knobRef}>
+        <div className="knob" />
       </Knob>
 
       <motion.div className="grill" ref={barsRef} onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
@@ -119,64 +112,62 @@ const TVBar = (props: Props) => {
 
 export default TVBar;
 
-const KnobTick = styled.span<{ index: number }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  display: block;
-  height: calc(100% - 2px);
-  width: 1px;
-  background: rgba(0, 0, 0, 0.25);
-  rotate: ${({ index }) => `${index * (360 / 8)}deg`};
-`;
-
 const Knob = styled(motion.div)`
-  border-radius: 50%;
-  overflow: hidden;
-  padding: 1.5px;
-  height: 24px;
-  width: 24px;
-  margin-right: var(--item-spacing);
-  box-shadow: inset 0 0 2px -1px var(--accent);
-  background: linear-gradient(45deg, rgba(100, 100, 100, 0.1), var(--accent));
-  rotate: 1deg;
-  cursor: ew-resize;
-  position: relative;
+  --knob-border-width: 2px;
+  --knob-tick-width: 4px;
+  --knob-size: 24px;
+
+  --s: rgb(193, 187, 174);
+  --s1: rgb(240, 220, 205);
+  --s2: rgb(200, 194, 181);
+  --s3: rgb(189, 183, 171);
+  --s4: rgb(157, 142, 124);
+
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
+  cursor: ew-resize;
+  rotate: 0deg;
 
-  .ticks {
-    display: block;
+  margin-right: var(--item-spacing);
+  position: relative;
+  border-radius: 50%;
+  width: var(--knob-size);
+  height: var(--knob-size);
+  background: linear-gradient(to top, #c6c6c6, #ededed);
+
+  .knob {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    rotate: 0deg;
+    width: calc(var(--knob-size) - var(--knob-border-width));
+    height: calc(var(--knob-size) - var(--knob-border-width));
+    top: calc((var(--knob-border-width) / 2));
+    left: calc((var(--knob-border-width) / 2));
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 50%;
+    background: linear-gradient(
+      90deg,
+      var(--s2) 10%,
+      var(--s4) 40.8%,
+      var(--s) 42%,
+      var(--s) 58%,
+      var(--s1) 59.2%,
+      var(--s2) 90%
+    );
+    box-shadow: 0 0.1em 0.2em 0 rgba(var(--s1), 0.9) inset,
+      0 -0.1em 0.3em 0 rgba(var(--s1), 0.3) inset, 0 0.08em 0.3em 0 rgba(#001, 0.3),
+      0.5em 0 1em 0 rgba(var(--s1), 0.5) inset, -0.5em 0 1em 0 rgba(var(--s4), 0.3) inset,
+      0 4em 1em -3.5em rgba(#002, 0.3);
   }
 
-  .inner {
-    width: 100%;
-    height: 100%;
-    padding: 3.5px;
-    display: block;
-    border-radius: inherit;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, rgba(100, 100, 100, 0.1), var(--accent));
-
-    .point {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      display: block;
-      border-radius: inherit;
-      box-shadow: inset 0 0 1px var(--body-bg), -1px 1px 3px rgba(0, 0, 0, 0.2);
-      background: linear-gradient(45deg, var(--body-bg), var(--accent));
-    }
+  .knob::before {
+    position: absolute;
+    content: "";
+    left: calc((var(--knob-size) / 2) - 1px);
+    width: 1px;
+    height: 30%;
+    border-radius: 0 0 1px 1px;
+    background: #b44;
+    /* box-shadow: -0.05em 0 0.1em 0 var(--s1), -0.05em 0 0.1em 0 rgba(#000, 0.4) inset; */
   }
 `;
 
