@@ -208,7 +208,7 @@ const TVControls = styled(motion.div)`
       height: 100%;
       background: rgba(20, 20, 20, 0.5);
       border: 1px solid var(--accent);
-      border-radius: 3px;
+      border-radius: 4px;
       padding: 0 1rem;
       min-width: 90px;
       text-align: center;
