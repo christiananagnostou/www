@@ -30,10 +30,11 @@ function Bio() {
           <a href="https://www.drinks.com/" target={"_blank"} rel="noreferrer">
             <em>DRINKS</em>
           </a> */}
-        , and on the weekends I work on projects like{" "}
+        , and built projects like{" "}
         <a href="https://www.liftclub.app/" target={"_blank"} rel="noreferrer">
-          <em>Lift Club.</em>
-        </a>
+          <em>Lift Club</em>
+        </a>{" "}
+        in my free time.
       </motion.p>
 
       <motion.p variants={fade}>
@@ -46,7 +47,6 @@ function Bio() {
 export default Bio;
 
 const Description = styled(motion.section)`
-  flex: 1;
   margin: auto;
   border-radius: 7px;
   padding: 1rem;

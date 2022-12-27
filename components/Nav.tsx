@@ -72,7 +72,7 @@ function Nav() {
 export default Nav;
 
 const StyledNav = styled.nav`
-  height: 50px;
+  height: var(--nav-height);
   background: rgba(20, 20, 20, 0.6);
   display: flex;
   align-items: center;
