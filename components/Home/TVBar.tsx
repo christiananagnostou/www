@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { fade, staggerFadeFast } from "../animation";
 import { useWindowSize } from "../Hooks";
+import StarBG from "./StarBG";
 
 type Props = {};
 
@@ -24,6 +25,34 @@ const Sections = [
 ];
 
 const MaxTVBars = 80;
+
+type Color = {
+  r: number;
+  g: number;
+  b: number;
+};
+
+const GColor = (r?: number, g?: number, b?: number): Color => {
+  r = typeof r === "undefined" ? 0 : r;
+  g = typeof g === "undefined" ? 0 : g;
+  b = typeof b === "undefined" ? 0 : b;
+  return { r: r, g: g, b: b };
+};
+
+const createColorRange = (c1: Color, c2: Color) => {
+  var colorList = [],
+    tmpColor;
+  for (var i = 0; i < 255; i++) {
+    tmpColor = GColor();
+    tmpColor.r = c1.r + (i * (c2.r - c1.r)) / 255;
+    tmpColor.g = c1.g + (i * (c2.g - c1.g)) / 255;
+    tmpColor.b = c1.b + (i * (c2.b - c1.b)) / 255;
+    colorList.push(tmpColor);
+  }
+  return colorList;
+};
+
+const BarColorRange = createColorRange({ r: 80, g: 80, b: 80 }, { r: 255, g: 255, b: 255 });
 
 const TVBar = (props: Props) => {
   const knobRef = useRef<HTMLDivElement>(null);
@@ -48,17 +77,21 @@ const TVBar = (props: Props) => {
     const prevPos = parseFloat(knobRef.current.dataset.currentDeg || "0");
     const newPos = Math.max(Math.min(prevPos + info.delta.x, barsContainerWidth), 0);
 
+    const percentToFull = newPos / barsContainerWidth;
+
     const isBarFull = newPos === barsContainerWidth;
     setIsBarFull(isBarFull);
 
-    knobRef.current.style.rotate = newPos + "deg";
+    knobRef.current.style.rotate = percentToFull * 360 + "deg";
     knobRef.current.dataset.currentDeg = newPos.toString();
 
-    Array.from(barsRef.current.children as HTMLCollectionOf<HTMLElement>).forEach(
-      (bar, i) =>
-        (bar.style.background =
-          i / numTVBars < newPos / barsContainerWidth ? "white" : "var(--accent)")
-    );
+    Array.from(barsRef.current.children as HTMLCollectionOf<HTMLElement>).forEach((bar, i) => {
+      const { r, g, b } = BarColorRange[i];
+      const barColor = `rgb(${r},${g},${b})`;
+      const isBarHiglighted = i / numTVBars < percentToFull;
+
+      bar.style.background = isBarHiglighted ? barColor : "var(--accent)";
+    });
   };
 
   return (
@@ -106,6 +139,8 @@ const TVBar = (props: Props) => {
           ))}
         </motion.button>
       </div>
+
+      {isBarFull && <StarBG />}
     </TVControls>
   );
 };
@@ -113,15 +148,14 @@ const TVBar = (props: Props) => {
 export default TVBar;
 
 const Knob = styled(motion.div)`
-  --knob-border-width: 2px;
-  --knob-tick-width: 4px;
+  --knob-border-width: 1px;
   --knob-size: 24px;
 
-  --s: rgb(193, 187, 174);
-  --s1: rgb(240, 220, 205);
-  --s2: rgb(200, 194, 181);
-  --s3: rgb(189, 183, 171);
-  --s4: rgb(157, 142, 124);
+  --s: rgb(87, 84, 77);
+  --s1: rgb(112, 102, 95);
+  --s2: rgb(80, 78, 72);
+  --s3: rgb(45, 43, 40);
+  --s4: rgb(35, 31, 27);
 
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -133,14 +167,13 @@ const Knob = styled(motion.div)`
   border-radius: 50%;
   width: var(--knob-size);
   height: var(--knob-size);
-  background: linear-gradient(to top, #c6c6c6, #ededed);
+  background: linear-gradient(to top, var(--s3), var(--s2));
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0);
+  padding: var(--knob-border-width);
 
   .knob {
-    position: absolute;
-    width: calc(var(--knob-size) - var(--knob-border-width));
-    height: calc(var(--knob-size) - var(--knob-border-width));
-    top: calc((var(--knob-border-width) / 2));
-    left: calc((var(--knob-border-width) / 2));
+    height: 100%;
+    width: 100%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     border-radius: 50%;
@@ -163,11 +196,11 @@ const Knob = styled(motion.div)`
     position: absolute;
     content: "";
     left: calc((var(--knob-size) / 2) - 1px);
-    width: 1px;
+    width: 2px;
     height: 30%;
     border-radius: 0 0 1px 1px;
-    background: #b44;
-    /* box-shadow: -0.05em 0 0.1em 0 var(--s1), -0.05em 0 0.1em 0 rgba(#000, 0.4) inset; */
+    background: rgba(187, 68, 68, 0.75);
+    box-shadow: -0.05em 0 1px 0 var(--s1), -0.05em 0 1px 0 rgba(#000, 0.4) inset;
   }
 `;
 
@@ -205,6 +238,7 @@ const TVControls = styled(motion.div)`
       text-align: center;
       position: relative;
       overflow: hidden;
+      transition: all 0.5s ease;
       cursor: not-allowed;
 
       .inner {
@@ -223,11 +257,12 @@ const TVControls = styled(motion.div)`
       }
 
       &.highlight {
-        border: 1px solid #888;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: inset 0 1px 3px rgba(200, 200, 200, 0.2), inset 0 -1px 3px rgba(0, 0, 0, 0.5);
         cursor: pointer;
 
         .inner {
-          color: white;
+          color: rgba(255, 255, 255, 0.9);
         }
       }
     }
