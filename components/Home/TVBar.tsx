@@ -152,10 +152,10 @@ const Knob = styled(motion.div)`
   --knob-size: 24px;
 
   --s: rgb(87, 84, 77);
-  --s1: rgb(112, 102, 95);
+  --s1: rgb(67, 61, 56);
   --s2: rgb(80, 78, 72);
   --s3: rgb(45, 43, 40);
-  --s4: rgb(35, 31, 27);
+  --s4: rgb(42, 37, 32);
 
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -200,7 +200,6 @@ const Knob = styled(motion.div)`
     height: 30%;
     border-radius: 0 0 1px 1px;
     background: rgba(187, 68, 68, 0.75);
-    box-shadow: -0.05em 0 1px 0 var(--s1), -0.05em 0 1px 0 rgba(#000, 0.4) inset;
   }
 `;
 
