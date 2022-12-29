@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useWindowSize } from "../Hooks";
 
-type Props = {};
+type Props = { show: boolean };
 
-const StarBG = (props: Props) => {
+const StarBG = ({ show }: Props) => {
   const { width, height } = useWindowSize();
 
   const [stars, setStars] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
-    if (!width || !height) return;
+    setStars([]); // reset stars if window changes size
+    if (!width || !height || !show) return;
 
     let starCount = 0;
 
@@ -24,9 +25,9 @@ const StarBG = (props: Props) => {
     }, 150);
 
     return () => clearInterval(addStar);
-  }, [width, height]);
+  }, [width, height, show]);
 
-  return <Container>{stars}</Container>;
+  return <Container show={show}>{stars}</Container>;
 };
 
 export default StarBG;
@@ -75,7 +76,7 @@ const StarStyle = styled.svg`
   }
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ show: boolean }>`
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -83,4 +84,8 @@ const Container = styled.div`
   left: 0;
   z-index: -1;
   pointer-events: none;
+  transition: background-position 5s ease;
+  background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
+  background-size: 100% 200%;
+  background-position: ${({ show }) => (show ? "bottom" : "top")};
 `;

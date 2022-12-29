@@ -1,4 +1,5 @@
 import { motion, PanInfo } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { fade, staggerFadeFast } from "../animation";
@@ -95,57 +96,81 @@ const TVBar = (props: Props) => {
   };
 
   return (
-    <TVControls variants={staggerFadeFast}>
-      <Knob variants={fade} onPan={onKnobPan} ref={knobRef}>
-        <div className="knob" />
-      </Knob>
+    <>
+      <TVControls variants={staggerFadeFast}>
+        <Knob variants={fade} onPan={onKnobPan} ref={knobRef}>
+          <div className="knob" />
+        </Knob>
 
-      <motion.div className="grill" ref={barsRef} onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
-        {[...new Array(numTVBars)].map((_, i) => (
-          <Bar
-            key={i + "_" + numTVBars}
-            variants={{
-              hidden: { opacity: 0 },
-              show: { opacity: 0.5, transition: { duration: 0.5, ease: "ease" } },
-            }}
-          />
-        ))}
-      </motion.div>
-
-      <div className="current-control">
-        <motion.button
-          className={`label ${isBarFull ? "highlight" : ""}`}
-          variants={fade}
-          ref={buttonRef}
-          onClick={
-            isBarFull
-              ? () => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1))
-              : () => {}
-          }
-          disabled={!isBarFull}
+        <motion.div
+          className="grill"
+          ref={barsRef}
+          onPan={(width || 0) < 768 ? onKnobPan : () => {}}
         >
-          {Sections.map((section) => (
-            <span
-              className="inner"
-              key={section}
-              style={
-                Sections[sectionIndex] === section
-                  ? { top: 0, opacity: 1 }
-                  : { top: "150%", opacity: 0 }
-              }
-            >
-              {section}
-            </span>
+          {[...new Array(numTVBars)].map((_, i) => (
+            <Bar
+              key={i + "_" + numTVBars}
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 0.5, transition: { duration: 0.5, ease: "ease" } },
+              }}
+            />
           ))}
-        </motion.button>
-      </div>
+        </motion.div>
 
-      {isBarFull && <StarBG />}
-    </TVControls>
+        <div className="current-control">
+          <motion.button
+            className={`label ${isBarFull ? "highlight" : ""}`}
+            variants={fade}
+            ref={buttonRef}
+            onClick={
+              isBarFull
+                ? () => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1))
+                : () => {}
+            }
+            disabled={!isBarFull}
+          >
+            {Sections.map((section) => (
+              <span
+                className="inner"
+                key={section}
+                style={
+                  Sections[sectionIndex] === section
+                    ? { top: 0, opacity: 1 }
+                    : { top: "150%", opacity: 0 }
+                }
+              >
+                {section}
+              </span>
+            ))}
+          </motion.button>
+        </div>
+      </TVControls>
+
+      <Signature
+        src="/signature.png"
+        style={
+          isBarFull
+            ? { opacity: 1, transition: "opacity 2s 2s ease" }
+            : { opacity: 0, transition: "opacity 0.3s ease" }
+        }
+        height={70}
+        width={150}
+        alt="Signature of Christian Anagnostou"
+      />
+
+      <StarBG show={isBarFull} />
+    </>
   );
 };
 
 export default TVBar;
+
+const Signature = styled(Image)`
+  margin: 1rem 0 0 auto;
+  pointer-events: none;
+  user-select: none;
+`;
 
 const Knob = styled(motion.div)`
   --knob-border-width: 1px;
