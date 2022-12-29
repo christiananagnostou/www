@@ -10,7 +10,7 @@ const StarBG = ({ show }: Props) => {
   const [stars, setStars] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
-    setStars([]); // reset stars if window changes size
+    if (!show) setStars([]);
     if (!width || !height || !show) return;
 
     let starCount = 0;

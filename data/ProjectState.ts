@@ -11,7 +11,8 @@ export const ProjectState: Project[] = [
     mobileImgs: ["/img/projects/electriq-app/calendar.png"],
     externalLink: "https://electriq.app/",
     slug: "electriq-app",
-    summary: "Project management visualizer for teams using Linear who also like graphs",
+    summary:
+      "Visualize and manage Linear projects with timelines, kanbans, calendars, and much more",
     details: [
       {
         title: "Purpose",
@@ -63,7 +64,7 @@ export const ProjectState: Project[] = [
     externalLink: "https://liftclub.app/",
     github: "https://github.com/ChristianAnagnostou/liftclub",
     slug: "liftclub",
-    summary: "Track your workout progress with little effort and get big insights",
+    summary: "Track your workout progress with little effort and gain big insights",
     details: [
       {
         title: "Purpose",

@@ -26,6 +26,7 @@ const Sections = [
 ];
 
 const MaxTVBars = 80;
+const BarHeight = 24;
 
 type Color = {
   r: number;
@@ -53,7 +54,7 @@ const createColorRange = (c1: Color, c2: Color) => {
   return colorList;
 };
 
-const BarColorRange = createColorRange({ r: 70, g: 70, b: 70 }, { r: 255, g: 255, b: 255 });
+const BarColorRange = createColorRange({ r: 80, g: 80, b: 95 }, { r: 125, g: 125, b: 140 });
 
 const TVBar = (props: Props) => {
   const knobRef = useRef<HTMLDivElement>(null);
@@ -83,11 +84,18 @@ const TVBar = (props: Props) => {
     const isBarFull = newPos === barsContainerWidth;
     setIsBarFull(isBarFull);
 
+    // const { r, g, b } = BarColorRange[Math.floor(percentToFull * (BarColorRange.length - 1))];
+    // knobRef.current.style.color = `rgb(${r},${g},${b})`;
+    // knobRef.current.style.left =
+    //   Math.min(newPos, barsContainerWidth - BarHeight + BarHeight / 2 - 6) + "px";
     knobRef.current.style.rotate = percentToFull * 360 + "deg";
     knobRef.current.dataset.currentDeg = newPos.toString();
 
     Array.from(barsRef.current.children as HTMLCollectionOf<HTMLElement>).forEach((bar, i) => {
-      const { r, g, b } = BarColorRange[i];
+      const { r, g, b } =
+        BarColorRange[
+          Math.floor((i / barsRef.current!.children.length) * (BarColorRange.length - 1))
+        ];
       const barColor = `rgb(${r},${g},${b})`;
       const isBarHiglighted = i / numTVBars < percentToFull;
 
@@ -224,11 +232,13 @@ const Knob = styled(motion.div)`
 
 const TVControls = styled(motion.div)`
   --item-spacing: 4px;
+  --bar-height: ${BarHeight}px;
 
   padding: 0.5rem 0;
   width: 100%;
   display: flex;
   align-items: stretch;
+  position: relative;
 
   user-select: none;
   * {
@@ -245,6 +255,7 @@ const TVControls = styled(motion.div)`
     display: flex;
     align-items: stretch;
     gap: var(--item-spacing);
+    height: var(--bar-height);
 
     .label {
       height: 100%;
@@ -272,6 +283,7 @@ const TVControls = styled(motion.div)`
         right: 0;
         bottom: 0;
         transition: all 0.5s ease;
+        opacity: 0 !important;
       }
 
       &.highlight {
@@ -281,6 +293,7 @@ const TVControls = styled(motion.div)`
 
         .inner {
           color: rgba(255, 255, 255, 0.9);
+          opacity: 1 !important;
         }
       }
     }
