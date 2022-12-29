@@ -42,14 +42,15 @@ const GColor = (r?: number, g?: number, b?: number): Color => {
 };
 
 const createColorRange = (c1: Color, c2: Color) => {
-  var colorList = [],
-    tmpColor;
+  var colorList = [];
   for (var i = 0; i < 255; i++) {
-    tmpColor = GColor();
-    tmpColor.r = c1.r + (i * (c2.r - c1.r)) / 255;
-    tmpColor.g = c1.g + (i * (c2.g - c1.g)) / 255;
-    tmpColor.b = c1.b + (i * (c2.b - c1.b)) / 255;
-    colorList.push(tmpColor);
+    colorList.push(
+      GColor(
+        c1.r + (i * (c2.r - c1.r)) / 255,
+        c1.g + (i * (c2.g - c1.g)) / 255,
+        c1.b + (i * (c2.b - c1.b)) / 255
+      )
+    );
   }
   return colorList;
 };
@@ -106,8 +107,8 @@ const TVBar = (props: Props) => {
   return (
     <>
       <TVControls variants={staggerFadeFast}>
-        <Knob variants={fade} onPan={onKnobPan} ref={knobRef}>
-          <div className="knob" />
+        <Knob variants={fade} onPan={onKnobPan}>
+          <div className="knob" ref={knobRef} />
         </Knob>
 
         <motion.div
@@ -186,6 +187,7 @@ const Knob = styled(motion.div)`
 
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
+
   cursor: ew-resize;
   rotate: 0deg;
 
@@ -195,14 +197,18 @@ const Knob = styled(motion.div)`
   width: var(--knob-size);
   height: var(--knob-size);
   background: linear-gradient(to top, var(--s3), var(--s2));
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0);
+  box-shadow: 0 1px 3px rgb(0, 0, 0);
   padding: var(--knob-border-width);
 
   .knob {
     height: 100%;
     width: 100%;
+    /* Prevent 1px shift */
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1, 1);
+    transform: translateZ(0) scale(1, 1);
+
     border-radius: 50%;
     background: linear-gradient(
       90deg,
@@ -220,9 +226,9 @@ const Knob = styled(motion.div)`
   }
 
   .knob::before {
-    position: absolute;
     content: "";
-    left: calc((var(--knob-size) / 2) - 1px);
+    position: absolute;
+    left: calc((var(--knob-size) / 2) - 2px);
     width: 2px;
     height: 30%;
     border-radius: 0 0 1px 1px;
