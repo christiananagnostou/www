@@ -53,7 +53,7 @@ const createColorRange = (c1: Color, c2: Color) => {
   return colorList;
 };
 
-const BarColorRange = createColorRange({ r: 80, g: 80, b: 80 }, { r: 255, g: 255, b: 255 });
+const BarColorRange = createColorRange({ r: 70, g: 70, b: 70 }, { r: 255, g: 255, b: 255 });
 
 const TVBar = (props: Props) => {
   const knobRef = useRef<HTMLDivElement>(null);
@@ -108,13 +108,7 @@ const TVBar = (props: Props) => {
           onPan={(width || 0) < 768 ? onKnobPan : () => {}}
         >
           {[...new Array(numTVBars)].map((_, i) => (
-            <Bar
-              key={i + "_" + numTVBars}
-              variants={{
-                hidden: { opacity: 0 },
-                show: { opacity: 0.5, transition: { duration: 0.5, ease: "ease" } },
-              }}
-            />
+            <Bar key={i + "_" + numTVBars} variants={fade} />
           ))}
         </motion.div>
 
@@ -176,11 +170,11 @@ const Knob = styled(motion.div)`
   --knob-border-width: 1px;
   --knob-size: 24px;
 
-  --s: rgb(87, 84, 77);
-  --s1: rgb(67, 61, 56);
-  --s2: rgb(80, 78, 72);
-  --s3: rgb(45, 43, 40);
-  --s4: rgb(42, 37, 32);
+  --s: rgb(77, 79, 87);
+  --s1: rgb(56, 59, 67);
+  --s2: rgb(72, 74, 80);
+  --s3: rgb(40, 41, 45);
+  --s4: rgb(32, 34, 42);
 
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -295,16 +289,10 @@ const TVControls = styled(motion.div)`
 
 const Bar = styled(motion.span)`
   display: block;
-  height: 100%;
+  height: 2px;
   width: auto;
   position: relative;
   flex: 1;
   margin-right: var(--item-spacing);
-  opacity: 0.5;
   background: var(--accent);
-  border-radius: 1px;
-
-  .highlight {
-    color: rgb(237, 172, 93);
-  }
 `;
