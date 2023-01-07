@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import Logo from "../public/A-circle.webp";
 
 const Links = [
   { href: "/", title: "About" },
@@ -12,7 +13,7 @@ const Links = [
   { href: "/contact", title: "Contact" },
 ];
 
-function Nav() {
+const Nav = () => {
   const { pathname } = useRouter();
 
   const [hidden, setHidden] = useState(false);
@@ -48,11 +49,16 @@ function Nav() {
   return (
     <StyledNav style={hidden ? { top: "-10vh" } : { top: 0 }}>
       <div className="nav-inner max-w-screen">
-        <Link href="/" id="logo">
-          <ImageContainer>
-            <Image src="/A.webp" alt="home profile" height={30} width={30} />
-          </ImageContainer>
-        </Link>
+        <ImageContainer>
+          <Link href="/" id="logo">
+            <Image
+              src={Logo}
+              alt="Website logo that links to the home page"
+              height={30}
+              width={30}
+            />
+          </Link>
+        </ImageContainer>
         <ul>
           {Links.map(({ href, title }) => (
             <li key={title}>
@@ -68,7 +74,7 @@ function Nav() {
       </div>
     </StyledNav>
   );
-}
+};
 export default Nav;
 
 const StyledNav = styled.nav`
@@ -112,16 +118,15 @@ const StyledNav = styled.nav`
 `;
 
 const ImageContainer = styled.div`
+  border-radius: 50%;
+  overflow: hidden;
+
   img {
-    aspect-ratio: 1;
-    margin: auto;
-    border-radius: 50%;
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
     object-fit: cover;
-    height: 30px;
-    width: 30px;
+    display: block;
+    border-radius: inherit;
+    user-select: none;
+    pointer-events: none;
   }
 `;
 
