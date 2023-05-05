@@ -1,16 +1,16 @@
-import { AnimationControls, motion, Variants } from "framer-motion";
-import Link from "next/link";
-import styled from "styled-components";
-import { Project } from "../../types";
-import { fade, lineAnim, photoAnim } from "../animation";
-import { useScroll } from "../Hooks";
+import { AnimationControls, motion, Variants } from 'framer-motion'
+import Link from 'next/link'
+import styled from 'styled-components'
+import { Project } from '../../types'
+import { fade, lineAnim, photoAnim } from '../animation'
+import { useScroll } from '../Hooks'
 
 type Props = {
-  project: Project;
-};
+  project: Project
+}
 
 const ProjectTile = ({ project }: Props) => {
-  const [ref, controls] = useScroll();
+  const [ref, controls] = useScroll()
 
   return (
     <ProjectContainer
@@ -20,7 +20,7 @@ const ProjectTile = ({ project }: Props) => {
       initial="hidden"
     >
       <motion.header variants={lineAnim}>
-        <Link href={"/work/" + project.slug}>
+        <Link href={'/work/' + project.slug}>
           <h3>{project.title}</h3>
         </Link>
 
@@ -41,7 +41,7 @@ const ProjectTile = ({ project }: Props) => {
         </div>
       </motion.header>
 
-      <Link href={"/work/" + project.slug} className="image-container">
+      <Link href={'/work/' + project.slug} className="image-container">
         <Hide>
           <motion.img variants={photoAnim} src={project.desktopImgs[0]} alt={project.title} />
         </Hide>
@@ -51,10 +51,10 @@ const ProjectTile = ({ project }: Props) => {
         </motion.span>
       </Link>
     </ProjectContainer>
-  );
-};
+  )
+}
 
-export default ProjectTile;
+export default ProjectTile
 
 const ProjectContainer = styled(motion.div)`
   position: relative;
@@ -127,12 +127,12 @@ const ProjectContainer = styled(motion.div)`
       font-weight: 500;
 
       @media screen and (min-width: 768px) {
-        max-width: 30%;
-        min-width: 30%;
+        max-width: 50%;
+        min-width: 50%;
       }
     }
   }
-`;
+`
 
 const Hide = styled.div`
   overflow: hidden;
@@ -143,4 +143,4 @@ const Hide = styled.div`
   &:hover {
     box-shadow: 0 5px 20px 10px rgba(20, 20, 20, 0.9);
   }
-`;
+`

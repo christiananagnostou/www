@@ -1,35 +1,35 @@
-import emailjs from "emailjs-com";
-import { motion } from "framer-motion";
-import { NextPage } from "next";
-import Head from "next/head";
-import { ChangeEvent, FormEvent, useState } from "react";
-import styled from "styled-components";
-import { fade, pageAnimation, staggerFade } from "../components/animation";
-import SocialLinks from "../components/SocialLinks";
-import PageTitle from "../components/Styles/PageTitle";
+import emailjs from 'emailjs-com'
+import { motion } from 'framer-motion'
+import { NextPage } from 'next'
+import Head from 'next/head'
+import { ChangeEvent, FormEvent, useState } from 'react'
+import styled from 'styled-components'
+import { fade, pageAnimation, staggerFade } from '../components/animation'
+import SocialLinks from '../components/SocialLinks'
+import PageTitle from '../components/Styles/PageTitle'
 
 const initialFormState = {
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-};
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+}
 
 const Contact: NextPage = () => {
-  const [formData, setFormData] = useState(initialFormState);
-  const [sentSuccessful, setsentSuccessful] = useState(false);
+  const [formData, setFormData] = useState(initialFormState)
+  const [sentSuccessful, setsentSuccessful] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     let templateParams = {
-      to_name: "Christian",
+      to_name: 'Christian',
       from_name: formData.name,
       from_email: formData.email,
       subject: formData.subject,
       message: formData.message,
-      site: "christiancodes.co",
-    };
+      site: 'christiancodes.co',
+    }
 
     try {
       const res = await emailjs.send(
@@ -37,36 +37,36 @@ const Contact: NextPage = () => {
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         templateParams,
         process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
-      );
+      )
 
       if (res.status === 200) {
-        setFormData(initialFormState);
-        setsentSuccessful(true);
+        setFormData(initialFormState)
+        setsentSuccessful(true)
       }
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, name: e.target.value });
-  };
+    setFormData({ ...formData, name: e.target.value })
+  }
 
   const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, email: e.target.value });
-  };
+    setFormData({ ...formData, email: e.target.value })
+  }
   const onSubjectChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, subject: e.target.value });
-  };
+    setFormData({ ...formData, subject: e.target.value })
+  }
 
   const onMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData({ ...formData, message: e.target.value });
-  };
+    setFormData({ ...formData, message: e.target.value })
+  }
 
   return (
     <>
       <Head>
-        <title>Contact - Christian Anagnostou</title>
+        <title>Contact</title>
         <meta name="description" content="Christian Anagnostou's Web Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -152,10 +152,10 @@ const Contact: NextPage = () => {
         </motion.div>
       </ContactStyle>
     </>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact
 
 const ContactStyle = styled(motion.div)`
   display: flex;
@@ -173,13 +173,13 @@ const ContactStyle = styled(motion.div)`
     width: 100%;
     margin-bottom: 1rem;
   }
-`;
+`
 
 const StyledForm = styled(motion.form)`
   width: 100%;
   margin-bottom: 2rem;
   margin-top: -1rem;
-`;
+`
 
 const FormGroup = styled.div`
   margin: auto;
@@ -218,4 +218,4 @@ const FormGroup = styled.div`
     margin-top: 1rem;
     cursor: pointer;
   }
-`;
+`

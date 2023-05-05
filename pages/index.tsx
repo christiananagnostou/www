@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
-import Head from "next/head";
-import styled from "styled-components";
-import { pageAnimation } from "../components/animation";
-import Bio from "../components/Home/Bio";
-import TVBar from "../components/Home/TVBar";
-import SocialLinks from "../components/SocialLinks";
+import { motion } from 'framer-motion'
+import Head from 'next/head'
+import styled from 'styled-components'
+import { pageAnimation } from '../components/animation'
+import Bio from '../components/Home/Bio'
+import TVBar from '../components/Home/TVBar'
+import SocialLinks from '../components/SocialLinks'
 
 function Home() {
   return (
@@ -22,10 +22,10 @@ function Home() {
         <SocialLinks />
       </Container>
     </>
-  );
+  )
 }
 
-export default Home;
+export default Home
 
 const Container = styled(motion.main)`
   max-width: var(--max-w-screen);
@@ -44,4 +44,4 @@ const Container = styled(motion.main)`
   @media screen and (min-width: 768px) {
     padding: 3rem 1rem;
   }
-`;
+`

@@ -1,29 +1,29 @@
-import { AnimationControls, motion, Variants } from "framer-motion";
-import Head from "next/head";
-import Image, { StaticImageData } from "next/image";
-import React, { useState } from "react";
-import styled from "styled-components";
-import { pageAnimation, photoAnim } from "../components/animation";
-import { useScroll } from "../components/Hooks";
-import Range from "../components/Shared/Range";
-import PageTitle from "../components/Styles/PageTitle";
-import { ArtState } from "../data/ArtState";
+import { AnimationControls, motion, Variants } from 'framer-motion'
+import Head from 'next/head'
+import Image, { StaticImageData } from 'next/image'
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { pageAnimation, photoAnim } from '../components/animation'
+import { useScroll } from '../components/Hooks'
+import Range from '../components/Shared/Range'
+import PageTitle from '../components/Styles/PageTitle'
+import { ArtState } from '../lib/ArtState'
 
-type Props = {};
+type Props = {}
 
-const categories = Object.keys(ArtState);
+const categories = Object.keys(ArtState)
 
 const Art = (props: Props) => {
-  const [numColumns, setNumColumns] = useState(3);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [numColumns, setNumColumns] = useState(3)
+  const [selectedCategory, setSelectedCategory] = useState(categories[0])
 
-  const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])];
-  ArtState[selectedCategory]?.map((img, i) => columns[i % numColumns].push(img));
+  const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])]
+  ArtState[selectedCategory]?.map((img, i) => columns[i % numColumns].push(img))
 
   return (
     <>
       <Head>
-        <title>Art - Christian Anagnostou</title>
+        <title>Art</title>
         <meta name="description" content="Christian Anagnostou's Web Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -49,7 +49,7 @@ const Art = (props: Props) => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? "highlight" : ""}
+                className={selectedCategory === category ? 'highlight' : ''}
               >
                 {category}
               </button>
@@ -60,7 +60,7 @@ const Art = (props: Props) => {
         <Columns numColumns={numColumns}>
           {columns.map((col, i) => (
             <Column
-              key={"column_" + i}
+              key={'column_' + i}
               numColumns={numColumns}
               variants={{ show: { transition: { staggerChildren: 0.5 } } }}
             >
@@ -72,13 +72,13 @@ const Art = (props: Props) => {
         </Columns>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default Art;
+export default Art
 
 const Img = ({ imageData }: { imageData: StaticImageData }) => {
-  const [ref, controls] = useScroll();
+  const [ref, controls] = useScroll()
 
   return (
     <Hide>
@@ -91,8 +91,8 @@ const Img = ({ imageData }: { imageData: StaticImageData }) => {
         <Image src={imageData} alt="By Christian Anagnostou" blurDataURL={imageData.blurDataURL} />
       </ImageContainer>
     </Hide>
-  );
-};
+  )
+}
 
 const Hide = styled.div`
   overflow: hidden;
@@ -104,7 +104,7 @@ const Hide = styled.div`
   &:hover {
     box-shadow: 0 5px 20px 10px rgba(20, 20, 20, 0.9);
   }
-`;
+`
 
 const ImageContainer = styled(motion.div)`
   position: relative;
@@ -116,7 +116,7 @@ const ImageContainer = styled(motion.div)`
     width: 100%;
     border-radius: 5px;
   }
-`;
+`
 
 const Container = styled(motion.div)`
   overflow: hidden;
@@ -165,12 +165,12 @@ const Container = styled(motion.div)`
       }
     }
   }
-`;
+`
 
 const Columns = styled.section<{ numColumns: number }>`
   display: flex;
   gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
-`;
+`
 
 const Column = styled(motion.div)<{ numColumns: number }>`
   margin: 0;
@@ -178,4 +178,4 @@ const Column = styled(motion.div)<{ numColumns: number }>`
   flex-direction: column;
   gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
   flex: 1;
-`;
+`

@@ -1,20 +1,25 @@
-type Props = {};
+type Props = {}
 
 const RightArrow = (props: Props) => {
   return (
     <svg
       stroke="currentColor"
       fill="currentColor"
-      strokeWidth="0"
-      viewBox="0 0 24 24"
-      height="16px"
-      width="16px"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="1em"
+      width="1em"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path fill="none" d="M0 0h24v24H0V0z"></path>
-      <path d="M10 17l5-5-5-5v10z"></path>
+      <path
+        fill="none"
+        stroke-linecap="round"
+        strokeLinejoin="round"
+        strokeWidth="48"
+        d="M184 112l144 144-144 144"
+      ></path>
     </svg>
-  );
-};
+  )
+}
 
-export default RightArrow;
+export default RightArrow

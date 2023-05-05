@@ -1,34 +1,34 @@
-import { motion } from "framer-motion";
-import Image from "next/image";
-import styled from "styled-components";
-import { pageAnimation } from "../../components/animation";
-import { ProjectState } from "../../data/ProjectState";
-import { Project } from "../../types";
+import { motion } from 'framer-motion'
+import Head from 'next/head'
+import Image from 'next/image'
+import { GetStaticPaths, GetStaticProps } from 'next/types'
+import styled from 'styled-components'
 
-import { GetStaticPaths, GetStaticProps } from "next";
-import Head from "next/head";
+import { pageAnimation } from '../../components/animation'
+import { ProjectState } from '../../lib/ProjectState'
+import { Project } from '../../types'
 
 type Props = {
-  project: Project;
-};
+  project: Project
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: ProjectState.map((project) => ({ params: { slug: project.slug } })),
-    fallback: "blocking",
-  };
-};
+    fallback: 'blocking',
+  }
+}
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const project = ProjectState.find((proj) => proj.slug === context.params?.slug);
-  return { props: { project } };
-};
+  const project = ProjectState.find((proj) => proj.slug === context.params?.slug)
+  return { props: { project } }
+}
 
 const SingleProject = ({ project }: Props) => {
   return (
     <>
       <Head>
-        <title>{project.title} - Christian Anagnostou</title>
+        <title>{project.title}</title>
         <meta name="description" content="Christian Anagnostou's Web Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -38,12 +38,7 @@ const SingleProject = ({ project }: Props) => {
 
         <div className="link-container">
           {project.externalLink && (
-            <motion.a
-              className="live-link"
-              href={project.externalLink}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <motion.a className="live-link" href={project.externalLink} target="_blank" rel="noreferrer">
               Live Site
             </motion.a>
           )}
@@ -56,13 +51,7 @@ const SingleProject = ({ project }: Props) => {
         </div>
 
         <DesktopImage>
-          <Image
-            src={project.desktopImgs[0]}
-            alt="desktop hero"
-            width={1000}
-            height={666}
-            loading="eager"
-          />
+          <Image src={project.desktopImgs[0]} alt="desktop hero" width={1000} height={666} loading="eager" />
         </DesktopImage>
 
         <MobileAndText>
@@ -88,28 +77,19 @@ const SingleProject = ({ project }: Props) => {
         ))}
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default SingleProject;
+export default SingleProject
 
-const Detail = ({
-  title,
-  description,
-  index,
-}: {
-  title: string;
-  description: string;
-  index: number;
-}) => {
+const Detail = ({ title, description, index }: { title: string; description: string; index: number }) => {
   return (
     <DetailStyle>
       <h3>{title}</h3>
-      <div className="line" style={{ width: 15 * (index + 1) + "%" }}></div>
-      <p>{description}</p>
+      <p dangerouslySetInnerHTML={{ __html: description }}></p>
     </DetailStyle>
-  );
-};
+  )
+}
 
 const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
@@ -138,7 +118,7 @@ const Container = styled(motion.div)`
       }
     }
   }
-`;
+`
 
 const MobileAndText = styled.div`
   display: flex;
@@ -155,35 +135,37 @@ const MobileAndText = styled.div`
     img {
     }
   }
-`;
+`
 
 const Details = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
+`
 
 const DetailStyle = styled.div`
-  padding: 2rem 1rem;
-  border-radius: 5px;
+  padding: 1.5rem 1rem;
   background: rgba(20, 20, 20, 0.5);
-  margin-bottom: 2.5rem;
+
+  &:first-child {
+    border-radius: 5px 5px 0 0;
+  }
+  &:last-child {
+    margin-bottom: 2rem;
+    border-radius: 0 0 5px 5px;
+  }
+
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 300;
   }
-  .line {
-    background: var(--accent);
-    height: 1px;
-    margin: 0.5rem 0;
-  }
   p {
-    padding: 1rem 0 0;
+    padding-top: 1rem;
     font-weight: 200;
     line-height: 1.5rem;
   }
-`;
+`
 
 const DesktopImage = styled.div`
   img {
@@ -193,7 +175,7 @@ const DesktopImage = styled.div`
     height: auto;
     border-radius: 5px;
   }
-`;
+`
 
 const MobileImage = styled.div`
   margin: 0 1rem;
@@ -208,4 +190,4 @@ const MobileImage = styled.div`
     max-width: 100%;
     border-radius: 5px;
   }
-`;
+`

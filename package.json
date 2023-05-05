@@ -10,21 +10,29 @@
     "lint:css": "stylelint './src/**/*.{tsx,js,ts}'"
   },
   "dependencies": {
+    "@jsdevtools/rehype-toc": "^3.0.2",
     "@next/font": "13.0.7",
     "@types/node": "18.11.17",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
     "@vercel/analytics": "^0.1.6",
+    "dayjs": "^1.11.7",
     "emailjs-com": "^3.2.0",
     "eslint": "8.30.0",
     "eslint-config-next": "13.0.7",
     "framer-motion": "^8.0.1",
+    "gray-matter": "^4.0.3",
     "next": "13.0.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rehype-slug": "^5.1.0",
+    "rehype-stringify": "^9.0.3",
+    "remark-parse": "^10.0.1",
+    "remark-rehype": "^10.1.0",
     "sharp": "^0.31.3",
     "styled-components": "^5.3.6",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "unified": "^10.1.2"
   },
   "devDependencies": {
     "@types/node": "16.11.17",
