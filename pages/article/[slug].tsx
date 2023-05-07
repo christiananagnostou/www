@@ -196,6 +196,14 @@ export const ArticleStyle = styled(motion.section)`
         font-weight: 300;
         margin-top: 0.5rem;
 
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          width: fit-content;
+          gap: 5px;
+        }
+
         &::marker {
           margin: 0 1rem 0 1rem;
           font-weight: 300;
