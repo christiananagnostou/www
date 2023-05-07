@@ -5,7 +5,7 @@ const LeftArrow = (props: Props) => {
     <svg
       stroke="currentColor"
       fill="currentColor"
-      stroke-width="0"
+      strokeWidth="0"
       viewBox="0 0 512 512"
       height="1em"
       width="1em"
@@ -13,7 +13,7 @@ const LeftArrow = (props: Props) => {
     >
       <path
         fill="none"
-        stroke-linecap="round"
+        strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="48"
         d="M328 112L184 256l144 144"
