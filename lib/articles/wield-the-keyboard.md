@@ -14,7 +14,9 @@ hidden: false
 
 ```
 
-Those characters are your new keyboard if it's 1868 and your name is [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes). The letters were staggered resembling a piano, it had black keys and white keys, and laid out in two long rows. You'll also notice that is does not have keys for 0 or 1 because the letters O and I were deemed sufficient. This of course matters when you're attaching metal bars and a hinge to each key. One might call and 1 bloat.
+Those characters are your new keyboard if it's 1868 and your name is [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes).
+
+The letters were staggered resembling a piano, it had black keys and white keys, and laid out in two long rows. You'll also notice that is does not have keys for 0 or 1 because the letters O and I were deemed sufficient. This of course matters when you're attaching metal bars and a hinge to each key. One might call 0 and 1 bloat.
 
 Five years later, the same man put together a layout for his typewriter keys that simply made the keys jam less.
 
@@ -30,13 +32,13 @@ Keeping Shole's same mindset of reducing friction and improving productivity, le
 
 ### Shortcuts
 
-Go into the settings of many modern apps and you'll likely find a section on keyboard shortcuts. These give you the ability to make your way around the app without having to use your mouse. I'm not going saying that the mouse is bad, but I would argue that the keyboard is far more versatile than the mouse when handled efficiently.
+Go into the settings of many modern apps and you'll likely find a section on keyboard shortcuts. These give you the ability to make your way around the app without having to use your mouse. In this case, I would argue that the keyboard is far more versatile than the mouse when handled effectively.
 
-If there are shortcuts for the apps you use, it just makes sense to use them. Trying to learn them all at once isn't usually the way to go. Instead just take a few at a time, get good at using those, and then go back and learn a few more. Apps with great accessibility will allow you to navigate around the whole app and all of its functionality with your keyboard. Shole's would surely be proud.
+If there are shortcuts for the apps you use, it just makes sense to use them. Trying to learn them all at once isn't usually the way to go. Instead just take a few at a time, get good at using those, and then go back and learn a few more. Apps with great accessibility will allow you to navigate around the whole app and all of its functionality with your keyboard. Sholes would surely be proud.
 
 Overall, getting comfortable with the keyboard and seeing it as a wieldy tool makes for a quick and generally enjoyable user experience.
 
-Some shortcuts that I find particularly useful in my work of writing software are:
+Some shortcuts that I find particularly useful in my work of writing software:
 
 - [Vim](https://gist.github.com/tuxfight3r/0dca25825d9f2608714b)
 - [VSCode](https://code.visualstudio.com/docs/getstarted/keybindings)

@@ -36,6 +36,7 @@ import LofiWavesMain from '../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 export const ProjectState: Project[] = [
   {
     title: 'QwikDraw',
+    // data:'April 2023',
     desktopImgs: [QwikDesignHero],
     mobileImgs: [],
     externalLink: 'https://qwikdraw.vercel.app/',
@@ -51,11 +52,13 @@ export const ProjectState: Project[] = [
       {
         title: 'Challenges',
         description:
-          'One requirement for this project was to not use any external libraries other than the frontend framework itself. Some of the more challenging parts were the color picker, zooming/panning, keyboard shortcuts, and resizing elements. I wrote an article on the details of those features that can be found <a href="/articles/challenges-of-building-a-design-tool">here</a>.',
+          'One requirement for this project was to not use any external libraries other than the frontend framework itself. Some of the more challenging parts were the color picker, zooming/panning, keyboard shortcuts, and resizing elements.',
+        // I wrote an article on the details of those features that can be found <a href="/articles/challenges-of-building-a-design-tool">here</a>.s
       },
       {
-        title: 'Features',
-        description: 'The ability to send live feedback to the teams in charge is built in and incredibly intuitive.',
+        title: 'Future',
+        description:
+          "I'd like to be able to multi-select and rearrange elements as well as add triangles. Currently using DOM elements for shapes. Considering a rewrite using canvas (WebGL?), but I'm having fun :P",
       },
     ],
   },
@@ -182,6 +185,7 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Music Player',
+    // date: 'Jan 2021',
     desktopImgs: [LofiWavesMain, LofiWavesDesktop],
     mobileImgs: [LofiWavesMain],
     externalLink: 'http://lofiwaves.surge.sh/',
