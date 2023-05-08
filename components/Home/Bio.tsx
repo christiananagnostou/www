@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { fade, staggerFade } from "../animation";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
+import { fade, staggerFade } from '../animation'
 
 function Bio() {
   return (
@@ -8,43 +8,55 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Studying the digital systems that shape our world and leaving a trail of <em>elegance</em>{" "}
-        along the way.
+        Studying the digital systems that shape our world and leaving a trail of <em>elegance</em> along the way.
       </motion.p>
 
       <motion.p variants={fade}>
-        While building web solutions at{" "}
-        <a href="https://www.electriqmarketing.com/" target={"_blank"} rel="noreferrer">
+        At{' '}
+        <a href="https://www.electriqmarketing.com/" target={'_blank'} rel="noreferrer">
           <em>Electriq</em>
         </a>
-        , I led the development of their{" "}
-        <a href="https://www.electriq.app/" target={"_blank"} rel="noreferrer">
+        , I helped build their{' '}
+        <a href="https://www.electriq.app/" target={'_blank'} rel="noreferrer">
           <em>app</em>
-        </a>{" "}
-        and{" "}
-        <a href="https://www.electriqmarketing.com/" target={"_blank"} rel="noreferrer">
+        </a>{' '}
+        and{' '}
+        <a href="https://www.electriqmarketing.com/" target={'_blank'} rel="noreferrer">
           <em>website</em>
         </a>
-        , worked on websites for major ecommerce clients
+        , built maintained websites for ecommerce clients
+        {/* <a href="https://soylent.com/" target={'_blank'} rel="noreferrer">
+          major
+        </a>{' '}
+        <a href="https://soylent.com/" target={'_blank'} rel="noreferrer">
+          ecommerce
+        </a>{' '}
+        <a href="https://soylent.com/" target={'_blank'} rel="noreferrer">
+          clients
+        </a> */}
         {/* as well as their parent company{" "}
           <a href="https://www.drinks.com/" target={"_blank"} rel="noreferrer">
             <em>DRINKS</em>
           </a> */}
-        , and built projects like{" "}
-        <a href="https://www.liftclub.app/" target={"_blank"} rel="noreferrer">
+        , and built projects like{' '}
+        <a href="https://qwikdraw.vercel.app/" target={'_blank'} rel="noreferrer">
+          <em>QwikDraw</em>
+        </a>{' '}
+        and{' '}
+        <a href="https://www.liftclub.app/" target={'_blank'} rel="noreferrer">
           <em>Lift Club</em>
-        </a>{" "}
+        </a>{' '}
         in my free time.
       </motion.p>
 
       <motion.p variants={fade}>
-        When I&apos;m not in front of my laptop, I&apos;m either out riding a bike or lifting. I
-        also dabble with winemaking, photography, and learning how to think and write better.
+        When I&apos;m not in front of my laptop, I&apos;m either out riding a bike or lifting. I also dabble with
+        winemaking, photography, and learning how to think and write better.
       </motion.p>
     </Description>
-  );
+  )
 }
-export default Bio;
+export default Bio
 
 const Description = styled(motion.section)`
   margin: auto;
@@ -78,4 +90,4 @@ const Description = styled(motion.section)`
     line-height: 1.5rem;
     padding: 1rem 0;
   }
-`;
+`

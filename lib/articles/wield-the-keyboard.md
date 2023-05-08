@@ -2,10 +2,11 @@
 title: 'Wield the Keyboard'
 dateCreated: 'May 7, 2023'
 summary: 'Creating almost any kind of digital content is going is goint to require the keyboard. Mastering one is an invaluable skill that saves the most valuable currency...time.'
+hidden: false
 # categories: 'Other,'
 ---
 
-In 1868, the typewriter was invented by a man named [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes). It featured a long roll of paper and a keyboard literally resembling a piano. It had black keys and white keys, laid out in two rows. It did not contain keys for the numerals 0 or 1 because the letters O and I were deemed sufficient.
+---
 
 ```
  3 5 7 9 N O P Q R S T U V W X Y Z
@@ -13,7 +14,9 @@ In 1868, the typewriter was invented by a man named [Christopher Sholes](https:/
 
 ```
 
-Five years later, the same man put together a layout for his typewriter keys that simply made the keys jam less. How convenient...
+Those characters are your new keyboard if it's 1868 and your name is [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes). The letters were staggered resembling a piano, it had black keys and white keys, and laid out in two long rows. You'll also notice that is does not have keys for 0 or 1 because the letters O and I were deemed sufficient. This of course matters when you're attaching metal bars and a hinge to each key. One might call and 1 bloat.
+
+Five years later, the same man put together a layout for his typewriter keys that simply made the keys jam less.
 
 ```
  1 2 3 4 5 6 7 8 9 0 - =
