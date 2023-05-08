@@ -1,4 +1,4 @@
-import { AnimationControls, motion, Variants } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Image, { StaticImageData } from 'next/image'
 import React, { useState } from 'react'
@@ -14,7 +14,7 @@ type Props = {}
 const categories = Object.keys(ArtState)
 
 const Art = (props: Props) => {
-  const [numColumns, setNumColumns] = useState(3)
+  const [numColumns, setNumColumns] = useState(4)
   const [selectedCategory, setSelectedCategory] = useState(categories[0])
 
   const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])]
@@ -58,14 +58,14 @@ const Art = (props: Props) => {
         </div>
 
         <Columns numColumns={numColumns}>
-          {columns.map((col, i) => (
+          {columns.map((images, col) => (
             <Column
-              key={'column_' + i}
+              key={'column_' + col}
               numColumns={numColumns}
               variants={{ show: { transition: { staggerChildren: 0.5 } } }}
             >
-              {col.map((ImageData) => (
-                <Img imageData={ImageData} key={ImageData.src} />
+              {images.map((ImageData, row) => (
+                <Img imageData={ImageData} priority={row < 4} key={ImageData.src} />
               ))}
             </Column>
           ))}
@@ -77,18 +77,20 @@ const Art = (props: Props) => {
 
 export default Art
 
-const Img = ({ imageData }: { imageData: StaticImageData }) => {
+const Img = ({ imageData, priority }: { imageData: StaticImageData; priority: boolean }) => {
   const [ref, controls] = useScroll()
 
   return (
     <Hide>
-      <ImageContainer
-        ref={ref as React.Ref<HTMLDivElement>}
-        variants={photoAnim as Variants}
-        animate={controls as AnimationControls}
-        initial="hidden"
-      >
-        <Image src={imageData} alt="By Christian Anagnostou" blurDataURL={imageData.blurDataURL} />
+      <ImageContainer ref={ref as React.Ref<HTMLDivElement>} variants={photoAnim} animate={controls} initial="hidden">
+        <Image
+          src={imageData}
+          alt="By Christian Anagnostou"
+          blurDataURL={imageData.blurDataURL}
+          placeholder="blur"
+          priority={priority}
+          loading={priority ? 'eager' : 'lazy'}
+        />
       </ImageContainer>
     </Hide>
   )
@@ -111,9 +113,9 @@ const ImageContainer = styled(motion.div)`
 
   img {
     display: block;
-    max-width: 100%;
     height: auto;
     width: 100%;
+    max-width: 100%;
     border-radius: 5px;
   }
 `
@@ -124,6 +126,7 @@ const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
+  position: relative;
 
   .control-bar {
     display: flex;
@@ -132,13 +135,15 @@ const Container = styled(motion.div)`
     margin-bottom: 1rem;
 
     .range-wrap {
-      max-width: 25%;
+      max-width: 15%;
       display: flex;
       align-items: center;
 
       .col-num {
         display: block;
+        font-weight: 400;
         margin-left: 1rem;
+        font-size: 1.1rem;
       }
     }
 

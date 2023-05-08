@@ -1,9 +1,42 @@
 import { Project } from '../types'
 
+// QwikDraw
+import QwikDesignHero from '../public/img/projects/qwikdraw/design-hero.webp'
+// Electriq Dashboard
+import Calendar from '../public/img/projects/electriq-app/calendar.png'
+import DashboardComposed from '../public/img/projects/electriq-app/dashboard-composed.webp'
+import GanttChart from '../public/img/projects/electriq-app/gantt-chart.png'
+import KanbanChart from '../public/img/projects/electriq-app/kanban-chart.webp'
+// Electriq Website
+import ElectriqHeroMain from '../public/img/projects/electriq-home/hero-main.png'
+import ElectriqWebsite from '../public/img/projects/electriq-home/homepage-composed.webp'
+// Lift Club
+import LiftClubMain from '../public/img/projects/liftclub/liftclub-main.jpeg'
+import LiftClubPurpose from '../public/img/projects/liftclub/liftclub-purpose.png'
+import LiftClubUserProfile from '../public/img/projects/liftclub/user-profile.png'
+import LiftClubLog from '../public/img/projects/liftclub/workout-log-2.png'
+// Photo Shop
+import PhotoDesktop1 from '../public/img/projects/awildchristian/desktop1.jpg'
+import PhotoDesktop2 from '../public/img/projects/awildchristian/desktop2.jpg'
+import PhotoDesktop3 from '../public/img/projects/awildchristian/desktop3.jpg'
+import PhotoMain from '../public/img/projects/awildchristian/main.jpeg'
+import PhotoMobile1 from '../public/img/projects/awildchristian/mobile1.jpg'
+import PhotoMobile2 from '../public/img/projects/awildchristian/mobile2.jpg'
+// NeoLogos
+import NeoLogosDesktop1 from '../public/img/projects/neologos/neologos-desktop1.jpg'
+import NeoLogosDesktop2 from '../public/img/projects/neologos/neologos-desktop2.jpg'
+import NeoLogosDesktop3 from '../public/img/projects/neologos/neologos-desktop3.jpg'
+import NeoLogosMain from '../public/img/projects/neologos/neologos-main.jpeg'
+import NeoLogosMobile1 from '../public/img/projects/neologos/neologos-mobile1.jpg'
+import NeoLogosMobile2 from '../public/img/projects/neologos/neologos-mobile2.jpg'
+// LofiWaves
+import LofiWavesDesktop from '../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
+import LofiWavesMain from '../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
+
 export const ProjectState: Project[] = [
   {
     title: 'QwikDraw',
-    desktopImgs: ['/img/projects/qwikdraw/design-hero.webp'],
+    desktopImgs: [QwikDesignHero],
     mobileImgs: [],
     externalLink: 'https://qwikdraw.vercel.app/',
     github: 'https://github.com/ChristianAnagnostou/qwikdraw',
@@ -28,12 +61,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Electriq Dashboard',
-    desktopImgs: [
-      '/img/projects/electriq-app/dashboard-composed.webp',
-      '/img/projects/electriq-app/gantt-chart.png',
-      '/img/projects/electriq-app/kanban-chart.webp',
-    ],
-    mobileImgs: ['/img/projects/electriq-app/calendar.png'],
+    desktopImgs: [DashboardComposed, GanttChart, KanbanChart],
+    mobileImgs: [Calendar],
     externalLink: 'https://electriq.app/',
     slug: 'electriq-app',
     summary: 'Visualize and manage Linear projects with timelines, kanbans, calendars, and much more',
@@ -55,7 +84,7 @@ export const ProjectState: Project[] = [
   },
   {
     title: "Electriq's Website",
-    desktopImgs: ['/img/projects/electriq-home/homepage-composed.webp', '/img/projects/electriq-home/hero-main.png'],
+    desktopImgs: [ElectriqWebsite, ElectriqHeroMain],
     mobileImgs: [],
     externalLink: 'https://www.electriqmarketing.com/',
     slug: 'electriq-home',
@@ -70,8 +99,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Lift Club',
-    desktopImgs: ['/img/projects/liftclub/liftclub-main.jpeg', '/img/projects/liftclub/liftclub-purpose.png'],
-    mobileImgs: ['/img/projects/liftclub/user-profile.png', '/img/projects/liftclub/workout-log-2.png'],
+    desktopImgs: [LiftClubMain, LiftClubPurpose],
+    mobileImgs: [LiftClubUserProfile, LiftClubLog],
     externalLink: 'https://liftclub.app/',
     github: 'https://github.com/ChristianAnagnostou/liftclub',
     slug: 'liftclub',
@@ -101,13 +130,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Photo Shop',
-    desktopImgs: [
-      '/img/projects/awildchristian/main.jpeg',
-      '/img/projects/awildchristian/desktop1.jpg',
-      '/img/projects/awildchristian/desktop2.jpg',
-      '/img/projects/awildchristian/desktop3.jpg',
-    ],
-    mobileImgs: ['/img/projects/awildchristian/mobile1.jpg', '/img/projects/awildchristian/mobile2.jpg'],
+    desktopImgs: [PhotoMain, PhotoDesktop1, PhotoDesktop2, PhotoDesktop3],
+    mobileImgs: [PhotoMobile1, PhotoMobile2],
     externalLink: 'https://awildchristian.com/',
     github: 'https://github.com/ChristianAnagnostou/anagnostou-photography-frontend',
     slug: 'awildchristian',
@@ -132,13 +156,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'NeoLogos',
-    desktopImgs: [
-      '/img/projects/neologos/neologos-main.jpeg',
-      '/img/projects/neologos/neologos-desktop1.jpg',
-      '/img/projects/neologos/neologos-desktop2.jpg',
-      '/img/projects/neologos/neologos-desktop3.jpg',
-    ],
-    mobileImgs: ['/img/projects/neologos/neologos-mobile1.jpg', '/img/projects/neologos/neologos-mobile2.jpg'],
+    desktopImgs: [NeoLogosMain, NeoLogosDesktop1, NeoLogosDesktop2, NeoLogosDesktop3],
+    mobileImgs: [NeoLogosMobile1, NeoLogosMobile2],
     // externalLink: "https://neologos.herokuapp.com/",
     github: 'https://github.com/ChristianAnagnostou/NeoLogos',
     slug: 'neologos',
@@ -163,8 +182,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Music Player',
-    desktopImgs: ['/img/projects/lofiwaves/lofiwaves-main.jpeg', '/img/projects/lofiwaves/lofiwaves-desktop.jpg'],
-    mobileImgs: ['/img/projects/lofiwaves/lofiwaves-mobile.jpg'],
+    desktopImgs: [LofiWavesMain, LofiWavesDesktop],
+    mobileImgs: [LofiWavesMain],
     externalLink: 'http://lofiwaves.surge.sh/',
     github: 'https://github.com/ChristianAnagnostou/LofiWaves',
     slug: 'lofiwaves',

@@ -1,29 +1,17 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 // excess height to improve interactive area / accessibility
-const height = "20px";
-const thumbHeight = 20;
-const trackHeight = "6px";
+const height = '16px'
+const thumbHeight = 16
+const trackHeight = '4px'
 
 // colours
-const upperColor = "var(--accent)";
-const lowerColor = "var(--accent)";
-const thumbColor = "var(--text)";
-const thumbHoverColor = "white";
-const upperBackground = `linear-gradient(to bottom, ${upperColor}, ${upperColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`;
-const lowerBackground = `linear-gradient(to bottom, ${lowerColor}, ${lowerColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`;
-
-// Webkit cannot style progress so we fake it with a long shadow on the thumb element
-const makeLongShadow = (color: string, size: string) => {
-  let i = 18;
-  let shadow = `${i}px 0 0 ${size} ${color}`;
-
-  for (; i < 706; i++) {
-    shadow = `${shadow}, ${i}px 0 0 ${size} ${color}`;
-  }
-
-  return shadow;
-};
+const upperColor = 'var(--accent)'
+const lowerColor = 'var(--accent)'
+const thumbColor = 'var(--text)'
+const thumbHoverColor = 'white'
+const upperBackground = `linear-gradient(to bottom, ${upperColor}, ${upperColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`
+const lowerBackground = `linear-gradient(to bottom, ${lowerColor}, ${lowerColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`
 
 const Range = styled.input`
   overflow: hidden;
@@ -52,7 +40,6 @@ const Range = styled.input`
     border: 0;
     top: 50%;
     transform: translateY(-50%);
-    box-shadow: ${makeLongShadow(upperColor, "-10px")};
     transition: background-color 150ms;
   }
 
@@ -120,6 +107,6 @@ const Range = styled.input`
       background-color: ${thumbHoverColor};
     }
   }
-`;
+`
 
-export default Range;
+export default Range

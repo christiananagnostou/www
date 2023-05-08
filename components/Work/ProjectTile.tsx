@@ -1,4 +1,5 @@
 import { AnimationControls, motion, Variants } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { Project } from '../../types'
@@ -43,7 +44,13 @@ const ProjectTile = ({ project }: Props) => {
 
       <Link href={'/work/' + project.slug} className="image-container">
         <Hide>
-          <motion.img variants={photoAnim} src={project.desktopImgs[0]} alt={project.title} />
+          <Img
+            variants={photoAnim}
+            src={project.desktopImgs[0]}
+            alt={project.title}
+            blurDataURL={project.desktopImgs[0].blurDataURL}
+            placeholder="blur"
+          />
         </Hide>
 
         <motion.span variants={fade} className="summary">
@@ -55,6 +62,14 @@ const ProjectTile = ({ project }: Props) => {
 }
 
 export default ProjectTile
+
+const Img = styled(motion(Image))`
+  display: block;
+  height: auto;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 5px;
+`
 
 const ProjectContainer = styled(motion.div)`
   position: relative;

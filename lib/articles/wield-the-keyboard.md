@@ -5,7 +5,7 @@ summary: 'Creating almost any kind of digital content is going is goint to requi
 # categories: 'Other,'
 ---
 
-In 1868, the typewriter was invented by a man named [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes). It featured a long role of paper and a keyboard literally resembling a piano. It had black keys and white keys, laid out in two rows. It did not contain keys for the numerals 0 or 1 because the letters O and I were deemed sufficient.
+In 1868, the typewriter was invented by a man named [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes). It featured a long roll of paper and a keyboard literally resembling a piano. It had black keys and white keys, laid out in two rows. It did not contain keys for the numerals 0 or 1 because the letters O and I were deemed sufficient.
 
 ```
  3 5 7 9 N O P Q R S T U V W X Y Z
