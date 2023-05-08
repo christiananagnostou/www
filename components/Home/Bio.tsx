@@ -24,7 +24,7 @@ function Bio() {
         <a href="https://www.electriqmarketing.com/" target={'_blank'} rel="noreferrer">
           <em>website</em>
         </a>
-        , built maintained websites for ecommerce clients
+        , built and maintained websites for ecommerce clients
         {/* <a href="https://soylent.com/" target={'_blank'} rel="noreferrer">
           major
         </a>{' '}
@@ -38,7 +38,7 @@ function Bio() {
           <a href="https://www.drinks.com/" target={"_blank"} rel="noreferrer">
             <em>DRINKS</em>
           </a> */}
-        , and built projects like{' '}
+        , and tinkered with projects like{' '}
         <a href="https://qwikdraw.vercel.app/" target={'_blank'} rel="noreferrer">
           <em>QwikDraw</em>
         </a>{' '}
