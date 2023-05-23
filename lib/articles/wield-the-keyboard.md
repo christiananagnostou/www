@@ -8,7 +8,7 @@ hidden: false
 
 ---
 
-It's 1868, your name is [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes), and this is your new invention:
+It's 1868 and a man by the name of [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes) is sitting at his desk with this sequence of letters and numbers in front of him:
 
 ```
  3 5 7 9 N O P Q R S T U V W X Y Z
@@ -16,7 +16,7 @@ It's 1868, your name is [Christopher Sholes](https://en.wikipedia.org/wiki/Chris
 
 ```
 
-The keyboard of the first ever typewriter.
+It's keyboard of the first ever typewriter.
 
 The letters were staggered resembling a piano, had black keys and white keys, and was laid out in two long rows. There were no keys for 0 or 1 as the letters O and I were deemed sufficient.
 
