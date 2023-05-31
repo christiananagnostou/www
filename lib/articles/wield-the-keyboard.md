@@ -1,14 +1,14 @@
 ---
 title: 'Wield the Keyboard'
 dateCreated: 'May 7, 2023'
-summary: 'Creating almost any kind of digital content is going is goint to require the keyboard. Mastering one is an invaluable skill that saves the most valuable currency...time.'
+summary: 'Creating any kind of digital content is going is goint to require the keyboard. Mastering one is an invaluable skill that saves the most valuable currency...time.'
 hidden: false
-# categories: 'Other,'
+# categories: 'Productivity'
 ---
 
 ---
 
-It's 1868 and a man by the name of [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes) is sitting at his desk with this sequence of letters and numbers in front of him:
+In 1868, a man by the name of [Christopher Sholes](https://en.wikipedia.org/wiki/Christopher_Latham_Sholes) was sitting at his desk with this sequence of letters and numbers in front of him:
 
 ```
  3 5 7 9 N O P Q R S T U V W X Y Z
@@ -16,7 +16,7 @@ It's 1868 and a man by the name of [Christopher Sholes](https://en.wikipedia.org
 
 ```
 
-It's keyboard of the first ever typewriter.
+It was keyboard of the first ever typewriter.
 
 The letters were staggered resembling a piano, had black keys and white keys, and was laid out in two long rows. There were no keys for 0 or 1 as the letters O and I were deemed sufficient.
 
