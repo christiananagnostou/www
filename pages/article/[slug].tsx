@@ -229,7 +229,7 @@ export const ArticleStyle = styled(motion.section)`
 
     code {
       background: rgba(0, 0, 0, 0.2);
-      padding: 0.5rem 1rem;
+      padding: 0.2rem 1rem;
       border-radius: 5px;
       display: inline-block;
       width: fit-content;
