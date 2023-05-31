@@ -227,6 +227,26 @@ export const ArticleStyle = styled(motion.section)`
       padding-left: 1.25rem;
     }
 
+    code {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
+
+    pre {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 5px;
+      overflow: auto;
+      margin-bottom: 0.75rem;
+
+      code {
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+    }
+
     img {
       border-radius: 5px;
       margin-left: -2rem;

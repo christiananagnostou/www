@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   :root {
@@ -29,6 +29,7 @@ const GlobalStyle = createGlobalStyle`
 
     &::-webkit-scrollbar {
       width: 5px;
+      height: 5px;
     }
     &::-webkit-scrollbar-track {
       background: transparent;
@@ -117,6 +118,6 @@ const GlobalStyle = createGlobalStyle`
     outline-offset: 2px;
     outline-width: 1.5px;
   }
-`;
+`
 
-export default GlobalStyle;
+export default GlobalStyle

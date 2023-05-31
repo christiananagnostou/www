@@ -45,15 +45,14 @@ Number of elements above or below the screen that will pre-render (helps when sc
 With those parameters, we're able to construct our virtual list.
 If we were to write them as TypeScript props for a React virtual list component, it would look something like this:
 
-```
+```tsx
 type Props = {
-  numItems: number;
-  itemHeight: number;
-  windowHeight: number;
-  renderItem: ({ index, style }: { index: number; style: React.CSSProperties }) => JSX.Element;
-  overscan?: number;
-};
-
+  numItems: number
+  itemHeight: number
+  windowHeight: number
+  renderItem: ({ index, style }: { index: number; style: React.CSSProperties }) => JSX.Element
+  overscan?: number
+}
 ```
 
 ---
@@ -62,7 +61,7 @@ type Props = {
 
 The virtual list itself only needs to keep track of one variable. That being the [scrollTop](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop) position. This is the number of pixels that an element's content is scrolled vertically. The initial value is 0 and would look like this:
 
-`const [scrollTop, setScrollTop] = useState(0);`
+`const [scrollTop, setScrollTop] = useState(0)`
 
 ---
 
@@ -71,17 +70,16 @@ The virtual list itself only needs to keep track of one variable. That being the
 The next step is to calculate the starting and ending indexes for the elements that should render.
 The starting index is found by taking the scroll top position and dividing it by the height of the elements to get the index of the element at the top of the scroll container. From there all you do is subtract the overscan variable and you have the starting index to render. To get the ending index you add the scroll top position to the height of the scroll container and divide that by the height of the elements. Add the overscan this time and boom, there's your end index.
 
-```
+```ts
 const startIndex = Math.max(
-    0,
-    Math.floor(scrollTop / itemHeight) - overscan
-);
+  0,
+  Math.floor(scrollTop / itemHeight) - overscan
+)
 
 const endIndex = Math.min(
-    numItems - 1,
-    Math.floor((scrollTop + windowHeight) / itemHeight) + overscan
-);
-
+  numItems - 1,
+  Math.floor((scrollTop + windowHeight) / itemHeight) + overscan
+)
 ```
 
 ---
@@ -90,18 +88,17 @@ const endIndex = Math.min(
 
 With our newly created index variables, we now know which range of elements to render. To do that, we can use a simple for loop and call the `renderItem` function being passed into the virtual list component. We make each element positioned absolutely and calculate its top position by its index in the list. This should return a JSX element and we add that to the items array to prep them for rendering.
 
-```
-const items: JSX.Element[] = [];
+```tsx
+const items: JSX.Element[] = []
 
 for (let i = startIndex; i <= endIndex; i++) {
-    items.push(
-        renderItem({
-            index: i,
-            style: { position: "absolute", top: `${i * itemHeight}px`, width: "100%" },
-        })
-    );
+  items.push(
+    renderItem({
+      index: i,
+      style: { position: 'absolute', top: `${i * itemHeight}px`, width: '100%' },
+    })
+  )
 }
-
 ```
 
 ---
@@ -110,20 +107,19 @@ for (let i = startIndex; i <= endIndex; i++) {
 
 The JSX markup for the virtual list is quite minimal. You need an outer scrolling element and an inner element whose height is calculated by the total number of list elements multiplied by the height of the elements. The array of elements being rendered can be added directly into the markup as it's just an array of JSX elements.
 
-`const innerHeight = numItems * itemHeight;`
+`const innerHeight = numItems * itemHeight`
 
-```
-<div className="scroll" style={{ overflowY: "scroll", width: "100%" }} onScroll={onScroll}>
-    <div className="inner" style={{ position: "relative", height: `${innerHeight}px` }}>
-        {items}
-    </div>
+```jsx
+<div className="scroll" style={{ overflowY: 'scroll', width: '100%' }} onScroll={onScroll}>
+  <div className="inner" style={{ position: 'relative', height: `${innerHeight}px` }}>
+    {items}
+  </div>
 </div>
-
 ```
 
 You might have noticed that there is an `onScroll` property on the outer scrolling element. This is to track the scrollTop of the outer element and update the scrollTop state.
 
-`const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop);`
+`const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop)`
 
 ---
 
@@ -131,50 +127,49 @@ You might have noticed that there is an `onScroll` property on the outer scrolli
 
 When we put all those steps together, you get a reusable component that will help you render looooong lists of data. There are limitations with this simple setup but you can modify it to fit your needs. Here is the code to do so:
 
-```
-import React, { useState } from "react";
+```tsx
+import React, { useState } from 'react'
 
 type Props = {
-  numItems: number;
-  itemHeight: number;
-  windowHeight: number;
-  renderItem: ({ index, style }: { index: number; style: React.CSSProperties }) => JSX.Element;
-  overscan?: number;
-};
+  numItems: number
+  itemHeight: number
+  windowHeight: number
+  renderItem: ({ index, style }: { index: number; style: React.CSSProperties }) => JSX.Element
+  overscan?: number
+}
 
 const VirtualList = (props: Props) => {
-  const { numItems, itemHeight, renderItem, windowHeight, overscan = 3 } = props;
+  const { numItems, itemHeight, renderItem, windowHeight, overscan = 3 } = props
 
-  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0)
 
-  const innerHeight = numItems * itemHeight;
-  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
-  const endIndex = Math.min(numItems - 1, Math.floor((scrollTop + windowHeight) / itemHeight) + overscan);
+  const innerHeight = numItems * itemHeight
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan)
+  const endIndex = Math.min(numItems - 1, Math.floor((scrollTop + windowHeight) / itemHeight) + overscan)
 
-  const items: JSX.Element[] = [];
+  const items: JSX.Element[] = []
 
   for (let i = startIndex; i <= endIndex; i++) {
     items.push(
       renderItem({
         index: i,
-        style: { position: "absolute", top: `${i * itemHeight}px`, width: "100%" },
+        style: { position: 'absolute', top: `${i * itemHeight}px`, width: '100%' },
       })
-    );
+    )
   }
 
-  const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop);
+  const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop)
 
   return (
-    <div className="scroll" style={{ overflowY: "scroll", width: "100%" }} onScroll={onScroll}>
-      <div className="inner" style={{ position: "relative", height: `${innerHeight}px` }}>
+    <div className="scroll" style={{ overflowY: 'scroll', width: '100%' }} onScroll={onScroll}>
+      <div className="inner" style={{ position: 'relative', height: `${innerHeight}px` }}>
         {items}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VirtualList;
-
+export default VirtualList
 ```
 
 ---
@@ -185,20 +180,19 @@ Since the virtual list needs its height defined, you can wrap it in an element w
 
 The element being rendered is found by referencing the index in the list of all data and the styles are added inline on the list element itself.
 
-```
+```jsx
 <div ref={virtualListContainer}>
-    <VirtualList
-        numItems={allData.length}
-        itemHeight={30}
-        windowHeight={virtualListContainer.current?.clientHeight || 0}
-        renderItem={({ index, style }) => (
-            <div key={allData[index].id} style={style}>
-                {allData[index].title}
-            </div>
-        )}
-    />
+  <VirtualList
+    numItems={allData.length}
+    itemHeight={30}
+    windowHeight={virtualListContainer.current?.clientHeight || 0}
+    renderItem={({ index, style }) => (
+      <div key={allData[index].id} style={style}>
+        {allData[index].title}
+      </div>
+    )}
+  />
 </div>
-
 ```
 
 ---
