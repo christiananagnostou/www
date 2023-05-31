@@ -61,7 +61,9 @@ type Props = {
 
 The virtual list itself only needs to keep track of one variable. That being the [scrollTop](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop) position. This is the number of pixels that an element's content is scrolled vertically. The initial value is 0 and would look like this:
 
-`const [scrollTop, setScrollTop] = useState(0)`
+```ts
+const [scrollTop, setScrollTop] = useState(0)
+```
 
 ---
 
@@ -107,9 +109,11 @@ for (let i = startIndex; i <= endIndex; i++) {
 
 The JSX markup for the virtual list is quite minimal. You need an outer scrolling element and an inner element whose height is calculated by the total number of list elements multiplied by the height of the elements. The array of elements being rendered can be added directly into the markup as it's just an array of JSX elements.
 
-`const innerHeight = numItems * itemHeight`
+```ts
+const innerHeight = numItems * itemHeight
+```
 
-```jsx
+```tsx
 <div className="scroll" style={{ overflowY: 'scroll', width: '100%' }} onScroll={onScroll}>
   <div className="inner" style={{ position: 'relative', height: `${innerHeight}px` }}>
     {items}
@@ -119,7 +123,9 @@ The JSX markup for the virtual list is quite minimal. You need an outer scrollin
 
 You might have noticed that there is an `onScroll` property on the outer scrolling element. This is to track the scrollTop of the outer element and update the scrollTop state.
 
-`const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop)`
+```ts
+const onScroll = ({ currentTarget }) => setScrollTop(currentTarget.scrollTop)
+```
 
 ---
 
@@ -180,7 +186,7 @@ Since the virtual list needs its height defined, you can wrap it in an element w
 
 The element being rendered is found by referencing the index in the list of all data and the styles are added inline on the list element itself.
 
-```jsx
+```tsx
 <div ref={virtualListContainer}>
   <VirtualList
     numItems={allData.length}
