@@ -231,6 +231,9 @@ export const ArticleStyle = styled(motion.section)`
       background: rgba(0, 0, 0, 0.2);
       padding: 0.5rem 1rem;
       border-radius: 5px;
+      display: inline-block;
+      width: fit-content;
+      text-align: left;
     }
 
     pre {
@@ -244,6 +247,7 @@ export const ArticleStyle = styled(motion.section)`
         padding: 0;
         border-radius: 0;
         background: transparent;
+        display: inline;
       }
     }
 
