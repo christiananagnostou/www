@@ -59,7 +59,7 @@ type Props = {
 
 ### Internal State
 
-The virtual list itself only needs to keep track of one variable. That being the [scrollTop](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop) position. This is the number of pixels that an element's content is scrolled vertically. The initial value is 0 and would look like this:
+The virtual list itself only needs to keep track of one variable: [scrollTop](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop). This is the number of pixels that an element's content is scrolled vertically. The initial value is 0 and would look like this:
 
 ```ts
 const [scrollTop, setScrollTop] = useState(0)

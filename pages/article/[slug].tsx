@@ -238,18 +238,18 @@ export const ArticleStyle = styled(motion.section)`
     }
 
     /*!
-  Theme: StackOverflow Dark
-  Description: Dark theme as used on stackoverflow.com
-  Author: stackoverflow.com
-  Maintainer: @Hirse
-  Website: https://github.com/StackExchange/Stacks
-  License: MIT
-  Updated: 2021-05-15
+      Theme: StackOverflow Dark
+      Description: Dark theme as used on stackoverflow.com
+      Author: stackoverflow.com
+      Maintainer: @Hirse
+      Website: https://github.com/StackExchange/Stacks
+      License: MIT
+      Updated: 2021-05-15
 
-  Updated for @stackoverflow/stacks v0.64.0
-  Code Blocks: /blob/v0.64.0/lib/css/components/_stacks-code-blocks.less
-  Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
-*/
+      Updated for @stackoverflow/stacks v0.64.0
+      Code Blocks: /blob/v0.64.0/lib/css/components/_stacks-code-blocks.less
+      Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
+    */
 
     pre code.hljs {
       display: block;
