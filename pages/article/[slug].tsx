@@ -238,15 +238,19 @@ export const ArticleStyle = styled(motion.section)`
     }
 
     /*!
-    Theme: GitHub Dark
-    Description: Dark theme as seen on github.com
-    Author: github.com
-    Maintainer: @Hirse
-    Updated: 2021-05-15
+  Theme: StackOverflow Dark
+  Description: Dark theme as used on stackoverflow.com
+  Author: stackoverflow.com
+  Maintainer: @Hirse
+  Website: https://github.com/StackExchange/Stacks
+  License: MIT
+  Updated: 2021-05-15
 
-    Outdated base version: https://github.com/primer/github-syntax-dark
-    Current colors taken from GitHub's CSS
-    */
+  Updated for @stackoverflow/stacks v0.64.0
+  Code Blocks: /blob/v0.64.0/lib/css/components/_stacks-code-blocks.less
+  Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
+*/
+
     pre code.hljs {
       display: block;
       overflow-x: auto;
@@ -257,86 +261,122 @@ export const ArticleStyle = styled(motion.section)`
       width: fit-content;
       max-width: 100%;
     }
+
     .hljs {
+      /* var(--highlight-color) */
       color: #c9d1d9;
+      /* var(--highlight-bg) */
       background: rgba(0, 0, 0, 0.2);
       padding: 1rem;
       border-radius: 5px;
       overflow: auto;
       margin-bottom: 0.75rem;
     }
-    .hljs-doctag,
-    .hljs-keyword,
-    .hljs-meta .hljs-keyword,
-    .hljs-template-tag,
-    .hljs-template-variable,
-    .hljs-type,
-    .hljs-variable.language_ {
-      color: #ff7b72;
-    }
-    .hljs-title,
-    .hljs-title.class_,
-    .hljs-title.class_.inherited__,
-    .hljs-title.function_ {
-      color: #d2a8ff;
-    }
-    .hljs-attr,
-    .hljs-attribute,
-    .hljs-literal,
-    .hljs-meta,
-    .hljs-number,
-    .hljs-operator,
-    .hljs-selector-attr,
-    .hljs-selector-class,
-    .hljs-selector-id,
-    .hljs-variable {
-      color: #79c0ff;
-    }
-    .hljs-meta .hljs-string,
-    .hljs-regexp,
-    .hljs-string {
-      color: #a5d6ff;
-    }
-    .hljs-built_in,
-    .hljs-symbol {
-      color: #ffa657;
-    }
-    .hljs-code,
-    .hljs-comment,
-    .hljs-formula {
-      color: #8b949e;
-    }
-    .hljs-name,
-    .hljs-quote,
-    .hljs-selector-pseudo,
-    .hljs-selector-tag {
-      color: #7ee787;
-    }
+
     .hljs-subst {
-      color: #c9d1d9;
+      /* var(--highlight-color) */
+      color: #ffffff;
     }
+
+    .hljs-comment {
+      /* var(--highlight-comment) */
+      color: #999999;
+    }
+
+    .hljs-keyword,
+    .hljs-selector-tag,
+    .hljs-meta .hljs-keyword,
+    .hljs-doctag,
     .hljs-section {
-      color: #1f6feb;
-      font-weight: 700;
+      /* var(--highlight-keyword) */
+      color: #88aece;
     }
-    .hljs-bullet {
-      color: #f2cc60;
+
+    .hljs-attr {
+      /* var(--highlight-attribute); */
+      color: #88aece;
     }
+
+    .hljs-attribute {
+      /* var(--highlight-symbol) */
+      color: #c59bc1;
+    }
+
+    .hljs-name,
+    .hljs-type,
+    .hljs-number,
+    .hljs-selector-id,
+    .hljs-quote,
+    .hljs-template-tag {
+      /* var(--highlight-namespace) */
+      color: #f08d49;
+    }
+
+    .hljs-selector-class {
+      /* var(--highlight-keyword) */
+      color: #88aece;
+    }
+
+    .hljs-string,
+    .hljs-regexp,
+    .hljs-symbol,
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-link,
+    .hljs-selector-attr {
+      /* var(--highlight-variable) */
+      color: #b5bd68;
+    }
+
+    .hljs-meta,
+    .hljs-selector-pseudo {
+      /* var(--highlight-keyword) */
+      color: #88aece;
+    }
+
+    .hljs-built_in,
+    .hljs-title,
+    .hljs-literal {
+      /* var(--highlight-literal) */
+      color: #f08d49;
+    }
+
+    .hljs-bullet,
+    .hljs-code {
+      /* var(--highlight-punctuation) */
+      color: #cccccc;
+    }
+
+    .hljs-meta .hljs-string {
+      /* var(--highlight-variable) */
+      color: #b5bd68;
+    }
+
+    .hljs-deletion {
+      /* var(--highlight-deletion) */
+      color: #de7176;
+    }
+
+    .hljs-addition {
+      /* var(--highlight-addition) */
+      color: #76c490;
+    }
+
     .hljs-emphasis {
-      color: #c9d1d9;
       font-style: italic;
     }
+
     .hljs-strong {
-      color: #c9d1d9;
-      font-weight: 700;
+      font-weight: bold;
     }
-    .hljs-addition {
-      color: #aff5b4;
-      background-color: #033a16;
-    }
-    .hljs-deletion {
-      color: #ffdcd7;
-      background-color: #67060c;
+
+    .hljs-formula,
+    .hljs-operator,
+    .hljs-params,
+    .hljs-property,
+    .hljs-punctuation,
+    .hljs-tag {
+      /* purposely ignored */
     }
   }
   @media (max-width: 1000px) {
