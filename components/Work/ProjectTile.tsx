@@ -43,6 +43,10 @@ const ProjectTile = ({ project }: Props) => {
       </motion.header>
 
       <Link href={'/work/' + project.slug} className="image-container">
+        <motion.span variants={fade} className="summary">
+          {project.summary}
+        </motion.span>
+
         <Hide>
           <Img
             variants={photoAnim}
@@ -52,10 +56,6 @@ const ProjectTile = ({ project }: Props) => {
             placeholder="blur"
           />
         </Hide>
-
-        <motion.span variants={fade} className="summary">
-          {project.summary}
-        </motion.span>
       </Link>
     </ProjectContainer>
   )
@@ -119,7 +119,7 @@ const ProjectContainer = styled(motion.div)`
   }
   .image-container {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 1rem;
     text-decoration: none !important;
 

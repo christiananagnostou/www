@@ -187,7 +187,7 @@ export const ProjectState: Project[] = [
     title: 'Music Player',
     // date: 'Jan 2021',
     desktopImgs: [LofiWavesMain, LofiWavesDesktop],
-    mobileImgs: [LofiWavesMain],
+    mobileImgs: [],
     externalLink: 'http://lofiwaves.surge.sh/',
     github: 'https://github.com/ChristianAnagnostou/LofiWaves',
     slug: 'lofiwaves',

@@ -51,7 +51,14 @@ const SingleProject = ({ project }: Props) => {
         </div>
 
         <DesktopImage>
-          <Image src={project.desktopImgs[0]} alt="desktop hero" width={1000} height={666} loading="eager" />
+          <Image
+            alt={project.title}
+            blurDataURL={project.desktopImgs[0].blurDataURL}
+            src={project.desktopImgs[0]}
+            width={1000}
+            height={666}
+            loading="eager"
+          />
         </DesktopImage>
 
         <MobileAndText>
@@ -64,7 +71,7 @@ const SingleProject = ({ project }: Props) => {
           <div className="mobile-imgs">
             {project.mobileImgs.map((image, i) => (
               <MobileImage key={i}>
-                <Image src={image} alt="mobile" height={600} width={300} />
+                <Image src={image} blurDataURL={image.blurDataURL} alt="mobile" height={600} width={300} />
               </MobileImage>
             ))}
           </div>
@@ -72,7 +79,7 @@ const SingleProject = ({ project }: Props) => {
 
         {project.desktopImgs.slice(1).map((image, i) => (
           <DesktopImage key={i}>
-            <Image src={image} alt={`desktop ${i}`} width={1000} height={666} />
+            <Image src={image} blurDataURL={image.blurDataURL} alt={`desktop ${i}`} width={900} height={600} />
           </DesktopImage>
         ))}
       </Container>
