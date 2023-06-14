@@ -45,6 +45,8 @@ const ProjectTile = ({ project }: Props) => {
       <Link href={'/work/' + project.slug} className="image-container">
         <motion.span variants={fade} className="summary">
           {project.summary}
+
+          <span className="date">{project.date}</span>
         </motion.span>
 
         <Hide>
@@ -135,11 +137,19 @@ const ProjectContainer = styled(motion.div)`
     }
 
     .summary {
-      display: inline-block;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-between;
       font-size: 1rem;
       line-height: 1.4rem;
       letter-spacing: 0.015em;
       font-weight: 500;
+
+      .date {
+        font-size: 0.7rem;
+        font-weight: 300;
+        text-align: right;
+      }
 
       @media screen and (min-width: 768px) {
         max-width: 50%;
