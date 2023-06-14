@@ -7,6 +7,19 @@ import Calendar from '../public/img/projects/electriq-app/calendar.png'
 import DashboardComposed from '../public/img/projects/electriq-app/dashboard-composed.webp'
 import GanttChart from '../public/img/projects/electriq-app/gantt-chart.png'
 import KanbanChart from '../public/img/projects/electriq-app/kanban-chart.webp'
+// Soylent
+import SoylentCarousel from '../public/img/projects/soylent/carousel.webp'
+import SoylentCollage from '../public/img/projects/soylent/collage.webp'
+import SoylentCollection from '../public/img/projects/soylent/collection.webp'
+import SoylentHomepage from '../public/img/projects/soylent/homepage.webp'
+import SoylentPDP from '../public/img/projects/soylent/pdp.webp'
+//Scentfill
+import ScentfillCarouselMobile from '../public/img/projects/scentfill/carousel.webp'
+import SentfillCollage from '../public/img/projects/scentfill/collage.webp'
+import SentfillPDPMobile from '../public/img/projects/scentfill/pdp-mobile.webp'
+import SentfillPDP from '../public/img/projects/scentfill/pdp.webp'
+import SentfillScents from '../public/img/projects/scentfill/scents.webp'
+import SentfillWheel from '../public/img/projects/scentfill/wheel.webp'
 // Electriq Website
 import ElectriqHeroMain from '../public/img/projects/electriq-home/hero-main.png'
 import ElectriqWebsite from '../public/img/projects/electriq-home/homepage-composed.webp'
@@ -36,7 +49,8 @@ import LofiWavesMain from '../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 export const ProjectState: Project[] = [
   {
     title: 'QwikDraw',
-    // data:'April 2023',
+    date: 'April 2023',
+    tags: ['personal'],
     desktopImgs: [QwikDesignHero],
     mobileImgs: [],
     externalLink: 'https://qwikdraw.vercel.app/',
@@ -64,6 +78,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Electriq Dashboard',
+    date: 'Jul 2022',
+    tags: ['commercial'],
     desktopImgs: [DashboardComposed, GanttChart, KanbanChart],
     mobileImgs: [Calendar],
     externalLink: 'https://electriq.app/',
@@ -86,7 +102,31 @@ export const ProjectState: Project[] = [
     ],
   },
   {
+    title: 'Soylent',
+    date: '2022-2023',
+    tags: ['commercial'],
+    desktopImgs: [SoylentCollage, SoylentCarousel, SoylentPDP, SoylentCollection, SoylentHomepage],
+    mobileImgs: [],
+    externalLink: 'https://soylent.com/',
+    slug: 'soylent',
+    summary: 'Showcasing one of my favorite clients',
+    details: [],
+  },
+  {
+    title: 'Scentfill',
+    date: 'Jul 2022',
+    tags: ['commercial'],
+    desktopImgs: [SentfillCollage, SentfillWheel, SentfillPDP],
+    mobileImgs: [SentfillPDPMobile, ScentfillCarouselMobile, SentfillScents],
+    externalLink: 'https://scentfill.com/',
+    slug: 'scentfill',
+    summary: '...another favorite client',
+    details: [],
+  },
+  {
     title: "Electriq's Website",
+    date: 'Feb 2022',
+    tags: ['commercial'],
     desktopImgs: [ElectriqWebsite, ElectriqHeroMain],
     mobileImgs: [],
     externalLink: 'https://www.electriqmarketing.com/',
@@ -102,6 +142,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Lift Club',
+    date: 'Apr 2021',
+    tags: ['personal'],
     desktopImgs: [LiftClubMain, LiftClubPurpose],
     mobileImgs: [LiftClubUserProfile, LiftClubLog],
     externalLink: 'https://liftclub.app/',
@@ -133,6 +175,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Photo Shop',
+    date: 'Mar 2021',
+    tags: ['personal'],
     desktopImgs: [PhotoMain, PhotoDesktop1, PhotoDesktop2, PhotoDesktop3],
     mobileImgs: [PhotoMobile1, PhotoMobile2],
     externalLink: 'https://awildchristian.com/',
@@ -159,6 +203,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'NeoLogos',
+    date: 'Feb 2021',
+    tags: ['personal'],
     desktopImgs: [NeoLogosMain, NeoLogosDesktop1, NeoLogosDesktop2, NeoLogosDesktop3],
     mobileImgs: [NeoLogosMobile1, NeoLogosMobile2],
     // externalLink: "https://neologos.herokuapp.com/",
@@ -185,7 +231,8 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'Music Player',
-    // date: 'Jan 2021',
+    date: 'Jan 2021',
+    tags: ['personal'],
     desktopImgs: [LofiWavesMain, LofiWavesDesktop],
     mobileImgs: [],
     externalLink: 'http://lofiwaves.surge.sh/',
