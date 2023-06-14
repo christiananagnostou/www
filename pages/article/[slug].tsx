@@ -258,7 +258,7 @@ export const ArticleStyle = styled(motion.section)`
     }
     code.hljs {
       padding: 3px 5px;
-      width: fit-content;
+      width: 100%;
       max-width: 100%;
     }
 
