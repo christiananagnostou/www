@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useWindowSize } from "../Hooks";
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { useWindowSize } from '../Hooks'
 
-type Props = { show: boolean };
+type Props = { show: boolean }
 
 const StarBG = ({ show }: Props) => {
-  const { width, height } = useWindowSize();
+  const { width, height } = useWindowSize()
 
-  const [stars, setStars] = useState<JSX.Element[]>([]);
+  const [stars, setStars] = useState<JSX.Element[]>([])
 
   useEffect(() => {
-    if (!show) setStars([]);
-    if (!width || !height || !show) return;
+    if (!show) setStars([])
+    if (!width || !height || !show) return
 
-    let starCount = 0;
+    let starCount = 0
 
     const addStar = setInterval(() => {
-      if (starCount >= width / 5) return;
+      if (starCount >= width / 10) return
 
       setStars((prev) => [
         ...prev,
         <Star top={Math.random() * height} left={Math.random() * width} key={starCount++} />,
-      ]);
-    }, 150);
+      ])
+    }, 150)
 
-    return () => clearInterval(addStar);
-  }, [width, height, show]);
+    return () => clearInterval(addStar)
+  }, [width, height, show])
 
-  return <Container show={show}>{stars}</Container>;
-};
+  return <Container show={show}>{stars}</Container>
+}
 
-export default StarBG;
+export default StarBG
 
 const Star = ({ top, left }: { top: number; left: number }) => {
   return (
@@ -48,8 +48,8 @@ const Star = ({ top, left }: { top: number; left: number }) => {
         strokeMiterlimit="10"
       ></path>
     </StarStyle>
-  );
-};
+  )
+}
 
 const StarStyle = styled.svg`
   position: absolute;
@@ -74,7 +74,7 @@ const StarStyle = styled.svg`
       scale: 0.8;
     }
   }
-`;
+`
 
 const Container = styled.div<{ show: boolean }>`
   height: 100vh;
@@ -87,5 +87,5 @@ const Container = styled.div<{ show: boolean }>`
   transition: background-position 5s ease;
   background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
   background-size: 100% 200%;
-  background-position: ${({ show }) => (show ? "bottom" : "top")};
-`;
+  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
+`

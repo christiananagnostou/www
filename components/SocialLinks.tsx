@@ -1,11 +1,12 @@
 // Animations
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { fade } from "./animation";
-import Github from "./SVG/GitHub";
-import Instagram from "./SVG/Instagram";
-import LinkedIn from "./SVG/LinkedIn";
-import Readcv from "./SVG/Readcv";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
+import { fade } from './animation'
+import Github from './SVG/GitHub'
+import Instagram from './SVG/Instagram'
+import LinkedIn from './SVG/LinkedIn'
+import Readcv from './SVG/Readcv'
+import Twitter from './SVG/Twitter'
 
 function SocialLinks() {
   return (
@@ -30,8 +31,13 @@ function SocialLinks() {
           <Readcv />
         </a>
       </li>
+      <li>
+        <a href="https://twitter.com/coderdevguy" target="_blank" rel="noreferrer">
+          <Twitter />
+        </a>
+      </li>
     </SocialLinkList>
-  );
+  )
 }
 
 const SocialLinkList = styled(motion.ul)`
@@ -54,12 +60,13 @@ const SocialLinkList = styled(motion.ul)`
     a {
       display: block;
       color: var(--accent);
+      transition: 0.3s ease;
 
       &:hover {
-        color: #fff;
+        color: var(--text);
       }
     }
   }
-`;
+`
 
-export default SocialLinks;
+export default SocialLinks
