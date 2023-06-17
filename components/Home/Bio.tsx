@@ -39,14 +39,14 @@ function Bio() {
         <Link href="/art?tag=camera">photography</Link>, and learning how to think and write better.
       </motion.p>
 
-      <p />
+      {/* <p /> */}
 
-      <motion.p variants={fade}>
+      {/* <motion.p variants={fade}>
         catch me at{' '}
         <a href="https://twitter.com/coderdevguy" target={'_blank'} rel="noreferrer">
           @coderdevguy
         </a>
-      </motion.p>
+      </motion.p> */}
     </Description>
   )
 }
