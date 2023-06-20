@@ -6,8 +6,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
-import { ArticleType, getAllPosts, getPostBySlug } from '../../static/articles'
-import markdownToHtml from '../../static/articles/markdownToHtml'
+import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
+import markdownToHtml from '../../lib/articles/markdownToHtml'
 
 interface Props {
   post: ArticleType

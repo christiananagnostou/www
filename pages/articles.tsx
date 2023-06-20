@@ -6,7 +6,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import PageTitle from '../components/Styles/PageTitle'
-import { ArticleType, getAllPosts } from '../static/articles'
+import { ArticleType, getAllPosts } from '../lib/articles'
 
 type Props = {
   posts: ArticleType[]

@@ -15,7 +15,7 @@ export interface ArticleType {
   categories?: string[]
 }
 
-const postsDirectory = join(process.cwd(), 'lib/articles')
+const postsDirectory = join(process.cwd(), '/public/articles')
 
 export function getPostSlugs(): string[] {
   return fs.readdirSync(postsDirectory)
