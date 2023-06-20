@@ -7,7 +7,7 @@ import { pageAnimation, photoAnim } from '../components/animation'
 import { useScroll } from '../components/Hooks'
 import Range from '../components/Shared/Range'
 import PageTitle from '../components/Styles/PageTitle'
-import { ArtState } from '../lib/ArtState'
+import { ArtState } from '../lib/art'
 
 type Props = {}
 

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import PageTitle from '../components/Styles/PageTitle'
 import ProjectTile from '../components/Work/ProjectTile'
-import { ProjectState } from '../lib/ProjectState'
+import { ProjectState } from '../lib/projects'
 
 type Props = {}
 

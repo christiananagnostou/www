@@ -5,7 +5,7 @@ import { GetStaticPaths, GetStaticProps } from 'next/types'
 import styled from 'styled-components'
 
 import { pageAnimation } from '../../components/animation'
-import { ProjectState } from '../../lib/ProjectState'
+import { ProjectState } from '../../lib/projects'
 import { Project } from '../../types'
 
 type Props = {
