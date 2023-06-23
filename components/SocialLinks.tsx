@@ -6,7 +6,6 @@ import Github from './SVG/GitHub'
 import Instagram from './SVG/Instagram'
 import LinkedIn from './SVG/LinkedIn'
 import Readcv from './SVG/Readcv'
-import Twitter from './SVG/Twitter'
 
 function SocialLinks() {
   return (
@@ -31,11 +30,11 @@ function SocialLinks() {
           <Readcv />
         </a>
       </li>
-      <li>
+      {/* <li>
         <a href="https://twitter.com/coderdevguy" target="_blank" rel="noreferrer">
           <Twitter />
         </a>
-      </li>
+      </li> */}
     </SocialLinkList>
   )
 }

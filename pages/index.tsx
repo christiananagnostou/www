@@ -17,9 +17,10 @@ function Home() {
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <Bio />
-        <TVBar />
-        <div className="spacer" />
+
         <SocialLinks />
+
+        <TVBar />
       </Container>
     </>
   )
@@ -34,7 +35,8 @@ const Container = styled(motion.main)`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: end;
+  gap: 1rem;
 
   .spacer {
     height: auto;
@@ -42,6 +44,6 @@ const Container = styled(motion.main)`
   }
 
   @media screen and (min-width: 768px) {
-    padding: 3rem 1rem;
+    padding: 3rem 1rem 1rem;
   }
 `

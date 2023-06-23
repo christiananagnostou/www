@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
+import Giants from '../SVG/Giants'
 
 function Bio() {
   return (
@@ -12,7 +13,7 @@ function Bio() {
         Attempting to create an <em>elegant</em> web experience for all.
       </motion.p>
 
-      <p />
+      <motion.hr variants={fade} />
 
       <motion.p variants={fade}>
         At Electriq, I helped build their{' '}
@@ -23,7 +24,7 @@ function Bio() {
         <a href="https://www.electriqmarketing.com/" target={'_blank'} rel="noreferrer">
           <em>website</em>
         </a>
-        , built and maintained websites for commercial commerce clients, and built projects like{' '}
+        , built and maintained websites for commercial commerce clients, and built tools like{' '}
         <a href="https://qwikdraw.vercel.app/" target={'_blank'} rel="noreferrer">
           <em>QwikDraw</em>
         </a>{' '}
@@ -31,22 +32,20 @@ function Bio() {
         <a href="https://www.liftclub.app/" target={'_blank'} rel="noreferrer">
           <em>Lift Club</em>
         </a>{' '}
-        for my personal enjoyment.
+        for the world to use.
       </motion.p>
 
       <motion.p variants={fade}>
-        When I&apos;m not in front of my laptop, I&apos;m either out cycling or lifting. I also dabble with winemaking,{' '}
-        <Link href="/art?tag=camera">photography</Link>, and learning how to think and write better.
+        When I&apos;m not in front of my laptop, I&apos;m either out cycling, lifting, or at a{' '}
+        <span className="giants-container">
+          iants{' '}
+          <span className="giants">
+            <Giants />
+          </span>
+        </span>{' '}
+        game. I also dabble with winemaking, <Link href="/art?tag=camera">photography</Link>, and learning how to think
+        and write better.
       </motion.p>
-
-      {/* <p /> */}
-
-      {/* <motion.p variants={fade}>
-        catch me at{' '}
-        <a href="https://twitter.com/coderdevguy" target={'_blank'} rel="noreferrer">
-          @coderdevguy
-        </a>
-      </motion.p> */}
     </Description>
   )
 }
@@ -73,15 +72,48 @@ const Description = styled(motion.section)`
   }
 
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 200;
     padding: 1rem 0;
   }
 
+  hr {
+    border: none;
+    border-top: 1px solid var(--accent);
+  }
+
   p {
     font-weight: 200;
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.5rem;
     padding: 1rem 0;
+  }
+
+  .giants-container {
+    position: relative;
+    padding-left: 11px;
+    font-weight: 400;
+
+    .giants {
+      height: 13px;
+      width: auto;
+      position: absolute;
+      left: 1px;
+      top: -1px;
+
+      @media screen and (min-width: 768px) {
+        height: 14px;
+      }
+
+      svg {
+        height: 100%;
+        width: auto;
+        transition: color 0.5s ease;
+      }
+    }
+
+    &:hover svg {
+      color: #fd5a1e;
+    }
   }
 `
