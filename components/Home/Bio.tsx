@@ -25,7 +25,7 @@ function Bio() {
           <em>website</em>
         </a>
         , built and maintained websites for commercial commerce clients, and built tools like{' '}
-        <a href="https://qwikdraw.vercel.app/" target={'_blank'} rel="noreferrer">
+        <a href="https://qwikdraw.app/" target={'_blank'} rel="noreferrer">
           <em>QwikDraw</em>
         </a>{' '}
         and{' '}

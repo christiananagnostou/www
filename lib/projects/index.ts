@@ -76,7 +76,7 @@ export const ProjectState: Project[] = [
     tags: ['personal'],
     desktopImgs: [QwikDesignHero],
     mobileImgs: [],
-    externalLink: 'https://qwikdraw.vercel.app/',
+    externalLink: 'https://qwikdraw.app/',
     github: 'https://github.com/ChristianAnagnostou/qwikdraw',
     slug: 'qwikdraw',
     summary: 'A simple web-based design canvas built using the Qwik framework',
