@@ -1,6 +1,6 @@
 ---
 title: 'In The Beginning'
-dateCreated: 'May 4, 2023'
+dateCreated: 'May 04, 2023'
 ---
 
 Adventures can only start when the first step is taken.

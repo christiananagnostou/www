@@ -49,7 +49,7 @@ const ProjectTile = ({ project }: Props) => {
           <span className="date">{project.date}</span>
         </motion.span>
 
-        <Hide>
+        <Hide className="project-tile__image-hide">
           <Img
             variants={photoAnim}
             src={project.desktopImgs[0]}
@@ -148,7 +148,8 @@ const ProjectContainer = styled(motion.div)`
       .date {
         font-size: 0.7rem;
         font-weight: 300;
-        text-align: right;
+        text-align: left;
+        opacity: 0.75;
       }
 
       @media screen and (min-width: 768px) {
@@ -157,6 +158,10 @@ const ProjectContainer = styled(motion.div)`
       }
     }
   }
+
+  &:hover .project-tile__image-hide {
+    box-shadow: 0 5px 10px 5px rgba(20, 20, 20, 0.9);
+  }
 `
 
 const Hide = styled.div`
@@ -164,8 +169,4 @@ const Hide = styled.div`
   border-radius: 5px;
   transition: all 0.5s ease;
   width: 100%;
-
-  &:hover {
-    box-shadow: 0 5px 20px 10px rgba(20, 20, 20, 0.9);
-  }
 `

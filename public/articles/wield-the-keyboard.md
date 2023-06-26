@@ -1,6 +1,6 @@
 ---
 title: 'Wield the Keyboard'
-dateCreated: 'May 7, 2023'
+dateCreated: 'May 07, 2023'
 summary: 'Creating any kind of digital content is going is goint to require the keyboard. Mastering one is an invaluable skill that saves the most valuable currency...time.'
 hidden: false
 # categories: 'Productivity'

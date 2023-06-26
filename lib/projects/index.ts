@@ -54,7 +54,7 @@ import LofiWavesMain from '/public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 export const ProjectState: Project[] = [
   {
     title: 'Jukebox',
-    date: 'June 2023',
+    date: 'Jun 2023',
     tags: ['personal'],
     desktopImgs: [JukeboxCollage, JukeboxLibrary, JukeboxArtists, JukeboxShortcuts],
     mobileImgs: [],
@@ -72,7 +72,7 @@ export const ProjectState: Project[] = [
   },
   {
     title: 'QwikDraw',
-    date: 'April 2023',
+    date: 'Apr 2023',
     tags: ['personal'],
     desktopImgs: [QwikDesignHero],
     mobileImgs: [],
