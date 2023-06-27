@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { GetStaticProps } from 'next/types'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { pageAnimation } from '../components/animation'
-import PageTitle from '../components/Styles/PageTitle'
+import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { ArticleType, getAllPosts } from '../lib/articles'
 
 type Props = {
@@ -29,7 +28,7 @@ const Articles = ({ posts }: Props) => {
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <PageTitle titleLeft="still learning" titleRight="to write" />
+        {/* <PageTitle titleLeft="" titleRight="to write" /> */}
 
         <Control>
           <div className="categories">
@@ -48,17 +47,17 @@ const Articles = ({ posts }: Props) => {
           </div>
         </Control>
 
-        <PostsContainer>
+        <PostsContainer variants={staggerFade}>
           {posts
             .filter((post) => (selectedCategory ? post.categories?.includes(selectedCategory) : true))
             .map(({ title, dateCreated, slug, summary }) => (
-              <PostItem key={slug}>
+              <PostItem key={slug} variants={fade}>
                 <p className="date">{dateCreated}</p>
 
                 <Link href={`/article/${slug}`} className="inner-link">
                   <div className="content">
                     <h2 className="title">{title}</h2>
-                    {/* <p className="summary">{summary}</p> */}
+                    {summary && <p className="summary">{summary}</p>}
                   </div>
                 </Link>
               </PostItem>
@@ -105,7 +104,7 @@ const Control = styled.div`
   }
 `
 
-const PostsContainer = styled.div`
+const PostsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -113,15 +112,16 @@ const PostsContainer = styled.div`
   margin: auto;
 `
 
-const PostItem = styled.div`
+const PostItem = styled(motion.div)`
   width: 100%;
   display: flex;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 
   .date {
     min-width: max-content;
-    font-size: 0.9rem;
-    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 300;
+    margin-top: 0.6rem;
     min-width: 100px;
   }
 
@@ -131,6 +131,7 @@ const PostItem = styled.div`
     transition: all 0.25s ease;
     border-radius: 5px;
     padding: 0.5rem 1rem;
+    flex: 1;
 
     &:hover {
       background: #262626;
@@ -148,8 +149,8 @@ const PostItem = styled.div`
       }
 
       p {
-        font-size: 0.9rem;
-        margin: 0.25rem 0 0;
+        font-size: 0.8rem;
+        margin: 0.5rem 0 0;
         font-weight: 300;
       }
     }

@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
-import PageTitle from '../components/Styles/PageTitle'
 import ProjectTile from '../components/Work/ProjectTile'
 import { ProjectState } from '../lib/projects'
 
@@ -18,7 +17,7 @@ export default function works({}: Props) {
       </Head>
 
       <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <PageTitle titleLeft="my work" titleRight="ever improving" />
+        {/* <PageTitle titleLeft="my work" titleRight="ever improving" /> */}
 
         <Header>
           <h1>A Curated List of My Work</h1>

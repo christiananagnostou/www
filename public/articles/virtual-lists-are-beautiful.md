@@ -1,7 +1,7 @@
 ---
 title: 'Virtual Lists are Beautiful'
 dateCreated: 'May 31, 2023'
-summary: "Ever tried scrolling down on a table with 100,000 rows? You can't. Virtual Lists unlock that ability."
+summary: 'Ever tried scrolling down on a table with 100,000 rows? Good luck. Virtual Lists unlock that ability.'
 hidden: false
 # categories: 'Guide,Frontend'
 ---
@@ -73,15 +73,9 @@ The next step is to calculate the starting and ending indexes for the elements t
 The starting index is found by taking the scroll top position and dividing it by the height of the elements to get the index of the element at the top of the scroll container. From there all you do is subtract the overscan variable and you have the starting index to render. To get the ending index you add the scroll top position to the height of the scroll container and divide that by the height of the elements. Add the overscan this time and boom, there's your end index.
 
 ```ts
-const startIndex = Math.max(
-  0,
-  Math.floor(scrollTop / itemHeight) - overscan
-)
+const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan)
 
-const endIndex = Math.min(
-  numItems - 1,
-  Math.floor((scrollTop + windowHeight) / itemHeight) + overscan
-)
+const endIndex = Math.min(numItems - 1, Math.floor((scrollTop + windowHeight) / itemHeight) + overscan)
 ```
 
 ---

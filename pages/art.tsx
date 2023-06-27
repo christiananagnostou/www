@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { pageAnimation, photoAnim } from '../components/animation'
 import { useScroll } from '../components/Hooks'
 import Range from '../components/Shared/Range'
-import PageTitle from '../components/Styles/PageTitle'
 import { ArtState } from '../lib/art'
 
 type Props = {}
@@ -29,7 +28,7 @@ const Art = (props: Props) => {
       </Head>
 
       <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <PageTitle titleLeft="my adventures" titleRight="captured forever" />
+        {/* <PageTitle titleLeft="my adventures" titleRight="captured forever" /> */}
 
         <div className="control-bar">
           <div className="range-wrap">

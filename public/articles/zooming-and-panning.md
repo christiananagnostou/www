@@ -1,7 +1,7 @@
 ---
 title: 'Zooming & Panning'
 dateCreated: 'Jun 25, 2023'
-summary: 'Summary of the article. Keep between 80 and 120 characters. That is roughly the length of this line of text.'
+summary: 'Turn your browser window into a 2D canvas that you can explore with zooming and panning'
 hidden: false
 # categories: 'Guides,Frontend'
 ---
