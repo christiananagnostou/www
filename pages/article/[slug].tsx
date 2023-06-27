@@ -229,11 +229,12 @@ export const ArticleStyle = styled(motion.section)`
 
     img {
       border-radius: 5px;
-      margin-left: -2rem;
       max-width: 100%;
+      display: block;
+      margin: auto;
 
       @media (min-width: 550px) {
-        margin: auto;
+        max-width: 90%;
       }
     }
 
