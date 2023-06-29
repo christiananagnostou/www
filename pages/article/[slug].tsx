@@ -1,9 +1,10 @@
-import Image from 'next/image'
-import styled from 'styled-components'
-
 import { motion } from 'framer-motion'
 import Head from 'next/head'
+import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import styled from 'styled-components'
+
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
@@ -30,12 +31,20 @@ export async function getStaticPaths() {
 }
 
 const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, content, summary } }: Props) => {
+  const router = useRouter()
+
   return (
     <>
       <Head>
         <title>{title}</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <meta name="twitter:card" content={summary} />
+        <meta name="twitter:creator" content="@coderdevguy" />
+        <meta property="og:url" content={`https://www.christiancodes.co${router.asPath}`} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={summary} />
+        {coverImg && <meta property="og:image" content={coverImg} />}
       </Head>
 
       <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
