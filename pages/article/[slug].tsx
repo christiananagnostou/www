@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
@@ -60,11 +59,6 @@ const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, conten
             <p className="date">{dateCreated}</p>
           </div>
 
-          {coverImg && (
-            <div className="cover-img">
-              <Image src={'/article-images/' + coverImg} alt={`${title} cover image`} fill />
-            </div>
-          )}
           <div className="title">
             <h1 className="heading-gradient">{title}</h1>
           </div>
