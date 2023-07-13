@@ -61,7 +61,7 @@ export const ProjectState: Project[] = [
     externalLink: 'https://github.com/christiananagnostou/jukebox/releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
     slug: 'jukebox',
-    summary: 'Keyboard-centric Desktop Music Player made with Tauri + Qwik',
+    summary: 'Keyboard-centric desktop music player made with Tauri + Qwik',
     details: [
       {
         title: 'Current Project',
