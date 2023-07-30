@@ -10,30 +10,12 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Attempting to create an <em>elegant</em> web experience for all.
+        Striving to create an <em>elegant</em> web experience for all.
       </motion.p>
 
       <motion.hr variants={fade} />
 
-      <motion.p variants={fade}>
-        At Electriq, I helped build their{' '}
-        <a href="https://www.electriq.app/" target={'_blank'} rel="noreferrer">
-          <em>app</em>
-        </a>{' '}
-        and{' '}
-        <a href="https://www.electriqmarketing.com/" target={'_blank'} rel="noreferrer">
-          <em>website</em>
-        </a>
-        , built and maintained websites for commercial commerce clients, and built tools like{' '}
-        <a href="https://qwikdraw.app/" target={'_blank'} rel="noreferrer">
-          <em>QwikDraw</em>
-        </a>{' '}
-        and{' '}
-        <a href="https://www.liftclub.app/" target={'_blank'} rel="noreferrer">
-          <em>Lift Club</em>
-        </a>{' '}
-        for the world to use.
-      </motion.p>
+      <motion.p variants={fade}>Currently working on building the future of ecommerce at Electriq.</motion.p>
 
       <motion.p variants={fade}>
         When I&apos;m not in front of my laptop, I&apos;m either out cycling, lifting, or at a{' '}
