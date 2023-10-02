@@ -22,7 +22,6 @@ const Sections = [
   'persist',
 ]
 
-const BarHeight = 24
 const BarGradient = 'linear-gradient(to right, rgb(80,80,95), rgba(200, 200, 200, 0.2)'
 
 const TVBar = () => {

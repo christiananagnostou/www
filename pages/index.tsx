@@ -1,12 +1,25 @@
 import { motion } from 'framer-motion'
+import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import TVBar from '../components/Home/TVBar'
 import SocialLinks from '../components/SocialLinks'
+import { ArticleType, getAllPosts } from '../lib/articles'
 
-function Home() {
+import LatestSection from '../components/Home/LatestSection'
+
+type Props = {
+  posts: ArticleType[]
+}
+
+export const getStaticProps: GetStaticProps = () => {
+  const posts = getAllPosts()
+  return { props: { posts } }
+}
+
+const Home = ({ posts }: Props) => {
   return (
     <>
       <Head>
@@ -17,6 +30,8 @@ function Home() {
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <Bio />
+
+        <LatestSection posts={posts} />
 
         <SocialLinks />
 

@@ -14,17 +14,24 @@ const StarBG = ({ show }: Props) => {
     if (!width || !height || !show) return
 
     let starCount = 0
+    let interval: NodeJS.Timer | null = null
 
-    const addStar = setInterval(() => {
-      if (starCount >= width / 10) return
+    interval = setInterval(() => {
+      if (starCount >= width / 10) return interval && clearInterval(interval)
 
-      setStars((prev) => [
-        ...prev,
-        <Star style={{ top: Math.random() * height, left: Math.random() * width }} key={starCount++} />,
-      ])
+      setStars((prev) => {
+        starCount = prev.length
+
+        return [
+          ...prev,
+          <Star style={{ top: Math.random() * height, left: Math.random() * width }} key={prev.length + 1} />,
+        ]
+      })
     }, 150)
 
-    return () => clearInterval(addStar)
+    return () => {
+      if (interval) clearInterval(interval)
+    }
   }, [width, height, show])
 
   return <Container show={show}>{stars}</Container>
@@ -48,6 +55,20 @@ const SparkleSVG = styled.svg`
   position: absolute;
   animation: sparkle 7s 0.5s ease infinite;
   opacity: 0;
+`
+
+const Container = styled.div<{ show: boolean }>`
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: background-position 5s ease;
+  background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
+  background-size: 100% 200%;
+  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
 
   @keyframes sparkle {
     0% {
@@ -67,18 +88,4 @@ const SparkleSVG = styled.svg`
       scale: 0.8;
     }
   }
-`
-
-const Container = styled.div<{ show: boolean }>`
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
-  transition: background-position 5s ease;
-  background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
-  background-size: 100% 200%;
-  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
 `
