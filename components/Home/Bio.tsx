@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
 import Giants from '../SVG/Giants'
@@ -10,12 +9,12 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Striving to create an <em>elegant</em> web experience for all.
+        Working to create an <em>elegant</em> web experience for all.
       </motion.p>
 
-      <motion.hr variants={fade} />
+      <motion.p variants={fade}>Currently engineering the future of ecommerce at Electriq.</motion.p>
 
-      <motion.p variants={fade}>Currently working on building the future of ecommerce at Electriq.</motion.p>
+      <motion.hr variants={fade} />
 
       <motion.p variants={fade}>
         When I&apos;m not in front of my laptop, I&apos;m either out cycling, lifting, or at a{' '}
@@ -25,8 +24,7 @@ function Bio() {
             <Giants />
           </span>
         </span>{' '}
-        game. I also dabble with winemaking, <Link href="/art?tag=camera">photography</Link>, and learning how to think
-        and write better.
+        game. I also dabble with winemaking, photography, and writing.
       </motion.p>
     </Description>
   )
@@ -56,19 +54,24 @@ const Description = styled(motion.section)`
   h1 {
     font-size: 1.1rem;
     font-weight: 200;
-    padding: 1rem 0;
+    margin: 0 0 0.75rem;
   }
 
   hr {
     border: none;
     border-top: 1px solid var(--accent);
+    margin: 0 0 0.5rem;
   }
 
   p {
     font-weight: 200;
     font-size: 0.95rem;
     line-height: 1.5rem;
-    padding: 1rem 0;
+    margin: 0 0 0.5rem;
+
+    &:last-child {
+      margin: 0;
+    }
   }
 
   .giants-container {
@@ -77,14 +80,14 @@ const Description = styled(motion.section)`
     font-weight: 400;
 
     .giants {
-      height: 13px;
+      height: 14px;
       width: auto;
       position: absolute;
-      left: 1px;
-      top: -1px;
+      left: 0.5px;
+      top: 0px;
 
       @media screen and (min-width: 768px) {
-        height: 14px;
+        height: 15px;
       }
 
       svg {

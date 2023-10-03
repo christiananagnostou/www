@@ -96,7 +96,6 @@ const RecentArt = styled(HomepageBox)`
 
   * {
     text-decoration: none !important;
-    cursor: ne-resize;
   }
 
   .recent-art__hover-box {
@@ -129,7 +128,6 @@ const RecentArt = styled(HomepageBox)`
     z-index: 1;
     background: linear-gradient(to bottom, transparent 20%, #171717);
     transition: top 0.28s ease-in-out;
-    cursor: ne-resize;
     pointer-events: none;
   }
 

@@ -13,25 +13,16 @@ const StarBG = ({ show }: Props) => {
     if (!show) setStars([])
     if (!width || !height || !show) return
 
-    let starCount = 0
-    let interval: NodeJS.Timer | null = null
-
-    interval = setInterval(() => {
-      if (starCount >= width / 10) return interval && clearInterval(interval)
-
-      setStars((prev) => {
-        starCount = prev.length
-
-        return [
+    const interval = setInterval(() => {
+      setStars((prev) =>
+        [
           ...prev,
-          <Star style={{ top: Math.random() * height, left: Math.random() * width }} key={prev.length + 1} />,
-        ]
-      })
+          <Star style={{ top: Math.random() * height, left: Math.random() * width }} key={new Date().getTime()} />,
+        ].slice(-(width / 10))
+      )
     }, 150)
 
-    return () => {
-      if (interval) clearInterval(interval)
-    }
+    return () => clearInterval(interval)
   }, [width, height, show])
 
   return <Container show={show}>{stars}</Container>

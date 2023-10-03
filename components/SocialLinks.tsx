@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { fade } from './animation'
 import Github from './SVG/GitHub'
-import Instagram from './SVG/Instagram'
 import LinkedIn from './SVG/LinkedIn'
 import Readcv from './SVG/Readcv'
 
@@ -20,11 +19,11 @@ function SocialLinks() {
           <LinkedIn />
         </a>
       </li>
-      <li>
+      {/* <li>
         <a href="https://www.instagram.com/christian.anagnostou/" target="_blank" rel="noreferrer">
           <Instagram />
         </a>
-      </li>
+      </li> */}
       <li>
         <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer">
           <Readcv />
@@ -48,7 +47,7 @@ const SocialLinkList = styled(motion.ul)`
   list-style: none;
 
   border-radius: 5px;
-  padding: 0.6rem 0 0.45rem;
+  padding: 0.6rem 0 0.35rem;
   background: rgba(20, 20, 20, 0.5);
   border: 1px solid var(--accent);
 
@@ -58,6 +57,7 @@ const SocialLinkList = styled(motion.ul)`
 
     a {
       display: block;
+      cursor: alias;
       color: var(--accent);
       transition: 0.3s ease;
 

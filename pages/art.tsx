@@ -34,13 +34,13 @@ const Art = (props: Props) => {
           <div className="range-wrap">
             <Range
               type="range"
-              min={1}
+              min={2}
               max={8}
               value={numColumns}
               onChange={(e) => setNumColumns(parseInt(e.target.value))}
             />
 
-            <span className="col-num">{numColumns}</span>
+            {/* <span className="col-num">{numColumns}</span> */}
           </div>
 
           <div className="categories">
