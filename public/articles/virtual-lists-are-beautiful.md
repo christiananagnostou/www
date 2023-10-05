@@ -6,11 +6,7 @@ hidden: false
 # categories: 'Guide,Frontend'
 ---
 
-In the world of frontend development, optimizing performance and enhancing user experience are kind of a big deal. When it comes to handling large amounts of data, a virtual list can allow you to efficiently render that data without sacrificing speed or consuming excessive resources. By rendering only the visible portion of a list and dynamically swapping in and out items as the user scrolls, virtual lists enable lightning-fast loading times and smooth scrolling experiences.
-
-### What are Virtual Lists?
-
-Virtual lists sit between your large list of data and the rendered view of your application. Rather than rendering all the items in a list, virtual lists handle rendering only the items that are visible within the viewport or screen area. As the user scrolls, the virtual list dynamically adds or removes items from the DOM, resulting in a more efficient and faster rendering process. This approach minimizes the memory footprint and avoids performance issues that can arise when dealing with large datasets.
+There comes a time in every frontend dev's career when they will need to render large amounts of data in list form. The simple approach is to loop through all items and create the HTML for each. That can be thousands of elements when you have a lot of data, so it's better to show only a subset of those items through a process called virtualization. Using a virtual list allows you to render the data without making your site feel laggy and resource intensive. The goal is to render only the visible portion of the list of items and dynamically swap items in and out of the DOM as the user scrolls. Doing so allows for a more efficient rendering process and better user experience.
 
 ---
 

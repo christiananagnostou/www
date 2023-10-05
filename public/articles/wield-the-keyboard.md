@@ -16,11 +16,10 @@ In 1868, a man by the name of [Christopher Sholes](https://en.wikipedia.org/wiki
 
 ```
 
-It was keyboard of the first ever typewriter.
-
+It was the keyboard of the first ever typewriter.
 The letters were staggered resembling a piano, had black keys and white keys, and was laid out in two long rows. There were no keys for 0 or 1 as the letters O and I were deemed sufficient.
 
-Just five years later, the same man put together a layout for his typewriter keys that made the keys jam less.
+Eventually, after years of experimenting with different layouts to make the keys jam less, Sholes ended up with this layout:
 
 ```
  1 2 3 4 5 6 7 8 9 0 - =
@@ -30,9 +29,9 @@ Q W E R T Y U I O P [ ] \
 
 ```
 
-As a newspaper publisher and politician, Sholes was simply interested in removing bottlenecks from his busy life. Typing up new documents was not only taking hours, but jamming a typewriter usually meant smudges or restarting altogether. All Sholes had to do was rearrange the keys and spend some time getting used to the layout for the problem to be resolved.
+Being a newspaper publisher, Sholes would spend hours typing up new documents, so jamming the typewriter usually meant smudges or restarting altogether. Sholes realized that all he had to do was rearrange the keys and spend some time getting used to the layout for the jamming to stop.
 
-Keeping the same mindset, let's apply this to our work today. Many of us rely on a keyboard to do our jobs, most look exactly like Sholes', and the more we practice, the faster and more accurate we get. That alone is incredibly useful, but why not lean into those impressive keyboard skills a little more.
+Keeping the same mindset, let's apply this to our work today. Many of us rely on a keyboard to do our jobs, most look exactly like Sholes', and the more we practice using it, the faster and more accurate we get. That alone is a useful skill, but why not lean into those impressive keyboard skills a little more for some neat added benefits.
 
 ### Shortcuts
 

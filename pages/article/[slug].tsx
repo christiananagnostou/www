@@ -241,6 +241,16 @@ export const ArticleStyle = styled(motion.section)`
       }
     }
 
+    blockquote {
+      border-left: 2px solid var(--accent);
+      margin: 1.5em 0;
+      padding: 0.5em 1em;
+      text-align: left;
+
+      p {
+        margin-bottom: 0.5rem !important;
+      }
+    }
     /*!
       Theme: StackOverflow Dark
       Description: Dark theme as used on stackoverflow.com
