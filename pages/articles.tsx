@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { GetStaticProps } from 'next/types'
-import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { ArticleType, getAllPosts } from '../lib/articles'
@@ -17,7 +17,9 @@ export const getStaticProps: GetStaticProps = () => {
 }
 
 const Articles = ({ posts }: Props) => {
-  const [selectedCategory, setSelectedCategory] = useState('')
+  const router = useRouter()
+  const { query } = router
+  const queriedCategory = query.category?.toString() || ''
 
   return (
     <>
@@ -32,24 +34,25 @@ const Articles = ({ posts }: Props) => {
 
         <Control>
           <div className="categories">
-            {Array.from(new Set(posts.flatMap((post) => post.categories))).map(
-              (category) =>
-                category && (
-                  <button
-                    onClick={() => setSelectedCategory(selectedCategory === category ? '' : category)}
-                    key={category}
-                    className={`${selectedCategory === category && 'selected'}`}
-                  >
-                    {category}
-                  </button>
-                )
-            )}
+            {Array.from(new Set(posts.flatMap((post) => post.categories))).map((category) => (
+              <button
+                onClick={() =>
+                  router.push({
+                    query: { category: queriedCategory === category ? '' : category },
+                  })
+                }
+                key={category}
+                className={`${queriedCategory === category && 'selected'}`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
         </Control>
 
         <PostsContainer variants={staggerFade}>
           {posts
-            .filter((post) => (selectedCategory ? post.categories?.includes(selectedCategory) : true))
+            .filter((post) => (queriedCategory ? post.categories?.includes(queriedCategory) : true))
             .map(({ title, dateCreated, slug, summary }) => (
               <PostItem key={slug} variants={fade}>
                 <p className="date">{dateCreated}</p>
@@ -96,6 +99,7 @@ const Control = styled.div`
       color: var(--text);
       cursor: pointer;
       transition: all 0.25s ease;
+      text-transform: capitalize;
 
       &.selected {
         color: white;

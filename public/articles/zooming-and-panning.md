@@ -4,7 +4,7 @@ dateCreated: 'Jun 25, 2023'
 summary: 'Turn your browser window into a 2D canvas that you can explore with zooming and panning'
 coverImg: '/img/articles/zooming-scaling/window-drawing.webp'
 hidden: false
-# categories: 'Guides,Frontend'
+categories: 'frontend'
 ---
 
 ![Window Drawing](/img/articles/zooming-scaling/window-drawing.webp)

@@ -3,7 +3,7 @@ title: 'Wield the Keyboard'
 dateCreated: 'May 07, 2023'
 summary: 'Mastering the keyboard is an invaluable skill that saves the most valuable currency...time.'
 hidden: false
-# categories: 'Productivity'
+categories: 'productivity'
 ---
 
 ---

@@ -3,7 +3,7 @@ title: 'Virtual Lists are Beautiful'
 dateCreated: 'May 31, 2023'
 summary: 'Ever tried scrolling down on a table with 100,000 rows? Good luck. Virtual Lists unlock that ability.'
 hidden: false
-# categories: 'Guide,Frontend'
+categories: 'frontend'
 ---
 
 There comes a time in every frontend dev's career when they will need to render large amounts of data in list form. The simple approach is to loop through all items and create the HTML for each. That can be thousands of elements when you have a lot of data, so it's better to show only a subset of those items through a process called virtualization. Using a virtual list allows you to render the data without making your site feel laggy and resource intensive. The goal is to render only the visible portion of the list of items and dynamically swap items in and out of the DOM as the user scrolls. Doing so allows for a more efficient rendering process and better user experience.
