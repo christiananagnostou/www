@@ -87,11 +87,13 @@ const Control = styled.div`
     width: 100%;
     overflow: auto;
     display: flex;
+    gap: 0.5rem;
     align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--accent);
 
     button {
       font-size: 0.85rem;
-      margin-right: 0.5rem;
       padding: 0.25rem 0.75rem;
       border-radius: 5px;
       background: var(--border);
@@ -123,9 +125,9 @@ const PostItem = styled(motion.div)`
 
   .date {
     min-width: max-content;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 300;
-    margin-top: 0.6rem;
+    margin-top: 0.7rem;
     min-width: 100px;
   }
 
@@ -165,7 +167,6 @@ const PostItem = styled(motion.div)`
 
     .date {
       margin-top: 0.25rem;
-      font-size: 0.8rem;
     }
 
     .inner-link {
