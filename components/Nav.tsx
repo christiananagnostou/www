@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import Logo from '../public/A-circle.webp'
 
 const Links = [
-  { href: '/', title: 'About' },
+  { href: '/', title: 'Home' },
   { href: '/works', title: 'Works' },
   { href: '/articles', title: 'Articles' },
   { href: '/art', title: 'Art' },
