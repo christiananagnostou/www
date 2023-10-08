@@ -132,22 +132,17 @@ const Heading = styled.header`
 `
 
 export const ArticleStyle = styled(motion.section)`
-  overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
+  position: relative;
 
   .content {
     text-align: left;
     margin: auto;
     text-align: justify;
     position: relative;
-
-    nav {
-      width: fit-content;
-      display: none;
-    }
 
     h1,
     h2,
@@ -162,11 +157,6 @@ export const ArticleStyle = styled(motion.section)`
 
     h1 {
       margin: 1rem 0;
-    }
-
-    nav {
-      font-size: 0.9em;
-      margin-bottom: 2rem;
     }
 
     p {
@@ -191,13 +181,15 @@ export const ArticleStyle = styled(motion.section)`
 
     ul,
     ol {
-      padding-left: 1rem;
+      padding-left: 0.5rem;
       margin-left: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
 
       li {
         color: var(--text);
         font-weight: 300;
-        margin-top: 0.5rem;
 
         a {
           display: flex;
@@ -220,14 +212,50 @@ export const ArticleStyle = styled(motion.section)`
     ol {
       list-style: upper-roman;
     }
-    nav ol {
-      list-style: none;
-      margin-left: 0;
-      padding-left: 0.5rem;
-      text-align: left;
+
+    nav {
+      display: none;
     }
-    nav ol ol {
-      padding-left: 1.25rem;
+
+    @media screen and (min-width: 1210px) {
+      nav {
+        width: 200px;
+        font-size: 0.85em;
+        display: block;
+        position: sticky;
+        right: 100%;
+        top: 70px;
+        translate: -100% 7px;
+        height: 0;
+        margin: 0;
+        padding: 0;
+        padding-right: 0.75rem;
+        overflow: visible;
+      }
+      nav ol {
+        list-style: none;
+        margin-left: 0;
+        padding-left: 0rem;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      nav li {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      nav ol ol {
+        padding-left: 1rem;
+      }
+      nav a {
+        opacity: 0.7;
+        text-decoration: none;
+      }
+      nav a:hover {
+        opacity: 1;
+      }
     }
 
     img {
