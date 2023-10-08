@@ -6,6 +6,7 @@ const GlobalStyle = createGlobalStyle`
     --text: #aeaeae;
     --heading: #cecece;
     --body-bg: #1b1b1b;
+    --bg: rgba(20, 20, 20, 0.5);
     --nav-height: 50px;
     --max-w-screen: 800px;
     --font-fallback: -apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
@@ -53,6 +54,8 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
     
     overflow-y: scroll;
     font-family: 'Inter', sans-serif;

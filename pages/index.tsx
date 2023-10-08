@@ -122,7 +122,7 @@ const ProjectLinks = styled(motion.section)`
     align-items: center;
     border-radius: 5px;
     padding: 0.75rem 0.75rem 0.75rem 0.6rem;
-    background: rgba(20, 20, 20, 0.5);
+    background: var(--bg);
     border: 1px solid var(--accent);
     cursor: alias;
     font-size: 0.85rem;

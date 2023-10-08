@@ -193,7 +193,7 @@ const FormGroup = styled.div`
     margin: 1rem 0 0.2rem;
   }
   .form-input {
-    background: rgba(20, 20, 20, 0.5);
+    background: var(--bg);
     border: 1px solid var(--accent);
 
     border-radius: 5px;

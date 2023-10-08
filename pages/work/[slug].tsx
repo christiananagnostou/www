@@ -153,7 +153,7 @@ const Details = styled.div`
 
 const DetailStyle = styled.div`
   padding: 1.5rem 1rem;
-  background: rgba(20, 20, 20, 0.5);
+  background: var(--bg);
 
   &:first-child {
     border-radius: 5px 5px 0 0;

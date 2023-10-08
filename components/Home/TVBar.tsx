@@ -220,7 +220,7 @@ const TVControls = styled(motion.div)`
   .button {
     display: block;
     height: 100%;
-    background: rgba(20, 20, 20, 0.5);
+    background: var(--bg);
     border: 1px solid var(--accent);
     border-radius: 4px;
     padding: 0 1rem;

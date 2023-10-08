@@ -76,7 +76,7 @@ const HomepageBox = styled(motion.div)`
   flex: 1;
   border-radius: 7px;
   padding: 1rem;
-  background: rgba(20, 20, 20, 0.5);
+  background: var(--bg);
   border: 1px solid var(--accent);
 
   * {
