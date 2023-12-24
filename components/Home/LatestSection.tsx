@@ -34,6 +34,7 @@ const LatestSection = ({ posts }: Props) => {
               alt="Latest photo posted on my website - found on the art page."
               blurDataURL={StairShadow.blurDataURL}
               placeholder="blur"
+              width={750}
             />
           </RecentImage>
         </Link>
@@ -88,6 +89,8 @@ const HomepageBox = styled(motion.div)`
     display: block;
     margin-bottom: 1rem;
     width: fit-content;
+    position: relative;
+    z-index: 1;
   }
 `
 
@@ -146,7 +149,7 @@ const RecentImage = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
   filter: brightness(0.25);
   width: 100%;
   height: 100%;
