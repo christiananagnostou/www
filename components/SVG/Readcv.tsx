@@ -1,13 +1,13 @@
-type Props = {};
+type Props = {}
 
 const Readcv = (props: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="16"
+      height="16"
       viewBox="0 0 28 28"
-      style={{ transform: "scale(1.5)" }}
+      style={{ transform: 'scale(1.4)' }}
     >
       <path
         fillRule="evenodd"
@@ -22,7 +22,7 @@ const Readcv = (props: Props) => {
         fill="currentColor"
       ></path>
     </svg>
-  );
-};
+  )
+}
 
-export default Readcv;
+export default Readcv

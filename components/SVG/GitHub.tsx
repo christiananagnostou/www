@@ -1,16 +1,6 @@
-import React from "react";
-
 function Github() {
   return (
-    <svg
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      height="20px"
-      width="20px"
-      viewBox="0 0 512 512"
-    >
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 512 512">
       <g>
         <path
           fill="currentColor"
@@ -26,7 +16,7 @@ function Github() {
         />
       </g>
     </svg>
-  );
+  )
 }
 
-export default Github;
+export default Github
