@@ -5,6 +5,7 @@ import { fade } from './animation'
 import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
 import Readcv from './SVG/Readcv'
+import Twitter from './SVG/Twitter'
 
 function SocialLinks() {
   return (
@@ -15,25 +16,20 @@ function SocialLinks() {
         </a>
       </li>
       <li>
-        <a href="https://www.linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer">
+        <a href="https://linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer">
           <LinkedIn />
         </a>
       </li>
-      {/* <li>
-        <a href="https://www.instagram.com/christian.anagnostou/" target="_blank" rel="noreferrer">
-          <Instagram />
-        </a>
-      </li> */}
       <li>
         <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer">
           <Readcv />
         </a>
       </li>
-      {/* <li>
-        <a href="https://twitter.com/coderdevguy" target="_blank" rel="noreferrer">
+      <li>
+        <a href="https://twitter.com/javascramble" target="_blank" rel="noreferrer">
           <Twitter />
         </a>
-      </li> */}
+      </li>
     </SocialLinkList>
   )
 }
@@ -42,20 +38,21 @@ const SocialLinkList = styled(motion.ul)`
   width: fit-content;
   margin: 0;
   display: flex;
+  gap: 0.75rem;
+  padding: 0 0.75rem;
   justify-content: center;
   align-items: center;
   list-style: none;
 
   border-radius: 5px;
-  padding: 0.6rem 0 0.35rem;
   background: var(--bg);
   border: 1px solid var(--accent);
 
   li {
-    margin: 0 0.75rem;
     flex: 1;
 
     a {
+      padding: 0.5rem 0.25rem;
       display: block;
       cursor: alias;
       color: var(--accent);
@@ -63,6 +60,10 @@ const SocialLinkList = styled(motion.ul)`
 
       &:hover {
         color: var(--text);
+      }
+
+      * {
+        display: block;
       }
     }
   }

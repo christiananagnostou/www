@@ -1,6 +1,5 @@
 import { motion, PanInfo } from 'framer-motion'
-import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { fade, staggerFadeFast } from '../animation'
 import { useWindowSize } from '../Hooks'
@@ -22,9 +21,13 @@ const Sections = [
   'persist',
 ]
 
+type Props = {
+  setShowSignature: Dispatch<SetStateAction<boolean>>
+}
+
 const BarGradient = 'linear-gradient(to right, rgb(80,80,95), rgba(200, 200, 200, 0.2)'
 
-const TVBar = () => {
+const TVBar = ({ setShowSignature }: Props) => {
   const knobRef = useRef<HTMLDivElement>(null)
   const barsRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -50,20 +53,12 @@ const TVBar = () => {
     knobRef.current.dataset.currentDeg = newPos.toString()
   }
 
+  useEffect(() => {
+    setShowSignature(isBarFull)
+  }, [isBarFull, setShowSignature])
+
   return (
     <>
-      <Signature
-        src="/signature.png"
-        style={
-          isBarFull ? { opacity: 1, transition: 'opacity 2s 2s ease' } : { opacity: 0, transition: 'opacity 0.3s ease' }
-        }
-        height={70}
-        width={150}
-        alt="Signature of Christian Anagnostou"
-      />
-
-      <div className="spacer"></div>
-
       <TVControls variants={staggerFadeFast}>
         <Knob variants={fade} onPan={onKnobPan}>
           <div className="knob" ref={knobRef} style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
@@ -115,12 +110,6 @@ const TVBar = () => {
 }
 
 export default TVBar
-
-const Signature = styled(Image)`
-  margin: 1rem 0 0 auto;
-  pointer-events: none;
-  user-select: none;
-`
 
 const Knob = styled(motion.div)`
   --knob-border-width: 1px;
