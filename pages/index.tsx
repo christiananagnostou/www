@@ -33,31 +33,31 @@ const Home = ({ posts }: Props) => {
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <TVBar setShowSignature={setShowSignature} />
+        <div className="page-inner-container">
+          <TVBar setShowSignature={setShowSignature} />
 
-        <Bio />
+          <Bio />
 
-        <LatestSection posts={posts} />
+          <LatestSection posts={posts} />
 
-        <FlexWrap>
-          <FeaturedProjects />
+          <FlexWrap>
+            <FeaturedProjects />
 
-          <SocialLinks />
-        </FlexWrap>
+            <SocialLinks />
+          </FlexWrap>
 
-        <div className="spacer" />
-
-        <Signature
-          src="/signature.png"
-          style={
-            showSignature
-              ? { opacity: 0.7, transition: 'opacity 2s 2s ease' }
-              : { opacity: 0, transition: 'opacity 0.3s ease' }
-          }
-          height={60}
-          width={130}
-          alt="Signature of Christian Anagnostou"
-        />
+          <Signature
+            src="/signature.png"
+            style={
+              showSignature
+                ? { opacity: 0.7, height: 50, transition: 'opacity .75s .15s ease, height .3s ease' }
+                : { opacity: 0, height: 0, transition: 'opacity .3s ease, height .3s .1s ease' }
+            }
+            height={30}
+            width={100}
+            alt="Signature of Christian Anagnostou"
+          />
+        </div>
       </Container>
     </>
   )
@@ -69,15 +69,17 @@ const Container = styled(motion.main)`
   max-width: var(--max-w-screen);
   min-height: calc(100vh - var(--nav-height));
   margin: auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  gap: 1rem;
+  padding: 2rem 1rem 1rem;
 
-  .spacer {
-    height: auto;
-    flex: 1;
+  .page-inner-container {
+    border: 1px solid var(--accent);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+    border-radius: 14px;
+    position: relative;
   }
 `
 
@@ -92,7 +94,10 @@ const FlexWrap = styled(motion.section)`
 
 const Signature = styled(Image)`
   display: block;
-  margin: 1rem auto;
+  margin-left: auto;
+  margin-top: -1rem;
   pointer-events: none;
   user-select: none;
+  transform-origin: center center;
+  transform: translateY(0.5rem) scale(0.9);
 `
