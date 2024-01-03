@@ -1,24 +1,41 @@
 import { motion, PanInfo } from 'framer-motion'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { fade, staggerFadeFast } from '../animation'
 import { useWindowSize } from '../Hooks'
 import StarBG from './StarBG'
 
 const Sections = [
   'craft',
-  'imbue',
-  'clarify',
+  'create',
   'improve',
-  'grow',
+  'imbue',
   'listen',
   'learn',
   'teach',
   'smile',
   'retry',
   'practice',
-  'enhance',
   'persist',
+  'stand',
+  'exercise',
+  'give',
+  'laugh',
+  'liven',
+  'explore',
+  'grow',
+  'adapt',
+  'communicate',
+  'connect',
+  'reflect',
+  'inspire',
+  'dream',
+  'achieve',
+  'collaborate',
+  'appreciate',
+  'embrace',
+  'forgive',
+  'discover',
+  'transform',
 ]
 
 type Props = {
@@ -59,17 +76,12 @@ const TVBar = ({ setShowSignature }: Props) => {
 
   return (
     <>
-      <TVControls variants={staggerFadeFast}>
-        <Knob variants={fade} onPan={onKnobPan}>
+      <TVControls>
+        <Knob onPan={onKnobPan}>
           <div className="knob" ref={knobRef} style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
         </Knob>
 
-        <motion.div
-          className="bar-wrap"
-          ref={barsRef}
-          variants={fade}
-          onPan={(width || 0) < 768 ? onKnobPan : () => {}}
-        >
+        <motion.div className="bar-wrap" ref={barsRef} onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
           <div className="bar">
             <div
               className="bar-inner"
@@ -84,12 +96,12 @@ const TVBar = ({ setShowSignature }: Props) => {
         <div className="current-control">
           <motion.button
             className={`button ${isBarFull ? 'highlight' : ''}`}
-            variants={fade}
             ref={buttonRef}
             onClick={
               isBarFull ? () => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1)) : () => {}
             }
             disabled={!isBarFull}
+            style={{ width: Sections[sectionIndex].length * 10 }}
           >
             {Sections.map((section) => (
               <span
@@ -174,11 +186,14 @@ const Knob = styled(motion.div)`
 `
 
 const TVControls = styled(motion.div)`
-  padding: 0.5rem 0;
-  width: 100%;
+  width: calc(100% - 2rem);
   display: flex;
   align-items: stretch;
   position: relative;
+  position: absolute;
+  top: 0;
+  transform: translateY(calc(-50% - 1px));
+  left: 1rem;
 
   user-select: none;
   * {
@@ -209,11 +224,11 @@ const TVControls = styled(motion.div)`
   .button {
     display: block;
     height: 100%;
-    background: var(--bg);
+    background: var(--body-bg);
     border: 1px solid var(--accent);
     border-radius: 4px;
     padding: 0 1rem;
-    min-width: 90px;
+    min-width: 60px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -237,8 +252,6 @@ const TVControls = styled(motion.div)`
     }
 
     &.highlight {
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      box-shadow: inset 0 1px 3px rgba(200, 200, 200, 0.2), inset 0 -1px 3px rgba(0, 0, 0, 0.5);
       cursor: pointer;
 
       .inner {
