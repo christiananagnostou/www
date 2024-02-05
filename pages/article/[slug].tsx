@@ -39,7 +39,7 @@ const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, conten
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <meta name="twitter:card" content={summary} />
-        <meta name="twitter:creator" content="@coderdevguy" />
+        <meta name="twitter:creator" content="@javascramble" />
         <meta property="og:url" content={`https://www.christiancodes.co${router.asPath}`} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={summary} />

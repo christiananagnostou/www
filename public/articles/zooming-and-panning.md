@@ -199,4 +199,4 @@ const canvasToScreen = $((canvasX: number, canvasY: number) => {
 
 ---
 
-Hope this article was helpful to you! If it was, let me know on Twitter [@coderdevguy](https://twitter.com/coderdevguy).
+Hope this article was helpful to you! If it was, let me know on Twitter [@javascramble](https://twitter.com/javascramble).
