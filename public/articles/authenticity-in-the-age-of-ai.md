@@ -2,7 +2,7 @@
 title: 'Authenticity in the Age of AI'
 dateCreated: 'Oct 04, 2023'
 summary: 'Human creations have never been so valuable'
-hidden: false
+hidden: true
 categories: 'philosophy'
 ---
 

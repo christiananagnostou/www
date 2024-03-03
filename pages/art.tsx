@@ -56,11 +56,11 @@ const Art = (props: Props) => {
           </div>
         </div>
 
-        <Columns numColumns={numColumns}>
+        <Columns $numColumns={numColumns}>
           {columns.map((images, col) => (
             <Column
               key={'column_' + col}
-              numColumns={numColumns}
+              $numColumns={numColumns}
               variants={{ show: { transition: { staggerChildren: 0.5 } } }}
             >
               {images.map((ImageData, row) => (
@@ -171,15 +171,15 @@ const Container = styled(motion.div)`
   }
 `
 
-const Columns = styled.section<{ numColumns: number }>`
+const Columns = styled.section<{ $numColumns: number }>`
   display: flex;
-  gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
+  gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
 `
 
-const Column = styled(motion.div)<{ numColumns: number }>`
+const Column = styled(motion.div)<{ $numColumns: number }>`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: ${({ numColumns }) => 20 - numColumns * 1.5}px;
+  gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
   flex: 1;
 `

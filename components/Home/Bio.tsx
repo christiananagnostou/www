@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
-import Giants from '../SVG/Giants'
 
 function Bio() {
   return (
@@ -12,9 +11,7 @@ function Bio() {
         Working to create an <em>elegant</em> web experience for all.
       </motion.p>
 
-      <motion.p variants={fade}>Currently engineering the future of ecommerce at Electriq.</motion.p>
-
-      <motion.hr variants={fade} />
+      {/* <motion.hr variants={fade} />
 
       <motion.p variants={fade}>
         When I&apos;m not in front of my laptop, I&apos;m either out cycling, lifting, or at a{' '}
@@ -25,7 +22,7 @@ function Bio() {
           </span>
         </span>{' '}
         game. I also dabble with winemaking, photography, and writing.
-      </motion.p>
+      </motion.p> */}
     </Description>
   )
 }
