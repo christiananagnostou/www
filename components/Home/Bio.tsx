@@ -8,7 +8,15 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Working to create an <em>elegant</em> web experience for all.
+        Striving to create an <em>elegant</em> web experience driven by constant pursuit of excellence.
+      </motion.p>
+
+      <motion.p variants={fade}>
+        Currently working as a Senior Software Engineer at{' '}
+        <a href="https://vuoriclothing.com/" target="_blank" rel="noreferrer" aria-label="Visit Vuori website">
+          Vuori
+        </a>
+        .
       </motion.p>
 
       {/* <motion.hr variants={fade} />

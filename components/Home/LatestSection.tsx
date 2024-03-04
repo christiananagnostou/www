@@ -113,11 +113,13 @@ const RecentArt = styled(HomepageBox)`
     justify-content: center;
     z-index: 2;
     text-align: center;
-    opacity: 0.65;
 
     p {
       font-size: 0.8rem;
       padding-bottom: 3px;
+      scale: 0.8;
+      transition: scale 0.25s ease-in-out;
+      color: var(--text-dark);
     }
   }
 
@@ -141,6 +143,10 @@ const RecentArt = styled(HomepageBox)`
 
     .recent-art__hover-box {
       bottom: 0;
+
+      p {
+        scale: 1;
+      }
     }
   }
 `
@@ -179,8 +185,8 @@ const RecentArticles = styled(HomepageBox)`
         overflow: hidden;
         text-overflow: ellipsis;
         margin-top: 0.25rem;
-        opacity: 0.55;
         font-size: 0.8rem;
+        color: var(--text-dark);
       }
     }
   }
