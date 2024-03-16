@@ -9,6 +9,7 @@ export const DailyCalendarStyle = styled.div`
   --background: var(--body-bg);
   --header-curr-date-color: #fff;
   --daily-event-text-color: #000;
+  --time-bar-width: 3.75rem;
 
   width: 100%;
   height: 50vh;
@@ -74,11 +75,21 @@ export const DailyCalendarStyle = styled.div`
     grid-template-columns: var(--row-grid);
   }
 
-  .calendar__hour-bar::after {
+  .calendar__hour-bar:not(:last-child):after {
     content: '';
-    display: block;
     width: 100%;
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .calendar__hour-bar::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: var(--hour-bar-height);
+    background: var(--border-color);
+    position: absolute;
+    top: 0;
+    left: var(--time-bar-width);
   }
 
   .calendar__hour-bar--time {
@@ -93,15 +104,14 @@ export const DailyCalendarStyle = styled.div`
     position: relative;
   }
 
-  .calendar__sticky-header--timezone::after,
-  .calendar__hour-bar--time::after {
+  .calendar__sticky-header--timezone::after {
     content: '';
     display: block;
     width: 1px;
     height: var(--hour-bar-height);
     position: absolute;
     top: 0;
-    right: -0.75rem;
+    left: var(--time-bar-width);
     background: var(--border-color);
   }
 
@@ -109,8 +119,8 @@ export const DailyCalendarStyle = styled.div`
   .calendar__daily-event-container {
     position: absolute;
     z-index: 1;
-    width: calc(100% - 3.75rem);
-    left: 3.75rem;
+    width: calc(100% - var(--time-bar-width));
+    left: var(--time-bar-width);
     background: var(--red);
     border-radius: 3px;
   }
@@ -161,8 +171,8 @@ export const DailyCalendarStyle = styled.div`
     height: 2px;
     position: absolute;
     z-index: 2;
-    width: calc(100% - 3.75rem);
-    left: 3.75rem;
+    width: calc(100% - var(--time-bar-width));
+    left: var(--time-bar-width);
     pointer-events: none;
   }
 

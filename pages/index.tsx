@@ -24,7 +24,11 @@ export const getStaticProps: GetStaticProps = () => {
 }
 
 const Home = ({ posts }: Props) => {
-  const [showSignature, setShowSignature] = useState(false)
+  const [showRevealBar, setShowRevealBar] = useState(false)
+
+  const revealBarStyle = showRevealBar
+    ? { marginTop: '-1rem', opacity: 0.7, height: 50, transition: 'opacity .75s .15s ease, height .3s ease' }
+    : { marginTop: '-1rem', opacity: 0, height: 0, transition: 'opacity .3s ease, height .3s .1s ease' }
 
   return (
     <>
@@ -36,7 +40,7 @@ const Home = ({ posts }: Props) => {
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <div className="page-inner-container">
-          <TVBar setShowSignature={setShowSignature} />
+          <TVBar setShowSignature={setShowRevealBar} />
 
           <Bio />
 
@@ -48,23 +52,7 @@ const Home = ({ posts }: Props) => {
             <SocialLinks />
           </FlexWrap>
 
-          <FlexWrap
-            style={
-              showSignature
-                ? {
-                    marginTop: '-1rem',
-                    opacity: 0.7,
-                    height: 50,
-                    transition: 'opacity .75s .15s ease, height .3s ease',
-                  }
-                : {
-                    marginTop: '-1rem',
-                    opacity: 0,
-                    height: 0,
-                    transition: 'opacity .3s ease, height .3s .1s ease',
-                  }
-            }
-          >
+          <FlexWrap style={revealBarStyle}>
             <ExperimentsLink href="/lab">
               <Experiment />
               Laboratory
@@ -137,7 +125,8 @@ const ExperimentsLink = styled(Link)`
 
   text-decoration: none !important;
   color: var(--fire-color) !important;
-  text-shadow: 0 0 10px var(--fire-color), 0 0 40px var(--fire-color), 0 0 80px var(--fire-color);
+  text-shadow: 0 0 1px var(--fire-color), 0 0 1px var(--fire-color), 0 0 1px var(--fire-color);
+  transition: all 0.3s ease-in-out;
 
   .fire-svg {
     height: 0;
@@ -146,6 +135,7 @@ const ExperimentsLink = styled(Link)`
 
   &:hover {
     --fire-color: #ff8c3b;
+    text-shadow: 0 0 10px var(--fire-color), 0 0 40px var(--fire-color), 0 0 80px var(--fire-color);
   }
 `
 

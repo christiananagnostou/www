@@ -124,6 +124,10 @@ const DailyCalendar = ({ date }: Props) => {
         ))}
 
         {/* Dragging Box */}
+
+        {/* Current Time */}
+        <div id="CurrentTime" className="calendar__current-time" style={{ top: timeToPx(dateToTime(new Date())) }} />
+
         {newEvent && <DailyEvent dailyEvent={newEvent} />}
 
         {HOURS.map((hour) => (
@@ -131,9 +135,6 @@ const DailyCalendar = ({ date }: Props) => {
             <span className="calendar__hour-bar--time">{formatTime(hour)}</span>
           </div>
         ))}
-
-        {/* Current Time */}
-        <div id="CurrentTime" className="calendar__current-time" style={{ top: timeToPx(dateToTime(new Date())) }} />
       </div>
     </DailyCalendarStyle>
   )
