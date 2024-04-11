@@ -39,4 +39,8 @@ const Item = styled(motion.div)`
   max-width: calc(50% - 0.5rem);
   flex: 1;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `

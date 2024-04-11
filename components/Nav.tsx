@@ -82,7 +82,7 @@ const StyledNav = styled.nav`
   align-items: center;
   position: sticky;
   z-index: 10;
-  transition: all 0.5s ease;
+  transition: top 0.5s ease;
 
   .nav-inner {
     display: flex;
