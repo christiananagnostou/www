@@ -137,8 +137,25 @@ export const DailyCalendarStyle = styled.div`
     font-size: 12px;
   }
 
+  .calendar__daily-event-inner {
+    --text: var(--daily-event-text-color);
+  }
+
   .calendar__daily-event--time-range {
-    color: var(--daily-event-text-color);
+  }
+
+  .calendar__daily-event-delete {
+    background: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    position: absolute;
+    top: 0.1rem;
+    right: 0.1rem;
+    transition: opacity 0.2s ease-in-out;
+  }
+  .calendar__daily-event-delete:hover {
+    opacity: 0.5;
   }
 
   .calendar__resize-event--top,

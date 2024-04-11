@@ -45,6 +45,10 @@ const DailyCalendar = ({ date }: Props) => {
     setDailyEvents((prev) => [...prev, rectifyDailyEvent(dailyEvent)])
   }, [])
 
+  const deleteDailyEvent = useCallback((dailyEvent: DailyEventT) => {
+    setDailyEvents((prev) => prev.filter((evt) => evt.id !== dailyEvent.id))
+  }, [])
+
   const getDateFromPointerEvent = useCallback((e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const elemY = Math.max(0, e.clientY - (eventListRef.current?.getBoundingClientRect().top || 0))
     const hour = Math.floor(elemY / BarHeight)
@@ -119,6 +123,7 @@ const DailyCalendar = ({ date }: Props) => {
             selectedEventId={selectedEventId}
             getDateFromPointerEvent={getDateFromPointerEvent}
             updateDailyEvent={updateDailyEvent}
+            deleteDailyEvent={deleteDailyEvent}
             key={dailyEvent.id}
           />
         ))}
