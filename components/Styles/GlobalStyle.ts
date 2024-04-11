@@ -4,6 +4,7 @@ const GlobalStyle = createGlobalStyle`
   :root {
     --accent: #343b45;
     --text: #aeaeae;
+    --text-dark: #6a6a6a;
     --heading: #cecece;
     --body-bg: #1b1b1b;
     --bg: rgba(20, 20, 20, 0.5);
@@ -24,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-feature-settings: "kern","frac","kern","ss02";
-    
+
     scrollbar-width: thin;
     scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 
@@ -56,7 +57,7 @@ const GlobalStyle = createGlobalStyle`
     touch-action: manipulation;
     scroll-behavior: smooth;
     scroll-padding-top: 90px;
-    
+
     overflow-y: scroll;
     font-family: 'Inter', sans-serif;
     @media (max-width: 1200px){

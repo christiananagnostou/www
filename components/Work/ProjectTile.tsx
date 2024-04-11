@@ -149,7 +149,7 @@ const ProjectContainer = styled(motion.div)`
         font-size: 0.7rem;
         font-weight: 300;
         text-align: left;
-        opacity: 0.75;
+        color: var(--text-dark);
       }
 
       @media screen and (min-width: 768px) {

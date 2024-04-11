@@ -55,8 +55,8 @@ const SocialLinkList = styled(motion.ul)`
       padding: 0.5rem 0.25rem;
       display: block;
       cursor: alias;
-      color: var(--accent);
-      transition: 0.3s ease;
+      color: var(--text-dark);
+      transition: color 0.3s ease;
 
       &:hover {
         color: var(--text);
