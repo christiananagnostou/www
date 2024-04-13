@@ -1,4 +1,13 @@
+import X from '../../SVG/X'
 import { DailyEventT } from './DailyCalendar'
+import {
+  DailyEventContainer,
+  DailyEventInner,
+  DailyEventRelative,
+  DeleteButton,
+  ResizeEvent,
+  TimeRange,
+} from './styles'
 import { dateToTime, timeToPx } from './utils'
 
 type Props = {
@@ -70,51 +79,42 @@ const DailyEvent = ({
   }
 
   return (
-    <div
-      className={`calendar__daily-event-container ${selectedEventId === dailyEvent.id ? 'selected' : ''}`}
+    <DailyEventContainer
+      className={selectedEventId === dailyEvent.id ? 'selected' : ''}
       style={getDailyEventBoxStyles(dailyEvent)}
       onMouseDown={onContainerMouseDown}
     >
-      <div className="calendar__daily-event-relative">
+      <DailyEventRelative>
         {!(dailyEvent.start.getTime() === dailyEvent.end.getTime()) && (
-          <div className="calendar__daily-event-inner">
-            {/* <p>{dailyEvent.title || 'No Title'}</p> */}
-            <p className="calendar__daily-event--time-range">
+          <DailyEventInner>
+            <TimeRange>
               {dailyEvent.start < dailyEvent.end
                 ? dateToTime(dailyEvent.start, 12) + ' - ' + dateToTime(dailyEvent.end, 12)
                 : dateToTime(dailyEvent.end, 12) + ' - ' + dateToTime(dailyEvent.start, 12)}
-            </p>
+            </TimeRange>
 
             {/* Delete */}
             {selectedEventId === dailyEvent.id && (
-              <button
-                className="calendar__daily-event-delete"
-                onClick={() => deleteDailyEvent && deleteDailyEvent(dailyEvent)}
-                aria-label="Delete event"
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  stroke-width="0"
-                  viewBox="0 0 512 512"
-                  height="14px"
-                  width="14px"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path>
-                </svg>
-              </button>
+              <DeleteButton onClick={() => deleteDailyEvent && deleteDailyEvent(dailyEvent)} aria-label="Delete event">
+                <X />
+              </DeleteButton>
             )}
-          </div>
+          </DailyEventInner>
         )}
         {selectedEventId === dailyEvent.id && (
           <>
-            <div className="calendar__resize-event--top" onMouseDown={(e) => onResizeMouseDown(e, 'start')} />
-            <div className="calendar__resize-event--bottom" onMouseDown={(e) => onResizeMouseDown(e, 'end')} />
+            <ResizeEvent
+              onMouseDown={(e) => onResizeMouseDown(e, 'start')}
+              style={{ top: 'calc(var(--height) / -2)' }}
+            />
+            <ResizeEvent
+              onMouseDown={(e) => onResizeMouseDown(e, 'end')}
+              style={{ bottom: 'calc(var(--height) / -2)' }}
+            />
           </>
         )}
-      </div>
-    </div>
+      </DailyEventRelative>
+    </DailyEventContainer>
   )
 }
 

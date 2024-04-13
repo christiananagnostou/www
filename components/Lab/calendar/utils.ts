@@ -1,4 +1,4 @@
-import { BarHeight } from './DailyCalendar'
+import { BarHeight } from './styles'
 
 /**
  * @param date Date object
@@ -22,10 +22,10 @@ export const timeToPx = (time: string) => {
   return hoursPx + minsPx
 }
 
-export function getRandomColor(min = 150) {
+export function getRandomColor(max = 150) {
   const random = (): number => {
     const r = Math.floor(Math.random() * 256)
-    return r < min ? random() : r
+    return r > max ? random() : r
   }
 
   return `rgb(${random()},${random()},${random()})`
