@@ -1,12 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import DailyEvent from './DailyEvent'
-import { DailyCalendarStyle } from './styles'
+import {
+  BarHeight,
+  CurrentDate,
+  CurrentDay,
+  CurrentTimeBar,
+  DailyCalendarStyle,
+  DateWrap,
+  HourBar,
+  HourBarTime,
+  HourListWrap,
+  StickyHeader,
+  Timezone,
+} from './styles'
 import { addMinutes, dateToTime, formatTime, getRandomColor, timeToPx } from './utils'
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const HOURS = [...new Array(24)].map((_, i) => i)
 
-export const BarHeight = 60
 const BarInterval = 15
 
 type Props = {
@@ -50,15 +61,22 @@ const DailyCalendar = ({ date }: Props) => {
   }, [])
 
   const getDateFromPointerEvent = useCallback((e: MouseEvent | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const elemY = Math.max(0, e.clientY - (eventListRef.current?.getBoundingClientRect().top || 0))
+    const topPos = eventListRef.current?.getBoundingClientRect().top || 0
+    const scrollTop = eventListRef.current?.scrollTop || 0
+
+    // Calculate the y-position of the mouse event relative to the event list, adjusted for scrolling
+    const elemY = Math.max(0, e.clientY - topPos + scrollTop)
+
     const hour = Math.floor(elemY / BarHeight)
-    const mins = elemY - BarHeight * hour
+    const mins = elemY % BarHeight
     const intervalMins = mins - (mins % BarInterval)
     const date = new Date()
+
     date.setHours(hour)
     date.setMinutes(intervalMins)
     date.setSeconds(0)
     date.setMilliseconds(0)
+
     return date
   }, [])
 
@@ -105,17 +123,17 @@ const DailyCalendar = ({ date }: Props) => {
   }, [])
 
   return (
-    <DailyCalendarStyle style={{ '--hour-bar-height': BarHeight + 'px' } as React.CSSProperties}>
-      <div className="calendar__sticky-header">
-        <span className="calendar__sticky-header--timezone">{DATE.toTimeString().slice(9, 15)}</span>
-        <div className="calendar__sticky-header--date-wrap">
-          <div className="calendar__sticky-header--curr-day">{WEEKDAYS[DATE.getDay()].substring(0, 3)}</div>
-          <div className="calendar__sticky-header--curr-date">{DATE.getDate()}</div>
-        </div>
-      </div>
+    <DailyCalendarStyle>
+      <StickyHeader>
+        <Timezone>{DATE.toTimeString().slice(9, 15)}</Timezone>
+        <DateWrap>
+          <CurrentDay>{WEEKDAYS[DATE.getDay()].substring(0, 3)}</CurrentDay>
+          <CurrentDate>{DATE.getDate()}</CurrentDate>
+        </DateWrap>
+      </StickyHeader>
 
-      <div className="calendar__hour-list-wrap" ref={eventListRef} onMouseDown={handleListMouseDown}>
-        {/* Daily Event Boxes */}
+      <HourListWrap ref={eventListRef} onMouseDown={handleListMouseDown}>
+        {/* Existing Events */}
         {dailyEvents.map((dailyEvent) => (
           <DailyEvent
             dailyEvent={dailyEvent}
@@ -128,19 +146,18 @@ const DailyCalendar = ({ date }: Props) => {
           />
         ))}
 
-        {/* Dragging Box */}
-
-        {/* Current Time */}
-        <div id="CurrentTime" className="calendar__current-time" style={{ top: timeToPx(dateToTime(new Date())) }} />
-
+        {/* New Event */}
         {newEvent && <DailyEvent dailyEvent={newEvent} />}
 
+        {/* Current Time */}
+        <CurrentTimeBar style={{ top: timeToPx(dateToTime(new Date())) }} id="CurrentTime" />
+
         {HOURS.map((hour) => (
-          <div className="calendar__hour-bar" key={hour} data-hour={hour}>
-            <span className="calendar__hour-bar--time">{formatTime(hour)}</span>
-          </div>
+          <HourBar key={hour} data-hour={hour}>
+            <HourBarTime>{formatTime(hour)}</HourBarTime>
+          </HourBar>
         ))}
-      </div>
+      </HourListWrap>
     </DailyCalendarStyle>
   )
 }
