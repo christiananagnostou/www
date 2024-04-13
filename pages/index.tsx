@@ -40,7 +40,7 @@ const Home = ({ posts }: Props) => {
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <div className="page-inner-container">
-          <TVBar setShowSignature={setShowRevealBar} />
+          <TVBar onBarFilled={setShowRevealBar} />
 
           <Bio />
 
@@ -55,7 +55,7 @@ const Home = ({ posts }: Props) => {
           <FlexWrap style={revealBarStyle}>
             <ExperimentsLink href="/lab">
               <Experiment />
-              Laboratory
+              The Lab
               <svg className="fire-svg">
                 <filter id="fire">
                   <feTurbulence id="turbulence" baseFrequency="0.1 0.1" numOctaves="10" seed="30">

@@ -1,5 +1,5 @@
 import { motion, PanInfo } from 'framer-motion'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useWindowSize } from '../Hooks'
 import StarBG from './StarBG'
@@ -39,12 +39,12 @@ const Sections = [
 ]
 
 type Props = {
-  setShowSignature: Dispatch<SetStateAction<boolean>>
+  onBarFilled: (filled: boolean) => void
 }
 
 const BarGradient = 'linear-gradient(to right, rgb(80,80,95), rgba(200, 200, 200, 0.2)'
 
-const TVBar = ({ setShowSignature }: Props) => {
+const TVBar = ({ onBarFilled }: Props) => {
   const knobRef = useRef<HTMLDivElement>(null)
   const barsRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -71,8 +71,8 @@ const TVBar = ({ setShowSignature }: Props) => {
   }
 
   useEffect(() => {
-    setShowSignature(isBarFull)
-  }, [isBarFull, setShowSignature])
+    onBarFilled(isBarFull)
+  }, [isBarFull, onBarFilled])
 
   return (
     <>
