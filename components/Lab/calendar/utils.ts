@@ -1,4 +1,4 @@
-import { BarHeight } from './styles'
+import { HOUR_BAR_HEIGHT } from './styles'
 
 /**
  * @param date Date object
@@ -17,8 +17,8 @@ export const dateToTime = (date: Date, format: 12 | 24 = 24) => {
  */
 export const timeToPx = (time: string) => {
   const [hours, mins] = time.split(':')
-  const hoursPx = parseInt(hours) * BarHeight
-  const minsPx = (parseInt(mins || '0') / 60) * BarHeight
+  const hoursPx = parseInt(hours) * HOUR_BAR_HEIGHT
+  const minsPx = (parseInt(mins || '0') / 60) * HOUR_BAR_HEIGHT
   return hoursPx + minsPx
 }
 

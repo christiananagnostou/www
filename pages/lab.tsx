@@ -14,8 +14,10 @@ export default function lab() {
       </Head>
 
       <LabItems id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        {/* Calendar */}
+        <DateStyle>Apr 2024</DateStyle>
         <Item variants={fade}>
-          <DailyCalendar date={new Date().toString()} />
+          <DailyCalendar />
         </Item>
       </LabItems>
     </>
@@ -23,24 +25,45 @@ export default function lab() {
 }
 
 const LabItems = styled(motion.div)`
-  overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
 `
 
 const Item = styled(motion.div)`
-  border: 1px solid var(--accent);
-  border-radius: 5px;
-  max-width: calc(50% - 0.5rem);
+  width: 100%;
+  padding: 4rem;
+  background: var(--bg);
+  flex: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
   flex: 1;
   overflow: hidden;
+  margin-bottom: 4rem;
 
   @media (max-width: 768px) {
-    max-width: 100%;
+    padding: 1rem;
+    margin-bottom: 3rem;
+  }
+`
+
+const DateStyle = styled.div`
+  width: 100%;
+  text-align: right;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+
+  @media (max-width: 768px) {
+    padding-right: 1rem;
   }
 `

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const BarHeight = 60
+export const HOUR_BAR_HEIGHT = 60
 
 export const DailyCalendarStyle = styled.div`
   --border-color: var(--accent);
@@ -8,17 +8,24 @@ export const DailyCalendarStyle = styled.div`
   --blue: #1b72e8;
   --red: #fe2968;
   --resize-event-bg: var(--text);
-  --background: var(--body-bg);
   --header-curr-date-color: #fff;
   --daily-event-text-color: #fff;
   --time-bar-width: 3.75rem;
-  --hour-bar-height: ${BarHeight}px;
+  --hour-bar-height: ${HOUR_BAR_HEIGHT}px;
 
+  max-width: calc(50% - 0.5rem);
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+
+  border: 1px solid var(--border-color);
+  background: var(--body-bg);
+  border-radius: 10px;
   position: relative;
   width: 100%;
   margin: auto;
-  overflow-x: hidden;
   user-select: none;
+  overflow: hidden;
 
   &::after {
     content: '';
@@ -34,12 +41,10 @@ export const DailyCalendarStyle = styled.div`
 `
 
 export const StickyHeader = styled.div`
-  max-width: 100%;
-  background: var(--background);
-  border-bottom: 1px solid var(--border-color);
   display: grid;
   grid-template-columns: var(--row-grid);
   align-items: end;
+  border-bottom: 1px solid var(--border-color);
 `
 
 export const Timezone = styled.span`
@@ -79,7 +84,10 @@ export const HourListWrap = styled.div`
   position: relative;
   height: 500px;
   overflow-y: auto;
+  scroll-padding-top: 50%;
 `
+
+export const HourBarWrap = styled.div``
 
 export const HourBar = styled.div`
   height: var(--hour-bar-height);
@@ -101,7 +109,6 @@ export const HourBarTime = styled.span`
   font-size: 12px;
   line-height: 12px;
   padding-left: 0.5rem;
-  background: var(--background);
   user-select: none;
   position: relative;
 `
@@ -113,6 +120,7 @@ export const DailyEventContainer = styled.div`
   left: var(--time-bar-width);
   background: var(--red);
   border-radius: 4px;
+  transition: top 0.05s ease-in-out, height 0.05s ease-in-out;
 
   &.selected {
     z-index: 4;

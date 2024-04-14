@@ -13,10 +13,24 @@ import { dateToTime, timeToPx } from './utils'
 type Props = {
   dailyEvent: DailyEventT
   updateDailyEvent?: (dailyEvent: DailyEventT) => void
-  getDateFromPointerEvent?: (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => Date
+  getDateFromPointerEvent?: (e: MouseEvent) => Date
   selectedEventId?: number | null
   setSelectedEventId?: React.Dispatch<React.SetStateAction<number | null>>
   deleteDailyEvent?: (dailyEvent: DailyEventT) => void
+}
+
+const getDailyEventBoxStyles = (cursorPos: DailyEventT) => {
+  if (!cursorPos) return {}
+  const { start, end } = cursorPos
+  const startPx = timeToPx(dateToTime(start))
+  const endPx = timeToPx(dateToTime(end))
+  const shouldSwap = startPx > endPx
+
+  return {
+    height: shouldSwap ? startPx - endPx : endPx - startPx,
+    top: shouldSwap ? endPx : startPx,
+    background: cursorPos.color,
+  }
 }
 
 const DailyEvent = ({
@@ -27,21 +41,7 @@ const DailyEvent = ({
   setSelectedEventId,
   deleteDailyEvent,
 }: Props) => {
-  const getDailyEventBoxStyles = (cursorPos: DailyEventT) => {
-    if (!cursorPos) return {}
-    const { start, end } = cursorPos
-    const startPx = timeToPx(dateToTime(start))
-    const endPx = timeToPx(dateToTime(end))
-    const shouldSwap = startPx > endPx
-
-    return {
-      height: shouldSwap ? startPx - endPx : endPx - startPx,
-      top: shouldSwap ? endPx : startPx,
-      background: cursorPos.color,
-    }
-  }
-
-  const onResizeMouseDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>, position: 'start' | 'end') => {
+  const onResizeDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>, position: 'start' | 'end') => {
     mouseDownEvent.stopPropagation()
     document.body.style.cursor = 'ns-resize'
 
@@ -75,7 +75,6 @@ const DailyEvent = ({
   const onContainerMouseDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>) => {
     mouseDownEvent.stopPropagation()
     setSelectedEventId && setSelectedEventId(dailyEvent.id)
-    console.log('click')
   }
 
   return (
@@ -103,14 +102,8 @@ const DailyEvent = ({
         )}
         {selectedEventId === dailyEvent.id && (
           <>
-            <ResizeEvent
-              onMouseDown={(e) => onResizeMouseDown(e, 'start')}
-              style={{ top: 'calc(var(--height) / -2)' }}
-            />
-            <ResizeEvent
-              onMouseDown={(e) => onResizeMouseDown(e, 'end')}
-              style={{ bottom: 'calc(var(--height) / -2)' }}
-            />
+            <ResizeEvent onMouseDown={(e) => onResizeDown(e, 'start')} style={{ top: 'calc(var(--height) / -2)' }} />
+            <ResizeEvent onMouseDown={(e) => onResizeDown(e, 'end')} style={{ bottom: 'calc(var(--height) / -2)' }} />
           </>
         )}
       </DailyEventRelative>

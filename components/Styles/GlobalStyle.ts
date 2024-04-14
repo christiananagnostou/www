@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   :root {
-    --accent: #343b45;
+    --accent: #303030;
     --text: #aeaeae;
     --text-dark: #6a6a6a;
     --heading: #cecece;
@@ -57,7 +57,7 @@ const GlobalStyle = createGlobalStyle`
     touch-action: manipulation;
     scroll-behavior: smooth;
     scroll-padding-top: 90px;
-
+    overscroll-behavior-y: none;
     overflow-y: scroll;
     font-family: 'Inter', sans-serif;
     @media (max-width: 1200px){
