@@ -1,66 +1,44 @@
 import emailjs from 'emailjs-com'
 import { motion } from 'framer-motion'
-import { NextPage } from 'next'
 import Head from 'next/head'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import SocialLinks from '../components/SocialLinks'
 import PageTitle from '../components/Styles/PageTitle'
 
-const initialFormState = {
-  name: '',
-  email: '',
-  subject: '',
-  message: '',
-}
+const Contact = () => {
+  const [sentSuccessful, setSentSuccessful] = useState(false)
 
-const Contact: NextPage = () => {
-  const [formData, setFormData] = useState(initialFormState)
-  const [sentSuccessful, setsentSuccessful] = useState(false)
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    let templateParams = {
+    const form = e.currentTarget as HTMLFormElement
+    const formData = new FormData(form)
+    const data = {
       to_name: 'Christian',
-      from_name: formData.name,
-      from_email: formData.email,
-      subject: formData.subject,
-      message: formData.message,
+      from_name: formData.get('name'),
+      from_email: formData.get('email'),
+      subject: formData.get('subject'),
+      message: formData.get('message'),
       site: 'christiancodes.co',
     }
+
+    if (!data.from_name) return // Ensuring name is not empty
 
     try {
       const res = await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        templateParams,
+        data,
         process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
       )
-
       if (res.status === 200) {
-        setFormData(initialFormState)
-        setsentSuccessful(true)
+        form.reset() // Resetting the form fields
+        setSentSuccessful(true)
       }
-    } catch (e) {
-      console.log(e)
+    } catch (error) {
+      console.error(error)
     }
-  }
-
-  const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, name: e.target.value })
-  }
-
-  const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, email: e.target.value })
-  }
-  const onSubjectChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, subject: e.target.value })
-  }
-
-  const onMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData({ ...formData, message: e.target.value })
   }
 
   return (
@@ -72,68 +50,38 @@ const Contact: NextPage = () => {
       </Head>
 
       <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {sentSuccessful ? (
-          <PageTitle titleLeft="you are" titleRight="the goat" />
-        ) : (
-          <PageTitle titleLeft="my dm's" titleRight="are open" />
-        )}
+        <PageTitle
+          titleLeft={sentSuccessful ? 'you are' : 'send me'}
+          titleRight={sentSuccessful ? 'the goat' : 'an email'}
+        />
 
-        <StyledForm variants={staggerFade} id="contact-form" onSubmit={handleSubmit} method="POST">
+        <StyledForm variants={staggerFade} onSubmit={handleSubmit} method="POST">
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="name">
-                name <span>*</span>
+                Name <span>*</span>
               </label>
-              <input
-                type="text"
-                className="form-input custom-focus"
-                required
-                value={formData.name}
-                onChange={onNameChange}
-              />
+              <input id="name" name="name" type="text" className="form-input custom-focus" required />
             </FormGroup>
           </motion.div>
-
           <motion.div variants={fade}>
             <FormGroup>
-              <label htmlFor="inputEmail">
-                email <span>*</span>
-              </label>
-              <input
-                type="email"
-                className="form-input custom-focus"
-                aria-describedby="email"
-                value={formData.email}
-                onChange={onEmailChange}
-              />
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" className="form-input custom-focus" />
             </FormGroup>
           </motion.div>
-
           <motion.div variants={fade}>
             <FormGroup>
-              <label htmlFor="subject">subject</label>
-              <input
-                type="text"
-                className="form-input custom-focus"
-                value={formData.subject}
-                onChange={onSubjectChange}
-              />
+              <label htmlFor="subject">Subject</label>
+              <input id="subject" name="subject" type="text" className="form-input custom-focus" autoComplete="off" />
             </FormGroup>
           </motion.div>
-
           <motion.div variants={fade}>
             <FormGroup>
-              <label htmlFor="message">message</label>
-              <textarea
-                className="form-input custom-focus"
-                rows={6}
-                cols={50}
-                value={formData.message}
-                onChange={onMessageChange}
-              ></textarea>
+              <label htmlFor="message">Message</label>
+              <textarea id="message" name="message" className="form-input custom-focus" rows={6}></textarea>
             </FormGroup>
           </motion.div>
-
           <motion.div variants={fade}>
             <FormGroup>
               <button type="submit" className="form-btn custom-focus">
@@ -171,7 +119,7 @@ const ContactStyle = styled(motion.div)`
     transition: opacity 0.3s ease;
     text-align: center;
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 `
 
@@ -205,7 +153,7 @@ const FormGroup = styled.div`
     letter-spacing: 0.5px;
   }
   textarea {
-    resize: none;
+    resize: vertical;
     overflow: auto;
     border-radius: 5px;
   }

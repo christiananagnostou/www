@@ -39,10 +39,11 @@ const SocialLinkList = styled(motion.ul)`
   margin: 0;
   display: flex;
   gap: 0.75rem;
-  padding: 0 0.75rem;
+  padding: 0.05rem 0.75rem;
   justify-content: center;
   align-items: center;
   list-style: none;
+  height: fit-content;
 
   border-radius: 5px;
   background: var(--bg);

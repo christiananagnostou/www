@@ -22,10 +22,10 @@ export const timeToPx = (time: string) => {
   return hoursPx + minsPx
 }
 
-export function getRandomColor(max = 150) {
+export function getRandomColor(max = 150, min = 50) {
   const random = (): number => {
     const r = Math.floor(Math.random() * 256)
-    return r > max ? random() : r
+    return r > max || r < min ? random() : r
   }
 
   return `rgb(${random()},${random()},${random()})`
