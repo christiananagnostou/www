@@ -7,9 +7,9 @@ export const DailyCalendarStyle = styled.div`
   --row-grid: 3rem 1fr;
   --blue: #1b72e8;
   --red: #fe2968;
-  --resize-event-bg: var(--text);
+  --resize-event-bg: var(--body-bg);
   --header-curr-date-color: #fff;
-  --daily-event-text-color: #fff;
+  --daily-event-text-color: #ccc;
   --time-bar-width: 3.75rem;
   --hour-bar-height: ${HOUR_BAR_HEIGHT}px;
 
@@ -124,14 +124,16 @@ export const DailyEventContainer = styled.div`
 
   &.selected {
     z-index: 4;
+    box-shadow: 0 0 0 1px var(--border-color);
   }
 `
 
 export const DailyEventRelative = styled.div`
   position: relative;
   height: 100%;
-  padding: 0.1rem 0.5rem;
-  font-size: 12px;
+  padding: 0.05rem 0.5rem;
+  font-size: 10px;
+  font-weight: bold;
 `
 
 export const DailyEventInner = styled.div`
@@ -146,8 +148,8 @@ export const DeleteButton = styled.button`
   margin: 0;
   border: none;
   position: absolute;
-  top: 0.1rem;
-  right: 0.1rem;
+  top: 0;
+  right: 0;
   transition: opacity 0.2s ease-in-out;
   color: var(--text);
   cursor: pointer;
@@ -158,8 +160,9 @@ export const DeleteButton = styled.button`
 `
 
 export const ResizeEvent = styled.div`
-  --height: 8px;
+  --height: 6px;
   background: var(--resize-event-bg);
+  border: 1px solid var(--border-color);
   height: var(--height);
   width: 40px;
   border-radius: 10px;

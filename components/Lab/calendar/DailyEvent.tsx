@@ -73,8 +73,9 @@ const DailyEvent = ({
   }
 
   const onContainerMouseDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>) => {
+    if (!setSelectedEventId) return
     mouseDownEvent.stopPropagation()
-    setSelectedEventId && setSelectedEventId(dailyEvent.id)
+    selectedEventId === dailyEvent.id ? setSelectedEventId(null) : setSelectedEventId(dailyEvent.id)
   }
 
   return (
