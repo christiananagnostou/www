@@ -72,9 +72,9 @@ const DailyEvent = ({
     document.body.addEventListener('mouseup', onMouseUp)
   }
 
-  const onContainerMouseDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>) => {
+  const onContainerClick = (clickEvent: React.MouseEvent<HTMLDivElement>) => {
     if (!setSelectedEventId) return
-    mouseDownEvent.stopPropagation()
+    clickEvent.stopPropagation()
     selectedEventId === dailyEvent.id ? setSelectedEventId(null) : setSelectedEventId(dailyEvent.id)
   }
 
@@ -82,7 +82,7 @@ const DailyEvent = ({
     <DailyEventContainer
       className={selectedEventId === dailyEvent.id ? 'selected' : ''}
       style={getDailyEventBoxStyles(dailyEvent)}
-      onMouseDown={onContainerMouseDown}
+      onClick={onContainerClick}
     >
       <DailyEventRelative>
         {!(dailyEvent.start.getTime() === dailyEvent.end.getTime()) && (

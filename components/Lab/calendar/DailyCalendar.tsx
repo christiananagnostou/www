@@ -81,6 +81,7 @@ const DailyCalendar = () => {
   }, [])
 
   const onListMouseDown = (mouseDownEvent: React.MouseEvent<HTMLDivElement>) => {
+    if (!(mouseDownEvent.nativeEvent.target as HTMLElement).hasAttribute('data-list-events')) return
     mouseDownEvent.nativeEvent.preventDefault()
     setSelectedEventId(null)
 
@@ -154,8 +155,8 @@ const DailyCalendar = () => {
         {/* Hours */}
         <HourBarWrap>
           {HOURS.map((hour) => (
-            <HourBar key={hour} data-hour={hour}>
-              <HourBarTime>{formatTime(hour)}</HourBarTime>
+            <HourBar key={hour} data-hour={hour} data-list-events>
+              <HourBarTime data-list-events>{formatTime(hour)}</HourBarTime>
             </HourBar>
           ))}
         </HourBarWrap>
