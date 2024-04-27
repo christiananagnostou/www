@@ -3,6 +3,7 @@ import Head from 'next/head'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
+import Gantt from '../components/Lab/gantt'
 
 export default function lab() {
   return (
@@ -14,6 +15,11 @@ export default function lab() {
       </Head>
 
       <LabItems id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        {/* Gantt */}
+        <DateStyle>May 2024</DateStyle>
+        <Item variants={fade}>
+          <Gantt items={[]} defaultZoom={0} chartHeight={'200px'} chartTitle={'Title'} legend={[]} className={''} />
+        </Item>
         {/* Calendar */}
         <DateStyle>Apr 2024</DateStyle>
         <Item variants={fade}>

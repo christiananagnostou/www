@@ -1,2 +1,3 @@
-export { useScroll } from "./useScroll";
-export { useWindowSize } from "./useWindowSize";
+export { useScroll } from './useScroll'
+export { useScrollSync } from './useScrollSync'
+export { useWindowSize } from './useWindowSize'
