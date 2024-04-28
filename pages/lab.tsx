@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
+import ganttProps from '../components/Lab/gantt/mockProps'
 
 export default function lab() {
   return (
@@ -16,14 +17,19 @@ export default function lab() {
 
       <LabItems id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         {/* Gantt */}
-        <DateStyle>May 2024</DateStyle>
         <Item variants={fade}>
-          <Gantt items={[]} defaultZoom={0} chartHeight={'200px'} chartTitle={'Title'} legend={[]} className={''} />
+          <DateStyle>May 2024</DateStyle>
+          <Inner>
+            <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
+          </Inner>
         </Item>
+
         {/* Calendar */}
-        <DateStyle>Apr 2024</DateStyle>
         <Item variants={fade}>
-          <DailyCalendar />
+          <DateStyle>Apr 2024</DateStyle>
+          <Inner>
+            <DailyCalendar />
+          </Inner>
         </Item>
       </LabItems>
     </>
@@ -33,11 +39,11 @@ export default function lab() {
 const LabItems = styled(motion.div)`
   color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
-  margin: 2rem auto;
+  padding: 2rem 1rem;
+  margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 4rem;
 
   @media (max-width: 768px) {
     padding: 0 0.5rem;
@@ -47,20 +53,7 @@ const LabItems = styled(motion.div)`
 
 const Item = styled(motion.div)`
   width: 100%;
-  padding: 4rem;
-  background: var(--bg);
-  flex: 1;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  flex: 1;
-  overflow: hidden;
-  margin-bottom: 4rem;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-    margin-bottom: 3rem;
-  }
+  max-width: var(--max-w-screen);
 `
 
 const DateStyle = styled.div`
@@ -68,8 +61,19 @@ const DateStyle = styled.div`
   text-align: right;
   color: var(--text-dark);
   font-size: 0.9rem;
+  margin-bottom: 1rem;
 
   @media (max-width: 768px) {
     padding-right: 1rem;
+  }
+`
+
+const Inner = styled.div`
+  padding: 4rem;
+  background: var(--dark-bg);
+  border-radius: 10px;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 `

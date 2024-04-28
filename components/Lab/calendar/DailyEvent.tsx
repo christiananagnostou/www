@@ -1,13 +1,6 @@
 import X from '../../SVG/X'
 import { DailyEventT } from './DailyCalendar'
-import {
-  DailyEventContainer,
-  DailyEventInner,
-  DailyEventRelative,
-  DeleteButton,
-  ResizeEvent,
-  TimeRange,
-} from './styles'
+import { DailyEventContainer, DailyEventInner, DailyEventRelative, DeleteButton, ResizeBar, TimeRange } from './styles'
 import { dateToTime, timeToPx } from './utils'
 
 type Props = {
@@ -103,8 +96,8 @@ const DailyEvent = ({
         )}
         {selectedEventId === dailyEvent.id && (
           <>
-            <ResizeEvent onMouseDown={(e) => onResizeDown(e, 'start')} style={{ top: 'calc(var(--height) / -2)' }} />
-            <ResizeEvent onMouseDown={(e) => onResizeDown(e, 'end')} style={{ bottom: 'calc(var(--height) / -2)' }} />
+            <ResizeBar onMouseDown={(e) => onResizeDown(e, 'start')} style={{ top: 'calc(var(--height) / -2)' }} />
+            <ResizeBar onMouseDown={(e) => onResizeDown(e, 'end')} style={{ bottom: 'calc(var(--height) / -2)' }} />
           </>
         )}
       </DailyEventRelative>
