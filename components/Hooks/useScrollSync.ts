@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-interface RefProp extends HTMLElement {
+interface RefProp extends HTMLDivElement {
   eY: number
   eX: number
 }
