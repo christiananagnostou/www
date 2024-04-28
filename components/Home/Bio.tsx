@@ -40,7 +40,7 @@ const Description = styled(motion.section)`
   margin: auto;
   border-radius: 7px;
   padding: 1rem;
-  background: var(--bg);
+  background: var(--dark-bg);
   border: 1px solid var(--accent);
   text-align: left;
   z-index: 2;
