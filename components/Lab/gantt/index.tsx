@@ -19,6 +19,7 @@ import {
   LegendItem,
   Resizer,
   RightSide,
+  ScrollToTodayBtn,
   StickyTop,
   Title,
   TodayBar,
@@ -60,9 +61,9 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const numDaysShown = useMemo(() => getNumDaysShown(itemsDateRange), [itemsDateRange])
   const itemsChildrenMap = useMemo(() => getItemsChildrenMap(items), [items])
 
-  const resizer = useRef(null as HTMLDivElement | null)
-  const leftSide = useRef(null as HTMLDivElement | null)
-  const rightSide = useRef(null as HTMLDivElement | null)
+  const resizer = useRef<HTMLDivElement | null>(null)
+  const leftSide = useRef<HTMLDivElement | null>(null)
+  const rightSide = useRef<HTMLDivElement | null>(null)
   const mouseX = useRef(0)
   const mouseY = useRef(0)
   const rightWidth = useRef(0)
@@ -84,7 +85,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   }
 
   // Handle the mousedown event when user drags the resizer
-  const mouseDownHandler = (e: React.MouseEvent) => {
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
     if (!rightSide.current) return
     // Get the current mouse position
     mouseX.current = e.clientX
@@ -92,14 +93,14 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
     rightWidth.current = rightSide.current.getBoundingClientRect().width
 
     // Attach the listeners to document
-    document.addEventListener('mouseup', mouseUpHandler)
-    document.addEventListener('mousemove', mouseMoveHandler)
+    document.addEventListener('mouseup', handleResizeMouseUp)
+    document.addEventListener('mousemove', handleResizeMouseMove)
   }
 
-  const mouseMoveHandler = (e: MouseEvent) => {
+  const handleResizeMouseMove = (e: MouseEvent) => {
     if (!leftSide.current || !rightSide.current || !resizer.current) return
 
-    // How far the mouse/thumb has been moved
+    // Calc how far the mouse/thumb has been moved
     const dx = e.clientX - mouseX.current
     const parent = resizer.current.parentNode as HTMLDivElement | null
     const parentWidth = parent?.getBoundingClientRect().width
@@ -108,40 +109,31 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
     rightSide.current.style.width = `${newRightWidth}%`
 
     document.documentElement.style.cursor = 'col-resize'
-
     leftSide.current.style.pointerEvents = 'none'
     rightSide.current.style.pointerEvents = 'none'
   }
 
-  const mouseUpHandler = () => {
-    document.documentElement.style.removeProperty('cursor')
+  const handleResizeMouseUp = () => {
     if (!leftSide.current || !rightSide.current) return
 
+    document.documentElement.style.removeProperty('cursor')
     leftSide.current.style.removeProperty('pointer-events')
     rightSide.current.style.removeProperty('pointer-events')
 
-    // Remove the handlers of mousemove and mouseup
-    document.removeEventListener('mouseup', mouseUpHandler)
-    document.removeEventListener('mousemove', mouseMoveHandler)
-  }
-
-  const renderTodayBar = () => {
-    const { firstDate } = itemsDateRange
-    const offsetDaysStart = getDayDiff(firstDate, dayjs())
-    const barWidth = 2
-    return <TodayBar width={barWidth} offsetDays={offsetDaysStart} dateWidth={dateWidth} />
+    document.removeEventListener('mouseup', handleResizeMouseUp)
+    document.removeEventListener('mousemove', handleResizeMouseMove)
   }
 
   const scrollToDate = useCallback(
     (targetDate: string | dayjs.Dayjs, behavior: ScrollOptions['behavior']) => {
-      const currDayDiv = document.getElementById(dayjs(targetDate).format('YYYY-MMM-D'))
-      if (!currDayDiv || !dateBar.current) return
+      const dateElem = document.getElementById(dayjs(targetDate).format('YYYY-MMM-D'))
+      if (!dateElem || !dateBar.current) return
 
-      const colWidth = currDayDiv.offsetWidth
+      const colWidth = dateElem.offsetWidth
       const containerWidth = dateBar.current.offsetWidth
-      const centerOfCurrDayDiv = currDayDiv.offsetLeft - containerWidth / 2 + colWidth / 2
+      const centerOfDateElem = dateElem.offsetLeft - containerWidth / 2 + colWidth / 2
 
-      dateBar.current.scrollTo({ left: centerOfCurrDayDiv, behavior })
+      dateBar.current.scrollTo({ left: centerOfDateElem, behavior })
     },
     [dateBar]
   )
@@ -149,6 +141,13 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   useEffect(() => {
     scrollToDate(dayjs(), 'auto')
   }, [scrollToDate, pathname])
+
+  const renderTodayBar = () => {
+    const { firstDate } = itemsDateRange
+    const offsetDaysStart = getDayDiff(firstDate, dayjs())
+    const barWidth = 2
+    return <TodayBar width={barWidth} offsetDays={offsetDaysStart} dateWidth={dateWidth} />
+  }
 
   return (
     <GanttContainer>
@@ -173,7 +172,9 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
           {/* Left Side */}
           <LeftSide ref={leftSide}>
-            <StickyTop>{/* <button onClick={() => scrollToDate(dayjs(), 'smooth')}>Today</button> */}</StickyTop>
+            <StickyTop>
+              <ScrollToTodayBtn onClick={() => scrollToDate(dayjs(), 'smooth')}>Today</ScrollToTodayBtn>
+            </StickyTop>
 
             {/* Titles */}
             <div style={{ overflow: 'hidden' }}>
@@ -192,7 +193,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
           </LeftSide>
 
           {/* Resizer */}
-          <Resizer ref={resizer} onMouseDown={mouseDownHandler} />
+          <Resizer ref={resizer} onMouseDown={handleResizeMouseDown} />
 
           {/* Right Side */}
           <RightSide ref={rightSide}>
@@ -208,7 +209,9 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
 
             {/* Bars */}
             <BarsContainer ref={barsContainer}>
+              {/* Today Bar */}
               {renderTodayBar()}
+
               {itemsChildrenMap.get('root')?.map((item) => (
                 <ItemBar
                   key={item.id + '_bar'}

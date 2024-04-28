@@ -21,6 +21,7 @@ export const DateLabel = styled.div<{ dateWidth: number }>`
   bottom: 0;
   transform: translateX(-50%);
   left: ${({ dateWidth }) => `${dateWidth / 2}px`};
+  padding-bottom: 0.5rem;
 `
 
 export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`

@@ -11,6 +11,7 @@ export const TitleButton = styled.button<{ paddingLeft: number; height: number }
   background: transparent;
   color: inherit;
   border: none;
+  cursor: pointer;
 
   &.hovered {
     background: rgba(0, 0, 0, 0.1);

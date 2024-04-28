@@ -86,8 +86,6 @@ export const StickyTop = styled.div`
   z-index: 20;
   height: 3rem;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg);
-  padding-bottom: 0.5rem;
   overflow-x: auto;
   overflow-y: hidden;
   width: 100%;
@@ -99,6 +97,21 @@ export const StickyTop = styled.div`
   /* Hide scrollbar for IE, Edge, and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+`
+
+export const ScrollToTodayBtn = styled.button`
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 `
 
 export const Resizer = styled.div`
@@ -120,7 +133,6 @@ export const BarsContainer = styled.div`
   flex-direction: column;
   max-width: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
 `
 
 export const Legend = styled.div`
