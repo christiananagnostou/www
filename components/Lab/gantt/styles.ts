@@ -8,6 +8,7 @@ export const GanttContainer = styled.div`
   --bg: var(--body-bg);
   --left-side-min-width: 0.25rem;
   --right-side-min-width: 0.25rem;
+  --date-bar-height: 2.5rem;
 `
 
 export const TopBar = styled.div`
@@ -72,41 +73,30 @@ export const Chart = styled.div`
   max-width: 100%;
   background-color: var(--bg);
   overflow: hidden;
+  display: flex;
 `
 
 export const LeftSide = styled.div`
   min-width: var(--left-side-min-width);
   flex: 1;
   user-select: none;
-`
-
-export const StickyTop = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  height: 3rem;
-  border-bottom: 1px solid var(--border-color);
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
-
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  /* Hide scrollbar for IE, Edge, and Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  overflow: hidden;
 `
 
 export const ScrollToTodayBtn = styled.button`
   display: block;
-  height: 100%;
   width: 100%;
   background: transparent;
   border: none;
   color: inherit;
   cursor: pointer;
+  height: var(--date-bar-height);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover,
   &:focus {
@@ -125,14 +115,9 @@ export const RightSide = styled.div`
   width: 75%;
   max-width: calc(100% - var(--left-side-min-width));
   min-width: var(--right-side-min-width);
-`
-
-export const BarsContainer = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-x: none;
 `
 
 export const Legend = styled.div`
@@ -156,17 +141,4 @@ export const LegendColor = styled.span`
   height: 0.75rem;
   width: 0.75rem;
   border-radius: 9999px;
-`
-
-export const TodayBar = styled.div<{
-  width: number
-  offsetDays: number
-  dateWidth: number
-}>`
-  position: absolute;
-  z-index: 10;
-  height: 100%;
-  background-color: var(--accent-color);
-  width: ${({ width }) => width}px;
-  left: ${({ offsetDays, dateWidth, width }) => offsetDays * dateWidth + dateWidth / 2 - width / 2}px;
 `

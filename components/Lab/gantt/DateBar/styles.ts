@@ -3,7 +3,8 @@ import styled from 'styled-components'
 export const DateBarContainer = styled.div`
   display: inline-flex;
   height: 100%;
-  align-items: end;
+  height: var(--date-bar-height);
+  border-bottom: 1px solid var(--border-color);
 `
 
 export const DateButton = styled.button<{ dateWidth: number }>`
@@ -13,7 +14,8 @@ export const DateButton = styled.button<{ dateWidth: number }>`
   width: ${({ dateWidth }) => `${dateWidth}px`};
   background: transparent;
   border: none;
-  color: white;
+  color: inherit;
+  cursor: pointer;
 `
 
 export const DateLabel = styled.div<{ dateWidth: number }>`
@@ -29,13 +31,15 @@ export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`
   place-items: center;
   opacity: ${({ opacity }) => opacity};
   color: ${({ isToday }) => (isToday ? 'white' : 'inherit')};
-`
 
-export const TodayIndicator = styled.span`
-  position: absolute;
-  z-index: -1;
-  height: 1.25rem;
-  width: 1.25rem;
-  border-radius: 9999px;
-  background-color: var(--accent-color);
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 9999px;
+    background-color: var(--accent-color);
+    display: ${({ isToday }) => (isToday ? 'block' : 'none')};
+  }
 `

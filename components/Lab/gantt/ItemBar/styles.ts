@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-export const ItemBarContainer = styled.div<{ totalWidth: number; height: number }>`
+export const ItemBarContainer = styled.div<{ height: number }>`
   display: inline-flex;
   user-select: none;
   align-items: center;
-  width: ${({ totalWidth }) => `${totalWidth}px`};
+  width: 100%;
   height: ${({ height }) => `${height}px`};
 
   &.hovered {

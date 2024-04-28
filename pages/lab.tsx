@@ -46,8 +46,8 @@ const LabItems = styled(motion.div)`
   gap: 4rem;
 
   @media (max-width: 768px) {
-    padding: 0 0.5rem;
-    gap: 0.5rem;
+    gap: 2rem;
+    padding: 2rem 0.5rem 4rem;
   }
 `
 

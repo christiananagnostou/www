@@ -30,7 +30,6 @@ const ItemBar = (props: RenderItemBarProps) => {
       <ItemBarContainer
         className="gantt-bar"
         data-item-id={item.id}
-        totalWidth={dateWidth * numDaysShown}
         height={RowHeight}
         onMouseEnter={() => handleRowMouseOver(item.id)}
       >

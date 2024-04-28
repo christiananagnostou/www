@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { useRouter } from 'next/router'
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useScrollSync } from '../../Hooks'
 import DateBar from './DateBar'
 import ItemBar from './ItemBar'
 import ItemTitle from './ItemTitle'
+import TodayCursor from './TodayCursor'
+import { getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
+
 import {
-  BarsContainer,
   Chart,
   GanttContainer,
   Label,
@@ -20,14 +20,11 @@ import {
   Resizer,
   RightSide,
   ScrollToTodayBtn,
-  StickyTop,
   Title,
-  TodayBar,
   TopBar,
   ZoomInput,
   ZoomTitle,
 } from './styles'
-import { getDayDiff, getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
 
 dayjs.extend(relativeTime)
 dayjs.extend(minMax)
@@ -54,9 +51,6 @@ export const RowHeight = 40
 const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const [dateWidth, setDateWidth] = useState(defaultZoom)
 
-  const id = useId()
-  const { pathname } = useRouter()
-
   const itemsDateRange = useMemo(() => getItemsDateRange(items), [items])
   const numDaysShown = useMemo(() => getNumDaysShown(itemsDateRange), [itemsDateRange])
   const itemsChildrenMap = useMemo(() => getItemsChildrenMap(items), [items])
@@ -64,94 +58,77 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const resizer = useRef<HTMLDivElement | null>(null)
   const leftSide = useRef<HTMLDivElement | null>(null)
   const rightSide = useRef<HTMLDivElement | null>(null)
-  const mouseX = useRef(0)
-  const mouseY = useRef(0)
-  const rightWidth = useRef(0)
-
-  const dateBar = useScrollSync(id)
-  const barsContainer = useScrollSync(id)
+  const rightSideStartingWidth = useRef(0)
+  const mousePos = useRef({ x: 0, y: 0 })
 
   const handleRowMouseOver = (id: ItemProps['id']) => {
-    if (!barsContainer.current || !leftSide.current) return
+    if (!rightSide.current || !leftSide.current) return
 
-    const bars = barsContainer.current.querySelectorAll('.gantt-bar') as NodeListOf<HTMLDivElement>
+    const bars = rightSide.current.querySelectorAll('.gantt-bar') as NodeListOf<HTMLDivElement>
     const titles = leftSide.current.querySelectorAll('.gantt-title') as NodeListOf<HTMLButtonElement>
 
-    // Highlight background of bar and title of row with id
     bars.forEach((bar, i) => {
       bar.dataset.itemId == id ? bar.classList.add('hovered') : bar.classList.remove('hovered')
       titles[i].dataset.itemId == id ? titles[i].classList.add('hovered') : titles[i].classList.remove('hovered')
     })
   }
 
-  // Handle the mousedown event when user drags the resizer
-  const handleResizeMouseDown = (e: React.MouseEvent) => {
-    if (!rightSide.current) return
-    // Get the current mouse position
-    mouseX.current = e.clientX
-    mouseY.current = e.clientY
-    rightWidth.current = rightSide.current.getBoundingClientRect().width
+  const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
+    const isTouch = e.type.startsWith('touch')
 
-    // Attach the listeners to document
-    document.addEventListener('mouseup', handleResizeMouseUp)
-    document.addEventListener('mousemove', handleResizeMouseMove)
+    const clientX = isTouch ? (e as React.TouchEvent).touches[0].clientX : (e as React.MouseEvent).clientX
+    const clientY = isTouch ? (e as React.TouchEvent).touches[0].clientY : (e as React.MouseEvent).clientY
+
+    mousePos.current = { x: clientX, y: clientY }
+    rightSideStartingWidth.current = rightSide.current?.getBoundingClientRect().width || 0
+
+    if (isTouch) {
+      document.addEventListener('touchend', handleResizeEnd)
+      document.addEventListener('touchmove', handleResizeMove)
+    } else {
+      document.addEventListener('mouseup', handleResizeEnd)
+      document.addEventListener('mousemove', handleResizeMove)
+    }
   }
 
-  const handleResizeMouseMove = (e: MouseEvent) => {
-    if (!leftSide.current || !rightSide.current || !resizer.current) return
+  const handleResizeMove = (e: MouseEvent | TouchEvent) => {
+    const isTouch = e.type.startsWith('touch')
+    const clientX = isTouch ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX
+    const dx = clientX - mousePos.current.x
+    const parent = resizer.current?.parentNode as HTMLDivElement | null
+    const parentWidth = parent?.getBoundingClientRect().width || 1
 
-    // Calc how far the mouse/thumb has been moved
-    const dx = e.clientX - mouseX.current
-    const parent = resizer.current.parentNode as HTMLDivElement | null
-    const parentWidth = parent?.getBoundingClientRect().width
+    const newRightWidth = ((rightSideStartingWidth.current - dx) * 100) / parentWidth
+    rightSide.current?.style.setProperty('width', `${newRightWidth}%`)
 
-    const newRightWidth = ((rightWidth.current - dx) * 100) / (parentWidth || 1)
-    rightSide.current.style.width = `${newRightWidth}%`
-
-    document.documentElement.style.cursor = 'col-resize'
-    leftSide.current.style.pointerEvents = 'none'
-    rightSide.current.style.pointerEvents = 'none'
+    document.documentElement.style.setProperty('cursor', 'col-resize')
+    leftSide.current?.style.setProperty('pointer-events', 'none')
+    rightSide.current?.style.setProperty('pointer-events', 'none')
   }
 
-  const handleResizeMouseUp = () => {
-    if (!leftSide.current || !rightSide.current) return
-
+  const handleResizeEnd = () => {
     document.documentElement.style.removeProperty('cursor')
-    leftSide.current.style.removeProperty('pointer-events')
-    rightSide.current.style.removeProperty('pointer-events')
+    leftSide.current?.style.removeProperty('pointer-events')
+    rightSide.current?.style.removeProperty('pointer-events')
 
-    document.removeEventListener('mouseup', handleResizeMouseUp)
-    document.removeEventListener('mousemove', handleResizeMouseMove)
+    document.removeEventListener('mouseup', handleResizeEnd)
+    document.removeEventListener('mousemove', handleResizeMove)
+    document.removeEventListener('touchend', handleResizeEnd)
+    document.removeEventListener('touchmove', handleResizeMove)
   }
 
-  const scrollToDate = useCallback(
-    (targetDate: string | dayjs.Dayjs, behavior: ScrollOptions['behavior']) => {
-      const dateElem = document.getElementById(dayjs(targetDate).format('YYYY-MMM-D'))
-      if (!dateElem || !dateBar.current) return
-
-      const colWidth = dateElem.offsetWidth
-      const containerWidth = dateBar.current.offsetWidth
-      const centerOfDateElem = dateElem.offsetLeft - containerWidth / 2 + colWidth / 2
-
-      dateBar.current.scrollTo({ left: centerOfDateElem, behavior })
-    },
-    [dateBar]
-  )
+  const scrollToDate = useCallback((targetDate: string | dayjs.Dayjs, behavior: ScrollOptions['behavior']) => {
+    const dateElem = document.getElementById(dayjs(targetDate).format('YYYY-MMM-D'))
+    if (!dateElem) return
+    dateElem.scrollIntoView({ behavior, block: 'nearest', inline: 'center' })
+  }, [])
 
   useEffect(() => {
     scrollToDate(dayjs(), 'auto')
-  }, [scrollToDate, pathname])
-
-  const renderTodayBar = () => {
-    const { firstDate } = itemsDateRange
-    const offsetDaysStart = getDayDiff(firstDate, dayjs())
-    const barWidth = 2
-    return <TodayBar width={barWidth} offsetDays={offsetDaysStart} dateWidth={dateWidth} />
-  }
+  }, [scrollToDate])
 
   return (
     <GanttContainer>
-      {/* Top Bar */}
       <TopBar>
         <Title>{chartTitle}</Title>
         <Label>
@@ -167,65 +144,51 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
         </Label>
       </TopBar>
 
-      {/* Chart */}
       <Chart>
-        <div style={{ display: 'flex', alignItems: 'stretch' }}>
-          {/* Left Side */}
-          <LeftSide ref={leftSide}>
-            <StickyTop>
-              <ScrollToTodayBtn onClick={() => scrollToDate(dayjs(), 'smooth')}>Today</ScrollToTodayBtn>
-            </StickyTop>
+        <LeftSide ref={leftSide}>
+          <ScrollToTodayBtn onClick={() => scrollToDate(dayjs(), 'smooth')}>
+            {dayjs().format('ddd, MMM D')}
+          </ScrollToTodayBtn>
 
-            {/* Titles */}
-            <div style={{ overflow: 'hidden' }}>
-              {itemsChildrenMap.get('root')?.map((item, i) => (
-                <ItemTitle
-                  key={item.id + '_title'}
-                  item={item}
-                  idx={i}
-                  level={0}
-                  itemsChildrenMap={itemsChildrenMap}
-                  handleRowMouseOver={handleRowMouseOver}
-                  scrollToDate={scrollToDate}
-                />
-              ))}
-            </div>
-          </LeftSide>
+          {itemsChildrenMap.get('root')?.map((item, i) => (
+            <ItemTitle
+              key={item.id + '_title'}
+              item={item}
+              idx={i}
+              level={0}
+              itemsChildrenMap={itemsChildrenMap}
+              handleRowMouseOver={handleRowMouseOver}
+              scrollToDate={scrollToDate}
+            />
+          ))}
+        </LeftSide>
 
-          {/* Resizer */}
-          <Resizer ref={resizer} onMouseDown={handleResizeMouseDown} />
+        <Resizer ref={resizer} onMouseDown={handleResizeStart} onTouchStart={handleResizeStart} />
 
-          {/* Right Side */}
-          <RightSide ref={rightSide}>
-            {/* Date Bar */}
-            <StickyTop ref={dateBar}>
-              <DateBar
-                itemsDateRange={itemsDateRange}
-                numDaysShown={numDaysShown}
+        <RightSide ref={rightSide}>
+          <div style={{ width: dateWidth * numDaysShown, position: 'relative' }}>
+            <TodayCursor dateWidth={dateWidth} itemsDateRange={itemsDateRange} />
+
+            <DateBar
+              itemsDateRange={itemsDateRange}
+              numDaysShown={numDaysShown}
+              dateWidth={dateWidth}
+              scrollToDate={scrollToDate}
+            />
+
+            {itemsChildrenMap.get('root')?.map((item) => (
+              <ItemBar
+                key={item.id + '_bar'}
+                item={item}
                 dateWidth={dateWidth}
-                scrollToDate={scrollToDate}
+                numDaysShown={numDaysShown}
+                itemsDateRange={itemsDateRange}
+                itemsChildrenMap={itemsChildrenMap}
+                handleRowMouseOver={handleRowMouseOver}
               />
-            </StickyTop>
-
-            {/* Bars */}
-            <BarsContainer ref={barsContainer}>
-              {/* Today Bar */}
-              {renderTodayBar()}
-
-              {itemsChildrenMap.get('root')?.map((item) => (
-                <ItemBar
-                  key={item.id + '_bar'}
-                  item={item}
-                  dateWidth={dateWidth}
-                  numDaysShown={numDaysShown}
-                  itemsDateRange={itemsDateRange}
-                  itemsChildrenMap={itemsChildrenMap}
-                  handleRowMouseOver={handleRowMouseOver}
-                />
-              ))}
-            </BarsContainer>
-          </RightSide>
-        </div>
+            ))}
+          </div>
+        </RightSide>
       </Chart>
 
       {legend && (
