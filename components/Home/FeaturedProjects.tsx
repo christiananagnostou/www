@@ -80,7 +80,7 @@ const ProjectLink = styled(motion(Link))`
   align-items: center;
   border-radius: 5px;
   padding: 0.5rem;
-  background: var(--bg);
+  background: var(--dark-bg);
   border: 1px solid var(--accent);
   cursor: alias;
   font-size: 0.85rem;

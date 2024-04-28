@@ -4,10 +4,11 @@ export const HOUR_BAR_HEIGHT = 60
 
 export const DailyCalendarStyle = styled.div`
   --border-color: var(--accent);
+  --bg: var(--body-bg);
   --row-grid: 3rem 1fr;
   --blue: #1b72e8;
   --red: #fe2968;
-  --resize-event-bg: var(--body-bg);
+  --resize-bar-bg: var(--bg);
   --header-curr-date-color: #fff;
   --daily-event-text-color: #ccc;
   --time-bar-width: 3.75rem;
@@ -19,7 +20,7 @@ export const DailyCalendarStyle = styled.div`
   }
 
   border: 1px solid var(--border-color);
-  background: var(--body-bg);
+  background: var(--bg);
   border-radius: 10px;
   position: relative;
   width: 100%;
@@ -159,9 +160,9 @@ export const DeleteButton = styled.button`
   }
 `
 
-export const ResizeEvent = styled.div`
+export const ResizeBar = styled.div`
   --height: 6px;
-  background: var(--resize-event-bg);
+  background: var(--resize-bar-bg);
   border: 1px solid var(--border-color);
   height: var(--height);
   width: 40px;
