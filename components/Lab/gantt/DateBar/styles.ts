@@ -31,11 +31,16 @@ export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`
   place-items: center;
   opacity: ${({ opacity }) => opacity};
   color: ${({ isToday }) => (isToday ? 'white' : 'inherit')};
+  position: relative;
 
-  &::before {
+  // Today Circle
+  &::after {
     content: '';
     position: absolute;
     z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     height: 1.25rem;
     width: 1.25rem;
     border-radius: 9999px;

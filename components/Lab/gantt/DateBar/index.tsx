@@ -8,6 +8,8 @@ interface DatesProps {
   scrollToDate: (date: string, behavior: ScrollBehavior) => void
 }
 
+const Today = dayjs().format('YYYY-MMM-D')
+
 const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: DatesProps) => {
   const getOpacity = (day: string) => {
     let interval = 2 // Number of days until another date is shown on low zoom
@@ -30,7 +32,7 @@ const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: Date
     <DateBarContainer>
       {dates.map((date) => {
         const [_, month, day] = date.split('-')
-        const isToday = dayjs().isSame(date, 'day')
+        const isToday = Today === date
 
         return (
           <DateButton key={date} id={date} onClick={() => scrollToDate(date, 'smooth')} dateWidth={dateWidth}>
