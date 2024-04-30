@@ -24,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-feature-settings: "kern","frac","kern","ss02";
+    font-feature-settings: "kern", "ss02", "ss03", "ss04";
 
     scrollbar-width: thin;
     scrollbar-color: rgba(155, 155, 155, 0.5) transparent;

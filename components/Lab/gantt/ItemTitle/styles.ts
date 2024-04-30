@@ -20,6 +20,7 @@ export const TitleButton = styled.button<{ paddingLeft: number; height: number }
 
 export const TitleSpan = styled.span`
   padding-left: 0.25rem;
+  font-weight: 400;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

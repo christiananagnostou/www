@@ -23,7 +23,6 @@ export const TopBar = styled.div`
 export const Title = styled.p`
   min-width: max-content;
   font-size: 1rem;
-  font-weight: bold;
 `
 
 export const Label = styled.label`
