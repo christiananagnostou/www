@@ -116,6 +116,7 @@ export const RightSide = styled.div`
   min-width: var(--right-side-min-width);
   position: relative;
   overflow-x: auto;
+  overflow-y: hidden;
   overscroll-behavior-x: none;
 `
 
