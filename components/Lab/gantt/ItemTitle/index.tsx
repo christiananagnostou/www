@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import React from 'react'
 import { ItemProps, RowHeight } from '..'
 import ChildArrow from '../ChildArrow'
-import { ArrowWrap, ConnectorLine, TitleButton, TitleSpan } from './styles'
+import { TitleButton, TitleSpan } from './styles'
 
 interface ItemTitleProps {
   item: ItemProps
@@ -45,15 +45,13 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
         height={RowHeight}
       >
         {item.parentId && (
-          <span style={{ position: 'relative', zIndex: 0 }}>
-            <ConnectorLine
-              height={idx > 0 ? (prevChildCount ? prevChildCount + 1 : 1) * 40 - 2 : 27}
-              top={idx > 0 ? -(prevChildCount ? prevChildCount + 1 : 1) * 40 + 10 : -17}
-              background={item.barColor || 'white'}
+          <span>
+            <ChildArrow
+              height={RowHeight * (prevChildCount + 1) * (idx == 0 ? 1.6 : 2.225)}
+              rounded={idx == 0}
+              width={16}
+              color={item.barColor || 'transparent'}
             />
-            <ArrowWrap color={item.barColor || 'transparent'}>
-              <ChildArrow height={16} width={16} />
-            </ArrowWrap>
           </span>
         )}
         <TitleSpan>{item.title}</TitleSpan>

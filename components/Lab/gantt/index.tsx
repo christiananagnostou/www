@@ -46,7 +46,7 @@ type GanttProps = {
   legend?: { label: string; color: string }[]
 }
 
-export const RowHeight = 40
+export const RowHeight = 35
 
 const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const [dateWidth, setDateWidth] = useState(defaultZoom)

@@ -25,16 +25,3 @@ export const TitleSpan = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
 `
-
-export const ConnectorLine = styled.div<{ height: number; top: number; background: string }>`
-  position: absolute;
-  left: 3px;
-  width: 1px;
-  height: ${({ height }) => `${height}px`};
-  top: ${({ top }) => `${top}px`};
-  background-color: ${({ background }) => background};
-`
-
-export const ArrowWrap = styled.div<{ color: string }>`
-  color: ${({ color }) => color};
-`
