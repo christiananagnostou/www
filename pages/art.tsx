@@ -10,11 +10,13 @@ import { ArtState } from '../lib/art'
 
 type Props = {}
 
-const categories = Object.keys(ArtState)
+const ART_CATEGORIES = Object.keys(ArtState)
+const MAX_COLUMNS = 8
+const MIN_COLUMNS = 2
 
 const Art = (props: Props) => {
   const [numColumns, setNumColumns] = useState(4)
-  const [selectedCategory, setSelectedCategory] = useState(categories[0])
+  const [selectedCategory, setSelectedCategory] = useState(ART_CATEGORIES[0])
 
   const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])]
   ArtState[selectedCategory]?.map((img, i) => columns[i % numColumns].push(img))
@@ -34,8 +36,8 @@ const Art = (props: Props) => {
           <div className="range-wrap">
             <Range
               type="range"
-              min={2}
-              max={8}
+              min={MIN_COLUMNS}
+              max={MAX_COLUMNS}
               value={numColumns}
               onChange={(e) => setNumColumns(parseInt(e.target.value))}
             />
@@ -44,7 +46,7 @@ const Art = (props: Props) => {
           </div>
 
           <div className="categories">
-            {categories.map((category) => (
+            {ART_CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
@@ -64,7 +66,7 @@ const Art = (props: Props) => {
               variants={{ show: { transition: { staggerChildren: 0.5 } } }}
             >
               {images.map((ImageData, row) => (
-                <Img imageData={ImageData} priority={row < 4} key={ImageData.src} />
+                <Img key={ImageData.src} imageData={ImageData} priority={row < 4} />
               ))}
             </Column>
           ))}
@@ -134,9 +136,14 @@ const Container = styled(motion.div)`
     margin-bottom: 1rem;
 
     .range-wrap {
-      max-width: 15%;
+      flex: 1;
+      max-width: 20%;
       display: flex;
       align-items: center;
+
+      > input {
+        transform: rotateY(180deg);
+      }
 
       .col-num {
         display: block;
