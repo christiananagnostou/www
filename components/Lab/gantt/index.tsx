@@ -9,6 +9,7 @@ import ItemTitle from './ItemTitle'
 import TodayCursor from './TodayCursor'
 import { getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
 
+import DragScrollContainer from '../../Shared/DragScrollContainer'
 import {
   Chart,
   GanttContainer,
@@ -165,7 +166,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
 
         <Resizer ref={resizer} onMouseDown={handleResizeStart} onTouchStart={handleResizeStart} />
 
-        <RightSide ref={rightSide}>
+        <DragScrollContainer component={RightSide} innerRef={rightSide} hideScrollbars={true}>
           <div style={{ width: dateWidth * numDaysShown, position: 'relative' }}>
             <TodayCursor dateWidth={dateWidth} itemsDateRange={itemsDateRange} />
 
@@ -188,7 +189,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
               />
             ))}
           </div>
-        </RightSide>
+        </DragScrollContainer>
       </Chart>
 
       {legend && (
