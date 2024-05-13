@@ -104,10 +104,28 @@ export const ScrollToTodayBtn = styled.button`
 `
 
 export const Resizer = styled.div`
+  --resizer-width: 9px;
   cursor: col-resize;
-  background-color: var(--border-color);
-  padding: 1px;
   z-index: 25;
+  width: var(--resizer-width);
+  margin: 0 calc(-1 * ((var(--resizer-width) - 1px) / 2));
+
+  &:active {
+    box-shadow: 0 0 0 1px var(--accent-color);
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    width: 1px;
+    margin: auto;
+    height: 100%;
+    background-color: var(--border-color);
+  }
+
+  @media (max-width: 768px) {
+    --resizer-width: 13px;
+  }
 `
 
 export const RightSide = styled.div`
