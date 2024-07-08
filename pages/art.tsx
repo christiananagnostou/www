@@ -12,10 +12,11 @@ type Props = {}
 
 const ART_CATEGORIES = Object.keys(ArtState)
 const MAX_COLUMNS = 8
-const MIN_COLUMNS = 2
+const MIN_COLUMNS = 1
+const DEFAULT_COLUMNS = 2
 
 const Art = (props: Props) => {
-  const [numColumns, setNumColumns] = useState(4)
+  const [numColumns, setNumColumns] = useState(DEFAULT_COLUMNS)
   const [selectedCategory, setSelectedCategory] = useState(ART_CATEGORIES[0])
 
   const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])]
