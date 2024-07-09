@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { GetStaticProps } from 'next'
 import Head from 'next/head'
+import { GetStaticProps } from 'next/types'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
@@ -8,21 +8,29 @@ import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import LatestSection from '../components/Home/LatestSection'
 import Signature from '../components/Home/Signature'
+import StravaActivities from '../components/Home/StravaActivities'
 import TVBar from '../components/Home/TVBar'
 import LabLink from '../components/Lab/LabLink'
 import SocialLinks from '../components/SocialLinks'
 import { ArticleType, getAllPosts } from '../lib/articles'
+import { getStravaActivities, StravaActivity } from '../lib/strava'
 
 type Props = {
   posts: ArticleType[]
+  stravaActivities: StravaActivity[]
 }
 
-export const getStaticProps: GetStaticProps = () => {
+export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
-  return { props: { posts } }
+  const stravaActivities = await getStravaActivities()
+
+  return {
+    props: { posts, stravaActivities },
+    revalidate: 60 * 60 * 24 /* 24 hours */,
+  }
 }
 
-const Home = ({ posts }: Props) => {
+const Home = ({ posts, stravaActivities }: Props) => {
   const [showRevealBar, setShowRevealBar] = useState(false)
 
   const revealBarStyle = showRevealBar
@@ -44,6 +52,8 @@ const Home = ({ posts }: Props) => {
           <Bio />
 
           <LatestSection posts={posts} />
+
+          <StravaActivities activities={stravaActivities} />
 
           <FlexWrap>
             <FeaturedProjects />
