@@ -4,11 +4,12 @@ export type StravaActivity = {
   description: string
   pubDate: string
   guid: string
-  type?: string
+  type: string
   Distance?: string
   ElevationGain?: string
   MovingTime?: string
   AverageSpeed?: string
+  Pace?: string
 }
 
 export const getStravaActivities = async (): Promise<StravaActivity[]> => {
@@ -58,7 +59,13 @@ const parseDescription = (description: string) => {
       const valueConverted = convertToUSUnits(keyFormatted, value)
 
       const isValidValue =
-        value && value !== '0' && value !== '0.0km' && value !== '0m' && value !== '00:00:00' && value !== '0.0km/h'
+        value &&
+        value !== '0' &&
+        value !== '0.0km' &&
+        value !== '0m' &&
+        value !== '00:00:00' &&
+        value !== '0.0km/h' &&
+        value !== '0:00/km'
 
       return isValidValue ? { [keyFormatted]: valueConverted } : null
     })
@@ -70,15 +77,37 @@ const parseDescription = (description: string) => {
   }
 }
 
+const KM_TO_MI = 0.621371
+const M_TO_FT = 3.28084
+
+const parseValue = (val: string) => parseFloat(val.replace(/[^\d:.]/g, ''))
+
 const convertToUSUnits = (key: string, value: string) => {
   const unitConversions: { [key: string]: (val: string) => string } = {
-    Distance: (val) => `${(parseFloat(val) * 0.621371).toFixed(2)} miles`,
-    ElevationGain: (val) => `${(parseFloat(val) * 3.28084).toFixed(2)} ft`,
-    AverageSpeed: (val) => `${(parseFloat(val) * 0.621371).toFixed(2)} mph`,
+    Distance: (val) => {
+      const distanceInKm = parseValue(val)
+      const distanceInMiles = distanceInKm * KM_TO_MI
+      return `${distanceInMiles.toFixed(2)} mi`
+    },
+    ElevationGain: (val) => {
+      const elevationInMeters = parseValue(val)
+      const elevationInFeet = elevationInMeters * M_TO_FT
+      return `${elevationInFeet.toFixed(2)} ft`
+    },
+    AverageSpeed: (val) => {
+      const speedInKmH = parseValue(val)
+      const speedInMph = speedInKmH * KM_TO_MI
+      return `${speedInMph.toFixed(2)} mph`
+    },
+    Pace: (val) => {
+      const [minutes, seconds] = val.split(':').map(parseFloat)
+      const totalSecondsPerKm = minutes * 60 + seconds
+      const totalSecondsPerMile = totalSecondsPerKm / KM_TO_MI
+      const minutesPerMile = Math.floor(totalSecondsPerMile / 60)
+      const secondsPerMile = Math.round(totalSecondsPerMile % 60)
+      return `${minutesPerMile}:${secondsPerMile.toString().padStart(2, '0')} /mi`
+    },
   }
 
-  if (unitConversions[key]) {
-    return unitConversions[key](value.replace(/[^\d.]/g, ''))
-  }
-  return value
+  return unitConversions[key] ? unitConversions[key](value) : value
 }
