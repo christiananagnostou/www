@@ -4,7 +4,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
-import { ride, run, swim, weight } from '../SVG/strava/icons'
+import { hike, ride, run, swim, weight } from '../SVG/strava/icons'
 
 type Props = {
   activities: StravaActivity[]
@@ -15,6 +15,11 @@ const activityIcons: Record<string, JSX.Element> = {
   Ride: ride(),
   Run: run(),
   WeightTraining: weight(),
+  Hike: hike(),
+}
+
+const splitCamelCase = (input: string): string => {
+  return input.replace(/([a-z])([A-Z])/g, '$1 $2')
 }
 
 const StravaActivities = ({ activities }: Props) => {
@@ -34,9 +39,9 @@ const StravaActivities = ({ activities }: Props) => {
     </ActivityFilter>
   )
 
-  const renderActivityDetail = (label: string, value: string | number) => (
-    <ActivityDetail>
-      {label}: <strong>{value}</strong>
+  const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
+    <ActivityDetail best={activity.best[type] === 1}>
+      {splitCamelCase(type)}: <strong>{activity[type]}</strong>
     </ActivityDetail>
   )
 
@@ -48,7 +53,6 @@ const StravaActivities = ({ activities }: Props) => {
           {renderFilterButton('Swim')}
           {renderFilterButton('Ride')}
           {renderFilterButton('Run')}
-          {renderFilterButton('WeightTraining')}
         </ActivityFilters>
       </SectionHeader>
 
@@ -57,13 +61,15 @@ const StravaActivities = ({ activities }: Props) => {
           .filter((activity) => (filter ? activity.type === filter : true))
           .map((activity, index) => (
             <ActivityItem key={index} variants={fade}>
-              <ActivityType>{activityIcons[activity.type] || activity.type}</ActivityType>
+              <ActivityType title={activity.type} aria-label={activity.type}>
+                {activityIcons[activity.type] || activity.type}
+              </ActivityType>
 
-              {activity.MovingTime && renderActivityDetail('Moving Time', activity.MovingTime)}
-              {activity.Distance && renderActivityDetail('Distance', activity.Distance)}
-              {activity.Pace && renderActivityDetail('Pace', activity.Pace)}
-              {activity.AverageSpeed && renderActivityDetail('Average Speed', activity.AverageSpeed)}
-              {activity.ElevationGain && renderActivityDetail('Elevation Gain', activity.ElevationGain)}
+              {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
+              {activity.Distance && renderActivityDetail('Distance', activity)}
+              {activity.Pace && renderActivityDetail('Pace', activity)}
+              {activity.AverageSpeed && renderActivityDetail('AverageSpeed', activity)}
+              {activity.ElevationGain && renderActivityDetail('ElevationGain', activity)}
 
               <ActivityDate>{dayjs(activity.pubDate).format('MMM D, YYYY')}</ActivityDate>
             </ActivityItem>
@@ -142,6 +148,7 @@ const ActivityList = styled.ul`
 const ActivityItem = styled(motion.li)`
   flex: 1;
   min-width: max-content;
+  max-width: max-content;
 `
 
 const ActivityType = styled.div`
@@ -152,13 +159,14 @@ const ActivityType = styled.div`
   }
 `
 
-const ActivityDetail = styled.p`
+const ActivityDetail = styled.p<{ best?: boolean }>`
   margin: 0.5rem 0;
   color: var(--text-dark);
   font-size: 0.8rem;
   strong {
     font-size: 0.75rem;
     font-weight: 600;
+    color: ${(props) => (props.best ? 'var(--text)' : 'inherit')};
   }
 `
 

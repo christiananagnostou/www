@@ -34,7 +34,7 @@ const LatestSection = ({ posts }: Props) => {
               alt="Latest photo posted on my website - found on the art page."
               blurDataURL={StairShadow.blurDataURL}
               placeholder="blur"
-              width={750}
+              width={300}
             />
           </RecentImage>
         </Link>
@@ -68,7 +68,7 @@ const MiddleSection = styled.section`
   gap: 1rem;
 
   @media screen and (max-width: 768px) {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 `
 
