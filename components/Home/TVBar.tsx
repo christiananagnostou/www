@@ -191,8 +191,8 @@ const TVControls = styled(motion.div)`
   align-items: stretch;
   position: relative;
   position: absolute;
-  top: 0;
-  transform: translateY(calc(-50% - 1px));
+  bottom: 0;
+  transform: translateY(calc(50% + 0.5px));
   left: 1rem;
 
   user-select: none;
@@ -210,7 +210,7 @@ const TVControls = styled(motion.div)`
       background: var(--accent);
       position: relative;
       overflow: hidden;
-      height: 1px;
+      height: 0.5px;
 
       .bar-inner {
         position: absolute;

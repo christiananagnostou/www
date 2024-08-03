@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
@@ -24,6 +24,9 @@ const splitCamelCase = (input: string): string => {
 
 const StravaActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState('')
+  const activityListRef = useRef<HTMLUListElement>(null)
+  const startX = useRef(0)
+  const scrollLeft = useRef(0)
 
   if (!activities?.length) return null
 
@@ -45,6 +48,33 @@ const StravaActivities = ({ activities }: Props) => {
     </ActivityDetail>
   )
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    activityListRef.current?.classList.add('grabbing')
+    document.documentElement.style.cursor = 'grabbing'
+
+    startX.current = e.pageX - (activityListRef.current?.offsetLeft || 0)
+    scrollLeft.current = activityListRef.current?.scrollLeft || 0
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault()
+      const x = e.pageX - (activityListRef.current?.offsetLeft || 0)
+      const walk = x - startX.current
+      if (activityListRef.current) {
+        activityListRef.current.scrollLeft = scrollLeft.current - walk
+      }
+    }
+
+    const handleMouseUp = () => {
+      activityListRef.current?.classList.remove('grabbing')
+      document.documentElement.style.cursor = 'auto'
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
@@ -56,7 +86,7 @@ const StravaActivities = ({ activities }: Props) => {
         </ActivityFilters>
       </SectionHeader>
 
-      <ActivityList>
+      <ActivityList ref={activityListRef} onMouseDown={handleMouseDown}>
         {activities
           .filter((activity) => (filter ? activity.type === filter : true))
           .map((activity, index) => (
@@ -132,16 +162,23 @@ const ActivityFilter = styled(motion.button)`
 
 const ActivityList = styled.ul`
   list-style: none;
+  user-select: none;
   padding: 0;
   display: flex;
   gap: 1rem;
   padding: 0 1rem;
   overflow-x: auto;
+  cursor: grab;
+
   /* Hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  &.grabbing {
+    cursor: grabbing;
   }
 `
 

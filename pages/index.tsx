@@ -47,8 +47,6 @@ const Home = ({ posts, stravaActivities }: Props) => {
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <div className="page-inner-container">
-          <TVBar onBarFilled={setShowRevealBar} />
-
           <Bio />
 
           <LatestSection posts={posts} />
@@ -64,6 +62,8 @@ const Home = ({ posts, stravaActivities }: Props) => {
             <LabLink />
             <Signature />
           </FlexWrap>
+
+          <TVBar onBarFilled={setShowRevealBar} />
         </div>
       </Container>
     </>
@@ -81,7 +81,7 @@ const Container = styled(motion.main)`
   .page-inner-container {
     border: 1px solid var(--accent);
     background: var(--body-bg);
-    padding: 1rem;
+    padding: 1rem 1rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: end;

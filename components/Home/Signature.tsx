@@ -4,7 +4,7 @@ import styled from 'styled-components'
 type Props = {}
 
 const Signature = (props: Props) => {
-  return <StyledImage src="/signature.png" height={50} width={100} alt="Signature of Christian Anagnostou" />
+  return <StyledImage src="/signature.png" height={45} width={100} alt="Signature of Christian Anagnostou" />
 }
 
 export default Signature
@@ -13,6 +13,7 @@ const StyledImage = styled(Image)`
   display: block;
   pointer-events: none;
   user-select: none;
+  align-self: center;
   transform-origin: center center;
   transform: translateY(0.5rem) scale(0.9);
 `
