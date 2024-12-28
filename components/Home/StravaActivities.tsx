@@ -4,19 +4,21 @@ import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
-import { hike, ride, run, swim, weight } from '../SVG/strava/icons'
+import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 
 type Props = {
   activities: StravaActivity[]
 }
 
-const activityIcons: Record<string, JSX.Element> = {
+const activityIcons = {
   Swim: swim(),
   Ride: ride(),
   Run: run(),
   WeightTraining: weight(),
   Hike: hike(),
-}
+  Zwift: zwift(),
+  Walk: run(),
+} as const
 
 const splitCamelCase = (input: string): string => {
   return input.replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -83,27 +85,36 @@ const StravaActivities = ({ activities }: Props) => {
           {renderFilterButton('Swim')}
           {renderFilterButton('Ride')}
           {renderFilterButton('Run')}
+          {renderFilterButton('Zwift')}
         </ActivityFilters>
       </SectionHeader>
 
       <ActivityList ref={activityListRef} onMouseDown={handleMouseDown}>
         {activities
           .filter((activity) => (filter ? activity.type === filter : true))
-          .map((activity, index) => (
-            <ActivityItem key={index} variants={fade}>
-              <ActivityType title={activity.type} aria-label={activity.type}>
-                {activityIcons[activity.type] || activity.type}
-              </ActivityType>
+          .map((activity, index) => {
+            const pubDate = dayjs(activity.pubDate)
+            const isToday = pubDate.isSame(dayjs(), 'day')
+            const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
 
-              {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
-              {activity.Distance && renderActivityDetail('Distance', activity)}
-              {activity.Pace && renderActivityDetail('Pace', activity)}
-              {activity.AverageSpeed && renderActivityDetail('AverageSpeed', activity)}
-              {activity.ElevationGain && renderActivityDetail('ElevationGain', activity)}
+            return (
+              <ActivityItem key={index} variants={fade}>
+                <ActivityType title={activity.type} aria-label={activity.type}>
+                  {activityIcons[activity.type] || activity.type}
+                </ActivityType>
 
-              <ActivityDate>{dayjs(activity.pubDate).format('MMM D, YYYY')}</ActivityDate>
-            </ActivityItem>
-          ))}
+                {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
+                {activity.Distance && renderActivityDetail('Distance', activity)}
+                {activity.Pace && renderActivityDetail('Pace', activity)}
+                {activity.AverageSpeed && renderActivityDetail('AverageSpeed', activity)}
+                {activity.ElevationGain && renderActivityDetail('ElevationGain', activity)}
+
+                {isToday && <ActivityDate>Today</ActivityDate>}
+                {isYesterday && <ActivityDate>Yesterday</ActivityDate>}
+                {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
+              </ActivityItem>
+            )
+          })}
       </ActivityList>
     </ActivitiesSection>
   )

@@ -4,7 +4,7 @@ export type StravaActivity = {
   description: string
   pubDate: string
   guid: string
-  type: string
+  type: 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift'
   Distance?: string
   ElevationGain?: string
   MovingTime?: string
@@ -32,6 +32,11 @@ export const getStravaActivities = async (): Promise<StravaActivity[]> => {
     .map((item) => {
       const description = item.getElementsByTagName('description')[0]?.textContent || ''
       const parsedDetails = parseDescription(description)
+
+      // Change type "VirtualRide" to "Zwift"
+      if (parsedDetails.type === 'VirtualRide') {
+        parsedDetails.type = 'Zwift'
+      }
 
       return {
         title: item.getElementsByTagName('title')[0]?.textContent || '',

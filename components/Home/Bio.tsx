@@ -8,29 +8,18 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Striving to create an <em>elegant</em> web experience driven by constant pursuit of excellence.
-      </motion.p>
-
-      <motion.p variants={fade}>
-        Currently working as a Senior Software Engineer at{' '}
+        Creating elegant web experiences that inspire and always pursuing excellence. Currently working as a{' '}
+        <em>senior software engineer</em> at{' '}
         <a href="https://vuoriclothing.com/" target="_blank" rel="noreferrer" aria-label="Visit Vuori website">
-          Vuori
+          <em>Vuori</em>
         </a>
         .
       </motion.p>
 
-      {/* <motion.hr variants={fade} />
-
       <motion.p variants={fade}>
-        When I&apos;m not in front of my laptop, I&apos;m either out cycling, lifting, or at a{' '}
-        <span className="giants-container">
-          iants{' '}
-          <span className="giants">
-            <Giants />
-          </span>
-        </span>{' '}
-        game. I also dabble with winemaking, photography, and writing.
-      </motion.p> */}
+        This site showcases my work, articles, photos, and a few other things I find interesting, with hidden Easter
+        eggs sprinkled throughout. If you find one, feel free to reach out - I&apos;d love to hear about it!
+      </motion.p>
     </Description>
   )
 }
@@ -44,7 +33,6 @@ const Description = styled(motion.section)`
   border: 1px solid var(--accent);
   text-align: left;
   z-index: 2;
-  color: #cbcbcb;
 
   display: flex;
   flex-direction: column;
