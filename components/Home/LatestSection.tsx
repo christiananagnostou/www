@@ -180,6 +180,10 @@ const RecentArticles = styled(HomepageBox)`
     li {
       margin-bottom: 0.5rem;
 
+      a {
+        display: block;
+      }
+
       .recent-article__summary {
         white-space: nowrap;
         overflow: hidden;
