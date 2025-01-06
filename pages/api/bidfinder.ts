@@ -1,0 +1,17 @@
+import fs from 'fs'
+import { NextApiRequest, NextApiResponse } from 'next'
+import path from 'path'
+
+export default function handler(req: NextApiRequest, res: NextApiResponse): void {
+  try {
+    const filePath = path.join(process.cwd(), 'public', 'scripts', 'bidfinder.js')
+
+    const fileContents = fs.readFileSync(filePath, 'utf-8')
+
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+
+    res.status(200).send(fileContents)
+  } catch (error) {
+    res.status(500).send('Failed to load script')
+  }
+}
