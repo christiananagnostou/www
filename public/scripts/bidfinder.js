@@ -10,6 +10,7 @@
       this.scrollToNextMatch()
       document.addEventListener('keydown', this.handleKeyPress.bind(this))
     }
+
     collectMatches() {
       const elements = document.querySelectorAll('.s-item__bids.s-item__bidCount, .str-item-card__property-bidCount')
       elements.forEach((element) => {
@@ -17,6 +18,7 @@
         if (textContent.match(this.regexPattern)) this.matches.push(element)
       })
     }
+
     scrollToNextMatch() {
       if (!this.matches.length) return
       this.currentMatchIndex = (this.currentMatchIndex + 1) % this.matches.length
@@ -27,6 +29,7 @@
       })
       this.updateInfoBox()
     }
+
     scrollToPreviousMatch() {
       if (!this.matches.length) return
       this.currentMatchIndex = (this.currentMatchIndex - 1 + this.matches.length) % this.matches.length
@@ -37,9 +40,11 @@
       })
       this.updateInfoBox()
     }
+
     updateInfoBox() {
       if (this.infoBox) this.currentMatchBox.textContent = `${this.currentMatchIndex + 1}/${this.matches.length}`
     }
+
     highlightElement(element) {
       const highlightedElement = document.querySelector('.highlighted')
       if (highlightedElement) {
@@ -49,6 +54,7 @@
       element.style.border = '2px solid red'
       element.classList.add('highlighted')
     }
+
     createInfoBox() {
       const infoBoxHTML = `
         <div id="infoBox" style="position: fixed; bottom: 0.5rem; right: 0.5rem; padding: 1rem; border-radius: 8px; background-color: white; border: 1px solid gray;">
@@ -68,6 +74,7 @@
         this.autoScrollToggle.checked ? this.startAutoScroll() : this.stopAutoScroll()
       })
     }
+
     startAutoScroll() {
       if (this.autoScrollInterval) return
       const interval = 1e3 * parseInt(this.autoScrollIntervalInput.value)
@@ -75,14 +82,17 @@
         this.scrollToNextMatch()
       }, interval)
     }
+
     stopAutoScroll() {
       clearInterval(this.autoScrollInterval)
       this.autoScrollInterval = null
     }
+
     handleKeyPress(e) {
       if (e.key === 'n' && !e.shiftKey) this.scrollToNextMatch()
       else if (e.key === 'N' && e.shiftKey) this.scrollToPreviousMatch()
     }
   }
+
   new BidMatcher()
 })()
