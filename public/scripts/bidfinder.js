@@ -9,13 +9,12 @@
       this.createInfoBox()
       this.scrollToNextMatch()
       document.addEventListener('keydown', this.handleKeyPress.bind(this))
-      console.log('bidfinder.js loaded')
     }
     collectMatches() {
-      const e = document.querySelectorAll('.s-item__bids.s-item__bidCount, .str-item-card__property-bidCount')
-      e.forEach((t) => {
-        const r = t.innerText || t.textContent
-        if (r.match(this.regexPattern)) this.matches.push(t)
+      const elements = document.querySelectorAll('.s-item__bids.s-item__bidCount, .str-item-card__property-bidCount')
+      elements.forEach((element) => {
+        const textContent = element.innerText || element.textContent
+        if (textContent.match(this.regexPattern)) this.matches.push(element)
       })
     }
     scrollToNextMatch() {
@@ -41,20 +40,26 @@
     updateInfoBox() {
       if (this.infoBox) this.currentMatchBox.textContent = `${this.currentMatchIndex + 1}/${this.matches.length}`
     }
-    highlightElement(e) {
-      const t = document.querySelector('.highlighted')
-      t && ((t.style.border = ''), t.classList.remove('highlighted'))
-      e.style.border = '2px solid red'
-      e.classList.add('highlighted')
+    highlightElement(element) {
+      const highlightedElement = document.querySelector('.highlighted')
+      if (highlightedElement) {
+        highlightedElement.style.border = ''
+        highlightedElement.classList.remove('highlighted')
+      }
+      element.style.border = '2px solid red'
+      element.classList.add('highlighted')
     }
     createInfoBox() {
-      const e =
-        '<div id="infoBox" style="position: fixed; bottom:0.5rem; right:0.5rem; padding:1rem; border-radius:8px; background-color:white; border:1px solid gray;"><span id="currentMatchBox">' +
-        (this.currentMatchIndex + 1) +
-        '/' +
-        this.matches.length +
-        '</span> Matches<br><label for="autoScrollToggle">Auto Scroll</label><input type="checkbox" id="autoScrollToggle"><input type="number" id="autoScrollInterval" value="5" placeholder="Interval" style="width:50px;"></div>'
-      document.body.insertAdjacentHTML('beforeend', e)
+      const infoBoxHTML = `
+        <div id="infoBox" style="position: fixed; bottom: 0.5rem; right: 0.5rem; padding: 1rem; border-radius: 8px; background-color: white; border: 1px solid gray;">
+            <span id="currentMatchBox">${this.currentMatchIndex + 1}/${this.matches.length}</span> Matches
+            <br>
+            <label for="autoScrollToggle">Auto Scroll</label>
+            <input type="checkbox" id="autoScrollToggle">
+            <input type="number" id="autoScrollInterval" value="5" placeholder="Interval" style="width: 50px;">
+        </div>
+        `
+      document.body.insertAdjacentHTML('beforeend', infoBoxHTML)
       this.currentMatchBox = document.getElementById('currentMatchBox')
       this.infoBox = document.getElementById('infoBox')
       this.autoScrollToggle = document.getElementById('autoScrollToggle')
@@ -65,10 +70,10 @@
     }
     startAutoScroll() {
       if (this.autoScrollInterval) return
-      const e = 1e3 * parseInt(this.autoScrollIntervalInput.value)
+      const interval = 1e3 * parseInt(this.autoScrollIntervalInput.value)
       this.autoScrollInterval = setInterval(() => {
         this.scrollToNextMatch()
-      }, e)
+      }, interval)
     }
     stopAutoScroll() {
       clearInterval(this.autoScrollInterval)
