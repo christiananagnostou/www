@@ -153,6 +153,12 @@ const BookmarkletItem = styled(motion.div)`
       gap: 0.25rem;
       font-size: 0.85rem;
       text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover,
+      &:focus {
+        color: var(--text);
+      }
     }
   }
 
@@ -167,12 +173,16 @@ const BookmarkletItem = styled(motion.div)`
     text-align: left;
     background: transparent;
     cursor: pointer;
-    transition: background 0.25s ease;
+    transition: background 0.2s ease;
 
     &:hover,
     &:focus {
       outline: none;
       background: #262626;
+
+      .toggle-arrow {
+        color: var(--text);
+      }
     }
 
     .summary {
@@ -185,6 +195,7 @@ const BookmarkletItem = styled(motion.div)`
     .toggle-arrow {
       margin-left: 1rem;
       color: var(--text-dark);
+      transition: color 0.2s ease;
 
       svg {
         height: 1.2em;
