@@ -1,5 +1,5 @@
 ;(function () {
-  class BidMatcher {
+  class BidFinder {
     constructor() {
       this.regexPattern = /[1-9]\d*\s+bids?/g
       this.matches = []
@@ -94,5 +94,5 @@
     }
   }
 
-  new BidMatcher()
+  new BidFinder()
 })()

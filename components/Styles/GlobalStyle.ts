@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
     max-width: var(--max-w-screen);
   }
 
+  body {
+    min-height: 100vh;
+  }
+
   *{
     margin: 0;
     padding: 0;

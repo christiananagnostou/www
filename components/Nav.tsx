@@ -9,6 +9,7 @@ import Logo from '../public/A-circle.webp'
 const Links = [
   { href: '/', title: 'Home' },
   { href: '/works', title: 'Works' },
+  { href: '/bookmarklets', title: 'Bookmarklets' },
   { href: '/articles', title: 'Articles' },
   { href: '/art', title: 'Art' },
   { href: '/contact', title: 'Contact' },

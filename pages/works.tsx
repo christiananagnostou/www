@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
+import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
 import { ProjectState } from '../lib/projects'
 
@@ -19,9 +20,9 @@ export default function works({}: Props) {
       <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         {/* <PageTitle titleLeft="my work" titleRight="ever improving" /> */}
 
-        <Header>
+        <Heading>
           <h1>A Curated List of My Work</h1>
-        </Header>
+        </Heading>
 
         <section>
           {ProjectState.map((project) => (
@@ -39,13 +40,4 @@ const Work = styled(motion.div)`
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
-`
-const Header = styled(motion.div)`
-  margin-bottom: 2rem;
-
-  h1 {
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: 400;
-  }
 `

@@ -1,11 +1,11 @@
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { fade } from "../animation";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
+import { fade } from '../animation'
 
 type Props = {
-  titleLeft: string;
-  titleRight: string;
-};
+  titleLeft: string
+  titleRight: string
+}
 
 const PageTitle = ({ titleLeft, titleRight }: Props) => {
   return (
@@ -14,10 +14,10 @@ const PageTitle = ({ titleLeft, titleRight }: Props) => {
       <span className="bar"></span>
       <span>{titleRight}</span>
     </Container>
-  );
-};
+  )
+}
 
-export default PageTitle;
+export default PageTitle
 
 const Container = styled(motion.h2)`
   margin-bottom: 2rem;
@@ -42,4 +42,4 @@ const Container = styled(motion.h2)`
     margin: 0 1rem;
     border-bottom: 1px solid var(--accent);
   }
-`;
+`
