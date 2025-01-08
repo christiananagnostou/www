@@ -58,7 +58,13 @@ export default function Bookmarklets() {
                     </h2>
 
                     {/* GitHub link */}
-                    <a href={githubUrl} aria-label={`View the ${title} bookmarklet on GitHub.`} className="github-url">
+                    <a
+                      href={githubUrl}
+                      aria-label={`View the ${title} bookmarklet on GitHub.`}
+                      className="github-url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Github />
                       Code
                     </a>
@@ -143,6 +149,15 @@ const BookmarkletItem = styled(motion.div)`
       margin: 0;
       font-size: 1rem;
       font-weight: 400;
+
+      & * {
+        cursor: -webkit-grab;
+        cursor: grab;
+      }
+      & *:active {
+        cursor: -webkit-grabbing;
+        cursor: grabbing;
+      }
     }
 
     .github-url {
@@ -154,6 +169,7 @@ const BookmarkletItem = styled(motion.div)`
       font-size: 0.85rem;
       text-decoration: none;
       transition: color 0.2s ease;
+      cursor: alias;
 
       &:hover,
       &:focus {
