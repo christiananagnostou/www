@@ -25,17 +25,12 @@
   const ID_HELP_BTN = 'helpBtn'
   const ID_HELP_CLOSE = 'helpPanelCloseBtn'
   const ID_HELP_PANEL = 'helpPanel'
-  // Dragging
-  const ID_DRAG_BTN = 'dragBtn'
 
   class BidFinder {
     constructor() {
       this.regexPattern = /([1-9]\d*)\s+bids?/i
       this.matches = []
       this.currentMatchIndex = -1
-      this.isDragging = false
-      this.dragOffsetX = 0
-      this.dragOffsetY = 0
 
       this.injectStyles()
       this.collectMatches()
@@ -79,30 +74,46 @@
 
           <div class="bidfinder-row right-row">
             <button id="${ID_HELP_BTN}" class="${BTN}">${QUESTION_SVG}</button>
-            <button id="${ID_DRAG_BTN}" class="${BTN}">${DRAG_ARROWS_SVG}</button>
           </div> 
         </div>
 
         <div id="${ID_MENU_PANEL}" class="bidfinder-modal" aria-hidden="true">
           <button class="${BTN}" id="${ID_MENU_CLOSE}">${CLOSE_SVG}</button>
-          <span><strong>Toolbar Position</strong></span><hr />
+          <span><strong>Toolbar Position</strong></span><hr/>
           <div class="pop-to-grid">
             <button class="${BTN}" id="${POP_LEFT_BTN}">◀</button>
             <button class="${BTN}" id="${POP_RIGHT_BTN}">▶</button>
             <button class="${BTN}" id="${POP_TOP_BTN}">▲</button>
             <button class="${BTN}" id="${POP_BOTTOM_BTN}">▼</button>
           </div>
-          <span><strong>Tools</strong></span><hr />
+          <span><strong>Tools</strong></span><hr/>
           <button class="${BTN}" id="${ID_TOGGLE_SOLD}">Toggle Sold</button>
         </div>
 
         <div id="${ID_HELP_PANEL}" class="bidfinder-modal" aria-hidden="true">
           <button id=${ID_HELP_CLOSE} class="${BTN}">${CLOSE_SVG}</button>
-          <span><strong>BidFinder Help</strong></span><hr />
-          <p><strong>Keyboard Shortcuts:</strong><br/>n — Next Bid<br/>Shift+n — Previous Bid</p>
-          <p><strong>Navigation:</strong><br/>Use arrows or Refresh.</p>
-          <p><strong>Menu:</strong><br/>Hamburger for location or sold toggle.</p>
-          <p><strong>Drag:</strong><br/>Hold fingerprint icon to move bar.</p>
+          <span><strong>BidFinder Help</strong></span><hr/>
+          <p>Welcome to BidFinder! Here are some keyboard shortcuts to help you navigate.</p>
+          <br/>
+          <p>
+            <span>Navigation:</span>
+            <br/>
+            <br/><strong>Arrow Right</strong> / <strong>n</strong> - Next
+            <br/><strong>Arrow Left</strong> / <strong>Shift + N</strong> - Previous
+          </p>
+          <br/>
+          <p>
+            <span>Toolbar Positioning:</span>
+            <br/>
+            <br/><strong>Shift + W</strong> - Top
+            <br/><strong>Shift + A</strong> - Left
+            <br/><strong>Shift + S</strong> - Bottom
+            <br/><strong>Shift + D</strong> - Right
+          </p>
+          <br/>
+          <p>Liked this tool? Check out the source code on
+            <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js" target="_blank">GitHub</a>.
+          </p>
         </div>
       `
 
@@ -116,7 +127,6 @@
       this.nextBtn = document.getElementById(ID_NEXT)
       this.retryBtn = document.getElementById(ID_RETRY)
       this.helpBtn = document.getElementById(ID_HELP_BTN)
-      this.dragBtn = document.getElementById(ID_DRAG_BTN)
       // Menu panel elements
       this.menuPanel = document.getElementById(ID_MENU_PANEL)
       this.popLeftBtn = document.getElementById(POP_LEFT_BTN)
@@ -145,11 +155,6 @@
       // Help panel event listeners
       this.helpPanelCloseBtn.onclick = () => this.toggleModal(this.helpPanel)
 
-      // Dragging event listeners
-      this.dragBtn.onmousedown = (e) => this.startDrag(e)
-      document.onmousemove = (e) => this.onDrag(e)
-      document.onmouseup = () => this.endDrag()
-
       if (!this.checkSoldCheckbox()) {
         this.toggleSoldBtn.disabled = true
         this.toggleSoldBtn.title = 'Sold checkbox not found'
@@ -164,39 +169,7 @@
 
     setLocationClass(cls) {
       this.toolbar.classList.remove(POP_LEFT, POP_RIGHT, POP_TOP, POP_BOTTOM)
-      this.toolbar.removeAttribute('style') // reset inline styles from dragging
-      this.toolbar.id = ID_TOOLBAR
-      this.toolbar.style.position = 'fixed'
-      this.toolbar.style.zIndex = 999999
-      this.toolbar.style.maxHeight = 'min-content'
       this.toolbar.classList.add(cls)
-    }
-
-    startDrag(e) {
-      if (e.target.id === ID_DRAG_BTN || e.target.closest('#' + ID_DRAG_BTN)) {
-        this.isDragging = true
-        this.toolbar.classList.remove(POP_LEFT, POP_RIGHT, POP_TOP, POP_BOTTOM)
-        const rect = this.toolbar.getBoundingClientRect()
-        this.dragOffsetX = e.clientX - rect.left
-        this.dragOffsetY = e.clientY - rect.top
-      }
-    }
-    onDrag(e) {
-      if (!this.isDragging) return
-      e.preventDefault()
-      const x = e.clientX - this.dragOffsetX + this.toolbar.offsetWidth
-      const y = e.clientY - this.dragOffsetY + this.toolbar.offsetHeight
-      this.toolbar.style.transform = ''
-      this.toolbar.style.left = x + 'px'
-      this.toolbar.style.top = y + 'px'
-      this.toolbar.style.right = ''
-      this.toolbar.style.bottom = ''
-      this.toolbar.style.width = 'auto'
-      this.toolbar.style.maxWidth = 'none'
-      this.toolbar.style.borderRadius = '6px'
-    }
-    endDrag() {
-      this.isDragging = false
     }
 
     checkSoldCheckbox() {
@@ -241,11 +214,14 @@
     }
 
     handleKeyPress(e) {
-      if ((e.key === 'n' && !e.shiftKey) || e.key === 'ArrowRight') {
-        this.scrollToNextMatch()
-      } else if ((e.key === 'N' && e.shiftKey) || e.key === 'ArrowLeft') {
-        this.scrollToPreviousMatch()
-      }
+      // Navigation with arrows or n/N
+      if ((e.key === 'n' && !e.shiftKey) || e.key === 'ArrowRight') this.scrollToNextMatch()
+      if ((e.key === 'N' && e.shiftKey) || e.key === 'ArrowLeft') this.scrollToPreviousMatch()
+      // Toolbar positioning with Shift + WASD
+      if (e.shiftKey && e.key === 'W') this.setLocationClass(POP_TOP)
+      if (e.shiftKey && e.key === 'A') this.setLocationClass(POP_LEFT)
+      if (e.shiftKey && e.key === 'S') this.setLocationClass(POP_BOTTOM)
+      if (e.shiftKey && e.key === 'D') this.setLocationClass(POP_RIGHT)
     }
   }
 
@@ -325,7 +301,7 @@
       border: 1px solid var(--toolbar-border);
       color: var(--toolbar-fg);
       font-size: 0.85rem;
-      width: 320px;
+      min-width: 300px;
       padding: 0.75rem;
       border-radius: 8px;
       box-shadow: 0 0 16px rgba(0,0,0,0.4);
@@ -377,7 +353,6 @@
       cursor: pointer;
     }
 
-    /* Vertical separator in center row */
     .vertical-separator {
       width: 1px; background: var(--toolbar-border);
       height: 1.6rem; margin: 0 0.5rem;
@@ -398,9 +373,6 @@
     }
     button.${BTN} svg { height: 1em; width: 1em; }
 
-    #${ID_DRAG_BTN} { cursor: grab; }
-    #${ID_DRAG_BTN}:active { cursor: grabbing; }
-
     .bidfinder-highlighted {
       outline: 2px solid var(--highlight-color) !important;
       outline-offset: 1px;
@@ -408,11 +380,10 @@
   `
 
   const CLOSE_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path></svg>`
-  const THREE_DOTS_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"/></svg>`
+  const THREE_DOTS_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"></path></svg>`
   const LEFT_ARROW_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M328 112L184 256l144 144"/></svg>`
   const RIGHT_ARROW_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M184 112l144 144-144 144"/></svg>`
   const RETRY_ARROW_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 32 32"><path d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13 13-5.832 13-13h-2c0 6.086-4.914 11-11 11S5 22.086 5 16 9.914 5 16 5c3.875 0 7.262 1.984 9.219 5H20v2h8V4h-2v3.719C23.617 4.844 20.02 3 16 3" stroke="none"/></svg>`
-  const DRAG_ARROWS_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m12 22-4-4h8zm0-20 4 4H8zm0 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4M2 12l4-4v8zm20 0-4 4V8z" stroke="none"/></svg>`
   const QUESTION_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14"></path></svg>`
 
   new BidFinder()
