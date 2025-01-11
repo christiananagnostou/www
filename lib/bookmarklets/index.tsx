@@ -28,11 +28,19 @@ const MoneyMagnify = (
 export const bookmarkletsData = [
   {
     title: 'BidFinder',
-    description: 'Highlights eBay bids on the page and lets you scroll through them automatically.',
+    description: 'Highlights eBay bids and provides a toolbar to quickly navigate through them.',
     code: BidFinder,
     icon: MoneyMagnify,
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js',
-    instructions:
-      "1. Go to an eBay page showing auction items with bid counts.\n2. Click the 'BidFinder' bookmarklet to highlight and jump to each bid.\n3. Press 'n' for the next highlighted bid, or Shift+N for the previous one.\n4. Enable 'Auto Scroll' in the info box to cycle automatically, and set the interval in seconds.",
+    instructions: `
+      This was created to point out listings that people are actively bidding on. It's a fun way to see what people are willing to pay for. It's also a great way to find good deals.
+      -
+      Instructions:
+      1. Go to an eBay page with bid counts.
+      2. Click the 'BidFinder' bookmarklet to highlight and jump to each bid.
+      3. Press 'n' for next, or Shift+N for previous.
+      4. Use the left/right arrow buttons on the toolbar to navigate.
+      5. Click the retry icon if new items appear.
+      6. For more help, click the '?' button.`,
   },
 ]
