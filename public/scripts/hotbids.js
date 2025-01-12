@@ -1,9 +1,9 @@
 ;(function () {
   // Class/ID constants
-  const ID_CONTAINER = 'bidfinder-container'
-  const ID_TOOLBAR = 'bidfinder-toolbar'
-  const CN_MODAL = 'bidfinder-modal'
-  const CN_BTN = 'bidfinder-btn'
+  const ID_CONTAINER = 'hotbids-container'
+  const ID_TOOLBAR = 'hotbids-toolbar'
+  const CN_MODAL = 'hotbids-modal'
+  const CN_BTN = 'hotbids-btn'
   // Menu
   const ID_MENU_BTN = 'menuBtn'
   const ID_MENU_CLOSE = 'menuPanelCloseBtn'
@@ -28,7 +28,7 @@
   const ID_HELP_CLOSE = 'helpPanelCloseBtn'
   const ID_HELP_PANEL = 'helpPanel'
 
-  class BidFinder {
+  class HotBids {
     constructor() {
       this.regexPattern = /([1-9]\d*)\s+bids?/i
       this.matches = []
@@ -42,9 +42,9 @@
     }
 
     injectStyles() {
-      if (!document.getElementById('bidfinder-styles')) {
+      if (!document.getElementById('hotbids-styles')) {
         const styleEl = document.createElement('style')
-        styleEl.id = 'bidfinder-styles'
+        styleEl.id = 'hotbids-styles'
         styleEl.textContent = STYLESHEET
         document.head.appendChild(styleEl)
       }
@@ -63,19 +63,19 @@
       const html = `
         <div id="${ID_CONTAINER}">
           <div id="${ID_TOOLBAR}" class="${CN_POP_BOTTOM_POS}">
-            <div class="bidfinder-row left-row">
+            <div class="hotbids-row left-row">
               <button id="${ID_MENU_BTN}" class="${CN_BTN}">${THREE_DOTS_SVG}</button>
               <span id="${ID_MATCH_BOX}">${this.currentMatchIndex + 1}/${this.matches.length}</span>
             </div>
 
-            <div class="bidfinder-row center-row">
+            <div class="hotbids-row center-row">
               <button id="${ID_PREV}" class="${CN_BTN}" aria-label="Previous bid">${LEFT_ARROW_SVG}</button>
               <button id="${ID_NEXT}" class="${CN_BTN}" aria-label="Next bid">${RIGHT_ARROW_SVG}</button>
               <div class="vertical-separator"></div>
               <button id="${ID_RETRY}" class="${CN_BTN}">${RETRY_ARROW_SVG}</button>
             </div>
 
-            <div class="bidfinder-row right-row">
+            <div class="hotbids-row right-row">
               <button id="${ID_HELP_BTN}" class="${CN_BTN}">${QUESTION_SVG}</button>
             </div> 
           </div>
@@ -95,8 +95,8 @@
 
           <div id="${ID_HELP_PANEL}" class="${CN_MODAL}" aria-hidden="true">
             <button id=${ID_HELP_CLOSE} class="${CN_BTN}">${CLOSE_SVG}</button>
-            <span><strong>BidFinder Help</strong></span><hr/>
-            <p>Welcome to BidFinder! Here are some keyboard shortcuts to help you navigate.</p>
+            <span><strong>Hotbids Help</strong></span><hr/>
+            <p>Welcome to Hotbids! Here are some keyboard shortcuts to help you navigate.</p>
             <br/>
             <p>
               <span>Navigation:</span>
@@ -115,7 +115,7 @@
             </p>
             <br/>
             <p>Liked this tool? Check out the source code on
-              <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js" target="_blank">GitHub</a>.
+              <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js" target="_blank">GitHub</a>.
             </p>
           </div>
         </div>
@@ -212,9 +212,9 @@
     }
 
     highlightElement(el) {
-      const old = document.querySelector('.bidfinder-highlighted')
-      if (old) old.classList.remove('bidfinder-highlighted')
-      el.classList.add('bidfinder-highlighted')
+      const old = document.querySelector('.hotbids-highlighted')
+      if (old) old.classList.remove('hotbids-highlighted')
+      el.classList.add('hotbids-highlighted')
     }
 
     handleKeyPress(e) {
@@ -305,7 +305,7 @@
       border-radius: 6px 6px 0 0 !important;
     }
 
-    .bidfinder-row { 
+    .hotbids-row { 
       display: flex;
       flex-direction: var(--flex-direction, row);
       align-items: center;
@@ -395,7 +395,7 @@
     }
     button.${CN_BTN} svg { height: 1em; width: 1em; }
 
-    .bidfinder-highlighted {
+    .hotbids-highlighted {
       outline: 2px solid var(--highlight-color) !important;
       outline-offset: 1px;
     }
@@ -408,5 +408,5 @@
   const RETRY_ARROW_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 32 32"><path d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13 13-5.832 13-13h-2c0 6.086-4.914 11-11 11S5 22.086 5 16 9.914 5 16 5c3.875 0 7.262 1.984 9.219 5H20v2h8V4h-2v3.719C23.617 4.844 20.02 3 16 3" stroke="none"/></svg>`
   const QUESTION_SVG = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14"></path></svg>`
 
-  new BidFinder()
+  new HotBids()
 })()

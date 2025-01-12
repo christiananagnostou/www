@@ -1,7 +1,7 @@
-const BidFinder = `
+const HotBids = `
 javascript:(function(){
   var s = document.createElement('script');
-  s.src = 'https://christiancodes.co/api/bidfinder';
+  s.src = 'https://christiancodes.co/api/hotbids';
   document.body.appendChild(s);
 })();
 `
@@ -27,20 +27,17 @@ const MoneyMagnify = (
 
 export const bookmarkletsData = [
   {
-    title: 'BidFinder',
+    title: 'HotBids',
     description: 'Highlights eBay bids and provides a toolbar to quickly navigate through them.',
-    code: BidFinder,
+    code: HotBids,
     icon: MoneyMagnify,
-    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js',
     instructions: `
-      This was created to point out listings that people are actively bidding on. It's a fun way to see what people are willing to pay for. It's also a great way to find good deals.
+      Let's face it, someone else is probably faster at finding the hot deals on eBay. This bookmarklet simply helps you keep up with the competition by taking you straight to the hot items with a toolbar to quickly navigate through them. This works on mobile and desktop.
       -
       Instructions:
-      1. Go to an eBay page with bid counts.
-      2. Click the 'BidFinder' bookmarklet to highlight and jump to each bid.
-      3. Press 'n' for next, or Shift+N for previous.
-      4. Use the left/right arrow buttons on the toolbar to navigate.
-      5. Click the retry icon if new items appear.
-      6. For more help, click the '?' button.`,
+      1. Search for an item on eBay.
+      2. Click the HotBids bookmarklet.
+      3. Enjoy!`,
   },
 ]

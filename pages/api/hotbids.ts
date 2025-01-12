@@ -4,7 +4,7 @@ import path from 'path'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse): void {
   try {
-    const filePath = path.join(process.cwd(), 'public', 'scripts', 'bidfinder.js')
+    const filePath = path.join(process.cwd(), 'public', 'scripts', 'hotbids.js')
 
     const fileContents = fs.readFileSync(filePath, 'utf-8')
 
