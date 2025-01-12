@@ -1,21 +1,23 @@
 ;(function () {
   // Class/ID constants
+  const ID_CONTAINER = 'bidfinder-container'
   const ID_TOOLBAR = 'bidfinder-toolbar'
-  const BTN = 'bidfinder-btn'
+  const CN_MODAL = 'bidfinder-modal'
+  const CN_BTN = 'bidfinder-btn'
   // Menu
   const ID_MENU_BTN = 'menuBtn'
   const ID_MENU_CLOSE = 'menuPanelCloseBtn'
   const ID_MENU_PANEL = 'menuPanel'
   const ID_TOGGLE_SOLD = 'toggleSoldBtn'
-  const POP_LEFT_BTN = 'popToLeft'
-  const POP_RIGHT_BTN = 'popToRight'
-  const POP_TOP_BTN = 'popToTop'
-  const POP_BOTTOM_BTN = 'popToBottom'
+  const CN_POP_LEFT_BTN = 'popToLeftBtn'
+  const CN_POP_RIGHT_BTN = 'popToRightBtn'
+  const CN_POP_TOP_BTN = 'popToTopBtn'
+  const CN_POP_BOTTOM_BTN = 'popToBottomBtn'
   // Positioning classes
-  const POP_LEFT = 'pop-left'
-  const POP_RIGHT = 'pop-right'
-  const POP_TOP = 'pop-top'
-  const POP_BOTTOM = 'pop-bottom'
+  const CN_POP_LEFT_POS = 'pop-left'
+  const CN_POP_RIGHT_POS = 'pop-right'
+  const CN_POP_TOP_POS = 'pop-top'
+  const CN_POP_BOTTOM_POS = 'pop-bottom'
   // Navigation
   const ID_PREV = 'prevBtn'
   const ID_NEXT = 'nextBtn'
@@ -59,61 +61,63 @@
 
     createToolbar() {
       const html = `
-        <div id="${ID_TOOLBAR}" class="${POP_BOTTOM}">
-          <div class="bidfinder-row left-row">
-            <button id="${ID_MENU_BTN}" class="${BTN}">${THREE_DOTS_SVG}</button>
-            <span id="${ID_MATCH_BOX}">${this.currentMatchIndex + 1}/${this.matches.length}</span>
+        <div id="${ID_CONTAINER}">
+          <div id="${ID_TOOLBAR}" class="${CN_POP_BOTTOM_POS}">
+            <div class="bidfinder-row left-row">
+              <button id="${ID_MENU_BTN}" class="${CN_BTN}">${THREE_DOTS_SVG}</button>
+              <span id="${ID_MATCH_BOX}">${this.currentMatchIndex + 1}/${this.matches.length}</span>
+            </div>
+
+            <div class="bidfinder-row center-row">
+              <button id="${ID_PREV}" class="${CN_BTN}" aria-label="Previous bid">${LEFT_ARROW_SVG}</button>
+              <button id="${ID_NEXT}" class="${CN_BTN}" aria-label="Next bid">${RIGHT_ARROW_SVG}</button>
+              <div class="vertical-separator"></div>
+              <button id="${ID_RETRY}" class="${CN_BTN}">${RETRY_ARROW_SVG}</button>
+            </div>
+
+            <div class="bidfinder-row right-row">
+              <button id="${ID_HELP_BTN}" class="${CN_BTN}">${QUESTION_SVG}</button>
+            </div> 
           </div>
 
-          <div class="bidfinder-row center-row">
-            <button id="${ID_PREV}" class="${BTN}" aria-label="Previous bid">${LEFT_ARROW_SVG}</button>
-            <button id="${ID_NEXT}" class="${BTN}" aria-label="Next bid">${RIGHT_ARROW_SVG}</button>
-            <div class="vertical-separator"></div>
-            <button id="${ID_RETRY}" class="${BTN}">${RETRY_ARROW_SVG}</button>
+          <div id="${ID_MENU_PANEL}" class="${CN_MODAL}" aria-hidden="true">
+            <button class="${CN_BTN}" id="${ID_MENU_CLOSE}">${CLOSE_SVG}</button>
+            <span><strong>Toolbar Position</strong></span><hr/>
+            <div class="pop-to-grid">
+              <button class="${CN_BTN}" id="${CN_POP_LEFT_BTN}">◀</button>
+              <button class="${CN_BTN}" id="${CN_POP_RIGHT_BTN}">▶</button>
+              <button class="${CN_BTN}" id="${CN_POP_TOP_BTN}">▲</button>
+              <button class="${CN_BTN}" id="${CN_POP_BOTTOM_BTN}">▼</button>
+            </div>
+            <span><strong>Tools</strong></span><hr/>
+            <button class="${CN_BTN}" id="${ID_TOGGLE_SOLD}">Toggle Sold</button>
           </div>
 
-          <div class="bidfinder-row right-row">
-            <button id="${ID_HELP_BTN}" class="${BTN}">${QUESTION_SVG}</button>
-          </div> 
-        </div>
-
-        <div id="${ID_MENU_PANEL}" class="bidfinder-modal" aria-hidden="true">
-          <button class="${BTN}" id="${ID_MENU_CLOSE}">${CLOSE_SVG}</button>
-          <span><strong>Toolbar Position</strong></span><hr/>
-          <div class="pop-to-grid">
-            <button class="${BTN}" id="${POP_LEFT_BTN}">◀</button>
-            <button class="${BTN}" id="${POP_RIGHT_BTN}">▶</button>
-            <button class="${BTN}" id="${POP_TOP_BTN}">▲</button>
-            <button class="${BTN}" id="${POP_BOTTOM_BTN}">▼</button>
-          </div>
-          <span><strong>Tools</strong></span><hr/>
-          <button class="${BTN}" id="${ID_TOGGLE_SOLD}">Toggle Sold</button>
-        </div>
-
-        <div id="${ID_HELP_PANEL}" class="bidfinder-modal" aria-hidden="true">
-          <button id=${ID_HELP_CLOSE} class="${BTN}">${CLOSE_SVG}</button>
-          <span><strong>BidFinder Help</strong></span><hr/>
-          <p>Welcome to BidFinder! Here are some keyboard shortcuts to help you navigate.</p>
-          <br/>
-          <p>
-            <span>Navigation:</span>
+          <div id="${ID_HELP_PANEL}" class="${CN_MODAL}" aria-hidden="true">
+            <button id=${ID_HELP_CLOSE} class="${CN_BTN}">${CLOSE_SVG}</button>
+            <span><strong>BidFinder Help</strong></span><hr/>
+            <p>Welcome to BidFinder! Here are some keyboard shortcuts to help you navigate.</p>
             <br/>
-            <br/><strong>Arrow Right</strong> / <strong>n</strong> - Next
-            <br/><strong>Arrow Left</strong> / <strong>Shift + N</strong> - Previous
-          </p>
-          <br/>
-          <p>
-            <span>Toolbar Positioning:</span>
+            <p>
+              <span>Navigation:</span>
+              <br/>
+              <br/><strong>Arrow Right</strong> / <strong>n</strong> - Next
+              <br/><strong>Arrow Left</strong> / <strong>Shift + N</strong> - Previous
+            </p>
             <br/>
-            <br/><strong>Shift + W</strong> - Top
-            <br/><strong>Shift + A</strong> - Left
-            <br/><strong>Shift + S</strong> - Bottom
-            <br/><strong>Shift + D</strong> - Right
-          </p>
-          <br/>
-          <p>Liked this tool? Check out the source code on
-            <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js" target="_blank">GitHub</a>.
-          </p>
+            <p>
+              <span>Toolbar Positioning:</span>
+              <br/>
+              <br/><strong>Shift + W</strong> - Top
+              <br/><strong>Shift + A</strong> - Left
+              <br/><strong>Shift + S</strong> - Bottom
+              <br/><strong>Shift + D</strong> - Right
+            </p>
+            <br/>
+            <p>Liked this tool? Check out the source code on
+              <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/bidfinder.js" target="_blank">GitHub</a>.
+            </p>
+          </div>
         </div>
       `
 
@@ -129,10 +133,10 @@
       this.helpBtn = document.getElementById(ID_HELP_BTN)
       // Menu panel elements
       this.menuPanel = document.getElementById(ID_MENU_PANEL)
-      this.popLeftBtn = document.getElementById(POP_LEFT_BTN)
-      this.popRightBtn = document.getElementById(POP_RIGHT_BTN)
-      this.popTopBtn = document.getElementById(POP_TOP_BTN)
-      this.popBottomBtn = document.getElementById(POP_BOTTOM_BTN)
+      this.popLeftBtn = document.getElementById(CN_POP_LEFT_BTN)
+      this.popRightBtn = document.getElementById(CN_POP_RIGHT_BTN)
+      this.popTopBtn = document.getElementById(CN_POP_TOP_BTN)
+      this.popBottomBtn = document.getElementById(CN_POP_BOTTOM_BTN)
       this.toggleSoldBtn = document.getElementById(ID_TOGGLE_SOLD)
       this.menuPanelCloseBtn = document.getElementById(ID_MENU_CLOSE)
       // Help panel elements
@@ -146,10 +150,10 @@
       this.retryBtn.onclick = () => this.retryMatches()
       this.helpBtn.onclick = () => this.toggleModal(this.helpPanel)
       // Menu panel event listeners
-      this.popLeftBtn.onclick = () => this.setLocationClass(POP_LEFT)
-      this.popRightBtn.onclick = () => this.setLocationClass(POP_RIGHT)
-      this.popTopBtn.onclick = () => this.setLocationClass(POP_TOP)
-      this.popBottomBtn.onclick = () => this.setLocationClass(POP_BOTTOM)
+      this.popLeftBtn.onclick = () => this.setLocationClass(CN_POP_LEFT_POS)
+      this.popRightBtn.onclick = () => this.setLocationClass(CN_POP_RIGHT_POS)
+      this.popTopBtn.onclick = () => this.setLocationClass(CN_POP_TOP_POS)
+      this.popBottomBtn.onclick = () => this.setLocationClass(CN_POP_BOTTOM_POS)
       this.toggleSoldBtn.onclick = () => this.toggleSold()
       this.menuPanelCloseBtn.onclick = () => this.toggleModal(this.menuPanel)
       // Help panel event listeners
@@ -168,7 +172,7 @@
     }
 
     setLocationClass(cls) {
-      this.toolbar.classList.remove(POP_LEFT, POP_RIGHT, POP_TOP, POP_BOTTOM)
+      this.toolbar.classList.remove(CN_POP_LEFT_POS, CN_POP_RIGHT_POS, CN_POP_TOP_POS, CN_POP_BOTTOM_POS)
       this.toolbar.classList.add(cls)
     }
 
@@ -218,10 +222,10 @@
       if ((e.key === 'n' && !e.shiftKey) || e.key === 'ArrowRight') this.scrollToNextMatch()
       if ((e.key === 'N' && e.shiftKey) || e.key === 'ArrowLeft') this.scrollToPreviousMatch()
       // Toolbar positioning with Shift + WASD
-      if (e.shiftKey && e.key === 'W') this.setLocationClass(POP_TOP)
-      if (e.shiftKey && e.key === 'A') this.setLocationClass(POP_LEFT)
-      if (e.shiftKey && e.key === 'S') this.setLocationClass(POP_BOTTOM)
-      if (e.shiftKey && e.key === 'D') this.setLocationClass(POP_RIGHT)
+      if (e.shiftKey && e.key === 'W') this.setLocationClass(CN_POP_TOP_POS)
+      if (e.shiftKey && e.key === 'A') this.setLocationClass(CN_POP_LEFT_POS)
+      if (e.shiftKey && e.key === 'S') this.setLocationClass(CN_POP_BOTTOM_POS)
+      if (e.shiftKey && e.key === 'D') this.setLocationClass(CN_POP_RIGHT_POS)
     }
   }
 
@@ -236,6 +240,26 @@
       --toolbar-width: 600px;
     }
 
+    #${ID_CONTAINER} {
+      color: var(--toolbar-fg);
+    }
+
+    #${ID_CONTAINER} p {
+      margin: 0;
+    }
+
+    #${ID_CONTAINER} a {
+      font-family: inherit;
+      color: inherit;
+      text-decoration: underline solid var(--toolbar-border);
+      text-underline-offset: 3px;
+      transition: 0.2s;
+    }
+
+    #${ID_CONTAINER} a:hover {
+      text-decoration-color: var(--toolbar-fg);
+    }
+
     #${ID_TOOLBAR} {
       position: fixed;
       display: flex;
@@ -244,15 +268,13 @@
       max-width: var(--toolbar-width);
       padding: 0.5rem;
       background-color: var(--toolbar-bg);
-      color: var(--toolbar-fg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       font-size: 1rem;
-      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
       z-index: 999999;
       flex-direction: var(--flex-direction, row);
     }
 
-    .${POP_LEFT} {
+    .${CN_POP_LEFT_POS} {
       --flex-direction: column;
       top: 50% !important; left: 0 !important; right: auto !important;
       transform: translateY(-50%) !important;
@@ -260,7 +282,7 @@
       height: 100% !important; max-height: var(--toolbar-width) !important;
       border-radius: 0 6px 6px 0 !important;
     }
-    .${POP_RIGHT} {
+    .${CN_POP_RIGHT_POS} {
       --flex-direction: column;
       top: 50% !important; right: 0 !important; left: auto !important;
       transform: translateY(-50%) !important;
@@ -268,14 +290,14 @@
       height: 100% !important; max-height: var(--toolbar-width) !important;
       border-radius: 6px 0 0 6px !important;
     }
-    .${POP_TOP} {
+    .${CN_POP_TOP_POS} {
       --flex-direction: row;
       top: 0 !important; bottom: auto !important; left: 50% !important;
       transform: translateX(-50%) !important;
       width: 100% !important; max-width: var(--toolbar-width) !important;
       border-radius: 0 0 6px 6px !important;
     }
-    .${POP_BOTTOM} {
+    .${CN_POP_BOTTOM_POS} {
       --flex-direction: row;
       bottom: 0 !important; top: auto !important; left: 50% !important;
       transform: translateX(-50%) !important;
@@ -293,13 +315,12 @@
     .center-row { flex: 1; justify-content: center; position: relative; }
     .right-row  { flex: 1; justify-content: flex-end; position: relative; }
 
-    .bidfinder-modal {
+    .${CN_MODAL} {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       background: var(--toolbar-bg); 
       border: 1px solid var(--toolbar-border);
-      color: var(--toolbar-fg);
       font-size: 0.85rem;
       min-width: 300px;
       padding: 0.75rem;
@@ -308,20 +329,21 @@
       z-index: 1000000;
       display: none;
     }
-    .bidfinder-modal[aria-hidden="false"] {
+    .${CN_MODAL}[aria-hidden="false"] {
       display: block;
     }
 
-    .bidfinder-modal .${BTN}:not(#${ID_MENU_CLOSE}):not(#${ID_HELP_CLOSE}) {
+    .${CN_MODAL} .${CN_BTN}:not(#${ID_MENU_CLOSE}):not(#${ID_HELP_CLOSE}) {
       width: 100%;
     }
 
-    .bidfinder-modal hr {
+    .${CN_MODAL} hr {
       border: none;
       border-top: 1px solid var(--toolbar-border);
+      margin: .25rem 0 0.5rem;
     }
 
-    .bidfinder-modal .pop-to-grid {
+    .${CN_MODAL} .pop-to-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       grid-template-rows: auto auto auto;
@@ -331,10 +353,10 @@
         ". left left right right ."
         ". . bottom bottom . .";
       }
-    #${POP_LEFT_BTN} { grid-area: left; }
-    #${POP_RIGHT_BTN} { grid-area: right; }
-    #${POP_TOP_BTN} { grid-area: top; }
-    #${POP_BOTTOM_BTN} { grid-area: bottom; }
+    #${CN_POP_LEFT_BTN} { grid-area: left; }
+    #${CN_POP_RIGHT_BTN} { grid-area: right; }
+    #${CN_POP_TOP_BTN} { grid-area: top; }
+    #${CN_POP_BOTTOM_BTN} { grid-area: bottom; }
 
 
 
@@ -349,7 +371,6 @@
       top: 0.25rem; right: 0.25rem;
       background: none;
       border: none;
-      color: var(--toolbar-fg);
       cursor: pointer;
     }
 
@@ -358,20 +379,21 @@
       height: 1.6rem; margin: 0 0.5rem;
     }
 
-    button.${BTN} {
+    button.${CN_BTN} {
       cursor: pointer;
       padding: 0.5rem 0.75rem;
       border-radius: 4px; border: none;
-      background: var(--button-bg); color: var(--toolbar-fg);
+      background: var(--button-bg); 
+      color: inherit;
       transition: background 0.2s ease, opacity 0.2s ease;
       display: flex; align-items: center; justify-content: center;
     }
-    button.${BTN}:hover,
-    button.${BTN}:focus {
+    button.${CN_BTN}:hover,
+    button.${CN_BTN}:focus {
       background: var(--button-bg-hover);
       outline: none;
     }
-    button.${BTN} svg { height: 1em; width: 1em; }
+    button.${CN_BTN} svg { height: 1em; width: 1em; }
 
     .bidfinder-highlighted {
       outline: 2px solid var(--highlight-color) !important;
