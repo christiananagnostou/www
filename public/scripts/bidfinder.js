@@ -49,7 +49,7 @@
     }
 
     collectMatches() {
-      const els = document.querySelectorAll('.s-item__bids.s-item__bidCount, .str-item-card__property-bidCount')
+      const els = document.querySelectorAll('.s-item__bidCount, .str-item-card__property-bidCount')
       this.matches = []
       els.forEach((el) => {
         const txt = el.innerText || el.textContent
