@@ -80,7 +80,7 @@ const StravaActivities = ({ activities }: Props) => {
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
-        <Title variants={fade}>Latest Feats</Title>
+        <Title variants={fade}>Fitness</Title>
         <ActivityFilters>
           {renderFilterButton('Swim')}
           {renderFilterButton('Ride')}

@@ -11,13 +11,13 @@ type Props = {
   posts: ArticleType[]
 }
 
-const LatestSection = ({ posts }: Props) => {
+const MiddleRow = ({ posts }: Props) => {
   return (
     <MiddleSection>
       <RecentArt variants={staggerFade}>
         <Link href="/art">
           <motion.p variants={fade} className="homepage-box__title">
-            Latest Art
+            Photos
           </motion.p>
 
           <div className="recent-art__hover-box">
@@ -29,20 +29,14 @@ const LatestSection = ({ posts }: Props) => {
           </div>
 
           <RecentImage key={StairShadow.src} variants={photoAnim}>
-            <Image
-              src={StairShadow}
-              alt="Latest photo posted on my website - found on the art page."
-              blurDataURL={StairShadow.blurDataURL}
-              placeholder="blur"
-              width={300}
-            />
+            <Image src={StairShadow} alt="" blurDataURL={StairShadow.blurDataURL} placeholder="blur" width={300} />
           </RecentImage>
         </Link>
       </RecentArt>
 
       <RecentArticles variants={staggerFade}>
         <motion.p variants={fade} className="homepage-box__title">
-          Latest Articles
+          Articles
         </motion.p>
 
         <ul>
@@ -60,7 +54,7 @@ const LatestSection = ({ posts }: Props) => {
   )
 }
 
-export default LatestSection
+export default MiddleRow
 
 const MiddleSection = styled.section`
   display: flex;

@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
-import LatestSection from '../components/Home/LatestSection'
+import MiddleRow from '../components/Home/MiddleRow'
 import Signature from '../components/Home/Signature'
 import StravaActivities from '../components/Home/StravaActivities'
 import TVBar from '../components/Home/TVBar'
@@ -49,7 +49,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
         <div className="page-inner-container">
           <Bio />
 
-          <LatestSection posts={posts} />
+          <MiddleRow posts={posts} />
 
           <StravaActivities activities={stravaActivities} />
 

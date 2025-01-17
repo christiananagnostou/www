@@ -1,7 +1,7 @@
 ---
 title: 'Virtual Lists are Beautiful'
 dateCreated: 'May 31, 2023'
-summary: 'Ever tried scrolling down on a table with 100,000 rows? Good luck. Virtual Lists unlock that ability.'
+summary: 'Learn how to build a virtual list in in React'
 hidden: false
 categories: 'frontend'
 ---
