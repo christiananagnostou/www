@@ -264,14 +264,14 @@ const Hamburger = styled(motion.button)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.75rem;
+  height: 1rem;
 
   span {
     display: block;
-    height: 2px;
+    height: 1px;
     width: 100%;
-    background: #fff;
+    background: var(--text);
     border-radius: 1px;
   }
 `
@@ -307,6 +307,10 @@ const Menu = styled(motion.ul)`
 
 const MenuItem = styled(motion.li)`
   position: relative;
+
+  &:last-child {
+    margin-bottom: 0.5rem;
+  }
 
   > a,
   > button {
