@@ -308,8 +308,11 @@ const Menu = styled(motion.ul)`
 const MenuItem = styled(motion.li)`
   position: relative;
 
-  &:last-child {
-    margin-bottom: 0.5rem;
+  /* Mobile */
+  @media (max-width: 767px) {
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
   }
 
   > a,
