@@ -234,7 +234,7 @@ const StyledNav = styled.nav`
   z-index: 9999;
   transition: top 0.4s ease;
   border-bottom: 1px solid var(--accent);
-  background: rgba(20, 20, 20, 0.6);
+  background: var(--dark-bg);
 
   .nav-inner {
     display: flex;
