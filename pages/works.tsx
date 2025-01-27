@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
-import { pageAnimation } from '../components/animation'
+import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
 import { ProjectState } from '../lib/projects'
@@ -18,17 +18,19 @@ export default function works({}: Props) {
       </Head>
 
       <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="my work" titleRight="ever improving" /> */}
-
-        <Heading>
-          <h1>A Curated List of My Work</h1>
+        <Heading variants={fade}>
+          <h1>Websites</h1>
+          <p>
+            This list contains work from my freelance projects, past jobs, personal projects, and open-source
+            contributions...my work on the www.
+          </p>
         </Heading>
 
-        <section>
+        <motion.section variants={staggerFade}>
           {ProjectState.map((project) => (
             <ProjectTile project={project} key={project.title} />
           ))}
-        </section>
+        </motion.section>
       </Work>
     </>
   )

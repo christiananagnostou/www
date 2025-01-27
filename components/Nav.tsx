@@ -21,12 +21,12 @@ interface Category {
 const categories: Category[] = [
   { href: '/', title: 'Home' },
   {
-    title: 'Creations',
+    title: 'Works',
     subLinks: [
-      { href: '/works', title: 'Works' },
-      { href: '/art', title: 'Art' },
+      { href: '/works', title: 'Websites' },
+      { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
-      { href: '/articles', title: 'Articles' },
+      { href: '/articles', title: 'Writings' },
     ],
   },
   { href: '/contact', title: 'Contact' },

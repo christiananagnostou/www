@@ -16,8 +16,6 @@ export default function lab() {
       </Head>
 
       <LabItems id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="Creative" titleRight="Experiments" /> */}
-
         {/* Gantt */}
         <Item variants={fade}>
           <DateStyle>May 2024</DateStyle>

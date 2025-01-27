@@ -25,8 +25,6 @@ export default function Bookmarklets() {
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="Handy" titleRight="Bookmarklets" /> */}
-
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
