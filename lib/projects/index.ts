@@ -50,7 +50,6 @@ import NeoLogosMobile2 from '/public/img/projects/neologos/neologos-mobile2.jpg'
 // LofiWaves
 import LofiWavesDesktop from '/public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '/public/img/projects/lofiwaves/lofiwaves-main.jpeg'
-
 export const ProjectState: Project[] = [
   {
     title: 'Jukebox',
@@ -64,9 +63,24 @@ export const ProjectState: Project[] = [
     summary: 'Keyboard-centric desktop music player made with Tauri + Qwik',
     details: [
       {
-        title: 'Current Project',
+        title: 'Overview',
         description:
-          'This project is a current work in progress. Check out the project readme for more information about the app and how to install it to use yourself.',
+          'Jukebox is a keyboard-centric desktop music player designed to offer a seamless and efficient music listening experience. Built using Tauri for a lightweight and secure application framework, combined with the Qwik framework for a highly responsive user interface.',
+      },
+      {
+        title: 'Features',
+        description:
+          'Jukebox includes features such as library management, artist categorization, and customizable keyboard shortcuts to enhance user productivity. The application supports various audio formats and offers a minimalist design focused on usability.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'The application leverages Tauri for building the desktop environment, ensuring low resource consumption and high performance. Qwik is utilized for its fine-grained reactivity, enabling rapid UI updates and a smooth user experience.',
+      },
+      {
+        title: 'Future Enhancements',
+        description:
+          'Future updates will include mobile image support, integration with streaming services, and advanced playlist management. Additionally, plans are in place to incorporate user authentication and cloud synchronization for personalized settings across devices.',
       },
     ],
   },
@@ -84,18 +98,22 @@ export const ProjectState: Project[] = [
       {
         title: 'Objective',
         description:
-          "The only real objective with this was to take a completely new framework, Qwik, and build something challenging. It initially started as a grid-like shape builder, but that didn't look great so it morphed into a shape and image based design tool of sorts.",
+          "QwikDraw was developed to explore the capabilities of the Qwik framework by creating a challenging and interactive design tool. Initially conceptualized as a grid-based shape builder, the project evolved into a versatile shape and image manipulation canvas to better demonstrate Qwik's performance and scalability.",
       },
       {
         title: 'Challenges',
         description:
-          'One requirement for this project was to not use any external libraries other than the frontend framework itself. Some of the more challenging parts were the color picker, zooming/panning, keyboard shortcuts, and resizing elements.',
-        // I wrote an article on the details of those features that can be found <a href="/articles/challenges-of-building-a-design-tool">here</a>.s
+          'One of the primary challenges was adhering to the constraint of not using any external libraries beyond the Qwik framework itself. This necessitated the development of custom solutions for complex features such as the color picker, zooming and panning functionalities, keyboard shortcuts, and dynamic resizing of elements. Overcoming these challenges required in-depth understanding of Qwik’s reactive system and efficient state management.',
       },
       {
-        title: 'Future',
+        title: 'Technologies Used',
         description:
-          "I'd like to be able to multi-select and rearrange elements as well as add triangles. Currently using DOM elements for shapes. Considering a rewrite using canvas (WebGL?), but I'm having fun :P",
+          'The application is built entirely with the Qwik framework, leveraging its fine-grained reactivity for optimal performance. Custom CSS and JavaScript were utilized to implement interactive features without relying on third-party libraries.',
+      },
+      {
+        title: 'Future Enhancements',
+        description:
+          'Planned future enhancements include multi-select functionality, allowing users to rearrange multiple elements simultaneously, and the addition of new shape types such as triangles. There is also consideration for migrating the rendering logic to the HTML5 Canvas API or WebGL to improve performance and expand graphical capabilities.',
       },
     ],
   },
@@ -111,16 +129,23 @@ export const ProjectState: Project[] = [
     details: [
       {
         title: 'Purpose',
-        description: 'A project management app that provides insights into Linear projects through data visualization.',
-      },
-      {
-        title: 'Reason',
         description:
-          "Linear doesn't have timelines for projects and doesn't plan to add them. This does that and more.",
+          'Electriq Dashboard is a project management tool designed to integrate seamlessly with Linear. It provides enhanced data visualization capabilities, allowing teams to gain deeper insights into their projects through interactive timelines, Kanban boards, Gantt charts, and calendar views.',
       },
       {
-        title: 'Features',
-        description: 'The ability to send live feedback to the teams in charge is built in and incredibly intuitive.',
+        title: 'Motivation',
+        description:
+          'Linear lacks native timeline support for project planning, which can hinder the ability to visualize project schedules and dependencies effectively. Electriq Dashboard addresses this gap by offering robust timeline features and additional visualization tools to facilitate better project management and planning.',
+      },
+      {
+        title: 'Key Features',
+        description:
+          'The dashboard includes real-time data sync with Linear, interactive Gantt charts for project scheduling, Kanban boards for task management, and calendar integrations for deadline tracking. Additionally, it offers live feedback mechanisms, enabling team members to communicate directly within the dashboard, enhancing collaboration and workflow efficiency.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'Developed using modern web technologies, Electriq Dashboard utilizes React for the frontend, Node.js for the backend, and integrates with Linear’s API for data retrieval. Data visualization components are fully custom with interactive and responsive designs.',
       },
     ],
   },
@@ -144,7 +169,33 @@ export const ProjectState: Project[] = [
     externalLink: 'https://scentfill.com/',
     slug: 'scentfill',
     summary: '...another favorite client',
-    details: [],
+    details: [
+      {
+        title: 'Overview',
+        description:
+          'Scentfill is an innovative platform developed for a leading client in the fragrance industry. The website serves as both an e-commerce platform and a brand showcase, highlighting Scentfill’s diverse range of products and services.',
+      },
+      {
+        title: 'Features',
+        description:
+          'The website features an interactive scent wheel for product exploration, detailed product pages with high-resolution images, and a mobile-optimized carousel for an enhanced browsing experience on smaller devices. Additional functionalities include user account management, secure checkout, and real-time order tracking.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'Utilized modern web technologies such as React for building a dynamic frontend, coupled with a robust backend powered by Node.js and Express. Integrated with payment gateways and inventory management systems to ensure seamless operations.',
+      },
+      {
+        title: 'Design and UX',
+        description:
+          'Worked collaboratively with the client’s design team to create a luxurious and engaging user interface. Employed responsive design techniques to guarantee that the website delivers a consistent experience across all devices.',
+      },
+      {
+        title: 'Maintenance and Optimization',
+        description:
+          'Implemented SEO best practices to improve search engine visibility and drive organic traffic. Provided ongoing maintenance services, including performance optimization and feature enhancements based on user feedback and evolving business needs.',
+      },
+    ],
   },
   {
     title: "Electriq's Website",
@@ -159,7 +210,27 @@ export const ProjectState: Project[] = [
       {
         title: 'Purpose',
         description:
-          "React web application to give PM's and clients the ability to visualize the progress and make changes to the web department's projects.",
+          "Electriq's website serves as the digital face for Electriq's marketing agency. The primary goal was to effectively showcase the agency's portfolio, services, and expertise to attract potential clients and establish a strong online presence.",
+      },
+      {
+        title: 'Design and Development',
+        description:
+          'Collaborated closely with the in-house design team to develop a cohesive rebranding strategy. The website features parallax scrolling animations, dynamic content sections, and an interactive ThreeJS-animated sphere to engage visitors and highlight key aspects of the agency’s offerings.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'Built using modern web technologies including React for the frontend, ThreeJS for interactive 3D animations, and CSS3 for advanced styling and responsive design. The website is optimized for performance and accessibility across all devices.',
+      },
+      {
+        title: 'Features',
+        description:
+          'Key features include a responsive design ensuring optimal viewing on all devices, interactive animations to enhance user engagement, and a content management system (CMS) integration for easy updates and maintenance by the agency’s team.',
+      },
+      {
+        title: 'Outcome',
+        description:
+          'The revamped website successfully enhanced Electriq’s online presence, providing an engaging platform that effectively communicates the agency’s value proposition and attracts new clients. User feedback has been overwhelmingly positive, citing the site’s modern design and intuitive navigation.',
       },
     ],
   },
@@ -170,29 +241,38 @@ export const ProjectState: Project[] = [
     desktopImgs: [LiftClubMain, LiftClubPurpose],
     mobileImgs: [LiftClubUserProfile, LiftClubLog],
     externalLink: 'https://liftclub.app/',
-    github: 'https://github.com/ChristianAnagnostou/liftclub',
     slug: 'liftclub',
     summary: 'Track your workout progress with little effort and gain big insights',
     details: [
       {
         title: 'Purpose',
         description:
-          'Lift club is a social fitness app that gives you the power to find well structured workouts and track your progress as you improve.',
-      },
-      {
-        title: 'Join',
-        description:
-          'Best experienced as a lightweght PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.',
+          'Lift Club is a social fitness application designed to empower users to discover well-structured workouts and meticulously track their progress over time. By fostering a community-driven environment, Lift Club encourages consistent training and mutual support among fitness enthusiasts.',
       },
       {
         title: 'Features',
         description:
-          'Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.',
+          'Users can build personalized workouts from an extensive library of default exercises or create their own custom exercises. The app allows scheduling workouts on a built-in calendar, organizing routines into manageable plans, and assembling teams where members can follow and support each other’s fitness journeys.',
       },
       {
-        title: 'Documantation',
+        title: 'Progress Tracking',
         description:
-          'Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.',
+          'Lift Club provides detailed analytics and insights into workout performance, enabling users to monitor their improvements and adjust their training plans accordingly. Visual progress charts and milestone achievements help maintain motivation and accountability.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'Developed as a Progressive Web App (PWA) using React for the frontend, ensuring a native-like experience without the need for downloads. Utilized modern web technologies to enable offline access, push notifications, and seamless synchronization across devices.',
+      },
+      {
+        title: 'User Experience',
+        description:
+          'Designed with a focus on simplicity and ease of use, Lift Club offers an intuitive interface that allows users to quickly set up and manage their workouts. The lightweight PWA ensures fast loading times and smooth interactions, enhancing overall user satisfaction.',
+      },
+      {
+        title: 'Documentation',
+        description:
+          'Comprehensive documentation is available in the README.md file within the GitHub repository, providing detailed instructions on installation, usage, and contribution guidelines. This ensures that users and developers can easily navigate and utilize the application’s features.',
       },
     ],
   },
@@ -211,16 +291,27 @@ export const ProjectState: Project[] = [
       {
         title: 'Front-end',
         description:
-          'Utlizes NextJS for fast page loading times, improved SEO, and control over server-side vs client-side rendering.',
+          'Utilizes Next.js to deliver fast page loading times, improved SEO, and granular control over server-side versus client-side rendering. The frontend is designed to provide a visually appealing and responsive interface for showcasing photography portfolios.',
       },
       {
         title: 'Back-end',
         description:
-          'Backend controlled by the headless CMS, Strapi, for seamless management of product, order, and customer data.',
+          'The backend is managed by Strapi, a headless CMS, enabling seamless management of product listings, orders, and customer data. This allows for easy content updates and scalability as the business grows.',
       },
       {
         title: 'Features',
-        description: 'Password-less authentication with Magic.link and payment processing with Stripe.',
+        description:
+          'Incorporates password-less authentication using Magic.link for secure and user-friendly access. Payment processing is handled through Stripe, ensuring reliable and secure transactions. The platform also includes features such as image galleries, shopping carts, and order tracking to enhance the user experience.',
+      },
+      {
+        title: 'E-commerce Integration',
+        description:
+          'Designed to support the sale of physical prints, the website allows users to browse, select, and purchase photographs with ease. Integration with inventory management systems ensures real-time stock updates and efficient order fulfillment.',
+      },
+      {
+        title: 'Responsive Design',
+        description:
+          'The website is fully responsive, providing an optimal viewing experience across a wide range of devices, from desktops to mobile phones. High-resolution images are optimized for fast loading without compromising quality.',
       },
     ],
   },
@@ -233,22 +324,32 @@ export const ProjectState: Project[] = [
     // externalLink: "https://neologos.herokuapp.com/",
     github: 'https://github.com/ChristianAnagnostou/NeoLogos',
     slug: 'neologos',
-    summary: 'Ever made of a word for something? Well now you know where to put it.',
+    summary: 'Ever made up a word for something? Well now you know where to put it.',
     details: [
       {
         title: 'Front-end',
         description:
-          'I used React and Redux as the building blocks for creating the front-end and managing the state of the site. Also, the site features a night mode and is completely mobile friendly.',
+          'Built with React and Redux, the frontend of NeoLogos provides a dynamic and interactive user interface. The application features a night mode for user comfort and is fully responsive, ensuring compatibility across various devices and screen sizes.',
       },
       {
         title: 'Back-end',
         description:
-          'For the back-end, I used a combination of Express and Mongoose create my server and schemas for my database.',
+          'The backend is developed using Express.js and Mongoose, facilitating the creation of a robust server and structured database schemas. This combination ensures efficient data handling and scalability as the application grows.',
       },
       {
         title: 'Deployment',
         description:
-          'For this project, I choose to use Heroku as my hosting service as they have a great system for deploying right when you commit to github',
+          'Deployed on Heroku, leveraging its seamless integration with GitHub for continuous deployment. This setup allows for automatic updates upon committing changes to the repository, ensuring that the live application remains up-to-date with the latest codebase.',
+      },
+      {
+        title: 'Features',
+        description:
+          'Users can create, edit, and categorize newly coined words, providing definitions and usage examples. The platform encourages community engagement through word suggestions and voting, fostering a collaborative environment for language enthusiasts.',
+      },
+      {
+        title: 'User Experience',
+        description:
+          'Designed with simplicity and usability in mind, NeoLogos offers an intuitive navigation system and clean layout. Users can easily search for existing words, browse categories, and contribute new entries with minimal effort.',
       },
     ],
   },
@@ -261,21 +362,32 @@ export const ProjectState: Project[] = [
     externalLink: 'http://lofiwaves.surge.sh/',
     github: 'https://github.com/ChristianAnagnostou/LofiWaves',
     slug: 'lofiwaves',
-    summary: 'Like lofi? So do I, so why not checkout out some of my faves here',
+    summary: 'Like lofi? So do I, so why not check out some of my favorites here',
     details: [
       {
         title: 'Front-end',
-        description: 'This project was written entirely in React using tools such as: React Router and SCSS.',
+        description:
+          'Developed entirely in React, the Music Player application leverages React Router for seamless navigation and SCSS for modular and maintainable styling. The frontend is optimized for performance and user engagement.',
       },
       {
-        title: 'Lofi library',
+        title: 'Lofi Library',
         description:
-          'The library consists of lofi beats that I like to listen to while I code. Sit up, zone-in, and code away!',
+          'Features a curated library of lofi beats that are perfect for coding, studying, or relaxing. Users can browse through a diverse selection of tracks, each meticulously selected to enhance focus and productivity.',
       },
       {
-        title: 'Custom controls',
+        title: 'Custom Controls',
         description:
-          'The app features autoplay and easy-to-use controls for the music player as well as a fully optimized mobile site.',
+          'Includes intuitive playback controls such as play, pause, skip, and volume adjustment. The application also supports autoplay functionality, ensuring continuous music playback without user intervention. Additionally, the site is fully optimized for mobile devices, providing a smooth and responsive experience on the go.',
+      },
+      {
+        title: 'User Experience',
+        description:
+          'Designed with a minimalist aesthetic to reduce distractions and create a calming environment. The interface is user-friendly, allowing easy navigation through the music library and effortless control over playback settings.',
+      },
+      {
+        title: 'Technologies Used',
+        description:
+          'Built with React for a dynamic and responsive user interface. Utilizes React Router for efficient client-side routing and SCSS for advanced styling capabilities. The application is deployed using Surge, ensuring quick and reliable access for users.',
       },
     ],
   },
