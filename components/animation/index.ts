@@ -44,3 +44,9 @@ export const lineAnim = {
   hidden: { width: '95%' },
   show: { width: '100%', transition: { ease: 'easeOut', duration: 0.4 } },
 }
+
+export const dropdown = {
+  hidden: { height: 0, opacity: 0 },
+  show: { height: 'auto', opacity: 1, transition: { duration: 0.2 } },
+  exit: { height: 0, opacity: 0, transition: { duration: 0.2 } },
+}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Logo from '../public/A-circle.webp'
-import { fade, staggerFade } from './animation'
+import { dropdown, fade, staggerFade } from './animation'
 import DownArrow from './SVG/DownArrow'
 
 interface SubLink {
@@ -23,10 +23,10 @@ const categories: Category[] = [
   {
     title: 'Works',
     subLinks: [
-      { href: '/works', title: 'Websites' },
+      { href: '/websites', title: 'Websites' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
-      { href: '/articles', title: 'Writings' },
+      { href: '/articles', title: 'Articles' },
     ],
   },
   { href: '/contact', title: 'Contact' },
@@ -123,7 +123,7 @@ const Nav: React.FC = () => {
           {(menuOpen || isDesktop) && (
             <Menu
               key="main-menu"
-              variants={menuVariants}
+              variants={menuAnimation}
               initial="hidden"
               animate="show"
               exit="exit"
@@ -167,7 +167,7 @@ const Nav: React.FC = () => {
                           {isSubmenuOpen && (
                             <Submenu
                               key={`${title}-submenu`}
-                              variants={isDesktop ? desktopSubmenuVariants : mobileSubmenuVariants}
+                              variants={isDesktop ? desktopSubmenuAnimation : dropdown}
                               initial="hidden"
                               animate="show"
                               exit="exit"
@@ -210,22 +210,16 @@ const Nav: React.FC = () => {
 
 export default Nav
 
-const menuVariants = {
+const menuAnimation = {
   hidden: { height: 0 },
   show: { height: 'auto', transition: { duration: 0.2, staggerChildren: 0.1 } },
   exit: { height: 0, transition: { duration: 0.2 } },
 } as const
 
-const desktopSubmenuVariants = {
+const desktopSubmenuAnimation = {
   hidden: { opacity: 0, y: -5, pointerEvents: 'none' },
   show: { opacity: 1, y: 0, pointerEvents: 'auto', transition: { duration: 0.2 } },
   exit: { opacity: 0, y: -5, pointerEvents: 'none', transition: { duration: 0.15 } },
-} as const
-
-const mobileSubmenuVariants = {
-  hidden: { height: 0, opacity: 0 },
-  show: { height: 'auto', opacity: 1, transition: { duration: 0.2 } },
-  exit: { height: 0, opacity: 0, transition: { duration: 0.2 } },
 } as const
 
 const StyledNav = styled.nav`

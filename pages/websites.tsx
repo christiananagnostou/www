@@ -8,7 +8,7 @@ import { ProjectState } from '../lib/projects'
 
 type Props = {}
 
-export default function works({}: Props) {
+export default function websites({}: Props) {
   return (
     <>
       <Head>
@@ -21,8 +21,9 @@ export default function works({}: Props) {
         <Heading variants={fade}>
           <h1>Websites</h1>
           <p>
-            This list contains work from my freelance projects, past jobs, personal projects, and open-source
-            contributions...my work on the www.
+            The following showcase contains a selection of my work from freelance projects, past jobs, personal
+            projects, and open-source. Carving and polishing my mark on the www has been a passion of mine for over a
+            decade and I&apos;ve had the pleasure of working with some amazing people and companies along the way.
           </p>
         </Heading>
 

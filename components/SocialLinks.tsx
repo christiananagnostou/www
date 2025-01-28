@@ -1,4 +1,3 @@
-// Animations
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { fade } from './animation'
@@ -11,22 +10,22 @@ function SocialLinks() {
   return (
     <SocialLinkList variants={fade}>
       <li>
-        <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer">
+        <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer" aria-label="GitHub">
           <Github />
         </a>
       </li>
       <li>
-        <a href="https://linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer">
+        <a href="https://linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
           <LinkedIn />
         </a>
       </li>
       <li>
-        <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer">
+        <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer" aria-label="Read my CV">
           <Readcv />
         </a>
       </li>
       <li>
-        <a href="https://twitter.com/javascramble" target="_blank" rel="noreferrer">
+        <a href="https://x.com/javascramble" target="_blank" rel="noreferrer" aria-label="X">
           <Twitter />
         </a>
       </li>

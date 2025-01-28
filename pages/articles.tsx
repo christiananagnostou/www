@@ -36,7 +36,8 @@ const Articles = ({ posts }: Props) => {
           <h1>Articles</h1>
           <p>
             I write about things that interest me. It&apos;s mostly tech related, but sometimes it&apos;s a new idea, or
-            just a new way of looking at something old. May you find a nugget of knowledge or a spark of inspiration.
+            just a new way of looking at something old. Maybe, if you&apos;re lucky, you can find a small nugget of
+            knowledge or a spark of inspiration.
           </p>
         </Heading>
 
