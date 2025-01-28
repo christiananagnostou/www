@@ -3,24 +3,22 @@ import Head from 'next/head'
 import Image, { StaticImageData } from 'next/image'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { pageAnimation, photoAnim } from '../components/animation'
+import { fade, pageAnimation, photoAnim } from '../components/animation'
 import { useScroll } from '../components/Hooks'
-import Range from '../components/Shared/Range'
+import { ButtonRow } from '../components/Shared/ButtonRow'
+import { Heading } from '../components/Shared/Heading'
 import { ArtState } from '../lib/art'
 
 type Props = {}
 
 const ART_CATEGORIES = Object.keys(ArtState)
-const MAX_COLUMNS = 8
-const MIN_COLUMNS = 1
-const DEFAULT_COLUMNS = 2
+const NUM_COLUMNS = 2
 
 const Art = (props: Props) => {
-  const [numColumns, setNumColumns] = useState(DEFAULT_COLUMNS)
   const [selectedCategory, setSelectedCategory] = useState(ART_CATEGORIES[0])
 
-  const columns = [...new Array(numColumns).fill(0).map((_) => [] as StaticImageData[])]
-  ArtState[selectedCategory]?.map((img, i) => columns[i % numColumns].push(img))
+  const columns = [...new Array(NUM_COLUMNS).fill(0).map((_) => [] as StaticImageData[])]
+  ArtState[selectedCategory]?.map((img, i) => columns[i % NUM_COLUMNS].push(img))
 
   return (
     <>
@@ -31,22 +29,17 @@ const Art = (props: Props) => {
       </Head>
 
       <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="my adventures" titleRight="captured forever" /> */}
+        <Heading variants={fade}>
+          <h1>Photography</h1>
+          <p>
+            There&apos;s something profound about capturing the world around us. Not necessarily to share it with
+            others, but to remember it. To remember the way the light hit the trees, or the way the flakes of snow fell
+            from the sky. It creates a moment that you can return to, even if just in your mind.
+          </p>
+        </Heading>
 
-        <div className="control-bar">
-          <div className="range-wrap">
-            <Range
-              type="range"
-              min={MIN_COLUMNS}
-              max={MAX_COLUMNS}
-              value={numColumns}
-              onChange={(e) => setNumColumns(parseInt(e.target.value))}
-            />
-
-            {/* <span className="col-num">{numColumns}</span> */}
-          </div>
-
-          <div className="categories">
+        {ART_CATEGORIES.length > 1 && (
+          <ButtonRow>
             {ART_CATEGORIES.map((category) => (
               <button
                 key={category}
@@ -56,14 +49,14 @@ const Art = (props: Props) => {
                 {category}
               </button>
             ))}
-          </div>
-        </div>
+          </ButtonRow>
+        )}
 
-        <Columns $numColumns={numColumns}>
+        <Columns $numColumns={NUM_COLUMNS}>
           {columns.map((images, col) => (
             <Column
               key={'column_' + col}
-              $numColumns={numColumns}
+              $numColumns={NUM_COLUMNS}
               variants={{ show: { transition: { staggerChildren: 0.5 } } }}
             >
               {images.map((ImageData, row) => (
@@ -122,61 +115,12 @@ const ImageContainer = styled(motion.div)`
   }
 `
 
-const Container = styled(motion.div)`
+const Container = styled(motion.section)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
-  position: relative;
-
-  .control-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-
-    .range-wrap {
-      flex: 1;
-      max-width: 20%;
-      display: flex;
-      align-items: center;
-
-      > input {
-        transform: rotateY(180deg);
-      }
-
-      .col-num {
-        display: block;
-        font-weight: 400;
-        margin-left: 1rem;
-        font-size: 1.1rem;
-      }
-    }
-
-    .categories {
-      display: flex;
-
-      button {
-        background: transparent;
-        border: none;
-        font-size: 1rem;
-        margin-left: 20px;
-
-        color: var(--text);
-        border-radius: 1px;
-        cursor: pointer;
-        transition: color 0.2s ease;
-
-        &:hover {
-          color: white;
-        }
-        &.highlight {
-          color: white;
-        }
-      }
-    }
-  }
 `
 
 const Columns = styled.section<{ $numColumns: number }>`

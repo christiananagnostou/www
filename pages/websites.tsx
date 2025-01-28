@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
-import { pageAnimation } from '../components/animation'
+import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
 import { ProjectState } from '../lib/projects'
 
 type Props = {}
 
-export default function works({}: Props) {
+export default function websites({}: Props) {
   return (
     <>
       <Head>
@@ -18,17 +18,20 @@ export default function works({}: Props) {
       </Head>
 
       <Work id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="my work" titleRight="ever improving" /> */}
-
-        <Heading>
-          <h1>A Curated List of My Work</h1>
+        <Heading variants={fade}>
+          <h1>Websites</h1>
+          <p>
+            The following showcase contains a selection of my work from freelance projects, past jobs, personal
+            projects, and open-source. Carving and polishing my mark on the www has been a passion of mine for over a
+            decade and I&apos;ve had the pleasure of working with some amazing people and companies along the way.
+          </p>
         </Heading>
 
-        <section>
+        <motion.section variants={staggerFade}>
           {ProjectState.map((project) => (
             <ProjectTile project={project} key={project.title} />
           ))}
-        </section>
+        </motion.section>
       </Work>
     </>
   )

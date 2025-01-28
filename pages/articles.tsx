@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { ButtonRow } from '../components/Shared/ButtonRow'
+import { Heading } from '../components/Shared/Heading'
 import { ArticleType, getAllPosts } from '../lib/articles'
 
 type Props = {
@@ -30,25 +32,30 @@ const Articles = ({ posts }: Props) => {
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="" titleRight="to write" /> */}
+        <Heading variants={fade}>
+          <h1>Articles</h1>
+          <p>
+            I write about things that interest me. It&apos;s mostly tech related, but sometimes it&apos;s a new idea, or
+            just a new way of looking at something old. Maybe, if you&apos;re lucky, you can find a small nugget of
+            knowledge or a spark of inspiration.
+          </p>
+        </Heading>
 
-        <Control>
-          <div className="categories">
-            {Array.from(new Set(posts.flatMap((post) => post.categories))).map((category) => (
-              <button
-                onClick={() =>
-                  router.push({
-                    query: { category: queriedCategory === category ? '' : category },
-                  })
-                }
-                key={category}
-                className={`${queriedCategory === category && 'selected'}`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </Control>
+        <ButtonRow>
+          {Array.from(new Set(posts.flatMap((post) => post.categories))).map((category) => (
+            <button
+              key={category}
+              className={`${queriedCategory === category && 'selected'}`}
+              onClick={() =>
+                router.push({
+                  query: { category: queriedCategory === category ? '' : category },
+                })
+              }
+            >
+              {category}
+            </button>
+          ))}
+        </ButtonRow>
 
         <PostsContainer variants={staggerFade}>
           {posts
@@ -81,47 +88,18 @@ const Container = styled(motion.section)`
   margin: 2rem auto;
 `
 
-const Control = styled.div`
-  .categories {
-    max-width: 100%;
-    width: 100%;
-    overflow: auto;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--accent);
-
-    button {
-      font-size: 0.85rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 5px;
-      background: var(--border);
-      border: 1px solid var(--accent);
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.25s ease;
-      text-transform: capitalize;
-
-      &.selected {
-        color: white;
-      }
-    }
-  }
-`
-
 const PostsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-content: center;
   justify-content: center;
   margin: auto;
+  gap: 2.5rem;
 `
 
 const PostItem = styled(motion.div)`
   width: 100%;
   display: flex;
-  margin-top: 1rem;
 
   .date {
     min-width: max-content;

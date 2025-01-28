@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
 import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
@@ -25,8 +25,6 @@ export default function Bookmarklets() {
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* <PageTitle titleLeft="Handy" titleRight="Bookmarklets" /> */}
-
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -82,18 +80,26 @@ export default function Bookmarklets() {
                   </button>
 
                   {/* Instructions panel, if open */}
-                  {isOpen && (
-                    <div
-                      className="instructions"
-                      id={`instructions-${index}`}
-                      role="region"
-                      aria-label={`${title} instructions`}
-                    >
-                      {instructions.split('\n').map((line, i) => (
-                        <p key={`${title}-line-${i}`}>{line}</p>
-                      ))}
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        id={`instructions-${index}`}
+                        aria-label={`${title} instructions`}
+                        role="region"
+                        initial="hidden"
+                        animate="show"
+                        exit="exit"
+                        variants={dropdown}
+                        key={title}
+                      >
+                        <div className="instructions">
+                          {instructions.split('\n').map((line, i) => (
+                            <p key={`${title}-line-${i}`}>{line}</p>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </BookmarkletItem>
             )

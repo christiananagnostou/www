@@ -35,7 +35,6 @@ const StravaActivities = ({ activities }: Props) => {
   const renderFilterButton = (type: keyof typeof activityIcons) => (
     <ActivityFilter
       variants={fade}
-      aria-label={type}
       title={type}
       className={filter === type ? 'active' : ''}
       onClick={() => setFilter(filter === type ? '' : type)}
@@ -99,9 +98,7 @@ const StravaActivities = ({ activities }: Props) => {
 
             return (
               <ActivityItem key={index} variants={fade}>
-                <ActivityType title={activity.type} aria-label={activity.type}>
-                  {activityIcons[activity.type] || activity.type}
-                </ActivityType>
+                <ActivityType title={activity.type}>{activityIcons[activity.type] || activity.type}</ActivityType>
 
                 {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
                 {activity.Distance && renderActivityDetail('Distance', activity)}

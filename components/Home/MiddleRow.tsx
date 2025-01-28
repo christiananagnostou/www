@@ -29,7 +29,14 @@ const MiddleRow = ({ posts }: Props) => {
           </div>
 
           <RecentImage key={StairShadow.src} variants={photoAnim}>
-            <Image src={StairShadow} alt="" blurDataURL={StairShadow.blurDataURL} placeholder="blur" width={300} />
+            <Image
+              src={StairShadow}
+              alt=""
+              blurDataURL={StairShadow.blurDataURL}
+              placeholder="blur"
+              width={300}
+              loading="eager"
+            />
           </RecentImage>
         </Link>
       </RecentArt>

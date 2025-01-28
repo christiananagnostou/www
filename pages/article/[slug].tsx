@@ -47,22 +47,20 @@ const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, conten
       </Head>
 
       <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <Heading>
-          <div className="top-bar">
-            <Link href="/articles" className="go-back">
-              <LeftArrow />
-              <span>
-                <em>Articles</em>
-              </span>
-            </Link>
+        <TopBar>
+          <Link href="/articles" className="go-back">
+            <LeftArrow />
+            <span>
+              <em>Articles</em>
+            </span>
+          </Link>
 
-            <p className="date">{dateCreated}</p>
-          </div>
+          <p className="date">{dateCreated}</p>
+        </TopBar>
 
-          <div className="title">
-            <h1 className="heading-gradient">{title}</h1>
-          </div>
-        </Heading>
+        <TitleWrap>
+          <h1 className="heading-gradient">{title}</h1>
+        </TitleWrap>
 
         <article className="content" dangerouslySetInnerHTML={{ __html: content }} />
       </ArticleStyle>
@@ -72,61 +70,57 @@ const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, conten
 
 export default ArticleSlug
 
-const Heading = styled.header`
-  .top-bar {
+const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  .go-back {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-
-    .go-back {
-      display: flex;
-      align-items: center;
-      em {
-        font-weight: 400;
-      }
-    }
-    .date {
+    em {
       font-weight: 400;
-      font-size: 0.8em;
     }
   }
-
-  .cover-img {
-    width: 100%;
-    max-width: 900px;
-    aspect-ratio: 3.5 / 2;
-    margin: auto;
-    position: relative;
-
-    img {
-      max-width: 100%;
-      border-radius: 5px;
-      width: 100%;
-      height: 100%;
-      object-fit: cover !important;
-    }
+  .date {
+    font-weight: 400;
+    font-size: 0.8em;
   }
+`
 
-  .title {
-    left: 1rem;
+const CoverImg = styled.div`
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 3.5 / 2;
+  margin: auto;
+  position: relative;
+
+  img {
+    max-width: 100%;
     border-radius: 5px;
-    text-align: left;
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+  }
+`
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-    }
+const TitleWrap = styled.div`
+  left: 1rem;
+  border-radius: 5px;
+  text-align: left;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
   }
 
   @media (max-width: 768px) {
-    .title {
-      padding: 0;
+    padding: 0;
 
-      h1 {
-        font-size: 1.5rem;
-      }
+    h1 {
+      font-size: 1.5rem;
     }
   }
 `

@@ -5,7 +5,6 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import SocialLinks from '../components/SocialLinks'
-import PageTitle from '../components/Styles/PageTitle'
 
 const Contact = () => {
   const [sentSuccessful, setSentSuccessful] = useState(false)
@@ -50,11 +49,6 @@ const Contact = () => {
       </Head>
 
       <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        <PageTitle
-          titleLeft={sentSuccessful ? 'you are' : 'send me'}
-          titleRight={sentSuccessful ? 'the goat' : 'an email'}
-        />
-
         <StyledForm variants={staggerFade} onSubmit={handleSubmit} method="POST">
           <motion.div variants={fade}>
             <FormGroup>
