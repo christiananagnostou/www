@@ -1,8 +1,7 @@
 ---
 title: 'Collecting Rocks'
 dateCreated: 'Jan 30, 2025'
-# summary: 'Turn your browser window into a 2D canvas that you can explore'
-# coverImg: '/img/articles/zooming-scaling/window-drawing.webp'
+summary: 'Choosing which rocks to collect and carry shapes the life we live'
 hidden: false
 categories: 'life'
 ---
