@@ -135,7 +135,7 @@ export const ArticleStyle = styled(motion.section)`
   .content {
     text-align: left;
     margin: auto;
-    text-align: justify;
+    text-align: left;
     position: relative;
 
     h1,
