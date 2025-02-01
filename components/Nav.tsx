@@ -23,7 +23,7 @@ const categories: Category[] = [
   {
     title: 'Works',
     subLinks: [
-      { href: '/websites', title: 'Websites' },
+      { href: '/projects', title: 'Projects' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
       { href: '/articles', title: 'Articles' },

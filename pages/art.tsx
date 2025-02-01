@@ -28,7 +28,7 @@ const Art = (props: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <Container id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <Heading variants={fade}>
           <h1>Photography</h1>
           <p>

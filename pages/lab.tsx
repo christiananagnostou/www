@@ -15,7 +15,7 @@ export default function lab() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <LabItems id="work" variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <LabItems variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         {/* Gantt */}
         <Item variants={fade}>
           <DateStyle>May 2024</DateStyle>
