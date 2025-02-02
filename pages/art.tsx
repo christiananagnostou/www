@@ -114,17 +114,22 @@ const Art = (props: Props) => {
 export default Art
 
 // A small swipe offset
-const delta = 20
+const deltaX = 20
+const duration = 0.2
 const imageVariants = {
   initial: (direction: number) => ({
-    x: direction ? direction * delta : 0,
-    opacity: 0,
+    x: direction ? direction * deltaX : 0,
+    opacity: 0.5,
   }),
-  animate: { x: 0, opacity: 1, transition: { duration: 0.3 } },
+  animate: {
+    x: 0,
+    opacity: 1,
+    transition: { duration },
+  },
   exit: (direction: number) => ({
-    x: direction ? direction * -delta : 0,
-    opacity: 0,
-    transition: { duration: 0.3 },
+    x: direction ? direction * -deltaX : 0,
+    opacity: 0.5,
+    transition: { duration },
   }),
 }
 
