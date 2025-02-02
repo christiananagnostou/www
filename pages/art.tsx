@@ -37,7 +37,11 @@ const Art = (props: Props) => {
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <Heading variants={fade}>
           <h1>Photography</h1>
-          <p>There&apos;s something profound about capturing the world around us – to remember a moment perfectly.</p>
+          <p>
+            There&apos;s something profound about capturing the world around us. Not necessarily to share it with
+            others, but to remember it. To remember the way the light hit the trees, or the way the flakes of snow fell
+            from the sky. It creates a moment that you can return to, even if just in your mind.
+          </p>
         </Heading>
 
         {ART_CATEGORIES.length > 1 && (
@@ -84,7 +88,6 @@ const Art = (props: Props) => {
                       placeholder="blur"
                       priority={priority}
                       loading={priority ? 'eager' : 'lazy'}
-                      layout="responsive"
                     />
                   </ImageContainer>
                 )
