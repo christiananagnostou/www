@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
 import Image, { StaticImageData } from 'next/image'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
+import LeftArrow from '../components/SVG/LeftArrow'
+import RightArrow from '../components/SVG/RightArrow'
 import { ArtState } from '../lib/art'
 
 type Props = {}
@@ -18,7 +20,7 @@ const Art = (props: Props) => {
   const [modalIndex, setModalIndex] = useState<number | null>(null)
   const flatImages: StaticImageData[] = ArtState[selectedCategory] || []
 
-  // Distribute images into columns for the grid.
+  // Distribute images into columns.
   const columns = Array.from({ length: NUM_COLUMNS }, () => [] as { image: StaticImageData; index: number }[])
   flatImages.forEach((img, i) => {
     columns[i % NUM_COLUMNS].push({ image: img, index: i })
@@ -59,9 +61,34 @@ const Art = (props: Props) => {
               $numColumns={NUM_COLUMNS}
               variants={{ show: { transition: { staggerChildren: 0.1 } } }}
             >
-              {colImages.map(({ image, index }, row) => (
-                <Img key={image.src} imageData={image} priority={row < 4} onClick={() => setModalIndex(index)} />
-              ))}
+              {colImages.map(({ image, index }, row) => {
+                const onClick = () => setModalIndex(index)
+                const priority = row < 4
+
+                return (
+                  <ImageContainer
+                    key={image.src}
+                    onClick={onClick}
+                    onKeyDown={(e) => e.key === 'Enter' && onClick()}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Open full screen image"
+                    variants={fade}
+                    initial="hidden"
+                    animate="show"
+                  >
+                    <Image
+                      src={image}
+                      alt=""
+                      blurDataURL={image.blurDataURL}
+                      placeholder="blur"
+                      priority={priority}
+                      loading={priority ? 'eager' : 'lazy'}
+                      layout="responsive"
+                    />
+                  </ImageContainer>
+                )
+              })}
             </Column>
           ))}
         </Columns>
@@ -83,37 +110,21 @@ const Art = (props: Props) => {
 
 export default Art
 
-// Grid image component using a shared layoutId.
-const Img = React.memo(
-  ({ imageData, priority, onClick }: { imageData: StaticImageData; priority: boolean; onClick: () => void }) => {
-    return (
-      <ImageContainer
-        onClick={onClick}
-        onKeyDown={(e) => e.key === 'Enter' && onClick()}
-        role="button"
-        tabIndex={0}
-        aria-label="Open full screen image"
-        layoutId={`image-${imageData.src}`}
-        variants={fade}
-        initial="hidden"
-        animate="show"
-      >
-        <Image
-          src={imageData}
-          alt=""
-          blurDataURL={imageData.blurDataURL}
-          placeholder="blur"
-          priority={priority}
-          loading={priority ? 'eager' : 'lazy'}
-          layout="responsive"
-        />
-      </ImageContainer>
-    )
-  }
-)
-Img.displayName = 'Img'
+// A small swipe offset
+const delta = 20
+const imageVariants = {
+  initial: (direction: number) => ({
+    x: direction ? direction * delta : 0,
+    opacity: 0,
+  }),
+  animate: { x: 0, opacity: 1, transition: { duration: 0.3 } },
+  exit: (direction: number) => ({
+    x: direction ? direction * -delta : 0,
+    opacity: 0,
+    transition: { duration: 0.3 },
+  }),
+}
 
-// Fullscreen modal renders the shared image inside a container that spans the viewport.
 type FullscreenModalProps = {
   images: StaticImageData[]
   currentIndex: number
@@ -123,12 +134,18 @@ type FullscreenModalProps = {
 
 const FullscreenModal = ({ images, currentIndex, onClose, onNavigate }: FullscreenModalProps) => {
   const image = images[currentIndex]
+  const [direction, setDirection] = useState(0)
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowLeft') onNavigate((currentIndex - 1 + images.length) % images.length)
-      else if (e.key === 'ArrowRight') onNavigate((currentIndex + 1) % images.length)
+      else if (e.key === 'ArrowLeft') {
+        setDirection(-1)
+        onNavigate((currentIndex - 1 + images.length) % images.length)
+      } else if (e.key === 'ArrowRight') {
+        setDirection(1)
+        onNavigate((currentIndex + 1) % images.length)
+      }
     },
     [currentIndex, images.length, onClose, onNavigate]
   )
@@ -140,6 +157,9 @@ const FullscreenModal = ({ images, currentIndex, onClose, onNavigate }: Fullscre
 
   return (
     <ModalOverlay
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
       as={motion.div}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -148,28 +168,48 @@ const FullscreenModal = ({ images, currentIndex, onClose, onNavigate }: Fullscre
       role="dialog"
       aria-label="Image full screen view"
     >
-      <MotionImageContainer layout layoutId={`image-${image.src}`}>
-        <Image
-          src={image}
-          alt="Full screen view by Christian Anagnostou"
-          blurDataURL={image.blurDataURL}
-          placeholder="blur"
-          layout="fill"
-          objectFit="contain"
-        />
-      </MotionImageContainer>
+      <AnimatePresence custom={direction} mode="wait">
+        <MotionImageContainer
+          key={currentIndex}
+          custom={direction}
+          variants={imageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <Image
+            src={image}
+            alt="Full screen view by Christian Anagnostou"
+            blurDataURL={image.blurDataURL}
+            placeholder="blur"
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: 'contain',
+            }}
+          />
+        </MotionImageContainer>
+      </AnimatePresence>
+
       <CloseButton onClick={onClose} aria-label="Close full screen view">
         &times;
       </CloseButton>
-      <NavButtonLeft
-        onClick={() => onNavigate((currentIndex - 1 + images.length) % images.length)}
-        aria-label="Previous image"
+      <ArrowLeftWrapper
+        onClick={() => {
+          setDirection(-1)
+          onNavigate((currentIndex - 1 + images.length) % images.length)
+        }}
       >
-        &#10094;
-      </NavButtonLeft>
-      <NavButtonRight onClick={() => onNavigate((currentIndex + 1) % images.length)} aria-label="Next image">
-        &#10095;
-      </NavButtonRight>
+        <LeftArrow />
+      </ArrowLeftWrapper>
+      <ArrowRightWrapper
+        onClick={() => {
+          setDirection(1)
+          onNavigate((currentIndex + 1) % images.length)
+        }}
+      >
+        <RightArrow />
+      </ArrowRightWrapper>
     </ModalOverlay>
   )
 }
@@ -184,13 +224,12 @@ const ImageContainer = styled(motion.div)`
   }
 `
 
-// The modal’s shared container now spans the full viewport.
+// Container for the modal image; positioned relative so fill works.
 const MotionImageContainer = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 100px);
+  margin: 0 auto;
 `
 
 const Container = styled(motion.section)`
@@ -223,10 +262,11 @@ const ModalOverlay = styled(motion.div)`
   z-index: 10000;
 `
 
-const CloseButton = styled.button`
+const CloseButton = styled(motion.button)`
   position: fixed;
-  top: 20px;
-  right: 20px;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
   background: transparent;
   border: none;
   font-size: 2rem;
@@ -234,22 +274,25 @@ const CloseButton = styled.button`
   cursor: pointer;
 `
 
-const NavButton = styled.button`
+// Full-height, 50px wide clickable areas on the left/right; icons positioned at the bottom.
+const ArrowWrapper = styled(motion.div)`
   position: fixed;
-  top: 50%;
-  background: transparent;
-  border: none;
-  font-size: 3rem;
+  top: 0;
   color: #fff;
+  width: 50px;
+  height: 100vh;
+  background: transparent;
   cursor: pointer;
-  transform: translateY(-50%);
-  padding: 0 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 50px;
 `
 
-const NavButtonLeft = styled(NavButton)`
-  left: 20px;
+const ArrowLeftWrapper = styled(ArrowWrapper)`
+  left: 0;
 `
 
-const NavButtonRight = styled(NavButton)`
-  right: 20px;
+const ArrowRightWrapper = styled(ArrowWrapper)`
+  right: 0;
 `
