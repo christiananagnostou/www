@@ -152,7 +152,6 @@ const Nav: React.FC = () => {
                 initial="hidden"
                 animate="show"
                 exit="exit"
-                role="menubar"
                 style={{
                   height: isDesktop ? 'auto' : undefined,
                   opacity: isDesktop ? 1 : undefined,
