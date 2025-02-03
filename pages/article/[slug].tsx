@@ -33,7 +33,7 @@ export async function getStaticPaths() {
 const ArticleSlug = ({ post }: Props) => {
   const { title, coverImg, dateCreated, lastUpdated, content, summary, slug } = post
 
-  const PageTitle = `${title} | ChristianCodes`
+  const PageTitle = `${title} | Christian Anagnostou`
   const PageUrl = `${BASE_URL}/article/${slug}`
 
   return (
