@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
+import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
 import Logo from '../public/A-circle.webp'
 import { dropdown, fade, staggerFade } from './animation'
 import DownArrow from './SVG/DownArrow'
@@ -12,13 +14,13 @@ interface SubLink {
   href: string
   title: string
 }
-interface Category {
+export type NavLinks = {
   href?: string
   title: string
   subLinks?: SubLink[]
-}
+}[]
 
-const categories: Category[] = [
+const NAV_LINKS: NavLinks = [
   { href: '/', title: 'Home' },
   {
     title: 'Works',
@@ -110,105 +112,150 @@ const Nav: React.FC = () => {
     }
   }
 
+  const siteNavigationData = getSiteNavigationStructuredData(NAV_LINKS)
+  const breadcrumbData = getBreadcrumbStructuredData(NAV_LINKS, pathname)
+
   return (
-    <StyledNav aria-label="Main Navigation" style={hidden ? { top: '-10vh' } : { top: 0 }}>
-      <motion.div className="nav-inner max-w-screen" variants={staggerFade} initial="hidden" animate="show" exit="exit">
-        <motion.a href="/" aria-label="Home" variants={fade}>
-          <LogoWrapper>
-            <Image src={Logo} alt="Website Logo" width={30} height={30} />
-          </LogoWrapper>
-        </motion.a>
+    <>
+      {/* Skip link for accessibility */}
+      <SkipLink href="#main-content">Skip to main content</SkipLink>
 
-        <AnimatePresence>
-          {(menuOpen || isDesktop) && (
-            <Menu
-              key="main-menu"
-              variants={menuAnimation}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              style={{
-                height: isDesktop ? 'auto' : undefined,
-                opacity: isDesktop ? 1 : undefined,
-              }}
-            >
-              {categories.map(({ href, title, subLinks }, index) => {
-                const active = href === pathname
-                const hasSub = subLinks && subLinks.length > 0
+      {/* Structured Data for Navigation */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} />
+      {/* Breadcrumb structured data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
 
-                // On mobile, check `openSubmenus`; on desktop, check `hoverIndex`.
-                const isSubmenuOpen = isDesktop ? hoverIndex === index : !!openSubmenus[title]
+      <StyledNav
+        aria-label="Main Navigation"
+        itemScope
+        itemType="https://schema.org/SiteNavigationElement"
+        style={hidden ? { top: '-10vh' } : { top: 0 }}
+      >
+        <motion.div
+          className="nav-inner max-w-screen"
+          variants={staggerFade}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+        >
+          <motion.a href="/" aria-label="Home" variants={fade}>
+            <LogoWrapper>
+              <Image src={Logo} alt="Logo" width={30} height={30} />
+            </LogoWrapper>
+          </motion.a>
 
-                return (
-                  <MenuItem
-                    key={title}
-                    onMouseEnter={() => handleMouseEnter(index)}
-                    onMouseLeave={() => handleMouseLeave(index)}
-                    variants={fade}
-                  >
-                    {!hasSub ? (
-                      <Link href={href!} aria-current={active ? 'page' : undefined}>
-                        {title}
-                      </Link>
-                    ) : (
-                      <>
-                        <DropdownToggle
-                          type="button"
-                          onClick={() => toggleSubmenu(title)}
-                          aria-haspopup="true"
-                          aria-expanded={isSubmenuOpen}
-                        >
+          <AnimatePresence>
+            {(menuOpen || isDesktop) && (
+              <Menu
+                key="main-menu"
+                variants={menuAnimation}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                style={{
+                  height: isDesktop ? 'auto' : undefined,
+                  opacity: isDesktop ? 1 : undefined,
+                }}
+              >
+                {NAV_LINKS.map(({ href, title, subLinks }, index) => {
+                  const active = href === pathname
+                  const hasSub = subLinks && subLinks.length > 0
+
+                  // On mobile, check `openSubmenus`; on desktop, check `hoverIndex`.
+                  const isSubmenuOpen = isDesktop ? hoverIndex === index : !!openSubmenus[title]
+
+                  return (
+                    <MenuItem
+                      key={title}
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      onMouseLeave={() => handleMouseLeave(index)}
+                      variants={fade}
+                    >
+                      {!hasSub ? (
+                        <Link href={href!} aria-current={active ? 'page' : undefined}>
                           {title}
-                          <DownArrow />
-                        </DropdownToggle>
+                        </Link>
+                      ) : (
+                        <>
+                          <DropdownToggle
+                            type="button"
+                            onClick={() => toggleSubmenu(title)}
+                            aria-haspopup="true"
+                            aria-expanded={isSubmenuOpen}
+                          >
+                            {title}
+                            <DownArrow />
+                          </DropdownToggle>
 
-                        {/* Animate submenu in/out */}
-                        <AnimatePresence>
-                          {isSubmenuOpen && (
-                            <Submenu
-                              key={`${title}-submenu`}
-                              variants={isDesktop ? desktopSubmenuAnimation : dropdown}
-                              initial="hidden"
-                              animate="show"
-                              exit="exit"
-                              aria-label={`${title} Submenu`}
-                            >
-                              {subLinks!.map((sub) => {
-                                const subActive = sub.href === pathname
-                                return (
-                                  <li key={sub.href}>
-                                    <Link href={sub.href} aria-current={subActive ? 'page' : undefined}>
-                                      {sub.title}
-                                    </Link>
-                                  </li>
-                                )
-                              })}
-                            </Submenu>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
-                  </MenuItem>
-                )
-              })}
-            </Menu>
+                          {/* Animate submenu in/out */}
+                          <AnimatePresence>
+                            {isSubmenuOpen && (
+                              <Submenu
+                                key={`${title}-submenu`}
+                                variants={isDesktop ? desktopSubmenuAnimation : dropdown}
+                                initial="hidden"
+                                animate="show"
+                                exit="exit"
+                                aria-label={`${title} Submenu`}
+                              >
+                                {subLinks!.map((sub) => {
+                                  const subActive = sub.href === pathname
+                                  return (
+                                    <li key={sub.href}>
+                                      <Link href={sub.href} aria-current={subActive ? 'page' : undefined}>
+                                        {sub.title}
+                                      </Link>
+                                    </li>
+                                  )
+                                })}
+                              </Submenu>
+                            )}
+                          </AnimatePresence>
+                        </>
+                      )}
+                    </MenuItem>
+                  )
+                })}
+              </Menu>
+            )}
+          </AnimatePresence>
+
+          {/* Hamburger (mobile) */}
+          {!isDesktop && (
+            <Hamburger
+              onClick={toggleMenu}
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+              variants={fade}
+            >
+              <span />
+              <span />
+              <span />
+            </Hamburger>
           )}
-        </AnimatePresence>
-
-        {/* Hamburger (mobile) */}
-        {!isDesktop && (
-          <Hamburger onClick={toggleMenu} aria-label="Toggle navigation menu" aria-expanded={menuOpen} variants={fade}>
-            <span />
-            <span />
-            <span />
-          </Hamburger>
-        )}
-      </motion.div>
-    </StyledNav>
+        </motion.div>
+      </StyledNav>
+    </>
   )
 }
 
 export default Nav
+
+// Styled Components
+
+const SkipLink = styled.a`
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent);
+  color: var(--text);
+  padding: 8px 16px;
+  z-index: 10000;
+  transition: top 0.3s;
+  &:focus {
+    top: 0;
+  }
+`
 
 const menuAnimation = {
   hidden: { height: 0 },

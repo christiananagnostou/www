@@ -8,6 +8,12 @@ import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
 import { ArticleType, getAllPosts } from '../lib/articles'
+import { BASE_URL, X_HANDLE } from '../lib/constants'
+import { getArticlesListStructuredData } from '../lib/structured/articles'
+
+const PageTitle = 'Articles | Christian Anagnostou'
+const PageDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
+const PageUrl = `${BASE_URL}/articles`
 
 type Props = {
   posts: ArticleType[]
@@ -26,9 +32,35 @@ const Articles = ({ posts }: Props) => {
   return (
     <>
       <Head>
-        <title>Articles</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        {/* Primary SEO */}
+        <title>{PageTitle}</title>
+        <meta name="description" content={PageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Christian Anagnostou" />
+        <meta name="publisher" content="Christian Anagnostou" />
+        <meta name="keywords" content={PageDescription} />
+        <link rel="canonical" href={PageUrl} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:title" content={PageTitle} />
+        <meta property="og:description" content={PageDescription} />
+        <meta property="og:url" content={PageUrl} />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:image" content={`${BASE_URL}/og-image.jpg`} /> */}
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={PageDescription} />
+        {/* <meta name="twitter:image" content={`${BASE_URL}/og-image.jpg`} /> */}
+        <meta name="twitter:site" content={X_HANDLE} />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={getArticlesListStructuredData(posts, PageDescription, PageUrl)}
+        />
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
@@ -63,7 +95,6 @@ const Articles = ({ posts }: Props) => {
             .map(({ title, dateCreated, slug, summary }) => (
               <PostItem key={slug} variants={fade}>
                 <p className="date">{dateCreated}</p>
-
                 <Link href={`/article/${slug}`} className="inner-link">
                   <div className="content">
                     <h2 className="title">{title}</h2>

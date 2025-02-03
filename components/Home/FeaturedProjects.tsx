@@ -32,7 +32,6 @@ const FeaturedProjects = () => (
       href="https://vuoriclothing.com/"
       title="Vuori - your new favorite clothing"
       target="_blank"
-      aria-label="Visit Vuori website"
       variants={fade}
     >
       <VuoriLogo />
@@ -43,7 +42,6 @@ const FeaturedProjects = () => (
       href="https://www.liftclub.app/"
       title="Lift Club - your new favorite workout app"
       target="_blank"
-      aria-label="Visit Lift Club website"
       variants={fade}
     >
       <Image src={LiftClubLogo} alt="Lift Club logo" />
@@ -54,7 +52,6 @@ const FeaturedProjects = () => (
       href="https://github.com/christiananagnostou/jukebox"
       title="Jukebox - your new favorite desktop music player"
       target="_blank"
-      aria-label="Visit Jukebox on GitHub"
       variants={fade}
     >
       <Image src={JukeboxLogo} alt="Jukebox logo" className="darker" />

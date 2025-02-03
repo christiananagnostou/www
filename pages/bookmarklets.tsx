@@ -8,6 +8,12 @@ import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
 import UpArrow from '../components/SVG/UpArrow'
 import { bookmarkletsData } from '../lib/bookmarklets'
+import { BASE_URL } from '../lib/constants'
+import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
+
+const PageTitle = 'Bookmarklets | Christian Anagnostou'
+const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
+const PageUrl = `${BASE_URL}/bookmarklets`
 
 export default function Bookmarklets() {
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
@@ -19,9 +25,29 @@ export default function Bookmarklets() {
   return (
     <>
       <Head>
-        <title>Bookmarklets</title>
-        <meta name="description" content="A handy list of Bookmarklets by Christian Anagnostou" />
+        <title>{PageTitle}</title>
+        <meta name="description" content={PageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={PageUrl} />
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="bookmarklets, javascript, web tools, Christian Anagnostou" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={PageTitle} />
+        <meta property="og:description" content={PageDescription} />
+        <meta property="og:url" content={PageUrl} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={PageDescription} />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getBookmarkletsStructuredData()) }}
+        />
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
