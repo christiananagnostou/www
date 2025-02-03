@@ -4,7 +4,14 @@ import Head from 'next/head'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { Heading } from '../components/Shared/Heading'
 import SocialLinks from '../components/SocialLinks'
+import { BASE_URL } from '../lib/constants'
+import { getContactStructuredData } from '../lib/structured/contact'
+
+const PageTitle = 'Contact | Christian Anagnostou'
+const PageDescription = 'Get in touch with Christian Anagnostou for inquiries, collaborations, or just to say hello.'
+const PageUrl = `${BASE_URL}/contact`
 
 const Contact = () => {
   const [sentSuccessful, setSentSuccessful] = useState(false)
@@ -43,12 +50,40 @@ const Contact = () => {
   return (
     <>
       <Head>
-        <title>Contact</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <title>{PageTitle}</title>
+        <meta name="description" content={PageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={PageUrl} />
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="contact, Christian Anagnostou, portfolio, inquiries, collaboration" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={PageTitle} />
+        <meta property="og:description" content={PageDescription} />
+        <meta property="og:url" content={PageUrl} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={PageDescription} />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getContactStructuredData()) }}
+        />
       </Head>
 
       <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <Heading variants={fade}>
+          <h1>Contact</h1>
+          <p>
+            I&apos;d love to hear from you! Whether you have a question, a collaboration idea, or simply want to say
+            hello, please drop me a message using the form below.
+          </p>
+        </Heading>
+
         <StyledForm variants={staggerFade} onSubmit={handleSubmit} method="POST">
           <motion.div variants={fade}>
             <FormGroup>
@@ -104,7 +139,6 @@ const ContactStyle = styled(motion.div)`
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-
   max-width: 500px;
   padding: 0 1rem;
   margin: 2rem auto;
@@ -137,7 +171,6 @@ const FormGroup = styled.div`
   .form-input {
     background: var(--dark-bg);
     border: 1px solid var(--accent);
-
     border-radius: 5px;
     padding: 0.5rem;
     font-size: 1.1rem;

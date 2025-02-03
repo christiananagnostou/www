@@ -1,4 +1,5 @@
 import { MoneyMagnify } from '../../components/SVG/bookmarklets'
+import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
   {
@@ -9,7 +10,7 @@ export const bookmarkletsData = [
     code: `
       javascript:(function(){
         var s = document.createElement('script');
-        s.src = 'https://christiancodes.co/api/hotbids';
+        s.src = '${BASE_URL}/api/hotbids';
         document.body.appendChild(s);
       })();`,
     instructions: `

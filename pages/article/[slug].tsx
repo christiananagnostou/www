@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import styled from 'styled-components'
 
+import Image from 'next/image'
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
+import { BASE_URL, X_HANDLE } from '../../lib/constants'
+import { getArticleStructuredData } from '../../lib/structured/article'
 
 interface Props {
   post: ArticleType
@@ -29,21 +31,39 @@ export async function getStaticPaths() {
   }
 }
 
-const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, content, summary } }: Props) => {
-  const router = useRouter()
+const ArticleSlug = ({ post }: Props) => {
+  const { title, coverImg, dateCreated, lastUpdated, content, summary, slug } = post
+
+  const PageTitle = `${title} | ChristianCodes`
+  const PageUrl = `${BASE_URL}/article/${slug}`
 
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{PageTitle}</title>
+        <meta name="description" content={summary} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={PageUrl} />
 
-        <meta name="twitter:card" content={summary} />
-        <meta name="twitter:creator" content="@javascramble" />
-        <meta property="og:url" content={`https://www.christiancodes.co${router.asPath}`} />
-        <meta property="og:title" content={title} />
+        {/* Open Graph tags */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={PageUrl} />
+        <meta property="og:title" content={PageTitle} />
         <meta property="og:description" content={summary} />
         {coverImg && <meta property="og:image" content={coverImg} />}
+
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content={X_HANDLE} />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={summary} />
+        {coverImg && <meta name="twitter:image" content={coverImg} />}
+
+        {/* Structured Data (BlogPosting) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getArticleStructuredData(post)) }}
+        />
       </Head>
 
       <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
@@ -54,13 +74,18 @@ const ArticleSlug = ({ post: { title, coverImg, dateCreated, lastUpdated, conten
               <em>Articles</em>
             </span>
           </Link>
-
           <p className="date">{dateCreated}</p>
         </TopBar>
 
         <TitleWrap>
           <h1 className="heading-gradient">{title}</h1>
         </TitleWrap>
+
+        {coverImg && (
+          <CoverImg>
+            <Image src={coverImg} alt={title} />
+          </CoverImg>
+        )}
 
         <article className="content" dangerouslySetInnerHTML={{ __html: content }} />
       </ArticleStyle>
@@ -79,6 +104,8 @@ const TopBar = styled.div`
   .go-back {
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
     em {
       font-weight: 400;
     }
@@ -93,7 +120,7 @@ const CoverImg = styled.div`
   width: 100%;
   max-width: 900px;
   aspect-ratio: 3.5 / 2;
-  margin: auto;
+  margin: 1rem auto;
   position: relative;
 
   img {
@@ -101,7 +128,7 @@ const CoverImg = styled.div`
     border-radius: 5px;
     width: 100%;
     height: 100%;
-    object-fit: cover !important;
+    object-fit: cover;
   }
 `
 
@@ -118,7 +145,6 @@ const TitleWrap = styled.div`
 
   @media (max-width: 768px) {
     padding: 0;
-
     h1 {
       font-size: 1.5rem;
     }
@@ -135,7 +161,6 @@ export const ArticleStyle = styled(motion.section)`
   .content {
     text-align: left;
     margin: auto;
-    text-align: left;
     position: relative;
 
     h1,
@@ -194,7 +219,7 @@ export const ArticleStyle = styled(motion.section)`
         }
 
         &::marker {
-          margin: 0 1rem 0 1rem;
+          margin: 0 1rem;
           font-weight: 300;
           color: var(--accent);
         }

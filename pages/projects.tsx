@@ -4,17 +4,43 @@ import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
+import { BASE_URL } from '../lib/constants'
 import { ProjectState } from '../lib/projects'
+import { getProjectsStructuredData } from '../lib/structured/projects'
 
 type Props = {}
 
-export default function projects({}: Props) {
+const PageTitle = 'Projects | Christian Anagnostou'
+const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
+
+export default function Projects({}: Props) {
   return (
     <>
       <Head>
-        <title>Projects</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <title>{PageTitle}</title>
+        <meta name="description" content={PageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Christian Anagnostou" />
+        <meta name="keywords" content="projects, portfolio, freelance, personal, open-source, Christian Anagnostou" />
+        <link rel="canonical" href={`${BASE_URL}/projects`} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={PageTitle} />
+        <meta property="og:description" content={PageDescription} />
+        <meta property="og:url" content={`${BASE_URL}/projects`} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={PageDescription} />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getProjectsStructuredData()) }}
+        />
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">

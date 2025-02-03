@@ -13,7 +13,9 @@ import TVBar from '../components/Home/TVBar'
 import LabLink from '../components/Lab/LabLink'
 import SocialLinks from '../components/SocialLinks'
 import { ArticleType, getAllPosts } from '../lib/articles'
+import { BASE_URL } from '../lib/constants'
 import { getStravaActivities, StravaActivity } from '../lib/strava'
+import { getHomeStructuredData } from '../lib/structured/home'
 
 type Props = {
   posts: ArticleType[]
@@ -26,7 +28,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: { posts, stravaActivities },
-    revalidate: 60 * 60 * 24 /* 24 hours */,
+    revalidate: 60 * 60 * 24, // 24 hours
   }
 }
 
@@ -43,6 +45,29 @@ const Home = ({ posts, stravaActivities }: Props) => {
         <title>Christian Anagnostou</title>
         <meta name="description" content="Christian Anagnostou's Web Portfolio" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={BASE_URL} />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="software engineer, web developer, programmer, portfolio, articles, art, projects, Strava, Christian Anagnostou"
+        />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Christian Anagnostou" />
+        <meta property="og:description" content="Christian Anagnostou's Web Portfolio" />
+        <meta property="og:url" content={BASE_URL} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Christian Anagnostou" />
+        <meta name="twitter:description" content="Christian Anagnostou's Web Portfolio" />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getHomeStructuredData(posts)) }}
+        />
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">

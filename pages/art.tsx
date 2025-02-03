@@ -9,16 +9,27 @@ import { Heading } from '../components/Shared/Heading'
 import LeftArrow from '../components/SVG/LeftArrow'
 import RightArrow from '../components/SVG/RightArrow'
 import { ArtState } from '../lib/art'
+import { BASE_URL } from '../lib/constants'
+import { getArtStructuredData } from '../lib/structured/art'
 
 type Props = {}
 
 const ART_CATEGORIES = Object.keys(ArtState)
 const NUM_COLUMNS = 2
 
+const PageTitle = 'Photography | Christian Anagnostou'
+const PageDescription = 'A gallery of photography capturing moments by Christian Anagnostou.'
+const PageUrl = `${BASE_URL}/art`
+
 const Art = (props: Props) => {
   const [selectedCategory, setSelectedCategory] = useState(ART_CATEGORIES[0])
   const [modalIndex, setModalIndex] = useState<number | null>(null)
   const flatImages: StaticImageData[] = ArtState[selectedCategory] || []
+
+  // Calculate default Open Graph image (first image of first category)
+  const defaultCategory = ART_CATEGORIES[0]
+  const defaultImages = ArtState[defaultCategory] || []
+  const ogImage = defaultImages.length > 0 ? `${BASE_URL}${defaultImages[0].src}` : undefined
 
   // Distribute images into columns.
   const columns = Array.from({ length: NUM_COLUMNS }, () => [] as { image: StaticImageData; index: number }[])
@@ -29,9 +40,31 @@ const Art = (props: Props) => {
   return (
     <>
       <Head>
-        <title>Art</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
+        <title>{PageTitle}</title>
+        <meta name="description" content={PageDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href={PageUrl} />
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="art, photography, gallery, Christian Anagnostou" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={PageTitle} />
+        <meta property="og:description" content={PageDescription} />
+        <meta property="og:url" content={PageUrl} />
+        {ogImage && <meta property="og:image" content={ogImage} />}
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PageTitle} />
+        <meta name="twitter:description" content={PageDescription} />
+        {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getArtStructuredData()) }}
+        />
       </Head>
 
       <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
@@ -39,8 +72,8 @@ const Art = (props: Props) => {
           <h1>Photography</h1>
           <p>
             There&apos;s something profound about capturing the world around us. Not necessarily to share it with
-            others, but to remember it. To remember the way the light hit the trees, or the way the flakes of snow fell
-            from the sky. It creates a moment that you can return to, even if just in your mind.
+            others, but to remember it. To recall the way the light hit the trees or the way the snowflakes fell from
+            the sky. It creates moments you can revisit, even if only in your mind.
           </p>
         </Heading>
 
@@ -113,9 +146,10 @@ const Art = (props: Props) => {
 
 export default Art
 
-// A small swipe offset
-const deltaX = 20
-const duration = 0.2
+// Modal components and styles
+
+const deltaX = 25
+const duration = 0.25
 const imageVariants = {
   initial: (direction: number) => ({
     x: direction ? direction * deltaX : 0,
@@ -133,7 +167,7 @@ const imageVariants = {
   }),
 }
 
-type FullscreenModalProps = {
+interface FullscreenModalProps {
   images: StaticImageData[]
   currentIndex: number
   onClose: () => void
@@ -192,9 +226,7 @@ const FullscreenModal = ({ images, currentIndex, onClose, onNavigate }: Fullscre
             placeholder="blur"
             fill
             sizes="100vw"
-            style={{
-              objectFit: 'contain',
-            }}
+            style={{ objectFit: 'contain' }}
           />
         </MotionImageContainer>
       </AnimatePresence>
@@ -282,7 +314,6 @@ const CloseButton = styled(motion.button)`
   cursor: pointer;
 `
 
-// Full-height, 50px wide clickable areas on the left/right; icons positioned at the bottom.
 const ArrowWrapper = styled(motion.div)`
   position: fixed;
   top: 0;
