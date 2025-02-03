@@ -7,10 +7,7 @@ import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import MiddleRow from '../components/Home/MiddleRow'
-import Signature from '../components/Home/Signature'
 import StravaActivities from '../components/Home/StravaActivities'
-import TVBar from '../components/Home/TVBar'
-import LabLink from '../components/Lab/LabLink'
 import SocialLinks from '../components/SocialLinks'
 import { ArticleType, getAllPosts } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
@@ -83,12 +80,12 @@ const Home = ({ posts, stravaActivities }: Props) => {
             <SocialLinks />
           </FlexWrap>
 
-          <FlexWrap style={revealBarStyle}>
+          {/* <FlexWrap>
             <LabLink />
             <Signature />
-          </FlexWrap>
+          </FlexWrap> */}
 
-          <TVBar onBarFilled={setShowRevealBar} />
+          {/* <TVBar onBarFilled={setShowRevealBar} /> */}
         </div>
       </Container>
     </>
@@ -104,9 +101,9 @@ const Container = styled(motion.main)`
   padding: 2rem 1rem 1rem;
 
   .page-inner-container {
-    border: 1px solid var(--accent);
-    background: var(--body-bg);
-    padding: 1rem 1rem 1.5rem;
+    /* border: 1px solid var(--accent); */
+    /* background: var(--body-bg); */
+    /* padding: 1rem 1rem 1.5rem; */
     display: flex;
     flex-direction: column;
     align-items: end;

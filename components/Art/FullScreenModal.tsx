@@ -118,7 +118,6 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
 
 export default FullscreenModal
 
-// Styled components
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -147,17 +146,20 @@ const MotionImageContainer = styled(motion.div)`
 const BottomBar = styled.div`
   height: 120px;
   background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
   padding: 0 1rem;
+  gap: 1rem;
 
   button {
-    color: #fff;
+    color: var(--text-dark);
     font-size: 1.5rem;
     background: transparent;
     border: none;
     cursor: pointer;
+    flex: 1;
+    height: 100%;
   }
 `
