@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styled from 'styled-components'
 
-import Image from 'next/image'
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
@@ -81,12 +80,6 @@ const ArticleSlug = ({ post }: Props) => {
           <h1 className="heading-gradient">{title}</h1>
         </TitleWrap>
 
-        {coverImg && (
-          <CoverImg>
-            <Image src={coverImg} alt={title} />
-          </CoverImg>
-        )}
-
         <article className="content" dangerouslySetInnerHTML={{ __html: content }} />
       </ArticleStyle>
     </>
@@ -113,22 +106,6 @@ const TopBar = styled.div`
   .date {
     font-weight: 400;
     font-size: 0.8em;
-  }
-`
-
-const CoverImg = styled.div`
-  width: 100%;
-  max-width: 900px;
-  aspect-ratio: 3.5 / 2;
-  margin: 1rem auto;
-  position: relative;
-
-  img {
-    max-width: 100%;
-    border-radius: 5px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 `
 
