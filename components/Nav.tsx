@@ -94,7 +94,11 @@ const Nav: React.FC = () => {
     }
   }, [router.events])
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev)
+  const toggleMenu = () =>
+    setMenuOpen((prev) => {
+      if (prev) setOpenSubmenus({}) // Close all submenus
+      return !prev
+    })
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenus((prev) => ({
@@ -241,8 +245,6 @@ const Nav: React.FC = () => {
 
 export default Nav
 
-// Styled Components
-
 const SkipLink = styled.a`
   position: absolute;
   top: -40px;
@@ -281,7 +283,7 @@ const StyledNav = styled.nav`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1rem;
+    padding: 0;
     margin: auto;
     height: var(--nav-height);
   }
@@ -290,6 +292,7 @@ const StyledNav = styled.nav`
 const LogoWrapper = styled.div`
   display: flex;
   align-items: center;
+  padding: 0 1rem;
 
   img {
     border-radius: 50%;
@@ -303,15 +306,18 @@ const Hamburger = styled(motion.button)`
   border: none;
   cursor: pointer;
   display: flex;
+  align-items: end;
   flex-direction: column;
-  justify-content: space-between;
-  width: 1.75rem;
-  height: 1rem;
+  justify-content: center;
+  gap: 0.4rem;
+  flex: 1;
+  height: 100%;
+  padding: 0 1rem;
 
   span {
     display: block;
+    width: 1.75rem;
     height: 1px;
-    width: 100%;
     background: var(--text);
     border-radius: 1px;
   }
@@ -327,7 +333,7 @@ const Menu = styled(motion.ul)`
   @media (min-width: 768px) {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0rem;
     height: auto !important;
     opacity: 1 !important;
   }
@@ -339,9 +345,9 @@ const Menu = styled(motion.ul)`
     left: 0;
     right: 0;
     background: var(--dark-bg);
-    padding: 0 1rem;
     overflow: hidden;
     border-bottom: 1px solid var(--accent);
+    border-top: 1px solid var(--accent);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 `
@@ -356,15 +362,15 @@ const MenuItem = styled(motion.li)`
     }
   }
 
-  > a,
-  > button {
+  & a,
+  & button {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     text-decoration: none;
     color: var(--heading);
     font-size: 1rem;
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -372,6 +378,9 @@ const MenuItem = styled(motion.li)`
 
     @media (max-width: 767px) {
       width: 100%;
+      justify-content: end;
+      flex-direction: row-reverse;
+      padding: 0.75rem 1rem;
     }
   }
 `
@@ -383,16 +392,29 @@ const DropdownToggle = styled.button`
 `
 
 const Submenu = styled(motion.ul)`
+  /* Shared */
   list-style: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 
+  li a {
+    text-decoration: none;
+    color: var(--heading);
+
+    @media (hover: hover) {
+      &:hover,
+      &:focus {
+        background: var(--body-bg);
+      }
+    }
+  }
+
   /* Desktop dropdown */
   @media (min-width: 768px) {
     position: absolute;
     top: 100%;
-    left: -1rem;
+    left: -0rem;
     background: var(--dark-bg);
     border: 1px solid var(--accent);
     border-radius: 5px;
@@ -406,18 +428,19 @@ const Submenu = styled(motion.ul)`
 
   /* Mobile dropdown */
   @media (max-width: 767px) {
-    border-left: 1px solid var(--accent);
-  }
+    li a {
+      padding: 0.5rem 2rem;
+      position: relative;
 
-  li a {
-    display: block;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    color: var(--heading);
-
-    &:hover,
-    &:focus {
-      background: var(--body-bg);
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        width: 1px;
+        height: 100%;
+        background: var(--accent);
+      }
     }
   }
 `
