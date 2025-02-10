@@ -40,7 +40,7 @@ const createEventItem = (date: Dayjs) => ({
   id: dayjs().valueOf(),
 })
 
-type DailyEventT = ReturnType<typeof createEventItem>
+export type DailyEventT = ReturnType<typeof createEventItem>
 
 const DailyCalendar = () => {
   const isTouchActiveRef = useRef(false)
