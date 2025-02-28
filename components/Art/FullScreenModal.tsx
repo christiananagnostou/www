@@ -73,7 +73,9 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
               //   blurDataURL={image.blurDataURL}
               //   placeholder="blur"
               fill
+              quality={100}
               sizes="100vw"
+              unoptimized
               style={{ objectFit: 'contain' }}
             />
           </MotionImageContainer>
@@ -124,7 +126,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -137,10 +139,11 @@ const ImageArea = styled.div`
 
 const MotionImageContainer = styled(motion.div)`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: 800px;
+  margin: auto;
 `
 
 const BottomBar = styled.div`

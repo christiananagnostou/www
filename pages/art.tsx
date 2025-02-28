@@ -1,37 +1,45 @@
+import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
 import FullscreenModal from '../components/Art/FullScreenModal'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
-import { ArtState } from '../lib/art'
+import { SortedArtImages } from '../lib/art'
 import { BASE_URL } from '../lib/constants'
 import { getArtStructuredData } from '../lib/structured/art'
 
-const ART_CATEGORIES = Object.keys(ArtState)
 const NUM_COLUMNS = 2
 
 const PageTitle = 'Photography | Christian Anagnostou'
 const PageDescription = 'A gallery of photography capturing moments by Christian Anagnostou.'
 const PageUrl = `${BASE_URL}/art`
 
+// OG image: first image of the sorted list
+const ogImage =
+  SortedArtImages[0] && SortedArtImages[0].image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
+
+const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).sort((a, b) => a.localeCompare(b))
+
 const Art = () => {
-  const [selectedCategory, setSelectedCategory] = useState(ART_CATEGORIES[0])
-  const [modalIndex, setModalIndex] = useState<number | null>(null)
-  const flatImages: StaticImageData[] = ArtState[selectedCategory] || []
+  const router = useRouter()
+  const { query } = router
+  const queriedTag = query.tag?.toString()
 
-  // Open Graph image is the first image of the first category.
-  const defaultImages = ArtState[ART_CATEGORIES[0]] || []
-  const ogImage = defaultImages.length > 0 ? `${BASE_URL}${defaultImages[0].src}` : undefined
+  const flatImages = queriedTag ? SortedArtImages.filter((img) => img.tags.includes(queriedTag)) : SortedArtImages
 
-  // Distribute images into columns.
-  const columns = Array.from({ length: NUM_COLUMNS }, () => [] as { image: StaticImageData; index: number }[])
-  flatImages.forEach((img, i) => {
-    columns[i % NUM_COLUMNS].push({ image: img, index: i })
+  const flatImagesWithIndex = flatImages.map((item, index) => ({ ...item, index }))
+
+  const columns: typeof flatImagesWithIndex[] = Array.from({ length: NUM_COLUMNS }, () => [])
+  flatImagesWithIndex.forEach((item) => {
+    columns[item.index % NUM_COLUMNS].push(item)
   })
+
+  const [modalIndex, setModalIndex] = useState<number | null>(null)
 
   return (
     <>
@@ -70,34 +78,59 @@ const Art = () => {
           </p>
         </Heading>
 
-        {ART_CATEGORIES.length > 1 && (
+        {UNIQUE_TAGS.length > 1 && (
           <ButtonRow>
-            {ART_CATEGORIES.map((category) => (
+            {UNIQUE_TAGS.map((tag) => (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? 'highlight' : ''}
+                key={tag}
+                className={queriedTag === tag ? 'selected' : ''}
+                onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
               >
-                {category}
+                {tag}
               </button>
             ))}
           </ButtonRow>
         )}
 
         <Columns $numColumns={NUM_COLUMNS}>
-          {columns.map((colImages, col) => (
-            <Column key={`column_${col}`} $numColumns={NUM_COLUMNS}>
-              {colImages.map(({ image, index }) => (
-                <ImageContainer
-                  key={image.src}
-                  onClick={() => setModalIndex(index)}
-                  onKeyDown={(e) => e.key === 'Enter' && setModalIndex(index)}
-                  role="button"
+          {columns.map((colImages, colIndex) => (
+            <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS}>
+              {colImages.map((item) => (
+                <ImageWrapper
+                  key={item.image.src}
+                  onClick={() => setModalIndex(item.index)}
+                  onKeyDown={(e) => e.key === 'Enter' && setModalIndex(item.index)}
                   tabIndex={0}
-                  aria-label="Open full screen image"
+                  role="button"
+                  aria-label={`Open full screen image: ${item.title}`}
                 >
-                  <Image src={image} alt="" blurDataURL={image.blurDataURL} placeholder="blur" layout="responsive" />
-                </ImageContainer>
+                  <Image
+                    src={item.image}
+                    alt={`${item.title} - ${item.date}`}
+                    blurDataURL={item.image.blurDataURL}
+                    placeholder="blur"
+                    layout="responsive"
+                  />
+                  <HoverBox className="hover-box">
+                    <p>{item.title}</p>
+                    <p className="date">{dayjs(item.date).format(`MMM 'YY`)}</p>
+                    {/* Tags */}
+                    <p className="tags">
+                      {item.tags.map((tag) => (
+                        <button
+                          key={tag}
+                          className={queriedTag === tag ? 'selected' : ''}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (queriedTag !== tag) router.push({ query: { tag } })
+                          }}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </p>
+                  </HoverBox>
+                </ImageWrapper>
               ))}
             </Column>
           ))}
@@ -107,7 +140,7 @@ const Art = () => {
       <AnimatePresence>
         {modalIndex !== null && (
           <FullscreenModal
-            images={flatImages}
+            images={flatImages.map((item) => item.image)}
             currentIndex={modalIndex}
             onClose={() => setModalIndex(null)}
             onNavigate={(newIndex) => setModalIndex(newIndex)}
@@ -140,13 +173,97 @@ const Column = styled.div<{ $numColumns: number }>`
   flex: 1;
 `
 
-const ImageContainer = styled(motion.div)`
+const ImageWrapper = styled.div`
   position: relative;
+  overflow: hidden;
+  border-radius: 5px;
   cursor: pointer;
+
   img {
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 5px;
+  }
+
+  --hover-box-height: 100px;
+  --hover-box-shadow-height: calc(var(--hover-box-height) * 1.5);
+
+  ::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: var(--hover-box-shadow-height);
+    z-index: 1;
+    background: linear-gradient(to bottom, transparent, #171717);
+    transition: top 0.28s ease-in-out;
+    pointer-events: none;
+  }
+
+  &:hover {
+    ::after {
+      top: calc(100% - var(--hover-box-shadow-height) + 1px); /* 1px to fix gap */
+    }
+
+    .hover-box {
+      bottom: 0;
+
+      p {
+        scale: 1;
+      }
+    }
+  }
+`
+
+const HoverBox = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: calc(-1 * var(--hover-box-height));
+  height: var(--hover-box-height);
+  width: 100%;
+  transition: bottom 0.25s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: end;
+  z-index: 2;
+  padding: 10px;
+
+  p {
+    font-size: 0.9rem;
+    padding-bottom: 3px;
+    scale: 0.8;
+    transition: scale 0.25s ease-in-out;
+    transform-origin: left;
+    color: var(--text);
+  }
+
+  .date {
+    font-size: 0.7rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.7rem;
+      color: var(--text);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.selected {
+        font-weight: bold;
+      }
+    }
   }
 `

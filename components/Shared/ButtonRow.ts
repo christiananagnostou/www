@@ -22,6 +22,7 @@ export const ButtonRow = styled(motion.div)`
     cursor: pointer;
     transition: all 0.25s ease;
     text-transform: capitalize;
+    min-width: max-content;
 
     &.selected {
       color: white;
