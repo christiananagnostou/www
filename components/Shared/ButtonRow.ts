@@ -26,6 +26,7 @@ export const ButtonRow = styled(motion.div)`
 
     &.selected {
       color: white;
+      background: var(--accent);
     }
   }
 `

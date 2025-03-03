@@ -30,12 +30,12 @@ const Art = () => {
   const { query } = router
   const queriedTag = query.tag?.toString()
 
-  const flatImages = queriedTag ? SortedArtImages.filter((img) => img.tags.includes(queriedTag)) : SortedArtImages
+  const filteredImages = queriedTag ? SortedArtImages.filter((img) => img.tags.includes(queriedTag)) : SortedArtImages
 
-  const flatImagesWithIndex = flatImages.map((item, index) => ({ ...item, index }))
+  const filteredImagesWithIndex = filteredImages.map((item, index) => ({ ...item, index }))
 
-  const columns: typeof flatImagesWithIndex[] = Array.from({ length: NUM_COLUMNS }, () => [])
-  flatImagesWithIndex.forEach((item) => {
+  const columns: typeof filteredImagesWithIndex[] = Array.from({ length: NUM_COLUMNS }, () => [])
+  filteredImagesWithIndex.forEach((item) => {
     columns[item.index % NUM_COLUMNS].push(item)
   })
 
@@ -111,11 +111,13 @@ const Art = () => {
                     placeholder="blur"
                     layout="responsive"
                   />
-                  <HoverBox className="hover-box">
-                    <p>{item.title}</p>
-                    <p className="date">{dayjs(item.date).format(`MMM 'YY`)}</p>
-                    {/* Tags */}
-                    <p className="tags">
+
+                  <HoverBox>
+                    <div className="title-date">
+                      <p className="title">{item.title}</p>
+                      <p className="date">{dayjs(item.date).format(`MMM 'YY`)}</p>
+                    </div>
+                    <div className="tags">
                       {item.tags.map((tag) => (
                         <button
                           key={tag}
@@ -128,7 +130,7 @@ const Art = () => {
                           {tag}
                         </button>
                       ))}
-                    </p>
+                    </div>
                   </HoverBox>
                 </ImageWrapper>
               ))}
@@ -140,7 +142,7 @@ const Art = () => {
       <AnimatePresence>
         {modalIndex !== null && (
           <FullscreenModal
-            images={flatImages.map((item) => item.image)}
+            images={filteredImages}
             currentIndex={modalIndex}
             onClose={() => setModalIndex(null)}
             onNavigate={(newIndex) => setModalIndex(newIndex)}
@@ -173,6 +175,67 @@ const Column = styled.div<{ $numColumns: number }>`
   flex: 1;
 `
 
+const HoverBox = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  transform: translateY(100%);
+  transition: transform 0.25s ease-in-out;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
+  padding: 50px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--heading);
+
+  p,
+  button {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for readability */
+  }
+
+  .title-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .title {
+    font-size: 1rem;
+    color: white;
+  }
+
+  .date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .tags button {
+    padding: 2px 5px;
+    font-size: 0.7rem;
+    background: var(--border);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: capitalize;
+    min-width: max-content;
+
+    &.selected {
+      color: white;
+      background: var(--accent);
+    }
+  }
+`
 const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
@@ -185,85 +248,9 @@ const ImageWrapper = styled.div`
     height: auto;
   }
 
-  --hover-box-height: 100px;
-  --hover-box-shadow-height: calc(var(--hover-box-height) * 1.5);
-
-  ::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: var(--hover-box-shadow-height);
-    z-index: 1;
-    background: linear-gradient(to bottom, transparent, #171717);
-    transition: top 0.28s ease-in-out;
-    pointer-events: none;
-  }
-
-  &:hover {
-    ::after {
-      top: calc(100% - var(--hover-box-shadow-height) + 1px); /* 1px to fix gap */
-    }
-
-    .hover-box {
-      bottom: 0;
-
-      p {
-        scale: 1;
-      }
-    }
-  }
-`
-
-const HoverBox = styled.div`
-  position: absolute;
-  left: 0;
-  bottom: calc(-1 * var(--hover-box-height));
-  height: var(--hover-box-height);
-  width: 100%;
-  transition: bottom 0.25s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: end;
-  z-index: 2;
-  padding: 10px;
-
-  p {
-    font-size: 0.9rem;
-    padding-bottom: 3px;
-    scale: 0.8;
-    transition: scale 0.25s ease-in-out;
-    transform-origin: left;
-    color: var(--text);
-  }
-
-  .date {
-    font-size: 0.7rem;
-  }
-
-  .tags {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-
-    button {
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 0;
-      font-size: 0.7rem;
-      color: var(--text);
-      cursor: pointer;
-
-      &:hover {
-        text-decoration: underline;
-      }
-
-      &.selected {
-        font-weight: bold;
-      }
+  @media (hover: hover) {
+    &:hover ${HoverBox}, &:focus ${HoverBox}, &:focus-within ${HoverBox} {
+      transform: translateY(0);
     }
   }
 `
