@@ -80,6 +80,10 @@ const Art = () => {
 
         {UNIQUE_TAGS.length > 1 && (
           <ButtonRow>
+            <button className={!queriedTag ? 'selected' : ''} onClick={() => router.push({ query: { tag: '' } })}>
+              All
+            </button>
+
             {UNIQUE_TAGS.map((tag) => (
               <button
                 key={tag}

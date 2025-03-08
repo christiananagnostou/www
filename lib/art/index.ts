@@ -84,7 +84,7 @@ import ReadingMan from '/public/img/art/photography/reading_man.jpg'
 import Reflection from '/public/img/art/photography/reflection.jpg'
 import RockWave from '/public/img/art/photography/rock_wave.jpg'
 import Salesforce from '/public/img/art/photography/salesforce.jpg'
-import Satalite from '/public/img/art/photography/satalite.jpg'
+import Satellite from '/public/img/art/photography/satellite.jpg'
 import SausalitoBoat from '/public/img/art/photography/sausalito_boat.jpg'
 import SeattleChelan from '/public/img/art/photography/seattle_chelan.webp'
 import SeattleGolden from '/public/img/art/photography/seattle_golden.webp'
@@ -205,14 +205,14 @@ export const ArtImages: ArtImage[] = [
   // Dogs - Jan 2021
   {
     id: 'jessie_porch',
-    title: 'Jessie Porch',
+    title: 'Jessie on the Porch',
     date: '2021-01-01T00:00:00Z',
     tags: ['Dogs'],
     image: JessiePorch,
   },
   {
     id: 'jessie_vines',
-    title: 'Jessie Vines',
+    title: 'Jessie in the Vines',
     date: '2021-01-01T00:00:00Z',
     tags: ['Dogs'],
     image: JessieVines,
@@ -365,7 +365,7 @@ export const ArtImages: ArtImage[] = [
     id: 'sf_rock_tree',
     title: 'SF Rock Tree',
     date: '2020-09-01T00:00:00Z',
-    tags: ['SF', 'Nature'],
+    tags: ['SF'],
     image: SFRockTree,
   },
   // Tahoe - Fall 2020 (second entry)
@@ -429,7 +429,7 @@ export const ArtImages: ArtImage[] = [
   },
   {
     id: 'jessie_succ',
-    title: 'Jessie Succ',
+    title: 'Jessie with the Succulent',
     date: '2020-05-01T00:00:00Z',
     tags: ['Shadow', 'Dogs'],
     image: JessieSucc,
@@ -535,8 +535,8 @@ export const ArtImages: ArtImage[] = [
     image: DressyMan,
   },
   {
-    id: 'jesus',
-    title: 'Jesus',
+    id: 'jeshua',
+    title: 'Jeshua',
     date: '2020-05-01T00:00:00Z',
     tags: ['People', 'SF'],
     image: Jesus,
@@ -727,8 +727,8 @@ export const ArtImages: ArtImage[] = [
     image: Coit,
   },
   {
-    id: 'dad_soccer',
-    title: 'Dad Soccer',
+    id: 'field_walker',
+    title: 'Field Walker',
     date: '2020-01-01T00:00:00Z',
     tags: ['B&W'],
     image: DadSoccer,
@@ -748,11 +748,11 @@ export const ArtImages: ArtImage[] = [
     image: Levels,
   },
   {
-    id: 'satalite',
-    title: 'Satalite',
+    id: 'satellite',
+    title: 'Satellite',
     date: '2020-01-01T00:00:00Z',
     tags: ['B&W'],
-    image: Satalite,
+    image: Satellite,
   },
   {
     id: 'skateboard',
@@ -761,18 +761,16 @@ export const ArtImages: ArtImage[] = [
     tags: ['B&W'],
     image: Skateboard,
   },
-
-  // --- Additional WEBP Images ---
   {
     id: 'baseball_last_oakland_game',
-    title: 'Baseball: Last Oakland Game',
+    title: 'Last Oakland Game',
     date: '2024-09-25T02:34:24Z',
     tags: ['Baseball'],
     image: BaseballLastOaklandGame,
   },
   {
     id: 'baseball_oakland',
-    title: 'Baseball: Oakland',
+    title: "Oakland A's",
     date: '2021-08-21T22:38:21Z',
     tags: ['Baseball'],
     image: BaseballOakland,
@@ -816,14 +814,14 @@ export const ArtImages: ArtImage[] = [
     id: 'hawaii_2_rainbow',
     title: 'Waimea Rainbow',
     date: '2024-07-18T01:03:36Z',
-    tags: ['Hawaii', 'Nature'],
+    tags: ['Hawaii'],
     image: Hawaii2Rainbow,
   },
   {
     id: 'hawaii_2_saplings',
     title: 'Heavenly Saplings',
     date: '2024-07-15T17:22:45Z',
-    tags: ['Hawaii', 'Nature'],
+    tags: ['Hawaii'],
     image: Hawaii2Saplings,
   },
   {
@@ -842,7 +840,7 @@ export const ArtImages: ArtImage[] = [
   },
   {
     id: 'isolation_red_vinyl',
-    title: 'Isolation Red Vinyl',
+    title: 'Red Vinyl',
     date: '2021-05-09T16:21:02Z',
     tags: ['Isolation'],
     image: IsolationRedVinyl,
@@ -870,21 +868,21 @@ export const ArtImages: ArtImage[] = [
   },
   {
     id: 'seattle_chelan',
-    title: 'Seattle Chelan',
+    title: 'Chelan',
     date: '2024-06-01T03:18:15Z',
-    tags: ['Seattle', 'Nature'],
+    tags: ['Seattle'],
     image: SeattleChelan,
   },
   {
     id: 'seattle_golden',
-    title: 'Seattle Golden',
+    title: 'Majestic Golden',
     date: '2024-05-26T19:45:39Z',
     tags: ['Seattle', 'Dogs'],
     image: SeattleGolden,
   },
   {
     id: 'seattle_goldens',
-    title: 'Seattle Goldens',
+    title: 'Battle Goldens',
     date: '2024-05-26T19:41:59Z',
     tags: ['Seattle', 'Dogs'],
     image: SeattleGoldens,
@@ -914,12 +912,12 @@ export const ArtImages: ArtImage[] = [
     id: 'tahoe_meadow',
     title: 'Tahoe Meadow',
     date: '2022-12-25T01:00:00Z',
-    tags: ['Tahoe'],
+    tags: ['Tahoe', 'Nature'],
     image: TahoeMeadow,
   },
   {
     id: 'tahoe_meadow_jessie',
-    title: 'Tahoe Meadow Jessie',
+    title: 'Jessie in the Meadow',
     date: '2022-12-24T16:55:15Z',
     tags: ['Tahoe', 'Dogs'],
     image: TahoeMeadowJessie,
