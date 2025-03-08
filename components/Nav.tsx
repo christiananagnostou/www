@@ -29,6 +29,7 @@ const NAV_LINKS: NavLinks = [
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
       { href: '/articles', title: 'Articles' },
+      { href: '/lab', title: 'Lab' },
     ],
   },
   { href: '/contact', title: 'Contact' },

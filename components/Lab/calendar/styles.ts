@@ -51,7 +51,7 @@ export const StickyHeader = styled.div`
 export const Timezone = styled.span`
   font-size: 8px;
   padding-bottom: 0.25rem;
-  padding-left: 0.5rem;
+  text-align: center;
   position: relative;
 `
 
@@ -114,14 +114,18 @@ export const HourBarTime = styled.span`
   position: relative;
 `
 
+export const EventWrap = styled.div`
+  position: relative;
+  width: calc(100% - var(--time-bar-width));
+  left: var(--time-bar-width);
+`
+
 export const DailyEventContainer = styled.div`
   position: absolute;
   z-index: 1;
-  width: calc(100% - var(--time-bar-width));
-  left: var(--time-bar-width);
   background: var(--red);
   border-radius: 4px;
-  transition: top 0.05s ease-in-out, height 0.05s ease-in-out;
+  transition: top 50ms ease-in-out, height 50ms ease-in-out, width 150ms ease-in-out, left 150ms ease-in-out;
 
   &.selected {
     z-index: 4;
