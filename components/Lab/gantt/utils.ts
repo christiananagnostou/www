@@ -26,8 +26,8 @@ export const getItemsDateRange = (items: ItemProps[]) => {
   })
 
   // max and min day +/- 7 days
-  const firstDate = dayjs.min(startDates.filter((date) => date.isValid()))?.subtract(7, 'day')
-  const lastDate = dayjs.max(endDates.filter((date) => date.isValid()))?.add(7, 'day')
+  const firstDate = dayjs.min(startDates.filter((date) => date.isValid()))?.subtract(7, 'day') || dayjs()
+  const lastDate = dayjs.max(endDates.filter((date) => date.isValid()))?.add(7, 'day') || dayjs()
 
   return { firstDate, lastDate }
 }
