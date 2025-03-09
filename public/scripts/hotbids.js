@@ -27,12 +27,33 @@
   const ID_HELP_BTN = 'helpBtn'
   const ID_HELP_CLOSE = 'helpPanelCloseBtn'
   const ID_HELP_PANEL = 'helpPanel'
+  // Highlight classes
+  const CN_HIGHLIGHT_MATCH = 'hotbids-match'
+  const CN_HIGHLIGHT_CURRENT = 'hotbids-current'
+  const CN_SOLD_LINK = 'hotbids-sold-link'
+  // LocalStorage keys
+  const LS_MIN_BIDS = 'hotbids-min-bids'
+  const LS_SORT_BY_BIDS = 'hotbids-sort-by-bids'
+  const LS_POSITION = 'hotbids-position'
+  // eBay selectors
+  const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
+  const SEL_ITEM_CONTAINER = '.s-item'
+  const SEL_ITEM_TITLE = '.s-item__title'
+  // URL constants
+  const URL_EBAY_SEARCH = 'https://www.ebay.com/sch/i.html?'
+  const PARAM_SOLD = 'LH_Sold=1'
+  // Regex pattern
+  const REGEX_BID_COUNT = /([1-9]\d*)\s+bids?/i
+  // Stylesheet ID
+  const ID_STYLESHEET = 'hotbids-styles'
 
   class HotBids {
     constructor() {
-      this.regexPattern = /([1-9]\d*)\s+bids?/i
+      this.regexPattern = REGEX_BID_COUNT
       this.matches = []
       this.currentMatchIndex = -1
+      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS)) || 1
+      this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
 
       this.injectStyles()
       this.collectMatches()
@@ -42,20 +63,69 @@
     }
 
     injectStyles() {
-      if (!document.getElementById('hotbids-styles')) {
+      if (!document.getElementById(ID_STYLESHEET)) {
         const styleEl = document.createElement('style')
-        styleEl.id = 'hotbids-styles'
+        styleEl.id = ID_STYLESHEET
         styleEl.textContent = STYLESHEET
         document.head.appendChild(styleEl)
       }
     }
 
     collectMatches() {
-      const els = document.querySelectorAll('.s-item__bidCount, .str-item-card__property-bidCount')
+      document.querySelectorAll(`.${CN_HIGHLIGHT_MATCH}`).forEach((el) => {
+        el.classList.remove(CN_HIGHLIGHT_MATCH)
+        el.style.removeProperty('--highlight-color')
+      })
+      document.querySelectorAll(`.${CN_SOLD_LINK}`).forEach((el) => el.remove())
+
+      const els = document.querySelectorAll(SEL_BID_COUNT)
       this.matches = []
       els.forEach((el) => {
         const txt = el.innerText || el.textContent
-        if (this.regexPattern.test(txt)) this.matches.push(el)
+        const match = txt.match(this.regexPattern)
+        if (match) {
+          const bidCount = parseInt(match[1])
+          if (bidCount >= this.minBids) {
+            this.matches.push({ element: el, bidCount })
+          }
+        }
+      })
+
+      if (this.sortByBids) {
+        this.matches.sort((a, b) => b.bidCount - a.bidCount)
+      }
+
+      // Calculate max bids for color gradient
+      this.maxBids = this.matches.length ? Math.max(...this.matches.map((m) => m.bidCount)) : this.minBids
+
+      // Apply highlights and sold price links
+      this.matches.forEach((m) => {
+        const el = m.element
+        el.classList.add(CN_HIGHLIGHT_MATCH)
+
+        // Calculate hue for color gradient (green to red)
+        let hue
+        if (this.maxBids === this.minBids) {
+          hue = 120 // Green if all bids are the same
+        } else {
+          const ratio = (m.bidCount - this.minBids) / (this.maxBids - this.minBids)
+          hue = 120 - ratio * 120
+        }
+        el.style.setProperty('--highlight-color', `hsl(${hue}, 100%, 50%)`)
+
+        // Add "Check Sold Prices" link
+        const itemContainer = el.closest(SEL_ITEM_CONTAINER)
+        if (itemContainer) {
+          const titleEl = itemContainer.querySelector(SEL_ITEM_TITLE)
+          if (titleEl) {
+            const title = titleEl.textContent.trim()
+            const soldUrl = `${URL_EBAY_SEARCH}_nkw=${encodeURIComponent(title)}&${PARAM_SOLD}`
+            el.insertAdjacentHTML(
+              'afterend',
+              `<a href="${soldUrl}" target="_blank" rel="noopener" class="${CN_SOLD_LINK}">Check Sold Prices</a>`
+            )
+          }
+        }
       })
     }
 
@@ -64,13 +134,13 @@
         <div id="${ID_CONTAINER}">
           <div id="${ID_TOOLBAR}" class="${CN_POP_BOTTOM_POS}">
             <div class="hotbids-row left-row">
-              <button id="${ID_MENU_BTN}" class="${CN_BTN}">${THREE_DOTS_SVG}</button>
+              <button id="${ID_MENU_BTN}" class="${CN_BTN} rotatable">${THREE_DOTS_SVG}</button>
               <span id="${ID_MATCH_BOX}">${this.currentMatchIndex + 1}/${this.matches.length}</span>
             </div>
 
             <div class="hotbids-row center-row">
-              <button id="${ID_PREV}" class="${CN_BTN}" aria-label="Previous bid">${LEFT_ARROW_SVG}</button>
-              <button id="${ID_NEXT}" class="${CN_BTN}" aria-label="Next bid">${RIGHT_ARROW_SVG}</button>
+              <button id="${ID_PREV}" class="${CN_BTN} rotatable" aria-label="Previous bid">${LEFT_ARROW_SVG}</button>
+              <button id="${ID_NEXT}" class="${CN_BTN} rotatable" aria-label="Next bid">${RIGHT_ARROW_SVG}</button>
               <div class="vertical-separator"></div>
               <button id="${ID_RETRY}" class="${CN_BTN}">${RETRY_ARROW_SVG}</button>
             </div>
@@ -90,33 +160,54 @@
               <button class="${CN_BTN}" id="${CN_POP_BOTTOM_BTN}">▼</button>
             </div>
             <span><strong>Tools</strong></span><hr/>
-            <button class="${CN_BTN}" id="${ID_TOGGLE_SOLD}">Toggle Sold</button>
+            <div class="tools-container">
+              <div class="hotbids-option">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="${ID_TOGGLE_SOLD}" ${this.isSoldFilterActive() ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                  Show sold items
+                </label>
+              </div>
+              <div class="hotbids-option">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="sortByBidsCheckbox" ${this.sortByBids ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                  Sort by bids descending
+                </label>
+              </div>
+              <div class="hotbids-option">
+                <label for="minBidsInput">Min bids:</label>
+                <input type="number" id="minBidsInput" min="1" value="${this.minBids}">
+              </div>
+            </div>
           </div>
 
           <div id="${ID_HELP_PANEL}" class="${CN_MODAL}" aria-hidden="true">
-            <button id=${ID_HELP_CLOSE} class="${CN_BTN}">${CLOSE_SVG}</button>
-            <span><strong>Hotbids Help</strong></span><hr/>
-            <p>Welcome to Hotbids! Here are some keyboard shortcuts to help you navigate.</p>
-            <br/>
+            <button id="${ID_HELP_CLOSE}" class="${CN_BTN}">${CLOSE_SVG}</button>
+            <h2>Hotbids Help</h2>
+            <p>Hotbids enhances your eBay browsing experience by highlighting items with bids, allowing you to navigate them easily, and providing tools to filter and sort these items.</p>
+            <h3>Features</h3>
+            <ul>
+              <li>Highlight items with bids using a color gradient based on bid count (green to red).</li>
+              <li>Navigate through highlighted items with keyboard shortcuts.</li>
+              <li>Filter items by minimum number of bids.</li>
+              <li>Sort items by bid count descending.</li>
+              <li>Each highlighted item has a "Check Sold Prices" link to compare with historical sold prices.</li>
+            </ul>
+            <h3>Navigation</h3>
             <p>
-              <span>Navigation:</span>
-              <br/>
-              <br/><strong>Arrow Right</strong> / <strong>n</strong> - Next
-              <br/><strong>Arrow Left</strong> / <strong>Shift + N</strong> - Previous
+              <strong>Arrow Right</strong> or <strong>n</strong> - Next item<br/>
+              <strong>Arrow Left</strong> or <strong>Shift + N</strong> - Previous item
             </p>
-            <br/>
+            <h3>Toolbar Positioning</h3>
             <p>
-              <span>Toolbar Positioning:</span>
-              <br/>
-              <br/><strong>Shift + W</strong> - Top
-              <br/><strong>Shift + A</strong> - Left
-              <br/><strong>Shift + S</strong> - Bottom
-              <br/><strong>Shift + D</strong> - Right
+              <strong>Shift + W</strong> - Move toolbar to top<br/>
+              <strong>Shift + A</strong> - Move toolbar to left<br/>
+              <strong>Shift + S</strong> - Move toolbar to bottom<br/>
+              <strong>Shift + D</strong> - Move toolbar to right
             </p>
-            <br/>
-            <p>Liked this tool? Check out the source code on
-              <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js" target="_blank">GitHub</a>.
-            </p>
+            <h3>Feedback</h3>
+            <p>If you like this tool, check out the source code on <a href="https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js" target="_blank">GitHub</a>.</p>
           </div>
         </div>
       `
@@ -142,6 +233,12 @@
       // Help panel elements
       this.helpPanel = document.getElementById(ID_HELP_PANEL)
       this.helpPanelCloseBtn = document.getElementById(ID_HELP_CLOSE)
+      this.minBidsInput = document.getElementById('minBidsInput')
+      this.sortByBidsCheckbox = document.getElementById('sortByBidsCheckbox')
+
+      // Load saved position
+      const savedPosition = localStorage.getItem(LS_POSITION) || CN_POP_BOTTOM_POS
+      this.setLocationClass(savedPosition)
 
       // Toolbar event listeners
       this.menuBtn.onclick = () => this.toggleModal(this.menuPanel)
@@ -154,14 +251,24 @@
       this.popRightBtn.onclick = () => this.setLocationClass(CN_POP_RIGHT_POS)
       this.popTopBtn.onclick = () => this.setLocationClass(CN_POP_TOP_POS)
       this.popBottomBtn.onclick = () => this.setLocationClass(CN_POP_BOTTOM_POS)
-      this.toggleSoldBtn.onclick = () => this.toggleSold()
+      this.toggleSoldBtn.addEventListener('change', () => this.toggleSold())
       this.menuPanelCloseBtn.onclick = () => this.toggleModal(this.menuPanel)
       // Help panel event listeners
       this.helpPanelCloseBtn.onclick = () => this.toggleModal(this.helpPanel)
+      this.minBidsInput.addEventListener('change', (e) => {
+        this.minBids = parseInt(e.target.value) || 1
+        localStorage.setItem(LS_MIN_BIDS, this.minBids)
+        this.retryMatches()
+      })
+      this.sortByBidsCheckbox.addEventListener('change', (e) => {
+        this.sortByBids = e.target.checked
+        localStorage.setItem(LS_SORT_BY_BIDS, this.sortByBids)
+        this.retryMatches()
+      })
 
       if (!this.checkSoldCheckbox()) {
         this.toggleSoldBtn.disabled = true
-        this.toggleSoldBtn.title = 'Sold checkbox not found'
+        this.toggleSoldBtn.closest('.custom-checkbox').title = 'Sold checkbox not found'
       }
     }
 
@@ -174,28 +281,36 @@
     setLocationClass(cls) {
       this.toolbar.classList.remove(CN_POP_LEFT_POS, CN_POP_RIGHT_POS, CN_POP_TOP_POS, CN_POP_BOTTOM_POS)
       this.toolbar.classList.add(cls)
+      localStorage.setItem(LS_POSITION, cls)
+    }
+
+    isSoldFilterActive() {
+      const urlParams = new URLSearchParams(window.location.search)
+      return urlParams.has('LH_Sold') && urlParams.get('LH_Sold') === '1'
     }
 
     checkSoldCheckbox() {
-      return document.querySelector('[name="LH_Sold"]')
+      return document.querySelector('[name="LH_Sold"] .checkbox__control')
     }
+
     toggleSold() {
-      const link = document.querySelector('[name="LH_Sold"] a.cbx')
-      if (link) link.click()
+      const soldCheckbox = this.checkSoldCheckbox()
+      if (soldCheckbox) soldCheckbox.click()
     }
 
     scrollToNextMatch() {
       if (!this.matches.length) return
       this.currentMatchIndex = (this.currentMatchIndex + 1) % this.matches.length
-      this.highlightElement(this.matches[this.currentMatchIndex])
-      this.matches[this.currentMatchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' })
+      this.highlightElement()
+      this.matches[this.currentMatchIndex].element.scrollIntoView({ behavior: 'smooth', block: 'center' })
       this.updateToolbar()
     }
+
     scrollToPreviousMatch() {
       if (!this.matches.length) return
       this.currentMatchIndex = (this.currentMatchIndex - 1 + this.matches.length) % this.matches.length
-      this.highlightElement(this.matches[this.currentMatchIndex])
-      this.matches[this.currentMatchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' })
+      this.highlightElement()
+      this.matches[this.currentMatchIndex].element.scrollIntoView({ behavior: 'smooth', block: 'center' })
       this.updateToolbar()
     }
 
@@ -207,14 +322,16 @@
 
     updateToolbar() {
       if (this.currentMatch) {
-        this.currentMatch.textContent = this.currentMatchIndex + 1 + '/' + this.matches.length
+        this.currentMatch.textContent =
+          this.matches.length === 0 ? '0/0' : `${this.currentMatchIndex + 1}/${this.matches.length}`
       }
     }
 
-    highlightElement(el) {
-      const old = document.querySelector('.hotbids-highlighted')
-      if (old) old.classList.remove('hotbids-highlighted')
-      el.classList.add('hotbids-highlighted')
+    highlightElement() {
+      const old = document.querySelector(`.${CN_HIGHLIGHT_CURRENT}`)
+      if (old) old.classList.remove(CN_HIGHLIGHT_CURRENT)
+      const currentEl = this.matches[this.currentMatchIndex].element
+      currentEl.classList.add(CN_HIGHLIGHT_CURRENT)
     }
 
     handleKeyPress(e) {
@@ -242,7 +359,6 @@
       --toolbar-border: #333;
       --button-bg: #222;
       --button-bg-hover: #333;
-      --highlight-color: #00ff00;
       --toolbar-width: 600px;
     }
 
@@ -250,20 +366,19 @@
       color: var(--toolbar-fg);
     }
 
-    #${ID_CONTAINER} p {
-      margin: 0;
+    #${ID_CONTAINER} p { 
+      margin: 0; 
     }
 
-    #${ID_CONTAINER} a {
-      font-family: inherit;
-      color: inherit;
-      text-decoration: underline solid var(--toolbar-border);
-      text-underline-offset: 3px;
-      transition: 0.2s;
+    #${ID_CONTAINER} a { 
+      font-family: inherit; 
+      color: inherit; 
+      text-decoration: underline solid var(--toolbar-border); 
+      text-underline-offset: 3px; 
+      transition: 0.2s; 
     }
-
-    #${ID_CONTAINER} a:hover {
-      text-decoration-color: var(--toolbar-fg);
+    #${ID_CONTAINER} a:hover { 
+      text-decoration-color: var(--toolbar-fg); 
     }
 
     #${ID_TOOLBAR} {
@@ -329,7 +444,7 @@
       border: 1px solid var(--toolbar-border);
       font-size: 0.85rem;
       min-width: 300px;
-      padding: 0.75rem;
+      padding: 1.25rem; 
       border-radius: 8px;
       box-shadow: 0 0 16px rgba(0,0,0,0.4);
       z-index: 1000000;
@@ -339,14 +454,30 @@
       display: block;
     }
 
+    .${CN_MODAL} h2, 
+    .${CN_MODAL} h3 {
+      margin: 0.5rem 0;
+      color: var(--toolbar-fg);
+    }
+    .${CN_MODAL} ul {
+      list-style-type: disc;
+      margin: 0;
+      padding: 0 0 0 1rem;
+    }
+    .${CN_MODAL} p, 
+    .${CN_MODAL} ul {
+      margin-bottom: 1rem !important;
+      color: lightgray;
+    }
+
     .${CN_MODAL} .${CN_BTN}:not(#${ID_MENU_CLOSE}):not(#${ID_HELP_CLOSE}) {
-      width: 100%;
+      width: 100%; 
     }
 
     .${CN_MODAL} hr {
-      border: none;
-      border-top: 1px solid var(--toolbar-border);
-      margin: .25rem 0 0.5rem;
+      border: none; 
+      border-top: 1px solid var(--toolbar-border); 
+      margin: .25rem 0 0.5rem; 
     }
 
     .${CN_MODAL} .pop-to-grid {
@@ -358,13 +489,11 @@
         ". . top top . ."
         ". left left right right ."
         ". . bottom bottom . .";
-      }
+    }
     #${CN_POP_LEFT_BTN} { grid-area: left; }
     #${CN_POP_RIGHT_BTN} { grid-area: right; }
     #${CN_POP_TOP_BTN} { grid-area: top; }
     #${CN_POP_BOTTOM_BTN} { grid-area: bottom; }
-
-
 
     #${ID_TOGGLE_SOLD}:disabled {
       background: var(--toolbar-bg);
@@ -381,29 +510,120 @@
     }
 
     .vertical-separator {
-      width: 1px; background: var(--toolbar-border);
-      height: 1.6rem; margin: 0 0.5rem;
+      width: 1px; 
+      background: var(--toolbar-border);
+      height: 1.6rem; 
+      margin: 0 0.5rem;
     }
 
     button.${CN_BTN} {
       cursor: pointer;
       padding: 0.5rem 0.75rem;
-      border-radius: 4px; border: none;
+      border-radius: 4px; 
+      border: none;
       background: var(--button-bg); 
       color: inherit;
       transition: background 0.2s ease, opacity 0.2s ease;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
     }
-    button.${CN_BTN}:hover,
+    button.${CN_BTN}:hover, 
     button.${CN_BTN}:focus {
       background: var(--button-bg-hover);
       outline: none;
     }
-    button.${CN_BTN} svg { height: 1em; width: 1em; }
+    button.${CN_BTN} svg { 
+      height: 1em; 
+      width: 1em; 
+    }
 
-    .hotbids-highlighted {
+    .${CN_POP_LEFT_POS} .${CN_BTN}.rotatable svg,
+    .${CN_POP_RIGHT_POS} .${CN_BTN}.rotatable svg {
+      transform: rotate(90deg);
+    }
+
+    .${CN_HIGHLIGHT_MATCH} {
       outline: 2px solid var(--highlight-color) !important;
       outline-offset: 1px;
+    }
+    .${CN_HIGHLIGHT_CURRENT} {
+      outline-width: 4px !important;
+    }
+    .${CN_SOLD_LINK} {
+      font-size: 0.9em;
+      color: var(--toolbar-fg);
+      text-decoration: underline;
+      margin-left: 0.5em;
+      transition: color 0.2s;
+    }
+    .${CN_SOLD_LINK}:hover {
+      color: #fff;
+    }
+
+    .tools-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .hotbids-option {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .custom-checkbox {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .custom-checkbox input {
+      display: none;
+    }
+
+    .custom-checkbox .checkmark {
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--toolbar-fg);
+      border-radius: 3px;
+      margin-right: 0.5rem;
+      position: relative;
+    }
+
+    .custom-checkbox input:checked + .checkmark {
+      background-color: var(--toolbar-fg);
+    }
+
+    .custom-checkbox input:checked + .checkmark::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid var(--toolbar-bg);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .hotbids-option input[type="number"] {
+      background: var(--button-bg);
+      color: var(--toolbar-fg);
+      border: 1px solid var(--toolbar-border);
+      border-radius: 4px;
+      padding: 0.25rem;
+      width: 80px;
+    }
+
+    .hotbids-option input[type="number"]:hover {
+      border-color: var(--toolbar-fg);
+    }
+
+    .hotbids-option input[type="number"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--toolbar-fg);
     }
   `
 

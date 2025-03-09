@@ -1,12 +1,14 @@
+import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { ArtImage } from '../../lib/art'
 import LeftArrow from '../SVG/LeftArrow'
 import RightArrow from '../SVG/RightArrow'
 
 interface FullscreenModalProps {
-  images: StaticImageData[]
+  images: ArtImage[]
   currentIndex: number
   onClose: () => void
   onNavigate: (newIndex: number) => void
@@ -33,6 +35,7 @@ const imageVariants = {
 
 const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex, onClose, onNavigate }) => {
   const image = images[currentIndex]
+  const formattedDate = dayjs(image.date).format("MMM 'YY") // e.g., "Jan '23"
   const [direction, setDirection] = useState(0)
 
   const handleKeyDown = useCallback(
@@ -56,6 +59,20 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
 
   return (
     <ModalOverlay>
+      <AnimatePresence custom={direction} mode="wait">
+        <MetadataArea
+          key={currentIndex}
+          custom={direction}
+          variants={imageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <p>{image.title}</p>
+          <p>{formattedDate}</p>
+        </MetadataArea>
+      </AnimatePresence>
+
       <ImageArea>
         <AnimatePresence custom={direction} mode="wait">
           <MotionImageContainer
@@ -68,12 +85,12 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
           >
             <Image
               onClick={(e) => e.stopPropagation()}
-              src={image}
-              alt="Full screen view by Christian Anagnostou"
-              //   blurDataURL={image.blurDataURL}
-              //   placeholder="blur"
+              src={image.image}
+              alt={`${image.title} - ${formattedDate}`}
               fill
+              quality={100}
               sizes="100vw"
+              unoptimized
               style={{ objectFit: 'contain' }}
             />
           </MotionImageContainer>
@@ -124,7 +141,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -137,10 +154,23 @@ const ImageArea = styled.div`
 
 const MotionImageContainer = styled(motion.div)`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: 800px;
+  margin: auto;
+`
+
+const MetadataArea = styled(motion.div)`
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  width: 100%;
+  font-size: 0.9rem;
+  p {
+    color: var(--text-dark);
+  }
 `
 
 const BottomBar = styled.div`
