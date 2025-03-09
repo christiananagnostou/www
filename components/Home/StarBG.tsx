@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { CSSProperties, type ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useWindowSize } from '../Hooks'
 
@@ -7,7 +7,7 @@ type Props = { show: boolean }
 const StarBG = ({ show }: Props) => {
   const { width, height } = useWindowSize()
 
-  const [stars, setStars] = useState<JSX.Element[]>([])
+  const [stars, setStars] = useState<ReactNode[]>([])
 
   useEffect(() => {
     if (!show) setStars([])
