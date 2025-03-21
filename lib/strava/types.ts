@@ -13,10 +13,18 @@ export type StravaActivity = {
   MaxSpeed: string | null
   MapPolyline: string | null
   best: {
-    Distance: number
-    ElevationGain: number
     MovingTime: number
-    AverageSpeed: number
+    Distance: number
     Pace: number
+    AverageSpeed: number
+    ElevationGain: number
   }
 }
+
+export const AlternateMetricTitles = {
+  MovingTime: 'Time',
+  Distance: 'Distance',
+  Pace: 'Pace',
+  AverageSpeed: 'Speed',
+  ElevationGain: 'Elevation',
+} as const

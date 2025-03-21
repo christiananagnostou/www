@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { StravaActivity } from '../../lib/strava'
+import { AlternateMetricTitles, type StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 import MiniMap from './StravaMinimap'
@@ -20,10 +20,6 @@ const activityIcons = {
   Zwift: zwift(),
   Walk: run(),
 } as const
-
-const splitCamelCase = (input: string): string => {
-  return input.replace(/([a-z])([A-Z])/g, '$1 $2')
-}
 
 const StravaActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState('')
@@ -46,7 +42,7 @@ const StravaActivities = ({ activities }: Props) => {
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
     <ActivityDetail best={activity.best[type] === 1}>
-      {splitCamelCase(type)}: <strong>{activity[type]}</strong>
+      {AlternateMetricTitles[type]}: <strong>{activity[type]}</strong>
     </ActivityDetail>
   )
 
