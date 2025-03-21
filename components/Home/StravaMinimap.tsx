@@ -1,5 +1,3 @@
-import { styled } from 'styled-components'
-
 // Based on the encoded polyline algorithm from Google Maps
 // Decode a polyline string into an array of [lat, lng]
 function decodePolyline(str: string): [number, number][] {
@@ -44,7 +42,8 @@ export default function MiniMap({ polyline, width = 100, height = 100 }: MiniMap
   if (!polyline) return null
   const points = decodePolyline(polyline)
   if (points.length === 0) return null
-  // Compute bounding box
+
+  // Compute bounding box of the route
   const lats = points.map((p) => p[0])
   const lngs = points.map((p) => p[1])
   const minLat = Math.min(...lats)
@@ -52,9 +51,20 @@ export default function MiniMap({ polyline, width = 100, height = 100 }: MiniMap
   const minLng = Math.min(...lngs)
   const maxLng = Math.max(...lngs)
 
-  // Scale lat/lng to SVG coordinates
-  const scaleX = (lng: number) => ((lng - minLng) / (maxLng - minLng)) * width
-  const scaleY = (lat: number) => height - ((lat - minLat) / (maxLat - minLat)) * height
+  // Compute bounding box dimensions (in geographic degrees)
+  const bboxWidth = maxLng - minLng
+  const bboxHeight = maxLat - minLat
+
+  // Determine a uniform scale to fit the entire route while preserving aspect ratio
+  const scale = Math.min(width / bboxWidth, height / bboxHeight)
+  // Compute offsets to center the polyline in the SVG
+  const offsetX = (width - bboxWidth * scale) / 2
+  const offsetY = (height - bboxHeight * scale) / 2
+
+  // Map lat/lng to SVG coordinates with preserved aspect ratio
+  const scaleX = (lng: number) => offsetX + (lng - minLng) * scale
+  // Invert the y-axis since SVG y=0 is at the top
+  const scaleY = (lat: number) => height - (offsetY + (lat - minLat) * scale)
 
   const pathData = points
     .map((p, i) => {
@@ -67,7 +77,7 @@ export default function MiniMap({ polyline, width = 100, height = 100 }: MiniMap
   return (
     <div aria-label="Activity route map" role="img">
       <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-        <path d={pathData} stroke="var(--accent)" strokeWidth="2" fill="none" />
+        <path d={pathData} stroke="var(--accent)" strokeWidth="1" fill="none" />
       </svg>
     </div>
   )

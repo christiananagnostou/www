@@ -15,20 +15,20 @@ export const calculateBestValuesByType = (activities: (StravaActivity & { raw: R
       // Initialize the accumulator if it doesn't exist
       if (!acc[type]) {
         acc[type] = {
-          Distance: 0,
-          ElevationGain: 0,
-          MovingTime: 0,
-          AverageSpeed: 0,
-          Pace: 0,
+          Distance: 0, // Higher is better
+          ElevationGain: 0, // Higher is better
+          MovingTime: Infinity, // Lower is better
+          AverageSpeed: 0, // Higher is better
+          Pace: Infinity, // Lower is better
         }
       }
 
       // Update the accumulator with the best values
       acc[type].MovingTime = 0 // No best time
-      acc[type].Distance = Math.max(acc[type].Distance, activity.raw.Distance)
-      acc[type].Pace = Math.min(acc[type].Pace, activity.raw.Pace)
-      acc[type].AverageSpeed = Math.max(acc[type].AverageSpeed, activity.raw.AverageSpeed)
-      acc[type].ElevationGain = Math.max(acc[type].ElevationGain, activity.raw.ElevationGain)
+      acc[type].Distance = Math.max(acc[type].Distance, activity.raw.Distance || 0)
+      acc[type].Pace = Math.min(acc[type].Pace, activity.raw.Pace || Infinity)
+      acc[type].AverageSpeed = Math.max(acc[type].AverageSpeed, activity.raw.AverageSpeed || 0)
+      acc[type].ElevationGain = Math.max(acc[type].ElevationGain, activity.raw.ElevationGain || 0)
       return acc
     },
     {} as { [type: string]: RawActivityMetrics }

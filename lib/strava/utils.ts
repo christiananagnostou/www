@@ -1,22 +1,28 @@
-const KM_TO_MI = 0.621371
-const M_TO_FT = 3.28084
+export const KM_TO_MI = 0.621371
+export const M_TO_MI = KM_TO_MI / 1000
+export const M_TO_FT = 3.28084
+export const MPS_TO_MPH = 2.23694
 
 export const convertDistance = (meters: number): string => {
-  const miles = meters * 0.000621371
+  if (meters === 0) return ''
+  const miles = meters * M_TO_MI
   return `${miles.toFixed(2)} mi`
 }
 
 export const convertElevation = (meters: number): string => {
+  if (meters === 0) return ''
   const feet = meters * M_TO_FT
   return `${feet.toFixed(2)} ft`
 }
 
 export const convertSpeed = (mps: number): string => {
-  const mph = mps * 2.23694
+  if (mps === 0) return ''
+  const mph = mps * MPS_TO_MPH
   return `${mph.toFixed(2)} mph`
 }
 
 export const formatTime = (seconds: number): string => {
+  if (seconds === 0) return ''
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
   const s = seconds % 60
@@ -24,8 +30,8 @@ export const formatTime = (seconds: number): string => {
 }
 
 export const computePace = (movingTime: number, distanceMeters: number): string => {
-  const distanceMiles = distanceMeters * 0.000621371
-  if (distanceMiles === 0) return '0:00 /mi'
+  const distanceMiles = distanceMeters * M_TO_MI
+  if (distanceMiles === 0) return ''
   const secondsPerMile = movingTime / distanceMiles
   const minutes = Math.floor(secondsPerMile / 60)
   const seconds = Math.round(secondsPerMile % 60)
