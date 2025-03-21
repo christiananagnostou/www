@@ -70,7 +70,7 @@ const Container = styled(motion.section)`
   color: var(--text);
 `
 
-const ProjectLink = styled(motion(Link))`
+const ProjectLink = styled(motion.create(Link))`
   min-width: max-content;
   display: flex;
   gap: 0.5rem;

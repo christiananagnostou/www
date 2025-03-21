@@ -124,7 +124,7 @@ const RecentArt = styled(HomepageBox)`
     }
   }
 
-  ::after {
+  &::after {
     content: '';
     position: absolute;
     top: 100%;
@@ -138,7 +138,7 @@ const RecentArt = styled(HomepageBox)`
   }
 
   &:hover {
-    ::after {
+    &::after {
       top: 0;
     }
 
