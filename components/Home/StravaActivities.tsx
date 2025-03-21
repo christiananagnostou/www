@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
+import MiniMap from './StravaMinimap'
 
 type Props = {
   activities: StravaActivity[]
@@ -100,6 +101,12 @@ const StravaActivities = ({ activities }: Props) => {
               <ActivityItem key={index} variants={fade}>
                 <ActivityType title={activity.type}>{activityIcons[activity.type] || activity.type}</ActivityType>
 
+                {activity.MapPolyline && (
+                  <MapContainer>
+                    <MiniMap polyline={activity.MapPolyline} width={100} height={100} />
+                  </MapContainer>
+                )}
+
                 {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
                 {activity.Distance && renderActivityDetail('Distance', activity)}
                 {activity.Pace && renderActivityDetail('Pace', activity)}
@@ -192,8 +199,17 @@ const ActivityList = styled.ul`
 
 const ActivityItem = styled(motion.li)`
   flex: 1;
-  min-width: max-content;
-  max-width: max-content;
+  position: relative;
+  background: var(--dark-bg);
+  min-width: 200px;
+`
+
+const MapContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
 `
 
 const ActivityType = styled.div`
@@ -208,6 +224,7 @@ const ActivityDetail = styled.p<{ best?: boolean }>`
   margin: 0.5rem 0;
   color: var(--text-dark);
   font-size: 0.8rem;
+  position: relative;
   strong {
     font-size: 0.75rem;
     font-weight: 600;
