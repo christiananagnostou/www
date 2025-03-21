@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { AlternateMetricTitles, type StravaActivity } from '../../lib/strava'
+import { type StravaActivity } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 import MiniMap from './StravaMinimap'
@@ -39,6 +39,14 @@ const StravaActivities = ({ activities }: Props) => {
       {activityIcons[type]}
     </ActivityFilter>
   )
+
+  const AlternateMetricTitles = {
+    MovingTime: 'Time',
+    Distance: 'Distance',
+    Pace: 'Pace',
+    AverageSpeed: 'Avg Speed',
+    ElevationGain: 'Elevation Gain',
+  } as const
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
     <ActivityDetail best={activity.best[type] === 1}>

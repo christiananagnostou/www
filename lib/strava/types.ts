@@ -20,11 +20,3 @@ export type StravaActivity = {
     ElevationGain: number
   }
 }
-
-export const AlternateMetricTitles = {
-  MovingTime: 'Time',
-  Distance: 'Distance',
-  Pace: 'Pace',
-  AverageSpeed: 'Speed',
-  ElevationGain: 'Elevation',
-} as const
