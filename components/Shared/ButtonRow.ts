@@ -25,7 +25,7 @@ export const ButtonRow = styled(motion.div)`
     min-width: max-content;
 
     &.selected {
-      color: white;
+      color: #ffffff;
       background: var(--accent);
     }
   }

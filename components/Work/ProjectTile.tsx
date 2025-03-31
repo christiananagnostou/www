@@ -65,7 +65,7 @@ const ProjectContainer = styled(motion.div)`
       transition: all 0.2s ease-in-out;
 
       &:hover {
-        color: white;
+        color: #ffffff;
       }
     }
     .links {
@@ -74,13 +74,13 @@ const ProjectContainer = styled(motion.div)`
         text-decoration: none;
         display: inline-block;
         font-size: 0.8rem;
-        font-weight: 400;
+        font-weight: normal;
         color: var(--text);
         transition: all 0.2s ease-in-out;
         margin-left: 20px;
 
         &:not(span):hover {
-          color: white;
+          color: #ffffff;
         }
       }
     }
@@ -98,7 +98,7 @@ const ProjectContainer = styled(motion.div)`
     gap: 1rem;
     font-size: 0.9rem;
     line-height: 1.4rem;
-    font-weight: 400;
+    font-weight: normal;
 
     .date {
       min-width: max-content;

@@ -182,7 +182,6 @@ const ActivityFilter = styled(motion.button)`
 const ActivityList = styled.ul`
   list-style: none;
   user-select: none;
-  padding: 0;
   display: flex;
   gap: 1rem;
   padding: 0 1rem;

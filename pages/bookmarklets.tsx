@@ -180,14 +180,12 @@ const BookmarkletItem = styled(motion.div)`
     .title {
       margin: 0;
       font-size: 1rem;
-      font-weight: 400;
+      font-weight: normal;
 
       & * {
-        cursor: -webkit-grab;
         cursor: grab;
       }
       & *:active {
-        cursor: -webkit-grabbing;
         cursor: grabbing;
       }
     }
@@ -223,16 +221,6 @@ const BookmarkletItem = styled(motion.div)`
     cursor: pointer;
     transition: background 0.2s ease;
 
-    &:hover,
-    &:focus {
-      outline: none;
-      background: #262626;
-
-      .toggle-arrow {
-        color: var(--text);
-      }
-    }
-
     .summary {
       font-size: 0.9rem;
       margin: 0;
@@ -248,6 +236,16 @@ const BookmarkletItem = styled(motion.div)`
       svg {
         height: 1.2em;
         width: 1.2em;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background: #262626;
+
+      .toggle-arrow {
+        color: var(--text);
       }
     }
   }

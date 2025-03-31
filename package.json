@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:css": "stylelint './src/**/*.{tsx,js,ts}'",
+    "lint:css": "stylelint './**/*.{tsx,js,ts}'",
     "test": "vitest"
   },
   "dependencies": {
@@ -46,6 +46,7 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "jsdom": "^26.0.0",
+    "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "stylelint": "^16.15.0",

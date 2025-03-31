@@ -11,7 +11,7 @@ export const DateButton = styled.button<{ dateWidth: number }>`
   position: relative;
   height: 100%;
   font-size: 0.7rem;
-  width: ${({ dateWidth }) => `${dateWidth}px`};
+  width: ${({ dateWidth }) => dateWidth + 'px'};
   background: transparent;
   border: none;
   color: inherit;
@@ -22,7 +22,7 @@ export const DateLabel = styled.div<{ dateWidth: number }>`
   position: absolute;
   bottom: 0;
   transform: translateX(-50%);
-  left: ${({ dateWidth }) => `${dateWidth / 2}px`};
+  left: ${({ dateWidth }) => dateWidth / 2 + 'px'};
   padding-bottom: 0.5rem;
 `
 
@@ -33,7 +33,7 @@ export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`
   color: ${({ isToday }) => (isToday ? 'white' : 'inherit')};
   position: relative;
 
-  // Today Circle
+  /* Today Circle */
   &::after {
     content: '';
     position: absolute;

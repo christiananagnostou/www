@@ -20,7 +20,7 @@ export const Bar = styled.div<{ width: number; height: number; marginLeft: numbe
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: between;
+  justify-content: space-between;
   border-radius: 4px;
   font-size: 0.65rem;
   width: ${({ width }) => `${width}px`};
@@ -37,7 +37,7 @@ export const BarLabel = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: black;
+  color: #000000;
 `
 
 export const StartLabel = styled.span`

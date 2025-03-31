@@ -100,11 +100,11 @@ const TopBar = styled.div`
     text-decoration: none;
     color: inherit;
     em {
-      font-weight: 400;
+      font-weight: normal;
     }
   }
   .date {
-    font-weight: 400;
+    font-weight: normal;
     font-size: 0.8em;
   }
 `
@@ -146,8 +146,8 @@ export const ArticleStyle = styled(motion.section)`
     h4,
     h5,
     h6 {
-      margin: 2rem 0 0.5rem 0;
-      font-weight: 400;
+      margin: 2rem 0 0.5rem;
+      font-weight: normal;
       color: var(--heading);
     }
 
@@ -159,10 +159,21 @@ export const ArticleStyle = styled(motion.section)`
       font-weight: 300;
       line-height: 1.6rem;
       color: var(--text);
+    }
 
-      &:not(:last-child) {
-        margin-bottom: 1.5rem;
-      }
+    blockquote {
+      border-left: 2px solid var(--accent);
+      margin: 1.5em 0;
+      padding: 0.5em 1em;
+      text-align: left;
+    }
+
+    blockquote p {
+      margin-bottom: 0.5rem !important;
+    }
+
+    p:not(:last-child) {
+      margin-bottom: 1.5rem;
     }
 
     strong {
@@ -265,16 +276,6 @@ export const ArticleStyle = styled(motion.section)`
       }
     }
 
-    blockquote {
-      border-left: 2px solid var(--accent);
-      margin: 1.5em 0;
-      padding: 0.5em 1em;
-      text-align: left;
-
-      p {
-        margin-bottom: 0.5rem !important;
-      }
-    }
     /*!
       Theme: StackOverflow Dark
       Description: Dark theme as used on stackoverflow.com
@@ -289,15 +290,15 @@ export const ArticleStyle = styled(motion.section)`
       Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
     */
 
-    pre code.hljs {
-      display: block;
-      overflow-x: auto;
-      padding: 1em;
-    }
     code.hljs {
       padding: 3px 5px;
       width: 100%;
       max-width: 100%;
+    }
+    pre code.hljs {
+      display: block;
+      overflow-x: auto;
+      padding: 1em;
     }
 
     .hljs {
