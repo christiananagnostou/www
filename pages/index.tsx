@@ -11,8 +11,8 @@ import StravaActivities from '../components/Home/StravaActivities'
 import SocialLinks from '../components/SocialLinks'
 import { ArticleType, getAllPosts } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
-import { getStravaActivities, StravaActivity } from '../lib/strava'
 import { getHomeStructuredData } from '../lib/structured/home'
+import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 
 type Props = {
   posts: ArticleType[]
@@ -21,11 +21,12 @@ type Props = {
 
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
+  await refreshAccessToken()
   const stravaActivities = await getStravaActivities()
 
   return {
     props: { posts, stravaActivities },
-    revalidate: 60 * 60 * 24, // 24 hours
+    revalidate: 60 * 60 * 12, // 12 hours
   }
 }
 
