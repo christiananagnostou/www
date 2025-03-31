@@ -159,7 +159,7 @@ const PostItem = styled(motion.div)`
         font-weight: 300;
         width: fit-content;
         font-size: 1rem;
-        color: white;
+        color: #ffffff;
       }
 
       p {

@@ -7,7 +7,7 @@ export const Heading = styled(motion.div)`
   h1 {
     font-size: 1.25rem;
     text-align: left;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   p {

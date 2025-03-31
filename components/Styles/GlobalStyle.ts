@@ -114,8 +114,8 @@ const GlobalStyle = createGlobalStyle`
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     opacity: .95;
-    -webkit-mask-image: linear-gradient(to bottom ,#000 25%,transparent);
-    mask-image: linear-gradient(to bottom ,#000 25%,transparent);
+    -webkit-mask-image: linear-gradient(to bottom ,#000000 25%,transparent);
+    mask-image: linear-gradient(to bottom ,#000000 25%,transparent);
   }
   .custom-focus:focus {
     outline-color: var(--accent);

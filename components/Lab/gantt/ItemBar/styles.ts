@@ -37,7 +37,7 @@ export const BarLabel = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: black;
+  color: #000000;
 `
 
 export const StartLabel = styled.span`

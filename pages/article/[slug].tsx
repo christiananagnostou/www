@@ -100,11 +100,11 @@ const TopBar = styled.div`
     text-decoration: none;
     color: inherit;
     em {
-      font-weight: 400;
+      font-weight: normal;
     }
   }
   .date {
-    font-weight: 400;
+    font-weight: normal;
     font-size: 0.8em;
   }
 `
@@ -146,8 +146,8 @@ export const ArticleStyle = styled(motion.section)`
     h4,
     h5,
     h6 {
-      margin: 2rem 0 0.5rem 0;
-      font-weight: 400;
+      margin: 2rem 0 0.5rem;
+      font-weight: normal;
       color: var(--heading);
     }
 

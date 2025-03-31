@@ -180,14 +180,12 @@ const BookmarkletItem = styled(motion.div)`
     .title {
       margin: 0;
       font-size: 1rem;
-      font-weight: 400;
+      font-weight: normal;
 
       & * {
-        cursor: -webkit-grab;
         cursor: grab;
       }
       & *:active {
-        cursor: -webkit-grabbing;
         cursor: grabbing;
       }
     }

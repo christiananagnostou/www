@@ -98,7 +98,7 @@ const Description = styled(motion.section)`
 
   em {
     font-family: var(--font-serif);
-    font-weight: 400;
+    font-weight: normal;
     letter-spacing: 0.03em;
   }
 

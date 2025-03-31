@@ -9,8 +9,8 @@ export const DailyCalendarStyle = styled.div`
   --blue: #1b72e8;
   --red: #fe2968;
   --resize-bar-bg: var(--bg);
-  --header-curr-date-color: #fff;
-  --daily-event-text-color: #ccc;
+  --header-curr-date-color: #ffffff;
+  --daily-event-text-color: #cccccc;
   --time-bar-width: 3.75rem;
   --hour-bar-height: ${HOUR_BAR_HEIGHT}px;
 

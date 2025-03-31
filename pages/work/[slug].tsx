@@ -115,13 +115,13 @@ const Container = styled(motion.div)`
 
     .live-link {
       font-size: 1rem;
-      color: #ccc;
+      color: #cccccc;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       margin-right: 30px;
 
       &:hover {
-        color: white;
+        color: #ffffff;
       }
     }
   }

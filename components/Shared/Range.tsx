@@ -9,7 +9,7 @@ const trackHeight = '4px'
 const upperColor = 'var(--accent)'
 const lowerColor = 'var(--accent)'
 const thumbColor = 'var(--text)'
-const thumbHoverColor = 'white'
+const thumbHoverColor = '#ffffff'
 const upperBackground = `linear-gradient(to bottom, ${upperColor}, ${upperColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`
 const lowerBackground = `linear-gradient(to bottom, ${lowerColor}, ${lowerColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`
 

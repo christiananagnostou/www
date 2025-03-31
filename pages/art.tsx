@@ -34,7 +34,7 @@ const Art = () => {
 
   const filteredImagesWithIndex = filteredImages.map((item, index) => ({ ...item, index }))
 
-  const columns: typeof filteredImagesWithIndex[] = Array.from({ length: NUM_COLUMNS }, () => [])
+  const columns: (typeof filteredImagesWithIndex)[] = Array.from({ length: NUM_COLUMNS }, () => [])
   filteredImagesWithIndex.forEach((item) => {
     columns[item.index % NUM_COLUMNS].push(item)
   })
@@ -187,7 +187,7 @@ const HoverBox = styled.div`
   transform: translateY(100%);
   transition: transform 0.25s ease-in-out;
   background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
-  padding: 50px 10px 10px 10px;
+  padding: 50px 10px 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -208,7 +208,7 @@ const HoverBox = styled.div`
 
   .title {
     font-size: 1rem;
-    color: white;
+    color: #ffffff;
   }
 
   .date {
@@ -235,7 +235,7 @@ const HoverBox = styled.div`
     min-width: max-content;
 
     &.selected {
-      color: white;
+      color: #ffffff;
       background: var(--accent);
     }
   }
