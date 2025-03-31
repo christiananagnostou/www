@@ -24,6 +24,7 @@ import BaseballOakland from '/public/img/art/photography/baseball_oakland.webp'
 import Basketball from '/public/img/art/photography/basketball.jpg'
 import BayBike from '/public/img/art/photography/bay_bike.jpg'
 import BeachCadillac from '/public/img/art/photography/beach_cadillac.jpg'
+import BikeWhiteBg from '/public/img/art/photography/bike_white_bg.webp'
 import BirdShit from '/public/img/art/photography/bird_shit.jpg'
 import Blizzard from '/public/img/art/photography/blizzard.jpg'
 import BNWBaseball from '/public/img/art/photography/bnw_baseball.jpg'
@@ -133,7 +134,14 @@ export interface ArtImage {
 }
 
 export const ArtImages: ArtImage[] = [
-  // Bike - Jul 2024
+  // Bike
+  {
+    id: 'bike_white_bg',
+    title: 'Byxbee Park',
+    date: '2025-03-30T00:00:00Z',
+    tags: ['Bike'],
+    image: BikeWhiteBg,
+  },
   {
     id: 'bay_bike',
     title: 'Bay Bike',
