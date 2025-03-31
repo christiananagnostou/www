@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Configuration for npm dependencies (Next.js and related packages)
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'saturday'
+
+  # Configuration for GitHub Actions dependencies (e.g., workflow files)
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'saturday'
