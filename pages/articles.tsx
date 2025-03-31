@@ -133,7 +133,6 @@ const PostItem = styled(motion.div)`
   display: flex;
 
   .date {
-    min-width: max-content;
     font-size: 0.7rem;
     font-weight: 300;
     margin-top: 0.7rem;

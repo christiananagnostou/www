@@ -125,7 +125,11 @@ export const DailyEventContainer = styled.div`
   z-index: 1;
   background: var(--red);
   border-radius: 4px;
-  transition: top 50ms ease-in-out, height 50ms ease-in-out, width 150ms ease-in-out, left 150ms ease-in-out;
+  transition:
+    top 50ms ease-in-out,
+    height 50ms ease-in-out,
+    width 150ms ease-in-out,
+    left 150ms ease-in-out;
 
   &.selected {
     z-index: 4;
@@ -181,7 +185,6 @@ export const ResizeBar = styled.div`
 
 export const CurrentTimeBar = styled.div`
   background: var(--red);
-  width: 100%;
   height: 2px;
   position: absolute;
   z-index: 2;

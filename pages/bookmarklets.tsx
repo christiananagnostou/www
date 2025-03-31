@@ -223,16 +223,6 @@ const BookmarkletItem = styled(motion.div)`
     cursor: pointer;
     transition: background 0.2s ease;
 
-    &:hover,
-    &:focus {
-      outline: none;
-      background: #262626;
-
-      .toggle-arrow {
-        color: var(--text);
-      }
-    }
-
     .summary {
       font-size: 0.9rem;
       margin: 0;
@@ -248,6 +238,16 @@ const BookmarkletItem = styled(motion.div)`
       svg {
         height: 1.2em;
         width: 1.2em;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background: #262626;
+
+      .toggle-arrow {
+        color: var(--text);
       }
     }
   }
