@@ -10,6 +10,5 @@ export const getContactStructuredData = () => ({
     '@type': 'ContactPoint',
     contactType: 'customer support',
     availableLanguage: ['English'],
-    // Optionally, add "email": "contact@example.com" if you wish to expose a public email.
   },
 })
