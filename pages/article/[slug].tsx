@@ -177,7 +177,7 @@ export const ArticleStyle = styled(motion.section)`
     }
 
     strong {
-      font-weight: 500;
+      font-weight: bold;
     }
 
     hr {
@@ -190,6 +190,7 @@ export const ArticleStyle = styled(motion.section)`
     ol {
       padding-left: 0.5rem;
       margin-left: 0.5rem;
+      margin-bottom: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
@@ -224,44 +225,55 @@ export const ArticleStyle = styled(motion.section)`
       display: none;
     }
 
-    @media screen and (min-width: 1210px) {
+    @media screen and (min-width: 1300px) {
       nav {
-        width: 200px;
-        font-size: 0.85em;
         display: block;
         position: sticky;
-        right: 100%;
         top: 70px;
-        translate: -100% 7px;
-        height: 0;
+        right: 100%;
+        padding: 0.5rem;
+        background: var(--background);
+        border: 1px solid var(--accent);
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        width: 220px;
+        font-size: 0.8em;
+        float: left;
+        margin-left: calc(-220px - 2rem);
+      }
+      nav ol,
+      nav li {
+        list-style: none;
         margin: 0;
         padding: 0;
-        padding-right: 0.75rem;
-        overflow: visible;
-      }
-      nav ol {
-        list-style: none;
-        margin-left: 0;
-        padding-left: 0rem;
-        text-align: left;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-      }
-      nav li {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+        gap: 0.5rem;
+        line-height: 1.4;
+        width: 100%;
       }
       nav ol ol {
-        padding-left: 1rem;
+        padding-left: 0.75rem;
+        border-left: 1px solid var(--accent);
+        margin-left: 0.5rem;
       }
       nav a {
-        opacity: 0.7;
         text-decoration: none;
+        color: var(--text);
+        padding: 0.3rem 0.5rem;
+        border-radius: 4px;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
       }
       nav a:hover {
-        opacity: 1;
+        background: var(--accent);
+        color: var(--heading);
+      }
+
+      /* Hide empty nav */
+      nav:has(> ol:empty) {
+        display: none;
       }
     }
 
