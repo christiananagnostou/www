@@ -33,6 +33,7 @@ export const Label = styled.label`
 export const ZoomTitle = styled.span`
   margin-right: 0.5rem;
   font-size: 0.875rem;
+  font-weight: 300;
 `
 
 export const ZoomInput = styled.input`
