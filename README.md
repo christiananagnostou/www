@@ -7,7 +7,7 @@ This repo houses my personal site, www.christiancodes.co. It’s a straightforwa
 - [Next.js](https://github.com/vercel/next.js), [React](https://github.com/facebook/react), [TypeScript](https://github.com/microsoft/TypeScript)
 - [Styled Components](https://github.com/styled-components/styled-components), [Framer Motion](https://github.com/framer/motion)
 - [Strava API](https://github.com/node-strava/node-strava-v3)
-- [rehype/remark for articles](https://github.com/rehypejs/rehype) / [remark](https://github.com/remarkjs/remark)
+- [rehype](https://github.com/rehypejs/rehype) / [remark](https://github.com/remarkjs/remark)
 
 ## Setup and Running
 
