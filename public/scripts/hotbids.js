@@ -395,6 +395,10 @@
       flex-direction: var(--flex-direction, row);
     }
 
+    #${ID_MATCH_BOX} {
+      font-weight: 300;
+    }
+
     .${CN_POP_LEFT_POS} {
       --flex-direction: column;
       top: 50% !important; left: 0 !important; right: auto !important;

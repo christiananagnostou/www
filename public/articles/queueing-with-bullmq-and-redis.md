@@ -165,4 +165,4 @@ worker.on('completed', async (job: { data: User }) => {
 
 ## Results
 
-With this setup, the time to update all 2 million users was brought from 11 days down to several hours. Saving energy and time. I hope you learned a thing or two and if you found this article interesting, feel free to hit me up on [GitHub](https://github.com/ChristianAnagnostou) or [X](https://twitter.com/javascramble). Cheers!
+With this setup, the time to update all 2 million users was brought from 11 days down to several hours. Saving energy and time. I hope you learned a thing or two and if you found this article interesting, feel free to hit me up on [GitHub](https://github.com/ChristianAnagnostou) or [X](https://x.com/javascramble). Cheers!

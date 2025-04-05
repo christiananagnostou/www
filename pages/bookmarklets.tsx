@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
@@ -10,6 +10,7 @@ import UpArrow from '../components/SVG/UpArrow'
 import { bookmarkletsData } from '../lib/bookmarklets'
 import { BASE_URL } from '../lib/constants'
 import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
+import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
 
 const PageTitle = 'Bookmarklets | Christian Anagnostou'
 const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
@@ -72,13 +73,13 @@ export default function Bookmarklets() {
                       {icon}
                     </div>
                     <h2 className="title">
-                      <TitleLink
-                        href={code}
+                      <BookmarkletLink
+                        code={code}
                         draggable="true"
                         aria-label={`Drag or click to use the ${title} bookmarklet.`}
                       >
                         {title}
-                      </TitleLink>
+                      </BookmarkletLink>
                     </h2>
 
                     {/* GitHub link */}
@@ -276,18 +277,5 @@ const BookmarkletItem = styled(motion.div)`
     .toggle-area {
       padding: 0.4rem 0.6rem;
     }
-  }
-`
-
-const TitleLink = styled.a`
-  color: var(--heading);
-  text-decoration: none;
-  font-weight: 300;
-  transition: text-decoration 0.2s ease;
-
-  &:hover,
-  &:focus {
-    text-decoration: underline;
-    outline: none;
   }
 `
