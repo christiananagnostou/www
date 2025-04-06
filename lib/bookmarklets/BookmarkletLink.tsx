@@ -25,13 +25,13 @@ export default function BookmarkletLink({
 
 const TitleLink = styled.a`
   color: var(--heading);
-  text-decoration: none;
   font-weight: 300;
-  transition: text-decoration 0.2s ease;
+  text-decoration: underline solid var(--accent);
+  text-underline-offset: 3px;
 
   &:hover,
   &:focus {
-    text-decoration: underline;
+    text-decoration: underline solid var(--text-dark);
     outline: none;
   }
 `
