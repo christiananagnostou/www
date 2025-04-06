@@ -2,6 +2,7 @@
 title: 'Queueing with BullMQ and Redis'
 dateCreated: 'Oct 06, 2023'
 summary: 'Scaling async tasks with concurrency is scary fast'
+coverImg: '/img/articles/queueing-with-bullmq-and-redis/cover-image.webp'
 hidden: false
 categories: 'backend'
 ---

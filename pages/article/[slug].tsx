@@ -10,7 +10,7 @@ import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL, X_HANDLE } from '../../lib/constants'
 import { getArticleStructuredData } from '../../lib/structured/article'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
-import Twitter from '../../components/SVG/Twitter'
+import dayjs from 'dayjs'
 
 interface Props {
   post: ArticleType
@@ -46,7 +46,7 @@ export async function getStaticPaths() {
 }
 
 const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
-  const { title, coverImg, dateCreated, content, summary, slug } = post
+  const { title, coverImg, dateCreated, lastUpdated, content, categories, summary, slug } = post
 
   const PageTitle = `${title} | Christian Anagnostou`
   const PageUrl = `${BASE_URL}/article/${slug}`
@@ -66,6 +66,11 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
         <meta property="og:description" content={summary} />
         {coverImg && <meta property="og:image" content={coverImg} />}
 
+        {dateCreated && <meta property="article:published_time" content={dayjs(dateCreated).toISOString()} />}
+        {lastUpdated && <meta property="article:modified_time" content={dayjs(lastUpdated).toISOString()} />}
+        {post.categories?.map((cat) => <meta key={cat} property="article:tag" content={cat} />)}
+        <meta property="article:author" content="Christian Anagnostou" />
+
         {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content={X_HANDLE} />
@@ -78,6 +83,10 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getArticleStructuredData(post)) }}
         />
+
+        {/* Pagination Links */}
+        {prevArticle && <link rel="prev" href={`${BASE_URL}/article/${prevArticle.slug}`} />}
+        {nextArticle && <link rel="next" href={`${BASE_URL}/article/${nextArticle.slug}`} />}
       </Head>
 
       <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
@@ -96,7 +105,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
 
         <ArticleContent dangerouslySetInnerHTML={{ __html: content }} />
 
-        <ArticleFooter prevArticle={prevArticle || undefined} nextArticle={nextArticle || undefined} />
+        <ArticleFooter prevArticle={prevArticle} nextArticle={nextArticle} />
       </ArticleStyle>
     </>
   )
