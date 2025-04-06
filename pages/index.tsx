@@ -99,7 +99,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
 
 export default Home
 
-const Container = styled(motion.main)`
+const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
   min-height: calc(100vh - var(--nav-height));
   margin: auto;

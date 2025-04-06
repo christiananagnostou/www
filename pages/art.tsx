@@ -100,20 +100,18 @@ const Art = () => {
           {columns.map((colImages, colIndex) => (
             <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS}>
               {colImages.map((item) => (
-                <ImageWrapper
-                  key={item.image.src}
-                  onClick={() => setModalIndex(item.index)}
-                  onKeyDown={(e) => e.key === 'Enter' && setModalIndex(item.index)}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Open full screen image: ${item.title}`}
-                >
+                <ImageWrapper key={item.image.src}>
                   <Image
                     src={item.image}
                     alt={`${item.title} - ${item.date}`}
                     blurDataURL={item.image.blurDataURL}
                     placeholder="blur"
                     layout="responsive"
+                    onClick={() => setModalIndex(item.index)}
+                    onKeyDown={(e) => e.key === 'Enter' && setModalIndex(item.index)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Open full screen image: ${item.title}`}
                   />
 
                   <HoverBox>
@@ -126,10 +124,7 @@ const Art = () => {
                         <button
                           key={tag}
                           className={queriedTag === tag ? 'selected' : ''}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (queriedTag !== tag) router.push({ query: { tag } })
-                          }}
+                          onClick={(e) => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
                         >
                           {tag}
                         </button>

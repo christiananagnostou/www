@@ -49,7 +49,7 @@ const StravaActivities = ({ activities }: Props) => {
   } as const
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
-    <ActivityDetail best={activity.best[type] === 1}>
+    <ActivityDetail $best={activity.best[type] === 1}>
       {AlternateMetricTitles[type]}: <strong>{activity[type]}</strong>
     </ActivityDetail>
   )
@@ -93,7 +93,7 @@ const StravaActivities = ({ activities }: Props) => {
         </ActivityFilters>
       </SectionHeader>
 
-      <ActivityList ref={activityListRef} onMouseDown={handleMouseDown}>
+      <ActivityList ref={activityListRef} onMouseDown={handleMouseDown} tabIndex={0}>
         {activities
           .filter((activity) => (filter ? activity.type === filter : true))
           .map((activity, index) => {
@@ -223,7 +223,7 @@ const ActivityType = styled.div`
   }
 `
 
-const ActivityDetail = styled.p<{ best?: boolean }>`
+const ActivityDetail = styled.p<{ $best?: boolean }>`
   margin: 0.5rem 0;
   color: var(--text-dark);
   font-size: 0.8rem;
@@ -231,7 +231,7 @@ const ActivityDetail = styled.p<{ best?: boolean }>`
   strong {
     font-size: 0.75rem;
     font-weight: 600;
-    color: ${(props) => (props.best ? 'var(--text)' : 'inherit')};
+    color: ${(props) => (props.$best ? 'var(--text)' : 'inherit')};
   }
 `
 

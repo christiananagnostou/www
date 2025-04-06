@@ -44,7 +44,7 @@ const FeaturedProjects = () => (
       target="_blank"
       variants={fade}
     >
-      <Image src={LiftClubLogo} alt="Lift Club logo" />
+      <Image src={LiftClubLogo} alt="Lift Club logo" loading="eager" />
       Lift Club
     </ProjectLink>
 
@@ -54,7 +54,7 @@ const FeaturedProjects = () => (
       target="_blank"
       variants={fade}
     >
-      <Image src={JukeboxLogo} alt="Jukebox logo" className="darker" />
+      <Image src={JukeboxLogo} alt="Jukebox logo" className="darker" loading="eager" />
       Jukebox
     </ProjectLink>
   </Container>

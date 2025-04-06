@@ -41,7 +41,7 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
         onMouseEnter={() => handleRowMouseOver(item.id)}
         onMouseLeave={() => handleRowMouseOver(-1)}
         onClick={() => scrollToDate(item.startDate || dayjs().format('YYYY-MM-DD'), 'smooth')}
-        paddingLeft={paddingLeft}
+        $paddingLeft={paddingLeft}
         height={RowHeight}
       >
         {item.parentId && (
