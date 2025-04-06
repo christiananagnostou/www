@@ -145,7 +145,7 @@ const Nav: React.FC = () => {
         >
           <motion.a href="/" aria-label="Home" variants={fade}>
             <LogoWrapper>
-              <Image src={Logo} alt="Logo" width={30} height={30} />
+              <Image src={Logo} alt="Logo" width={30} height={30} priority loading="eager" />
             </LogoWrapper>
           </motion.a>
 

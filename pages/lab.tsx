@@ -5,6 +5,7 @@ import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
+import { Heading } from '../components/Shared/Heading'
 
 export default function lab() {
   return (
@@ -15,39 +16,57 @@ export default function lab() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <LabItems variants={pageAnimation} initial="hidden" animate="show" exit="exit">
-        {/* Gantt */}
-        <Item variants={fade}>
-          <DateStyle>May 2024</DateStyle>
-          <Inner>
-            <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
-          </Inner>
-        </Item>
+      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+        <Heading variants={fade}>
+          <h1>Lab</h1>
+          <p>
+            My playground for UI experiments — where ideas take shape, break apart, and come together again in
+            unexpected ways. My custom-built components are crafted carefully for performance and polish. Some are
+            inspired by professional projects, others by in-the-moment curiosity.
+          </p>
+        </Heading>
 
-        {/* Calendar */}
-        <Item variants={fade}>
-          <DateStyle>Apr 2024</DateStyle>
-          <Inner>
-            <DailyCalendar />
-          </Inner>
-        </Item>
-      </LabItems>
+        <LabItems>
+          {/* Gantt */}
+          <Item variants={fade}>
+            <DateStyle>May 2024</DateStyle>
+            <Inner>
+              <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
+            </Inner>
+          </Item>
+
+          {/* Calendar */}
+          <Item variants={fade}>
+            <DateStyle>Apr 2024</DateStyle>
+            <Inner>
+              <DailyCalendar />
+            </Inner>
+          </Item>
+        </LabItems>
+      </Container>
     </>
   )
 }
 
-const LabItems = styled(motion.div)`
+const Container = styled(motion.div)`
+  overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 2rem 1rem;
-  margin: auto;
+  padding: 0 1rem;
+  margin: 2rem auto;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem 4rem;
+  }
+`
+
+const LabItems = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 4rem;
 
   @media (max-width: 768px) {
     gap: 2rem;
-    padding: 2rem 0.5rem 4rem;
   }
 `
 

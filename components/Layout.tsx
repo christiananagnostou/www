@@ -1,8 +1,8 @@
-import Nav from "./Nav";
+import Nav from './Nav'
 
 interface Props {
-  children?: React.ReactNode;
-  title?: string;
+  children?: React.ReactNode
+  title?: string
 }
 
 const Layout = ({ children }: Props) => {
@@ -11,9 +11,11 @@ const Layout = ({ children }: Props) => {
       <Nav />
       <div className="blur" aria-hidden="true" />
 
-      {children}
+      <main id="main-content" tabIndex={-1}>
+        {children}
+      </main>
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
