@@ -6,13 +6,14 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
-import MiddleRow from '../components/Home/MiddleRow'
 import StravaActivities from '../components/Home/StravaActivities'
 import SocialLinks from '../components/SocialLinks'
 import { ArticleType, getAllPosts } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
 import { getHomeStructuredData } from '../lib/structured/home'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
+import RecentArt from '../components/Home/RecentArt'
+import RecentArticles from '../components/Home/RecentArticles'
 
 type Props = {
   posts: ArticleType[]
@@ -72,7 +73,10 @@ const Home = ({ posts, stravaActivities }: Props) => {
         <div className="page-inner-container">
           <Bio />
 
-          <MiddleRow posts={posts} />
+          <MiddleSection>
+            <RecentArt />
+            <RecentArticles posts={posts} />
+          </MiddleSection>
 
           <StravaActivities activities={stravaActivities} />
 
@@ -121,4 +125,14 @@ const FlexWrap = styled(motion.section)`
   gap: 1rem;
   flex-wrap: wrap;
   width: 100%;
+`
+
+const MiddleSection = styled.section`
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `
