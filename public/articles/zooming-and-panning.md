@@ -7,13 +7,15 @@ hidden: false
 categories: 'frontend'
 ---
 
-![Window Drawing](/img/articles/zooming-scaling/window-drawing.webp)
-
 Zooming and panning: to two common user interactions that allow users to manipulate and navigate content on a webpage.
 
 Zooming involves changing the scale or magnification level of the content, making it appear larger or smaller. Zooming can be implemented using CSS properties like `transform: scale()` and some added JavaScript to modify the size and layout of the elements dynamically.
 
 Panning involves moving the visible area of content within a fixed viewport. This allows users to explore content that exceeds the available space by dragging or swiping in any direction. Typically, panning is implemented by utilizing `transform: translate(x,y)` with JavaScript to capture user input and adjust the content's position within the container.
+
+---
+
+![Window Drawing](/img/articles/zooming-scaling/window-drawing.webp)
 
 ---
 

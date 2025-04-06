@@ -33,13 +33,21 @@ However, since bookmarklets run arbitrary JavaScript, there's a real security ri
 
 ## React Doesn’t Like `javascript:` URLs
 
-React specifically blocks direct assignment of `javascript:` URLs to `href` attributes because of security reasons. Try it, and you'll see an error.
+React specifically blocks direct assignment of `javascript:` URLs to `href` attributes because of security reasons. Try adding this code to your component:
+
+```html
+<a href="javascript:">Bookmarklet</a>
+```
+
+And you'll see an error like this:
+
+![Javascript Blocked Error](/img/articles/bookmarklets/javascript-blocked.webp)
 
 The workaround? Set the `href` attribute using a React ref after the component has mounted. That way, React won't complain, and your bookmarklet link will work as expected.
 
 ---
 
-## Bookmarklets with React and TypeScript
+## The Solution: React ref
 
 Here's a quick example component to handle bookmarklets with React and TypeScript:
 
@@ -85,11 +93,9 @@ const highlightCode = `javascript:(function(){
 export default function App() {
   return (
     <div>
-      <h1>My Bookmarklets</h1>
       <p>Drag the link below to your bookmarks bar:</p>
-      <BookmarkletLink code={highlightCode} draggable="true" aria-label="Highlight page elements">
-        Highlight Elements
-      </BookmarkletLink>
+
+      <BookmarkletLink code={highlightCode}>Highlight Page Elements</BookmarkletLink>
     </div>
   )
 }

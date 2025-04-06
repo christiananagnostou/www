@@ -11,8 +11,8 @@ import { ArticleType, getAllPosts } from '../lib/articles'
 import { BASE_URL, X_HANDLE } from '../lib/constants'
 import { getArticlesListStructuredData } from '../lib/structured/articles'
 
-const PageTitle = 'Articles | Christian Anagnostou'
-const PageDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
+export const PageTitle = 'Articles | Christian Anagnostou'
+export const PageDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
 const PageUrl = `${BASE_URL}/articles`
 
 type Props = {
