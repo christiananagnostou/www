@@ -7,7 +7,7 @@ hidden: false
 categories: 'frontend'
 ---
 
-Bookmarklets are basically tiny JavaScript snippets that you run on any webpage just by clicking a bookmark. In this article, we'll dive into creating bookmarklets with React—looking at why they're awesome, where they fall short, and how to work around React's built-in security to implement them effectively.
+In a nutshell, Bookmarklets are JavaScript snippets that you run on any webpage just by clicking a bookmark. I find them to be quite useful so I'll break down why they're great, where they fall short, and how to work around React's built-in security to implement them effectively.
 
 ---
 
@@ -19,13 +19,11 @@ A bookmarklet is a bookmark stuffed with JavaScript code instead of a normal URL
 
 ## Why Should You Care?
 
-However, since bookmarklets run arbitrary JavaScript, there's a real security risk if they're mishandled. Plus, React doesn't let you directly set javascript: URLs in JSX, as a safety measure against potential XSS attacks.
+Bookmarklets make you feel like a true hacker, which that alone makes them worth using. Along with that, they are particularly useful for:
 
-Bookmarklets can be super useful, particularly for:
-
-- **Quick Actions:** Instantly tweak pages or automate repetitive tasks.
-- **Debugging:** Quickly testing scripts or adjusting styles.
-- **Universal Tools:** Handy utilities that run anywhere without needing browser extensions.
+- Instantly tweaking pages or automating repetitive tasks.
+- Quickly testing scripts or adjusting styles.
+- Handy utilities that run anywhere without needing browser extensions.
 
 However, since bookmarklets run arbitrary JavaScript, there's a real security risk if they're mishandled. Plus, React doesn't let you directly set `javascript:` URLs in JSX, as a safety measure against potential XSS attacks.
 
