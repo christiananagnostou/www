@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { connectRedis, redisClient } from '../../../../db/redis'
 
-// Define response types
 type LikesResponse = {
   likes: number
 }

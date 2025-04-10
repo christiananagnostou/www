@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react' // Added useEffect
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
-import { BASE_URL } from '../../lib/constants'
+import { BASE_URL, ENV } from '../../lib/constants'
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
@@ -35,10 +35,16 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug)
   const content = await markdownToHtml(post.content || '')
 
+  let likes = 0
+
   const URL = `${BASE_URL}/api/articles/likes/${params.slug}`
-  const likesResponse = await fetch(URL)
-  const likesData = await likesResponse.json()
-  const likes = likesData.likes || 0
+  try {
+    const likesResponse = await fetch(URL)
+    const likesData = await likesResponse.json()
+    likes = likesData.likes || 0
+  } catch (error) {
+    console.error(`Error fetching likes for ${params.slug}:`, error)
+  }
 
   const posts = getAllPosts()
   const currentIndex = posts.findIndex((p) => p.slug === params.slug)
