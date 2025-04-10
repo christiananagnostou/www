@@ -71,7 +71,6 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const { title, content, dateCreated, slug, likes } = post
   const [copied, setCopied] = useState(false)
   const [liked, setLiked] = useState(false) // Client-side like state
-  const [likeCount, setLikeCount] = useState(likes) // Client-side like counter
   const PageUrl = `${BASE_URL}/article/${slug}`
 
   // Load liked state from localStorage on mount
@@ -94,7 +93,6 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     if (!liked) {
       const res = await fetch(`/api/articles/likes/${slug}`, { method: 'POST' })
       const data = await res.json()
-      setLikeCount(data.likes)
       setLiked(true)
 
       // Store liked state in localStorage
@@ -136,7 +134,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
               </CopyButton>
               <CopyButton aria-label="Like" title="Like" onClick={handleLike}>
                 {liked ? <HeartFull /> : <HeartEmpty />}
-                <span>{likeCount}</span>
+                <span>{liked ? likes + 1 : likes}</span>
               </CopyButton>
             </div>
           </div>
