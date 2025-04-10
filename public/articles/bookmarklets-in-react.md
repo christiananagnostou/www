@@ -21,9 +21,9 @@ A bookmarklet is a bookmark stuffed with JavaScript code instead of a normal URL
 
 Bookmarklets make you feel like a true hacker, which that alone makes them worth using. Along with that, they are particularly useful for:
 
-- Instantly tweaking pages or automating repetitive tasks
-- Quickly testing scripts or adjusting styles
-- Handy utilities that run anywhere without needing browser extensions
+- Instantly tweaking pages or automating repetitive tasks.
+- Quickly testing scripts or adjusting styles.
+- Handy utilities that run anywhere without needing browser extensions.
 
 However, since bookmarklets run arbitrary JavaScript, there's a real security risk if they're mishandled. Plus, React doesn't let you directly set `javascript:` URLs in JSX, as a safety measure against potential XSS attacks.
 
@@ -103,19 +103,19 @@ The JavaScript URL gets set after mounting, bypassing React's security measures.
 
 ---
 
-## Pros and Cons
+## Bookmarklets: Pros and Cons
 
 ### Why They're Great
 
-- Run them on any website instantly
-- Trigged with a quick click
-- Great for scripted plugins, custom UI, and debugging
+- **Portable:** Run them on any website instantly.
+- **Simple:** Usually just one click away.
+- **Flexible:** Great for temporary scripts, quick fixes, or debugging.
 
 ### Downsides to Remember
 
-- You're running arbitrary code
-- Might break if a site's structure changes
-- Directly embedding `javascript:` URLs isn’t allowed
+- **Security:** Careful! You're running arbitrary code.
+- **Fragile:** Bookmarklets might break if a site's structure changes.
+- **React Security:** Directly embedding `javascript:` URLs isn’t allowed.
 
 ---
 
