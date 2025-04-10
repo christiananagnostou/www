@@ -45,7 +45,6 @@ export const TopBar = styled.div`
 `
 
 export const CopyButton = styled(motion.button)`
-  border: none;
   background: transparent;
   border: 1px solid var(--accent);
   color: inherit;
