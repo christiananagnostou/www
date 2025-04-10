@@ -63,7 +63,7 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
       prevArticle,
       nextArticle,
     },
-    revalidate: 60, // Revalidate every 60 seconds to update likes
+    revalidate: 60 * 60, // Revalidate every hour
   }
 }
 
