@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState, useEffect } from 'react' // Added useEffect
+import { useState, useEffect } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL, ENV } from '../../lib/constants'
@@ -12,6 +12,7 @@ import HeartEmpty from '../../components/SVG/HeartEmpty'
 import ArticleHead from '../../components/Articles/ArticleHead'
 import { ArticleStyle, TopBar, CopyButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
+import { getLikes } from '../../lib/articles/likes'
 
 interface ArticleWithLikes extends ArticleType {
   likes: number
@@ -35,23 +36,12 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug)
   const content = await markdownToHtml(post.content || '')
 
-  let likes = 0
-
-  const URL = `${BASE_URL}/api/articles/likes/${params.slug}`
-  try {
-    const likesResponse = await fetch(URL)
-    const likesData = await likesResponse.json()
-    likes = likesData.likes || 0
-  } catch (error) {
-    console.error(`Error fetching likes for ${params.slug}:`, error)
-  }
+  const likes = await getLikes(params.slug)
 
   const posts = getAllPosts()
   const currentIndex = posts.findIndex((p) => p.slug === params.slug)
-
   const prevArticle =
     currentIndex > 0 ? { slug: posts[currentIndex - 1].slug, title: posts[currentIndex - 1].title } : null
-
   const nextArticle =
     currentIndex < posts.length - 1
       ? { slug: posts[currentIndex + 1].slug, title: posts[currentIndex + 1].title }
@@ -70,14 +60,15 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
 const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const { title, content, dateCreated, slug, likes } = post
   const [copied, setCopied] = useState(false)
-  const [liked, setLiked] = useState(false) // Client-side like state
+  const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(likes)
   const PageUrl = `${BASE_URL}/article/${slug}`
 
-  // Load liked state from localStorage on mount
   useEffect(() => {
     const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
-    setLiked(!!likedArticles[slug]) // Set liked if slug exists in localStorage
-  }, [slug])
+    setLiked(!!likedArticles[slug])
+    setLikeCount(likes)
+  }, [slug, likes])
 
   const copyUrl = () => {
     navigator.clipboard
@@ -93,9 +84,9 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     if (!liked) {
       const res = await fetch(`/api/articles/likes/${slug}`, { method: 'POST' })
       const data = await res.json()
+      setLikeCount(data.likes) // Update with new server value
       setLiked(true)
 
-      // Store liked state in localStorage
       const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
       likedArticles[slug] = true
       localStorage.setItem('likedArticles', JSON.stringify(likedArticles))
@@ -134,7 +125,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
               </CopyButton>
               <CopyButton aria-label="Like" title="Like" onClick={handleLike}>
                 {liked ? <HeartFull /> : <HeartEmpty />}
-                <span>{liked ? likes + 1 : likes}</span>
+                <span>{likeCount}</span>
               </CopyButton>
             </div>
           </div>

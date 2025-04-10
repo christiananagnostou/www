@@ -1,13 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { connectRedis, redisClient } from '../../../../db/redis'
+import { getLikes, incrementLikes } from '../../../../lib/articles/likes'
 
-type LikesResponse = {
-  likes: number
-}
-
-type ErrorResponse = {
-  error: string
-}
+type LikesResponse = { likes: number }
+type ErrorResponse = { error: string }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LikesResponse | ErrorResponse>) {
   const { articleId } = req.query as { articleId: string }
@@ -17,18 +12,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    await connectRedis()
-    const key = `likes:${articleId}`
-
     if (req.method === 'GET') {
-      const likes = await redisClient.get(key)
-      return res.status(200).json({ likes: Number(likes) || 0 })
+      const likes = await getLikes(articleId)
+      return res.status(200).json({ likes })
     }
 
     if (req.method === 'POST') {
-      const currentLikes = await redisClient.get(key)
-      const newLikes = (Number(currentLikes) || 0) + 1
-      await redisClient.set(key, newLikes)
+      const newLikes = await incrementLikes(articleId)
       return res.status(200).json({ likes: newLikes })
     }
 
