@@ -10,7 +10,7 @@ import ChainLink from '../../components/SVG/ChainLink'
 import Checkmark from '../../components/SVG/Checkmark'
 import HeartEmpty from '../../components/SVG/HeartEmpty'
 import ArticleHead from '../../components/Articles/ArticleHead'
-import { ArticleStyle, TopBar, CopyButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
+import { ArticleStyle, TopBar, TopBarButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
 import { getLikes } from '../../lib/articles/likes'
 
@@ -107,7 +107,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
           <div className="top-bar__right-side">
             <p className="date">{dateCreated}</p>
             <div className="top-bar__right-side__buttons">
-              <CopyButton
+              <TopBarButton
                 onClick={copyUrl}
                 aria-label="Copy URL"
                 title="Copy URL"
@@ -122,11 +122,11 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
                 ) : (
                   <ChainLink />
                 )}
-              </CopyButton>
-              <CopyButton aria-label="Like" title="Like" onClick={handleLike}>
+              </TopBarButton>
+              <TopBarButton aria-label="Like" title="Like" onClick={handleLike}>
                 {liked ? <HeartFull /> : <HeartEmpty />}
                 <span>{likeCount}</span>
-              </CopyButton>
+              </TopBarButton>
             </div>
           </div>
         </TopBar>
