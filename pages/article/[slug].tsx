@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
-import { BASE_URL, ENV } from '../../lib/constants'
+import { BASE_URL } from '../../lib/constants'
 import { pageAnimation } from '../../components/animation'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
@@ -84,7 +84,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     if (!liked) {
       const res = await fetch(`/api/articles/likes/${slug}`, { method: 'POST' })
       const data = await res.json()
-      setLikeCount(data.likes) // Update with new server value
+      setLikeCount(data.likes)
       setLiked(true)
 
       const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
