@@ -27,7 +27,7 @@
     "rehype-stringify": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "sharp": "^0.34.0",
+    "sharp": "^0.34.1",
     "strava-v3": "^2.2.1",
     "styled-components": "^6.1.17",
     "unified": "^11.0.5"
