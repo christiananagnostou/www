@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { Project } from '../../types'
+import { ProjectType } from '../../lib/projects'
 import { fade, lineAnim } from '../animation'
 
 type Props = {
-  project: Project
+  project: ProjectType
 }
 
 const ProjectTile = ({ project }: Props) => {
