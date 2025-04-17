@@ -6,10 +6,10 @@ import styled from 'styled-components'
 
 import { pageAnimation } from '../../components/animation'
 import { ProjectState } from '../../lib/projects'
-import { Project } from '../../types'
+import { ProjectType } from '../../lib/projects'
 
 type Props = {
-  project: Project
+  project: ProjectType
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

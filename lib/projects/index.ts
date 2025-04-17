@@ -1,5 +1,4 @@
-import { Project } from '../../types'
-
+import { StaticImageData } from 'next/image'
 // Jukebox
 import JukeboxArtists from '/public/img/projects/jukebox/artists.webp'
 import JukeboxCollage from '/public/img/projects/jukebox/collage.webp'
@@ -51,7 +50,20 @@ import NeoLogosMobile2 from '/public/img/projects/neologos/neologos-mobile2.jpg'
 import LofiWavesDesktop from '/public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '/public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 
-export const ProjectState: Project[] = [
+export interface ProjectType {
+  title: string
+  date: string
+  tags: string[]
+  desktopImgs: StaticImageData[]
+  mobileImgs: StaticImageData[]
+  externalLink?: string
+  github?: string
+  slug: string
+  summary: string
+  details: { title: string; description: string }[]
+}
+
+export const ProjectState: ProjectType[] = [
   {
     title: 'Jukebox',
     date: 'Jun 2023',
