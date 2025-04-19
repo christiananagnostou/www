@@ -8,7 +8,7 @@ interface SpeedometerProps {
   diameter?: number
 }
 
-const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 300 }) => {
+const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 280 }) => {
   // Motion values
   const throttleMv = useMotionValue(0)
   const speedMv = useMotionValue(0)
@@ -31,23 +31,23 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 30
     return Math.min(Math.max(throttle, 0), 1)
   }
 
-  const updateThrottle = (y: number) => {
+  const updateThrottle = (y: number, duration: number) => {
     const targetThrottle = calculateThrottle(y)
     animate(throttleMv, targetThrottle, {
-      type: 'spring',
-      stiffness: 300,
-      damping: 30,
+      type: 'tween',
+      duration,
+      ease: 'easeOut',
     })
   }
 
   const onMove = (e: MouseEvent | TouchEvent) => {
     if ('touches' in e) e.preventDefault() // Prevent page scrolling on mobile
     const y = 'touches' in e ? e.touches[0].clientY : e.clientY
-    updateThrottle(y)
+    updateThrottle(y, 0)
   }
 
   const onEnd = () => {
-    animate(throttleMv, 0, { type: 'spring', stiffness: 240, damping: 34 })
+    updateThrottle(pedalRef.current?.getBoundingClientRect().bottom || 0, 0.2)
     document.body.removeEventListener('mousemove', onMove)
     document.body.removeEventListener('touchmove', onMove)
     document.body.removeEventListener('mouseup', onEnd)
@@ -57,7 +57,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 30
   const onThrottleStart = (event: React.MouseEvent | React.TouchEvent) => {
     const nativeEvent = event.nativeEvent
     const y = 'touches' in nativeEvent ? nativeEvent.touches[0].clientY : nativeEvent.clientY
-    updateThrottle(y)
+    updateThrottle(y, 0.2)
 
     document.body.addEventListener('mousemove', onMove, { passive: false })
     document.body.addEventListener('touchmove', onMove, { passive: false })
@@ -93,7 +93,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 30
   }, [maxSpeed, throttleMv, speedMv])
 
   return (
-    <DashboardPanel>
+    <DashboardPanel $size={diameter}>
       <Dial speed={speed} maxSpeed={maxSpeed} diameter={diameter} />
 
       <Readout>
@@ -104,16 +104,10 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 30
 
       <ThrottleBar throttle={throttle} />
 
-      <PedalBtn
-        ref={pedalRef}
-        aria-label="Gas pedal"
-        onMouseDown={onThrottleStart}
-        onTouchStart={onThrottleStart}
-        whileTap={{ scaleY: 0.92 }}
-      >
+      <PedalBtn ref={pedalRef} aria-label="Gas pedal" onMouseDown={onThrottleStart} onTouchStart={onThrottleStart}>
         <PedalFace
-          animate={{ y: throttle * 14, rotateX: throttle * 20 }}
-          transition={{ type: 'spring', stiffness: 360, damping: 32 }}
+          animate={{ y: throttle * 14, rotateX: throttle * 45 }}
+          transition={{ type: 'tween', duration: 0.05 }}
         />
       </PedalBtn>
     </DashboardPanel>

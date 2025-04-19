@@ -8,11 +8,12 @@ interface DialProps {
   diameter: number
 }
 
-const TICK_MAJOR = 18
-const TICK_MED = 14
-const TICK_MINOR = 10
-
 const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
+  // Tick sizes
+  const TICK_MAJOR = diameter * 0.06
+  const TICK_MED = diameter * 0.045
+  const TICK_MINOR = diameter * 0.03
+
   const needleMv = useMotionValue(0) // Initialize to 0
 
   const startAngle = -135
@@ -49,7 +50,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
   const labelRadius = radius - 45
 
   // Redline – from ~80% to 100% of scale
-  const redStart = startAngle + 0.82 * angleRange
+  const redStart = startAngle + 0.8181 * angleRange
   const redEnd = startAngle + 1.0 * angleRange
 
   return (
