@@ -36,7 +36,11 @@ export const RedlineArc = styled.div<{ $size: number; $start: number; $end: numb
   );
   pointer-events: none;
   filter: drop-shadow(0 0 4px var(--accent-light));
-  mask-image: radial-gradient(circle, transparent ${({ $size }) => $size / 3}px, black ${({ $size }) => $size / 2}px);
+  mask-image: radial-gradient(
+    circle,
+    transparent ${({ $size }) => $size / 3}px,
+    var(--black) ${({ $size }) => $size / 2}px
+  );
 `
 
 export const Tick = styled.div<{ $major: boolean; $len: number }>`
@@ -135,7 +139,6 @@ export const PedalBtn = styled(motion.button)`
   border: none;
   background: var(--accent);
   cursor: pointer;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,8 +150,8 @@ export const PedalFace = styled(motion.div)`
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  background: linear-gradient(145deg, #555, #333);
-  border: 3px solid #222;
+  background: linear-gradient(145deg, #555555, #333333);
+  border: 3px solid #222222;
   box-shadow:
     inset 0 0 12px rgba(0, 0, 0, 0.7),
     0 4px 8px rgba(0, 0, 0, 0.5);
@@ -205,7 +208,7 @@ export const DashboardPanel = styled.div`
   --pedal-w: 80px;
   --pedal-h: 120px;
   --accent-light: #be4242;
-  --accent-dim: #555;
+  --accent-dim: #555555;
   --white-10: rgba(255, 255, 255, 0.1);
   --gray-dark: #333333;
   --gray-darker: #111111;
@@ -213,7 +216,7 @@ export const DashboardPanel = styled.div`
   --gray-light: #b7b7b7;
   --black: #000000;
   --needle-color: #0091d9;
-  --white: white;
+  --white: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.7);
 
   * {
