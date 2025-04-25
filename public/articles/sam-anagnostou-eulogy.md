@@ -92,6 +92,8 @@ Gus and I ran backyard carnivals for years. One of our signature attractions was
 
 These carnivals drew kids from blocks away. Parents, however, were less thrilled—mostly about how much money their kids spent. Our dad was our supplier, stocking us with candy and prizes. He’d sit me down with my candy list and say, “This costs me 3 cents. I’m in business, so I’ll have to sell it to you for 5 cents.” This is where the Business School of George Anagnostou all started.
 
+---
+
 ## Pranks
 
 Sam was one of the biggest pranksters, along with our brother Gus.
@@ -99,8 +101,6 @@ Sam was one of the biggest pranksters, along with our brother Gus.
 - Athens Greece car story
 
 - Maryland Market twinkie story
-
-  - End with wrong diet
 
 - Gus & Sam Harley Tahoe ride
 
