@@ -1,8 +1,8 @@
 ---
 title: "Sam Anagnostou's Eulogy"
 dateCreated: 'Apr 22, 2025'
-# coverImg: 'folder-in-public-article-images/image-name.webp'
-summary: ''
+coverImg: '/img/articles/sam-anagnostou-eulogy/sam-anagnostou.webp'
+summary: 'The real story of Sam Anagnostou, in the words of his brother, John Anagnostou'
 hidden: false
 nolist: true
 ---
