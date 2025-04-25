@@ -12,6 +12,7 @@ export interface ArticleType {
   coverImg?: string
   summary?: string
   hidden?: boolean
+  nolist?: boolean
   categories?: string[]
 }
 
@@ -37,11 +38,12 @@ export function getPostBySlug(slug: string) {
   return items
 }
 
-export function getAllPosts() {
+export function getAllPosts({ allowNoList = false } = {}): ArticleType[] {
   const slugs = getPostSlugs()
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
     .filter((post) => !post.hidden)
+    .filter((post) => allowNoList || !post.nolist)
     // sort posts newest to oldest
     .sort((post1, post2) => (dayjs(post1.dateCreated).isBefore(dayjs(post2.dateCreated)) ? 1 : -1))
   return posts

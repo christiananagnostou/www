@@ -25,7 +25,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts()
+  const posts = getAllPosts({ allowNoList: true })
   return {
     paths: posts.map((post) => ({ params: { slug: post.slug } })),
     fallback: false,

@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let projects: ProjectType[] = []
 
   try {
-    articles = getAllPosts()
+    articles = getAllPosts({ allowNoList: true })
     projects = ProjectState
   } catch (err) {
     console.error('Failed to build sitemap:', err)
