@@ -12,7 +12,7 @@ interface ArticleHeadProps {
 
 const ArticleHead = ({ post, prevArticle, nextArticle }: ArticleHeadProps) => {
   const { title, coverImg, dateCreated, lastUpdated, summary, slug, categories } = post
-  const PageTitle = `${title} | Christian Anagnostou`
+  const PageTitle = `${title}`
   const PageUrl = `${BASE_URL}/article/${slug}`
 
   return (
