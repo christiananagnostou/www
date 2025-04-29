@@ -140,6 +140,15 @@ export const ArticleContent = styled.article`
     border-bottom: 1px solid var(--accent);
   }
 
+  code {
+    padding: 3px 5px;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
   ul,
   ol {
     padding-left: 0.5rem;
