@@ -144,7 +144,7 @@ export const ArticleContent = styled.article`
     padding: 3px 5px;
     max-width: 100%;
     white-space: pre-wrap;
-    word-break: break-word;
+    word-break: keep-all;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.2);
   }
