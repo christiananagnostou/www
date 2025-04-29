@@ -1,13 +1,13 @@
 ---
-title: 'Optimizing Next.js Middleware'
+title: 'Stop Overpaying for Next.js Middleware'
 dateCreated: 'Mar 30, 2025'
 summary: 'Avoid unnecessary Next.js middleware invocations and keep your hosting bills under control'
-coverImg: '/img/articles/nextjs-middleware/optimize-middleware.webp'
+coverImg: '/img/articles/optimizing-nextjs-middleware/optimize-middleware.webp'
 hidden: false
 categories: 'frontend'
 ---
 
-Next.js middleware is great for handling authentication, redirects, and personalization right at the edge. But there’s a cost hidden in that convenience: middleware gets invoked on _every_ matching request. Even requests that you might not expect—which can quickly balloon your usage (and your hosting bill) if you're not careful.
+Next.js middleware is great for handling authentication, redirects, and personalization right at the edge. But there’s a cost hidden in that convenience: middleware gets invoked on _every_ matching request. Even requests that you might not expect—which can quickly balloon your invocation count (and your hosting bill) if you're not careful.
 
 ## Every Invocation Counts
 
