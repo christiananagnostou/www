@@ -83,16 +83,18 @@ export default function Bookmarklets() {
                     </h2>
 
                     {/* GitHub link */}
-                    <a
-                      href={githubUrl}
-                      aria-label={`View the ${title} bookmarklet on GitHub.`}
-                      className="github-url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Github />
-                      Code
-                    </a>
+                    {githubUrl && (
+                      <a
+                        href={githubUrl}
+                        aria-label={`View the ${title} bookmarklet on GitHub.`}
+                        className="github-url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Github />
+                        Source
+                      </a>
+                    )}
                   </div>
 
                   {/* Toggleable description (button) */}

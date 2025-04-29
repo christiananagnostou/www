@@ -1,4 +1,4 @@
-import { MoneyMagnify } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify, Pokeball } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
@@ -20,5 +20,70 @@ export const bookmarkletsData = [
       1. Search for an item on eBay.
       2. Click the HotBids bookmarklet.
       3. Enjoy!`,
+  },
+  {
+    title: 'PokeBattle',
+    description:
+      'Simplifies the Pokémon Vortex battle interface by hiding unnecessary elements and enlarging buttons for quicker navigation.',
+    icon: Pokeball,
+    code: `
+      javascript:(function(){
+        var style = document.createElement('style');
+        style.innerHTML = \`
+          /* Hide unnecessary elements to declutter the battle interface */
+          h3,
+          #pokeChoose,
+          #opponentPoke,
+          #disclaimer-container,
+          .battleView *:not(input[type='submit']) {
+            display: none !important;
+          }
+
+          /* Style buttons for easier clicking */
+          .button-small,
+          .menu-tab:first-of-type {
+            width: 100%;
+            background: linear-gradient(#d10101, #900101);
+            padding: 5rem !important;
+          }
+        \`;
+        document.head.appendChild(style);
+      })();`,
+    instructions: `
+      Like a true nerd, I've been playing Pokemon Vortex, an OG web-based pokemon game, since the game debuted as Pokemon Crater 2007. To make the game a little easier for those that need *bigger buttons*, this bookmarklet is just what you need. It makes the buttons bigger so that you can fly through battles and get that precious XP.
+      -
+      Instructions:
+      1. Start a battle in Pokemon Vortex.
+      2. Click the PokeBattle bookmarklet.
+      3. The interface will be simplified, hiding unnecessary elements and enlarging buttons for easier clicking.`,
+  },
+  {
+    title: 'GlassBreaker',
+    description:
+      'Bypasses the content wall popup and fixes scrolling issues on Glassdoor, allowing uninterrupted access to reviews.',
+
+    icon: BrokenGlass,
+    code: `
+      javascript:(function(){
+        var style = document.createElement('style');
+        style.innerHTML = \`
+          #HardsellOverlay {
+            display: none;
+          }
+          body {
+            overflow: auto !important;
+            position: static !important;
+            height: auto !important;
+          }
+        \`;
+        document.head.appendChild(style);
+      })();`,
+    instructions: `
+      Access Glassdoor reviews without interruptions by removing the content wall popup and fixing scrolling issues.
+      -
+      Instructions:
+      1. Navigate to a Glassdoor review page.
+      2. Click the Glassdoor Unblocker bookmarklet.
+      3. The content wall will be hidden and scrolling will be restored...like it should be`,
   },
 ]
