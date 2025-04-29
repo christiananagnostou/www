@@ -11,7 +11,7 @@ type Props = {
   activities: StravaActivity[]
 }
 
-const activityIcons = {
+const ActivityIcons = {
   Swim: swim(),
   Ride: ride(),
   Run: run(),
@@ -19,6 +19,14 @@ const activityIcons = {
   Hike: hike(),
   Zwift: zwift(),
   Walk: run(),
+} as const
+
+const AlternateMetricTitles = {
+  MovingTime: 'Time',
+  Distance: 'Distance',
+  Pace: 'Pace',
+  AverageSpeed: 'Avg Speed',
+  ElevationGain: 'Elevation Gain',
 } as const
 
 const StravaActivities = ({ activities }: Props) => {
@@ -29,24 +37,21 @@ const StravaActivities = ({ activities }: Props) => {
 
   if (!activities?.length) return null
 
-  const renderFilterButton = (type: keyof typeof activityIcons) => (
+  const activityCounts = activities.reduce<Record<string, number>>((acc, act) => {
+    acc[act.type] = (acc[act.type] ?? 0) + 1
+    return acc
+  }, {})
+
+  const renderFilterButton = (type: keyof typeof ActivityIcons) => (
     <ActivityFilter
       variants={fade}
-      title={type}
+      title={`${type} (${activityCounts[type] ?? 0})`}
       className={filter === type ? 'active' : ''}
       onClick={() => setFilter(filter === type ? '' : type)}
     >
-      {activityIcons[type]}
+      {ActivityIcons[type]}
     </ActivityFilter>
   )
-
-  const AlternateMetricTitles = {
-    MovingTime: 'Time',
-    Distance: 'Distance',
-    Pace: 'Pace',
-    AverageSpeed: 'Avg Speed',
-    ElevationGain: 'Elevation Gain',
-  } as const
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
     <ActivityDetail $best={activity.best[type] === 1}>
@@ -103,7 +108,7 @@ const StravaActivities = ({ activities }: Props) => {
 
             return (
               <ActivityItem key={index} variants={fade}>
-                <ActivityType title={activity.type}>{activityIcons[activity.type] || activity.type}</ActivityType>
+                <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
                 {activity.MapPolyline && (
                   <MapContainer>

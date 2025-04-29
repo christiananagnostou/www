@@ -12,9 +12,9 @@ type ArticlesProps = {
 export default function RecentArticles({ posts }: ArticlesProps) {
   return (
     <ArticlesContainer variants={staggerFade}>
-      <motion.p variants={fade} className="homepage-box__title">
+      <LinkTitle href="/articles" variants={fade} className="homepage-box__title">
         Articles
-      </motion.p>
+      </LinkTitle>
 
       <ul>
         {posts.slice(0, 3).map((article) => (
@@ -30,14 +30,16 @@ export default function RecentArticles({ posts }: ArticlesProps) {
   )
 }
 
+const LinkTitle = styled(motion(Link))``
+
 const ArticlesContainer = styled(HomepageBox)`
   min-width: 70%;
   flex: 1;
+  color: var(--text);
 
   ul {
     padding-left: 1rem;
     list-style-type: circle;
-    color: var(--text);
 
     li {
       margin-bottom: 0.5rem;
