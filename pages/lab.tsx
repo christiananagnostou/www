@@ -6,6 +6,7 @@ import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
 import { Heading } from '../components/Shared/Heading'
+import Speedometer from '../components/Lab/speedometer/Speedometer'
 
 export default function lab() {
   return (
@@ -27,6 +28,14 @@ export default function lab() {
         </Heading>
 
         <LabItems>
+          {/* Throttle */}
+          <Item variants={fade}>
+            <DateStyle>Apr 2025</DateStyle>
+            <Inner>
+              <Speedometer />
+            </Inner>
+          </Item>
+
           {/* Gantt */}
           <Item variants={fade}>
             <DateStyle>May 2024</DateStyle>
