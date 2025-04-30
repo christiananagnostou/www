@@ -315,10 +315,25 @@ const Hamburger = styled(motion.button)`
 
   span {
     display: block;
-    width: 1.75rem;
+    width: 22px;
     height: 1px;
-    background: var(--text);
+    background: var(--text-dark);
     border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+
+  &[aria-expanded='true'] {
+    span:nth-child(1) {
+      transform: rotate(45deg) translateY(5px) translateX(5px);
+      transform-origin: center;
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: rotate(-45deg) translateY(-5px) translateX(5px);
+      transform-origin: center;
+    }
   }
 `
 
@@ -388,6 +403,14 @@ const DropdownToggle = styled.button`
   width: 100%;
   text-align: left;
   cursor: s-resize !important;
+
+  &[aria-expanded='true'] {
+    background-color: var(--body-bg);
+
+    svg {
+      transform: rotate(180deg);
+    }
+  }
 `
 
 const Submenu = styled(motion.ul)`
@@ -428,14 +451,14 @@ const Submenu = styled(motion.ul)`
   /* Mobile dropdown */
   @media (max-width: 767px) {
     li a {
-      padding: 0.5rem 2rem;
+      padding: 0.5rem 3rem;
       position: relative;
 
       &:after {
         content: '';
         position: absolute;
         top: 0;
-        right: 1rem;
+        right: 1.5rem;
         width: 1px;
         height: 100%;
         background: var(--accent);
