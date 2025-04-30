@@ -45,7 +45,7 @@ class MyDocument extends Document {
           />
 
           <link rel="apple-touch-icon" sizes="180x180" href="/A-square.png" />
-          <link rel="icon" type="image/png" href="/A-circle.png" />
+          <link rel="icon" type="image/png" href="/A-no-bg.png" />
           <link rel="manifest" href="/manifest.json" />
 
           <meta name="apple-mobile-web-app-capable" content="yes" />

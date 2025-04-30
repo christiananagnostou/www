@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
-import Logo from '../public/A-circle.webp'
 import { dropdown, fade, staggerFade } from './animation'
 import DownArrow from './SVG/DownArrow'
+import A from './SVG/A'
 
 interface SubLink {
   href: string
@@ -143,11 +143,9 @@ const Nav: React.FC = () => {
           animate="show"
           exit="exit"
         >
-          <motion.a href="/" aria-label="Home" variants={fade}>
-            <LogoWrapper>
-              <Image src={Logo} alt="Logo" width={30} height={30} priority loading="eager" />
-            </LogoWrapper>
-          </motion.a>
+          <LogoWrapper href="/" aria-label="Home" variants={fade}>
+            <A width="30px" height="30px" />
+          </LogoWrapper>
 
           <AnimatePresence>
             {(menuOpen || isDesktop) && (
@@ -290,13 +288,13 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(motion(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
+  fill: var(--text);
 
-  img {
-    border-radius: 50%;
+  svg {
     user-select: none;
     pointer-events: none;
   }

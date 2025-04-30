@@ -23,7 +23,7 @@ export const getArticleStructuredData = (post: ArticleType) => {
       name: 'Christian Anagnostou',
       logo: {
         '@type': 'ImageObject',
-        url: `${BASE_URL}/A-circle.webp`,
+        url: `${BASE_URL}/A-circle.png`,
       },
     },
     datePublished: post.dateCreated,
