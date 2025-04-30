@@ -404,11 +404,12 @@ const DropdownToggle = styled.button`
   text-align: left;
   cursor: s-resize !important;
 
-  &[aria-expanded='true'] {
-    background-color: var(--body-bg);
-
-    svg {
-      transform: rotate(180deg);
+  /* Mobile */
+  @media (max-width: 767px) {
+    &[aria-expanded='true'] {
+      svg {
+        transform: rotate(180deg);
+      }
     }
   }
 `
