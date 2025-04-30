@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
-import Logo from '../public/A-circle.webp'
 import { dropdown, fade, staggerFade } from './animation'
 import DownArrow from './SVG/DownArrow'
+import A from './SVG/A'
 
 interface SubLink {
   href: string
@@ -143,11 +143,9 @@ const Nav: React.FC = () => {
           animate="show"
           exit="exit"
         >
-          <motion.a href="/" aria-label="Home" variants={fade}>
-            <LogoWrapper>
-              <Image src={Logo} alt="Logo" width={30} height={30} priority loading="eager" />
-            </LogoWrapper>
-          </motion.a>
+          <LogoWrapper href="/" aria-label="Home" variants={fade}>
+            <A width="30px" height="30px" />
+          </LogoWrapper>
 
           <AnimatePresence>
             {(menuOpen || isDesktop) && (
@@ -290,13 +288,13 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled.div`
+const LogoWrapper = styled(motion(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
+  fill: var(--text);
 
-  img {
-    border-radius: 50%;
+  svg {
     user-select: none;
     pointer-events: none;
   }
@@ -317,10 +315,25 @@ const Hamburger = styled(motion.button)`
 
   span {
     display: block;
-    width: 1.75rem;
+    width: 22px;
     height: 1px;
-    background: var(--text);
+    background: var(--text-dark);
     border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+
+  &[aria-expanded='true'] {
+    span:nth-child(1) {
+      transform: rotate(45deg) translateY(5px) translateX(5px);
+      transform-origin: center;
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: rotate(-45deg) translateY(-5px) translateX(5px);
+      transform-origin: center;
+    }
   }
 `
 
@@ -390,6 +403,15 @@ const DropdownToggle = styled.button`
   width: 100%;
   text-align: left;
   cursor: s-resize !important;
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    &[aria-expanded='true'] {
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
 `
 
 const Submenu = styled(motion.ul)`
@@ -430,14 +452,14 @@ const Submenu = styled(motion.ul)`
   /* Mobile dropdown */
   @media (max-width: 767px) {
     li a {
-      padding: 0.5rem 2rem;
+      padding: 0.5rem 3rem;
       position: relative;
 
       &:after {
         content: '';
         position: absolute;
         top: 0;
-        right: 1rem;
+        right: 1.5rem;
         width: 1px;
         height: 100%;
         background: var(--accent);

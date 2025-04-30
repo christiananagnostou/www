@@ -1,6 +1,6 @@
 {
-  "short_name": "Christian's Portfolio",
-  "name": "Christian Anagnostou's Web Portfolio",
+  "short_name": "Christian Anagnostou",
+  "name": "Christian Anagnostou's Portfolio",
   "icons": [
     {
       "src": "A-square.png",
@@ -8,8 +8,8 @@
       "type": "image/x-icon"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#E8E8E8"
+  "theme_color": "#1b1b1b",
+  "background_color": "#1b1b1b"
 }
