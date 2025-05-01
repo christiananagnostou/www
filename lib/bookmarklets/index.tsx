@@ -7,7 +7,7 @@ export const bookmarkletsData = [
     description: 'Highlights eBay bids and provides a toolbar to quickly navigate through them.',
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js',
     icon: MoneyMagnify,
-    code: `
+    code: /*js*/ `
       javascript:(function(){
         var s = document.createElement('script');
         s.src = '${BASE_URL}/api/hotbids';
@@ -26,25 +26,24 @@ export const bookmarkletsData = [
     description:
       'Simplifies the Pokémon Vortex battle interface by hiding unnecessary elements and enlarging buttons for quicker navigation.',
     icon: Pokeball,
-    code: `
+    code: /*css*/ `
       javascript:(function(){
         var style = document.createElement('style');
         style.innerHTML = \`
-          /* Hide unnecessary elements to declutter the battle interface */
-          h3,
-          #pokeChoose,
-          #opponentPoke,
-          #disclaimer-container,
-          .battleView *:not(input[type='submit']) {
-            display: none !important;
-          }
-
           /* Style buttons for easier clicking */
-          .button-small,
+          .button-small:not([value="Use Item"]),
           .menu-tab:first-of-type {
             width: 100%;
             background: linear-gradient(#d10101, #900101);
             padding: 5rem !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 999999;
+            border: 5px solid black !important;
+          }
+          #loading {
+            background-image: none !important;
           }
         \`;
         document.head.appendChild(style);
@@ -61,9 +60,8 @@ export const bookmarkletsData = [
     title: 'GlassBreaker',
     description:
       'Bypasses the content wall popup and fixes scrolling issues on Glassdoor, allowing uninterrupted access to reviews.',
-
     icon: BrokenGlass,
-    code: `
+    code: /*css*/ `
       javascript:(function(){
         var style = document.createElement('style');
         style.innerHTML = \`
