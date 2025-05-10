@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { Fragment } from 'react'
 import { ItemProps, RowHeight } from '..'
 import { getDayDiff } from '../utils'
-import { Bar, BarLabel, BarWrap, EndLabel, ItemBarContainer, StartLabel } from './styles'
+import { Bar, BarLabel, BarWrap, EndLabel, ItemBarContainer, StartLabel, Tooltip } from './styles'
 
 interface RenderItemBarProps {
   item: ItemProps
@@ -24,6 +24,7 @@ const ItemBar = (props: RenderItemBarProps) => {
   const minWidth = dateWidth / 3
   const barWidth = daysBetween * dateWidth
   const startsAndEndsToday = dayjs(startDate).isSame(endDate, 'day') && dayjs(endDate).isSame(dayjs(), 'day')
+  const showTooltip = item.barLabel && barWidth <= 100
 
   return (
     <Fragment>
@@ -42,7 +43,11 @@ const ItemBar = (props: RenderItemBarProps) => {
             }
             $backgroundColor={item.barColor || '#3350E8'}
           >
-            {item.barLabel && barWidth > 100 && <BarLabel>{item.barLabel}</BarLabel>}
+            {showTooltip ? (
+              <Tooltip $height={RowHeight}>{item.barLabel}</Tooltip>
+            ) : (
+              <BarLabel>{item.barLabel}</BarLabel>
+            )}
             <StartLabel>{dayjs(item.startDate).format('MMM D')}</StartLabel>
             <EndLabel>{dayjs(item.endDate).format('MMM D')}</EndLabel>
           </Bar>
