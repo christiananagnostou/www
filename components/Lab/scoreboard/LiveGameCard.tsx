@@ -14,7 +14,7 @@ interface LiveGameCardProps {
 }
 
 const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradient }) => (
-  <ScoreboardCard gradient={gradient} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+  <ScoreboardCard $gradient={gradient} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
     <TeamsScoreRow>
       <div className="team" style={{ textAlign: 'left' }}>
         <h3 className="name">{liveGame.teams.away.team.name}</h3>
@@ -99,8 +99,8 @@ const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradie
 export default LiveGameCard
 
 // Dynamic gradient background based on props
-const ScoreboardCard = styled(motion.div)<{ gradient: string }>`
-  background: ${(p) => p.gradient};
+const ScoreboardCard = styled(motion.div)<{ $gradient: string }>`
+  background: ${(p) => p.$gradient};
   border-radius: 1rem;
   padding: 1.75rem 1.25rem;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);

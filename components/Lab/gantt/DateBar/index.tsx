@@ -35,11 +35,11 @@ const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: Date
         const isToday = Today === date
 
         return (
-          <DateButton key={date} id={date} onClick={() => scrollToDate(date, 'smooth')} dateWidth={dateWidth}>
-            <DateLabel dateWidth={dateWidth}>
+          <DateButton key={date} id={date} onClick={() => scrollToDate(date, 'smooth')} $dateWidth={dateWidth}>
+            <DateLabel $dateWidth={dateWidth}>
               {day === '1' && <span>{month}</span>}
 
-              <DaySpan isToday={isToday} opacity={getOpacity(day)}>
+              <DaySpan $isToday={isToday} $opacity={getOpacity(day)}>
                 {day}
               </DaySpan>
             </DateLabel>

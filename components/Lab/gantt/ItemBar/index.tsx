@@ -30,15 +30,17 @@ const ItemBar = (props: RenderItemBarProps) => {
       <ItemBarContainer
         className="gantt-bar"
         data-item-id={item.id}
-        height={RowHeight}
+        $height={RowHeight}
         onMouseEnter={() => handleRowMouseOver(item.id)}
       >
-        <BarWrap rightMargin={dateWidth * 7}>
+        <BarWrap $rightMargin={dateWidth * 7}>
           <Bar
-            width={barWidth || minWidth}
-            height={RowHeight / 2}
-            marginLeft={offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2}
-            backgroundColor={item.barColor || '#3350E8'}
+            $width={barWidth || minWidth}
+            $height={RowHeight / 2}
+            $marginLeft={
+              offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2
+            }
+            $backgroundColor={item.barColor || '#3350E8'}
           >
             {item.barLabel && barWidth > 100 && <BarLabel>{item.barLabel}</BarLabel>}
             <StartLabel>{dayjs(item.startDate).format('MMM D')}</StartLabel>
@@ -47,9 +49,9 @@ const ItemBar = (props: RenderItemBarProps) => {
         </BarWrap>
       </ItemBarContainer>
 
-      {itemsChildrenMap.get(item.id)?.map((child) => (
-        <ItemBar key={child.id + '_bar-fragment'} {...props} item={child} />
-      ))}
+      {itemsChildrenMap
+        .get(item.id)
+        ?.map((child) => <ItemBar key={child.id + '_bar-fragment'} {...props} item={child} />)}
     </Fragment>
   )
 }

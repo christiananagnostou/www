@@ -35,7 +35,7 @@ const StarBG = ({ show }: Props) => {
     return () => clearInterval(interval)
   }, [width, height, show])
 
-  return <Container show={show}>{stars}</Container>
+  return <Container $show={show}>{stars}</Container>
 }
 
 export default StarBG
@@ -121,7 +121,7 @@ const SparkleSVG = styled.span`
   }
 `
 
-const Container = styled.div<{ show: boolean }>`
+const Container = styled.div<{ $show: boolean }>`
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -132,5 +132,5 @@ const Container = styled.div<{ show: boolean }>`
   transition: background-position 1.5s ease;
   background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
   background-size: 100% 200%;
-  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
+  background-position: ${({ $show }) => ($show ? 'bottom' : 'top')};
 `

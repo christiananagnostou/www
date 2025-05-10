@@ -30,11 +30,11 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ title, games, gradien
   return (
     <>
       <SectionSubHeading>{title}</SectionSubHeading>
-      <GameList gradient={gradient}>
+      <GameList $gradient={gradient}>
         {games.map((g) => {
           const isToday = dayjs(g.gameDate).isSame(dayjs(), 'day')
           return (
-            <GameCard key={g.gamePk} isToday={isToday}>
+            <GameCard key={g.gamePk}>
               <div className="game-info">
                 <span className="game-date">
                   {dayjs(g.gameDate).format('MMM D, h:mm A')}
@@ -65,8 +65,8 @@ const SectionSubHeading = styled.h3`
   color: var(--heading);
 `
 
-const GameList = styled.ul<{ gradient: string }>`
-  background: ${({ gradient }) => gradient};
+const GameList = styled.ul<{ $gradient: string }>`
+  background: ${({ $gradient }) => $gradient};
   border-radius: 0.75rem;
   padding: 0.5rem;
   margin-bottom: 1.5rem;
@@ -76,7 +76,7 @@ const GameList = styled.ul<{ gradient: string }>`
   gap: 0.5rem;
 `
 
-const GameCard = styled.li<{ isToday: boolean }>`
+const GameCard = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;

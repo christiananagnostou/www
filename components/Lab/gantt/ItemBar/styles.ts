@@ -1,32 +1,32 @@
 import styled from 'styled-components'
 
-export const ItemBarContainer = styled.div<{ height: number }>`
+export const ItemBarContainer = styled.div<{ $height: number }>`
   display: inline-flex;
   user-select: none;
   align-items: center;
   width: 100%;
-  height: ${({ height }) => `${height}px`};
+  height: ${({ $height }) => `${$height}px`};
 
   &.hovered {
     background: rgba(0, 0, 0, 0.1);
   }
 `
 
-export const BarWrap = styled.div<{ rightMargin: number }>`
-  margin-right: ${({ rightMargin }) => `${rightMargin}px`};
+export const BarWrap = styled.div<{ $rightMargin: number }>`
+  margin-right: ${({ $rightMargin }) => `${$rightMargin}px`};
 `
 
-export const Bar = styled.div<{ width: number; height: number; marginLeft: number; backgroundColor: string }>`
+export const Bar = styled.div<{ $width: number; $height: number; $marginLeft: number; $backgroundColor: string }>`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-radius: 4px;
   font-size: 0.65rem;
-  width: ${({ width }) => `${width}px`};
-  height: ${({ height }) => `${height}px`};
-  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  width: ${({ $width }) => `${$width}px`};
+  height: ${({ $height }) => `${$height}px`};
+  margin-left: ${({ $marginLeft }) => `${$marginLeft}px`};
+  background-color: ${({ $backgroundColor }) => $backgroundColor};
 `
 
 export const BarLabel = styled.span`
