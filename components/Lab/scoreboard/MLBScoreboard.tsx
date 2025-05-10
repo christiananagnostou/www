@@ -51,14 +51,15 @@ const rgba = (hex: string, a: number) =>
 
 interface MLBScoreboardProps {
   defaultTeam?: string | number
+  initialGames?: ScheduleGame[]
 }
 
-const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF' }) => {
+const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initialGames = [] }) => {
   const [teams, setTeams] = useState<TeamInfo[]>([])
   const [teamId, setTeamId] = useState<number | null>(null)
   const [teamInput, setTeamInput] = useState(String(defaultTeam))
 
-  const [games, setGames] = useState<ScheduleGame[]>([])
+  const [games, setGames] = useState<ScheduleGame[]>(initialGames)
   const [lineScore, setLineScore] = useState<LineScore | null>(null)
 
   const controls = useAnimationControls()

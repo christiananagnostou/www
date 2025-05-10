@@ -8,8 +8,9 @@ import ganttProps from '../components/Lab/gantt/mockProps'
 import { Heading } from '../components/Shared/Heading'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import MLBScoreboard from '../components/Lab/scoreboard/MLBScoreboard'
+import { ScheduleGame } from '../components/Lab/scoreboard/types'
 
-export default function lab() {
+export default function lab({ initialGames }: { initialGames: ScheduleGame[] }) {
   return (
     <>
       <Head>
@@ -35,7 +36,7 @@ export default function lab() {
               <HeaderText>May 2025</HeaderText>
             </ItemHeader>
             <Inner>
-              <MLBScoreboard defaultTeam="SF" />
+              <MLBScoreboard defaultTeam="SF" initialGames={initialGames} />
             </Inner>
           </Item>
 
@@ -72,6 +73,17 @@ export default function lab() {
       </Container>
     </>
   )
+}
+
+export async function getServerSideProps() {
+  // Import the helpers dynamically so that they run server-side only.
+  const { fetchTeams, fetchSchedule } = await import('../components/Lab/scoreboard/utils')
+  const teams = await fetchTeams()
+  // Giants should always be used (teamCode "SF")
+  const giants = teams.find((t) => t.teamCode === 'SF')
+  let initialGames: ScheduleGame[] = []
+  if (giants) initialGames = await fetchSchedule(giants.id)
+  return { props: { initialGames } }
 }
 
 const Container = styled(motion.div)`
