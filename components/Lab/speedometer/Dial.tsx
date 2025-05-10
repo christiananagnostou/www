@@ -1,5 +1,5 @@
 import { useMotionValue, animate } from 'framer-motion'
-import { useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import { DialShell, Tick, Needle, Label, Marker, RedlineArc } from './styles'
 
 interface DialProps {
@@ -61,13 +61,8 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
         const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
         const rotate = `rotate(${angle}deg)`
         return (
-          <>
-            <Tick
-              key={`t${i}`}
-              $major={major}
-              $len={len}
-              style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }}
-            />
+          <Fragment key={`t${i}`}>
+            <Tick $major={major} $len={len} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
             {label && (
               <Label
                 key={`l${i}`}
@@ -78,7 +73,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
                 {label}
               </Label>
             )}
-          </>
+          </Fragment>
         )
       })}
 
