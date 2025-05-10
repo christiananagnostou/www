@@ -106,11 +106,7 @@ const ItemHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column-reverse;
-    gap: 0.5rem;
-  }
+  gap: 0.5rem;
 `
 
 const HeaderText = styled.div`
