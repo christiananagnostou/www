@@ -112,13 +112,13 @@ const GameCard = styled.li`
   }
   .game-score {
     font-size: 1.1em;
-    font-weight: 700;
+    font-weight: bold;
     color: var(--heading);
     min-width: 2.5em;
     text-align: right;
   }
   .small-text {
     font-size: 0.85em;
-    font-weight: 400;
+    font-weight: normal;
   }
 `

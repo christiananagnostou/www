@@ -102,7 +102,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
         <ThrottleText>{Math.round(throttle * 100)}% throttle</ThrottleText>
       </Readout>
 
-      <ThrottleBar throttle={throttle} />
+      <ThrottleBar $throttle={throttle} />
 
       <PedalBtn ref={pedalRef} aria-label="Gas pedal" onMouseDown={onThrottleStart} onTouchStart={onThrottleStart}>
         <PedalFace
