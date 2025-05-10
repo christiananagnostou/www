@@ -7,6 +7,7 @@ import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
 import { Heading } from '../components/Shared/Heading'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
+import MLBScoreboard from '../components/Lab/scoreboard/MLBScoreboard'
 
 export default function lab() {
   return (
@@ -28,25 +29,41 @@ export default function lab() {
         </Heading>
 
         <LabItems>
-          {/* Throttle */}
           <Item variants={fade}>
-            <DateStyle>Apr 2025</DateStyle>
+            <ItemHeader>
+              <HeaderText>MLB Scoreboard</HeaderText>
+              <HeaderText>May 2025</HeaderText>
+            </ItemHeader>
+            <Inner>
+              <MLBScoreboard defaultTeam="SF" />
+            </Inner>
+          </Item>
+
+          <Item variants={fade}>
+            <ItemHeader>
+              <HeaderText>Speedometer</HeaderText>
+              <HeaderText>Apr 2025</HeaderText>
+            </ItemHeader>
             <Inner>
               <Speedometer />
             </Inner>
           </Item>
 
-          {/* Gantt */}
           <Item variants={fade}>
-            <DateStyle>May 2024</DateStyle>
+            <ItemHeader>
+              <HeaderText>Gantt Chart</HeaderText>
+              <HeaderText>May 2024</HeaderText>
+            </ItemHeader>
             <Inner>
               <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
             </Inner>
           </Item>
 
-          {/* Calendar */}
           <Item variants={fade}>
-            <DateStyle>Apr 2024</DateStyle>
+            <ItemHeader>
+              <HeaderText>Calendar</HeaderText>
+              <HeaderText>Apr 2024</HeaderText>
+            </ItemHeader>
             <Inner>
               <DailyCalendar />
             </Inner>
@@ -84,16 +101,21 @@ const Item = styled(motion.div)`
   max-width: var(--max-w-screen);
 `
 
-const DateStyle = styled.div`
-  width: 100%;
-  text-align: right;
-  color: var(--text-dark);
-  font-size: 0.9rem;
+const ItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 
   @media (max-width: 768px) {
-    padding-right: 1rem;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
   }
+`
+
+const HeaderText = styled.div`
+  color: var(--text-dark);
+  font-size: 0.9rem;
 `
 
 const Inner = styled.div`
