@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { fetchTeams, resolveTeamId, fetchSchedule, fetchLineScore } from './utils'
 
 import TeamSearch from './TeamSearch'
-import LiveGameCard from './LiveGameCard'
+import GameCard from './GameCard'
 import ScheduleSection from './ScheduleSection'
 import { TeamInfo, ScheduleGame, LineScore } from './types'
 
@@ -58,9 +58,9 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
   const [teams, setTeams] = useState<TeamInfo[]>([])
   const [teamId, setTeamId] = useState<number | null>(null)
   const [teamInput, setTeamInput] = useState(String(defaultTeam))
-
   const [games, setGames] = useState<ScheduleGame[]>(initialGames)
   const [lineScore, setLineScore] = useState<LineScore | null>(null)
+  const [selectedGame, setSelectedGame] = useState<ScheduleGame | null>(null)
 
   const controls = useAnimationControls()
   const pollRef = useRef<NodeJS.Timeout>(null)
@@ -116,18 +116,32 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
     }
   }, [liveGame, controls])
 
-  /** ---------- gradients ---------- */
+  /** ---------- helpers ---------- */
   const base = teamId ? getTeamColor(teamId) : '#303030'
   const scheduleGradient = `linear-gradient(135deg, ${rgba(base, 0.25)} 0%, ${rgba(base, 0.65)} 100%)`
-  const liveGradient =
-    liveGame && lineScore
-      ? `linear-gradient(135deg, ${getTeamColor(liveGame.teams.away.team.id)} 0%, ${getTeamColor(liveGame.teams.home.team.id)} 100%)`
-      : scheduleGradient
 
-  /** ---------- handlers ---------- */
+  const getGameGradient = (game: ScheduleGame) =>
+    `linear-gradient(135deg, 
+      ${rgba(getTeamColor(game.teams.away.team.id), 0.45)} 0%, 
+      ${rgba(getTeamColor(game.teams.home.team.id), 0.45)} 100%),
+      linear-gradient(45deg,
+      ${rgba(getTeamColor(game.teams.away.team.id), 0.45)} 10%,
+      ${rgba(getTeamColor(game.teams.home.team.id), 0.45)} 100%)`
+
   const handleSelectTeam = (t: TeamInfo) => {
     setTeamId(t.id)
     setTeamInput(t.name)
+  }
+
+  const handleGameSelect = async (game: ScheduleGame) => {
+    const score = game.linescore || (await fetchLineScore(game.gamePk))
+    setLineScore(score)
+    setSelectedGame(game)
+  }
+
+  const renderGameCard = (game: ScheduleGame | null) => {
+    if (!game || !lineScore) return null
+    return <GameCard game={game} lineScore={lineScore} gradient={getGameGradient(game)} />
   }
 
   /** ---------- render ---------- */
@@ -135,12 +149,26 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
     <Wrapper>
       <TeamSearch teams={teams} value={teamInput} onChange={setTeamInput} onSelect={handleSelectTeam} />
 
+      {selectedGame && <BackButton onClick={() => setSelectedGame(null)}>← Back to Schedule</BackButton>}
+
       {liveGame && lineScore ? (
-        <LiveGameCard liveGame={liveGame} lineScore={lineScore} gradient={liveGradient} />
+        renderGameCard(liveGame)
+      ) : selectedGame ? (
+        renderGameCard(selectedGame)
       ) : (
         <>
-          <ScheduleSection title="Recent Games" games={pastGames} gradient={scheduleGradient} />
-          <ScheduleSection title="Upcoming Games" games={upcomingGames} gradient={scheduleGradient} />
+          <ScheduleSection
+            title="Recent Games"
+            games={pastGames}
+            gradient={scheduleGradient}
+            onGameSelect={handleGameSelect}
+          />
+          <ScheduleSection
+            title="Upcoming Games"
+            games={upcomingGames}
+            gradient={scheduleGradient}
+            onGameSelect={handleGameSelect}
+          />
         </>
       )}
     </Wrapper>
@@ -151,4 +179,18 @@ export default MLBScoreboard
 
 const Wrapper = styled.div`
   color: var(--text);
+`
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--text);
+  }
 `

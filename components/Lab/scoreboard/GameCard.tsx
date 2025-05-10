@@ -7,17 +7,17 @@ const LINESCORE_INNINGS = 9
 const getInningArrow = (half: string) =>
   half === 'Top' ? '↑' : half === 'Bottom' ? '↓' : half === 'Middle' ? '↕' : ''
 
-interface LiveGameCardProps {
-  liveGame: ScheduleGame
+interface GameCardProps {
+  game: ScheduleGame
   lineScore: LineScore
   gradient: string
 }
 
-const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradient }) => (
-  <ScoreboardCard $gradient={gradient} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+const GameCard: React.FC<GameCardProps> = ({ game, lineScore, gradient }) => (
+  <ScoreboardCard $gradient={gradient}>
     <TeamsScoreRow>
       <div className="team" style={{ textAlign: 'left' }}>
-        <h3 className="name">{liveGame.teams.away.team.name}</h3>
+        <h3 className="name">{game.teams.away.team.name}</h3>
         <div className="score">{lineScore.teams.away.runs}</div>
       </div>
       <div className="center-inning">
@@ -27,7 +27,7 @@ const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradie
         </span>
       </div>
       <div className="team" style={{ textAlign: 'right' }}>
-        <h3 className="name">{liveGame.teams.home.team.name}</h3>
+        <h3 className="name">{game.teams.home.team.name}</h3>
         <div className="score">{lineScore.teams.home.runs}</div>
       </div>
     </TeamsScoreRow>
@@ -50,7 +50,7 @@ const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradie
         <tbody>
           {(['away', 'home'] as const).map((side) => (
             <tr key={side}>
-              <td style={{ fontWeight: 600 }}>{liveGame.teams[side].team.name.split(' ').pop()}</td>
+              <td style={{ fontWeight: 600 }}>{game.teams[side].team.name.split(' ').pop()}</td>
               {Array.from({ length: lineScore.scheduledInnings || LINESCORE_INNINGS }, (_, i) => (
                 <td key={i}>{lineScore.innings[i]?.[side]?.runs ?? ''}</td>
               ))}
@@ -96,7 +96,7 @@ const LiveGameCard: React.FC<LiveGameCardProps> = ({ liveGame, lineScore, gradie
   </ScoreboardCard>
 )
 
-export default LiveGameCard
+export default GameCard
 
 // Dynamic gradient background based on props
 const ScoreboardCard = styled(motion.div)<{ $gradient: string }>`
@@ -156,12 +156,9 @@ const LinescoreTable = styled.table`
   th {
     font-weight: 500;
     color: var(--heading);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.04);
   }
   td {
     color: var(--text);
-  }
-  tr:nth-child(even) td {
-    background: rgba(255, 255, 255, 0.01);
   }
 `

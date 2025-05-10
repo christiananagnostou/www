@@ -6,9 +6,10 @@ interface ScheduleSectionProps {
   title: string
   games: ScheduleGame[]
   gradient: string
+  onGameSelect?: (game: ScheduleGame) => void
 }
 
-const ScheduleSection: React.FC<ScheduleSectionProps> = ({ title, games, gradient }) => {
+const ScheduleSection: React.FC<ScheduleSectionProps> = ({ title, games, gradient, onGameSelect }) => {
   const renderScore = (g: ScheduleGame) => {
     // If postponed or canceled, show that status with reason if available
     if (g.status.detailedState && ['postponed', 'canceled'].includes(g.status.detailedState.toLowerCase())) {
@@ -34,7 +35,13 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ title, games, gradien
         {games.map((g) => {
           const isToday = dayjs(g.gameDate).isSame(dayjs(), 'day')
           return (
-            <GameCard key={g.gamePk}>
+            <GameCard
+              key={g.gamePk}
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onGameSelect?.(g)}
+              onClick={() => onGameSelect?.(g)}
+              style={{ cursor: onGameSelect ? 'pointer' : 'default' }}
+            >
               <div className="game-info">
                 <span className="game-date">
                   {dayjs(g.gameDate).format('MMM D, h:mm A')}
@@ -95,8 +102,8 @@ const GameCard = styled.li`
   }
   .game-date {
     font-size: 0.85em;
-    color: var(--text-dark);
     margin-bottom: 2px;
+    font-weight: normal;
   }
   .game-teams {
     font-weight: 500;
@@ -107,7 +114,6 @@ const GameCard = styled.li`
   }
   .game-extra {
     font-size: 0.75rem;
-    color: var(--text-muted);
     margin-top: 2px;
   }
   .game-score {
