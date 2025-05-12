@@ -66,55 +66,81 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
   const pollRef = useRef<NodeJS.Timeout>(null)
 
   /** ---------- derived ---------- */
-  const liveGame = useMemo(() => games.find((g) => g.status.abstractGameState === 'Live'), [games])
-  const pastGames = useMemo(
-    () =>
-      games
-        .filter((g) => g.status.abstractGameState === 'Final')
-        .sort((a, b) => dayjs(b.gameDate).valueOf() - dayjs(a.gameDate).valueOf())
-        .slice(0, 3)
-        .toReversed(),
-    [games]
-  )
-  const upcomingGames = useMemo(
-    () =>
-      games
-        .filter((g) => g.status.abstractGameState === 'Preview')
-        .sort((a, b) => dayjs(a.gameDate).valueOf() - dayjs(b.gameDate).valueOf())
-        .slice(0, 3),
-    [games]
-  )
+  const { liveGame, pastGames, upcomingGames } = useMemo(() => {
+    const liveGame = games.find((g) => g.status.abstractGameState === 'Live')
+    const pastGames = games
+      .filter((g) => g.status.abstractGameState === 'Final')
+      .sort((a, b) => dayjs(b.gameDate).valueOf() - dayjs(a.gameDate).valueOf())
+      .slice(0, 3)
+      .toReversed()
+    const upcomingGames = games
+      .filter((g) => g.status.abstractGameState === 'Preview')
+      .sort((a, b) => dayjs(a.gameDate).valueOf() - dayjs(b.gameDate).valueOf())
+      .slice(0, 3)
+
+    return { liveGame, pastGames, upcomingGames }
+  }, [games])
 
   /** ---------- effects ---------- */
+
   useEffect(() => {
+    // Fetch the list of teams and resolve the default team ID
     fetchTeams().then((list) => {
       setTeams(list)
       const id = resolveTeamId(String(defaultTeam), list)
-      if (id) setTeamId(id)
+      if (id) {
+        setTeamId(id)
+        const team = list.find((t) => t.id === id)
+        if (team) setTeamInput(team.name) // Set the full team name
+      }
     })
   }, [defaultTeam])
 
   useEffect(() => {
+    // Fetch the schedule for the selected team
     if (!teamId) return
-    ;(async () => setGames(await fetchSchedule(teamId)))()
+    ;(async () => {
+      const fetchedGames = await fetchSchedule(teamId)
+      setGames(fetchedGames)
+
+      // Reset selected game to live game or null
+      const liveGame = fetchedGames.find((g) => g.status.abstractGameState === 'Live')
+      setSelectedGame(liveGame || null)
+    })()
   }, [teamId])
 
   useEffect(() => {
-    if (!liveGame) {
+    // Automatically select the live game if available
+    if (liveGame && selectedGame?.gamePk !== liveGame.gamePk) {
+      setSelectedGame(liveGame)
+    }
+  }, [liveGame])
+
+  useEffect(() => {
+    // Fetch the line score for the selected game and set up polling if the game is live
+    if (!selectedGame) {
       setLineScore(null)
       if (pollRef.current) clearInterval(pollRef.current)
       return
     }
+
     const load = async () => {
-      setLineScore(await fetchLineScore(liveGame.gamePk))
-      controls.start({ scale: [1, 1.04, 1] })
+      setLineScore(await fetchLineScore(selectedGame.gamePk))
+      if (selectedGame.status.abstractGameState === 'Live') {
+        controls.start({ scale: [1, 1.04, 1] })
+      }
     }
+
     load()
-    pollRef.current = setInterval(load, 30_000)
+    // Only poll if game is live
+    if (selectedGame.status.abstractGameState === 'Live') {
+      pollRef.current = setInterval(load, 30_000)
+    }
+
     return () => {
       pollRef.current && clearInterval(pollRef.current)
     }
-  }, [liveGame, controls])
+  }, [selectedGame, controls])
 
   /** ---------- helpers ---------- */
   const base = teamId ? getTeamColor(teamId) : '#303030'
@@ -139,35 +165,46 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
     setSelectedGame(game)
   }
 
-  const renderGameCard = (game: ScheduleGame | null) => {
-    if (!game || !lineScore) return null
-    return <GameCard game={game} lineScore={lineScore} gradient={getGameGradient(game)} />
-  }
-
   /** ---------- render ---------- */
   return (
     <Wrapper>
       <TeamSearch teams={teams} value={teamInput} onChange={setTeamInput} onSelect={handleSelectTeam} />
 
-      {selectedGame && <BackButton onClick={() => setSelectedGame(null)}>← Back to Schedule</BackButton>}
+      {selectedGame && (
+        <BackButton onClick={() => setSelectedGame(null)} aria-label="Back to schedule">
+          ← Back to Schedule
+        </BackButton>
+      )}
 
-      {liveGame && lineScore ? (
-        renderGameCard(liveGame)
-      ) : selectedGame ? (
-        renderGameCard(selectedGame)
+      {selectedGame && lineScore ? (
+        <GameCard game={selectedGame} lineScore={lineScore} gradient={getGameGradient(selectedGame)} />
       ) : (
         <>
+          {/* Recent games */}
           <ScheduleSection
             title="Recent Games"
             games={pastGames}
             gradient={scheduleGradient}
             onGameSelect={handleGameSelect}
+            selectedGameId={selectedGame?.gamePk}
           />
+          {/* Live game */}
+          {liveGame && (
+            <ScheduleSection
+              title="Live Game"
+              games={[liveGame]}
+              gradient={getGameGradient(liveGame)}
+              onGameSelect={handleGameSelect}
+              selectedGameId={selectedGame?.gamePk}
+            />
+          )}
+          {/* Upcoming games */}
           <ScheduleSection
             title="Upcoming Games"
             games={upcomingGames}
             gradient={scheduleGradient}
             onGameSelect={handleGameSelect}
+            selectedGameId={selectedGame?.gamePk}
           />
         </>
       )}
@@ -179,6 +216,27 @@ export default MLBScoreboard
 
 const Wrapper = styled.div`
   color: var(--text);
+  max-width: 100%;
+
+  header {
+    margin-bottom: 1rem;
+  }
+
+  main {
+    position: relative;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 `
 
 const BackButton = styled.button`
@@ -187,10 +245,19 @@ const BackButton = styled.button`
   color: var(--text-dark);
   font-size: 0.9rem;
   padding: 0.5rem 0;
+  margin-bottom: 0.75rem;
   cursor: pointer;
   transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
     color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: 2px;
   }
 `
