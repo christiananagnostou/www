@@ -81,6 +81,11 @@
       const els = document.querySelectorAll(SEL_BID_COUNT)
       this.matches = []
       els.forEach((el) => {
+        // Skip elements within carousel containers
+        if (el.closest('.srp-items-carousel__container')) {
+          return
+        }
+
         const txt = el.innerText || el.textContent
         const match = txt.match(this.regexPattern)
         if (match) {
