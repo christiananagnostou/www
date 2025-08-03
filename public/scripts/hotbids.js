@@ -35,6 +35,7 @@
   const LS_MIN_BIDS = 'hotbids-min-bids'
   const LS_SORT_BY_BIDS = 'hotbids-sort-by-bids'
   const LS_POSITION = 'hotbids-position'
+  const LS_HIDE_NON_RESULTS = 'hotbids-hide-non-results'
   // eBay selectors
   const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
   const SEL_ITEM_CONTAINER = '.s-item'
@@ -54,6 +55,7 @@
       this.currentMatchIndex = -1
       this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS)) || 1
       this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
+      this.hideNonResults = localStorage.getItem(LS_HIDE_NON_RESULTS) === 'true'
 
       this.injectStyles()
       this.collectMatches()
@@ -81,11 +83,6 @@
       const els = document.querySelectorAll(SEL_BID_COUNT)
       this.matches = []
       els.forEach((el) => {
-        // Skip elements within carousel containers
-        if (el.closest('.srp-items-carousel__container')) {
-          return
-        }
-
         const txt = el.innerText || el.textContent
         const match = txt.match(this.regexPattern)
         if (match) {
@@ -132,6 +129,9 @@
           }
         }
       })
+
+      // Apply hide non-results functionality
+      this.applyHideNonResults()
     }
 
     createToolbar() {
@@ -178,6 +178,13 @@
                   <input type="checkbox" id="sortByBidsCheckbox" ${this.sortByBids ? 'checked' : ''}>
                   <span class="checkmark"></span>
                   Sort by bids descending
+                </label>
+              </div>
+              <div class="hotbids-option">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="hideNonResultsCheckbox" ${this.hideNonResults ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                  Hide items without bids
                 </label>
               </div>
               <div class="hotbids-option">
@@ -240,6 +247,7 @@
       this.helpPanelCloseBtn = document.getElementById(ID_HELP_CLOSE)
       this.minBidsInput = document.getElementById('minBidsInput')
       this.sortByBidsCheckbox = document.getElementById('sortByBidsCheckbox')
+      this.hideNonResultsCheckbox = document.getElementById('hideNonResultsCheckbox')
 
       // Load saved position
       const savedPosition = localStorage.getItem(LS_POSITION) || CN_POP_BOTTOM_POS
@@ -269,6 +277,11 @@
         this.sortByBids = e.target.checked
         localStorage.setItem(LS_SORT_BY_BIDS, this.sortByBids)
         this.retryMatches()
+      })
+      this.hideNonResultsCheckbox.addEventListener('change', (e) => {
+        this.hideNonResults = e.target.checked
+        localStorage.setItem(LS_HIDE_NON_RESULTS, this.hideNonResults)
+        this.applyHideNonResults()
       })
 
       if (!this.checkSoldCheckbox()) {
@@ -301,6 +314,20 @@
     toggleSold() {
       const soldCheckbox = this.checkSoldCheckbox()
       if (soldCheckbox) soldCheckbox.click()
+    }
+
+    applyHideNonResults() {
+      const allItems = document.querySelectorAll(SEL_ITEM_CONTAINER)
+      allItems.forEach((item) => {
+        const bidElement = item.querySelector(SEL_BID_COUNT)
+        const hasBids = bidElement && this.matches.some((match) => match.element === bidElement)
+
+        if (this.hideNonResults && !hasBids) {
+          item.style.display = 'none'
+        } else {
+          item.style.display = ''
+        }
+      })
     }
 
     scrollToNextMatch() {
@@ -586,6 +613,7 @@
       display: flex;
       align-items: center;
       cursor: pointer;
+      user-select: none;
     }
 
     .custom-checkbox input {
@@ -593,16 +621,25 @@
     }
 
     .custom-checkbox .checkmark {
-      width: 16px;
-      height: 16px;
-      border: 1px solid var(--toolbar-fg);
-      border-radius: 3px;
-      margin-right: 0.5rem;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--toolbar-border);
+      border-radius: 4px;
+      margin-right: 0.75rem;
       position: relative;
+      background: var(--button-bg);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      border-color: var(--toolbar-fg);
+      background: var(--button-bg-hover);
     }
 
     .custom-checkbox input:checked + .checkmark {
-      background-color: var(--toolbar-fg);
+      background-color: #4CAF50;
+      border-color: #4CAF50;
     }
 
     .custom-checkbox input:checked + .checkmark::after {
@@ -610,11 +647,18 @@
       position: absolute;
       left: 5px;
       top: 2px;
-      width: 5px;
-      height: 10px;
-      border: solid var(--toolbar-bg);
+      width: 4px;
+      height: 8px;
+      border: solid white;
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:disabled + .checkmark {
+      background: var(--toolbar-bg);
+      border-color: var(--toolbar-border);
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     .hotbids-option input[type="number"] {
