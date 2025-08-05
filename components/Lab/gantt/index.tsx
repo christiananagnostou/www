@@ -1,14 +1,12 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import DateBar from './DateBar'
 import ItemBar from './ItemBar'
 import ItemTitle from './ItemTitle'
 import TodayCursor from './TodayCursor'
 import { getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
-
 import DragScrollContainer from '../../Shared/DragScrollContainer'
 import {
   Chart,
@@ -151,17 +149,19 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
             {dayjs().format('ddd, MMM D')}
           </ScrollToTodayBtn>
 
-          {itemsChildrenMap.get('root')?.map((item, i) => (
-            <ItemTitle
-              key={item.id + '_title'}
-              item={item}
-              idx={i}
-              level={0}
-              itemsChildrenMap={itemsChildrenMap}
-              handleRowMouseOver={handleRowMouseOver}
-              scrollToDate={scrollToDate}
-            />
-          ))}
+          {itemsChildrenMap
+            .get('root')
+            ?.map((item, i) => (
+              <ItemTitle
+                key={item.id + '_title'}
+                item={item}
+                idx={i}
+                level={0}
+                itemsChildrenMap={itemsChildrenMap}
+                handleRowMouseOver={handleRowMouseOver}
+                scrollToDate={scrollToDate}
+              />
+            ))}
         </LeftSide>
 
         <Resizer ref={resizer} onMouseDown={handleResizeStart} onTouchStart={handleResizeStart} />
@@ -177,17 +177,19 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
               scrollToDate={scrollToDate}
             />
 
-            {itemsChildrenMap.get('root')?.map((item) => (
-              <ItemBar
-                key={item.id + '_bar'}
-                item={item}
-                dateWidth={dateWidth}
-                numDaysShown={numDaysShown}
-                itemsDateRange={itemsDateRange}
-                itemsChildrenMap={itemsChildrenMap}
-                handleRowMouseOver={handleRowMouseOver}
-              />
-            ))}
+            {itemsChildrenMap
+              .get('root')
+              ?.map((item) => (
+                <ItemBar
+                  key={item.id + '_bar'}
+                  item={item}
+                  dateWidth={dateWidth}
+                  numDaysShown={numDaysShown}
+                  itemsDateRange={itemsDateRange}
+                  itemsChildrenMap={itemsChildrenMap}
+                  handleRowMouseOver={handleRowMouseOver}
+                />
+              ))}
           </div>
         </DragScrollContainer>
       </Chart>
