@@ -53,7 +53,7 @@
       this.regexPattern = REGEX_BID_COUNT
       this.matches = []
       this.currentMatchIndex = -1
-      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS)) || 1
+      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS) || '1') || 1
       this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
       this.hideNonResults = localStorage.getItem(LS_HIDE_NON_RESULTS) === 'true'
 

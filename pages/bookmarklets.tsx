@@ -7,20 +7,89 @@ import { Heading } from '../components/Shared/Heading'
 import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
 import UpArrow from '../components/SVG/UpArrow'
+import Checkmark from '../components/SVG/Checkmark'
 import { bookmarkletsData } from '../lib/bookmarklets'
 import { BASE_URL } from '../lib/constants'
 import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
 import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
+import { getMetrics } from '../lib/bookmarklets/metrics'
+import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
 
 const PageTitle = 'Bookmarklets | Christian Anagnostou'
 const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
 const PageUrl = `${BASE_URL}/bookmarklets`
 
-export default function Bookmarklets() {
+interface BookmarkletWithMetrics {
+  title: string
+  description: string
+  code: string
+  githubUrl?: string
+  instructions: string
+  installs: number
+}
+
+interface Props {
+  bookmarkletsWithMetrics: BookmarkletWithMetrics[]
+}
+
+export async function getStaticProps() {
+  const bookmarkletsWithMetrics = await Promise.all(
+    bookmarkletsData.map(async (bookmarklet) => {
+      const metrics = await getMetrics(bookmarklet.title)
+      // Exclude the icon from serialization
+      const { icon, ...serializableBookmarklet } = bookmarklet
+      return { ...serializableBookmarklet, installs: metrics.installs }
+    })
+  )
+
+  return {
+    props: {
+      bookmarkletsWithMetrics,
+    },
+    revalidate: 60 * 5, // Revalidate every 5 minutes
+  }
+}
+
+export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
+  const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
+  const [installCounts, setInstallCounts] = useState<{ [key: string]: number }>({})
+
+  useEffect(() => {
+    // Initialize install counts from props
+    const initialCounts: { [key: string]: number } = {}
+    bookmarkletsWithMetrics.forEach((bookmarklet) => {
+      initialCounts[bookmarklet.title] = bookmarklet.installs
+    })
+    setInstallCounts(initialCounts)
+
+    // Load installed states from localStorage
+    const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
+    setInstalledStates(installedBookmarklets)
+  }, [bookmarkletsWithMetrics])
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
+  }
+
+  const handleInstallClick = async (title: string) => {
+    if (!installedStates[title]) {
+      try {
+        const res = await fetch(`/api/bookmarklets/metrics/${encodeURIComponent(title)}?type=installs`, {
+          method: 'POST',
+        })
+        const data = await res.json()
+        setInstallCounts((prev) => ({ ...prev, [title]: data.installs }))
+        setInstalledStates((prev) => ({ ...prev, [title]: true }))
+
+        // Save to localStorage
+        const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
+        installedBookmarklets[title] = true
+        localStorage.setItem('installedBookmarklets', JSON.stringify(installedBookmarklets))
+      } catch (error) {
+        console.error('Failed to track install:', error)
+      }
+    }
   }
 
   return (
@@ -61,8 +130,13 @@ export default function Bookmarklets() {
         </Heading>
 
         <BookmarkletsContainer variants={staggerFade}>
-          {bookmarkletsData.map(({ title, description, code, icon, githubUrl, instructions }, index) => {
+          {bookmarkletsWithMetrics.map((bookmarklet, index) => {
+            const { title, description, code, githubUrl, instructions } = bookmarklet
+            const originalBookmarklet = bookmarkletsData.find((b) => b.title === title)
+            const icon = originalBookmarklet?.icon
             const isOpen = openIndexes.includes(index)
+            const isInstalled = installedStates[title]
+            const installCount = installCounts[title] || 0
 
             return (
               <BookmarkletItem key={title} variants={fade}>
@@ -82,19 +156,32 @@ export default function Bookmarklets() {
                       </BookmarkletLink>
                     </h2>
 
-                    {/* GitHub link */}
-                    {githubUrl && (
-                      <a
-                        href={githubUrl}
-                        aria-label={`View the ${title} bookmarklet on GitHub.`}
-                        className="github-url"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <div className="right-side">
+                      {/* GitHub link */}
+                      {githubUrl && (
+                        <a
+                          href={githubUrl}
+                          aria-label={`View the ${title} bookmarklet on GitHub.`}
+                          className="github-url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Github />
+                          Source
+                        </a>
+                      )}
+
+                      {/* Install tracking button */}
+                      <InstallButton
+                        onClick={() => handleInstallClick(title)}
+                        disabled={isInstalled}
+                        title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
+                        className={isInstalled ? 'installed' : ''}
                       >
-                        <Github />
-                        Source
-                      </a>
-                    )}
+                        {isInstalled ? <Checkmark /> : <BookWithBookmark />}
+                        <span>{installCount}</span>
+                      </InstallButton>
+                    </div>
                   </div>
 
                   {/* Toggleable description (button) */}
@@ -209,6 +296,13 @@ const BookmarkletItem = styled(motion.div)`
         color: var(--text);
       }
     }
+
+    .right-side {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 
   .toggle-area {
@@ -279,5 +373,42 @@ const BookmarkletItem = styled(motion.div)`
     .toggle-area {
       padding: 0.4rem 0.6rem;
     }
+  }
+`
+
+const InstallButton = styled.button<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--text);
+  }
+
+  &:disabled,
+  &.installed {
+    background: var(--accent);
+    color: var(--text);
+    cursor: default;
+    opacity: 0.8;
+  }
+
+  span {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  svg {
+    max-width: 0.875rem;
+    max-height: 0.875rem;
   }
 `
