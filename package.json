@@ -30,7 +30,8 @@
     "sharp": "^0.34.1",
     "strava-v3": "^2.2.1",
     "styled-components": "^6.1.17",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "uplot": "^1.6.32"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

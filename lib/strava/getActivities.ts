@@ -106,14 +106,14 @@ const assignBestFlags = (
 export const getStravaActivities = async (): Promise<StravaActivity[]> => {
   try {
     const rawActivities = await fetchAllActivities()
-    const filteredActivities = rawActivities.filter(
-      (activity) =>
-        activity.type === 'Run' ||
-        activity.type === 'Ride' ||
-        activity.type === 'VirtualRide' ||
-        activity.type === 'Swim'
-    )
-    const mappedActivities = filteredActivities.map(mapActivity)
+    // const filteredActivities = rawActivities.filter(
+    //   (activity) =>
+    //     activity.type === 'Run' ||
+    //     activity.type === 'Ride' ||
+    //     activity.type === 'VirtualRide' ||
+    //     activity.type === 'Swim'
+    // )
+    const mappedActivities = rawActivities.map(mapActivity)
     const bestValuesByType = calculateBestValuesByType(mappedActivities)
     const finalActivities = mappedActivities.map((activity) => assignBestFlags(activity, bestValuesByType))
     return finalActivities
