@@ -30,7 +30,7 @@ export default function RecentArticles({ posts }: ArticlesProps) {
   )
 }
 
-const LinkTitle = styled(motion(Link))``
+const LinkTitle = styled(motion.create(Link))``
 
 const ArticlesContainer = styled(HomepageBox)`
   min-width: 70%;

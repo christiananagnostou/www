@@ -26,6 +26,7 @@ const NAV_LINKS: NavLinks = [
     title: 'Works',
     subLinks: [
       { href: '/projects', title: 'Projects' },
+      { href: '/fitness', title: 'Fitness' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
       { href: '/articles', title: 'Articles' },
@@ -288,7 +289,7 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled(motion(Link))`
+const LogoWrapper = styled(motion.create(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;

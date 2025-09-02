@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { type StravaActivity } from '../../lib/strava'
@@ -89,7 +90,10 @@ const StravaActivities = ({ activities }: Props) => {
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
-        <Title variants={fade}>Fitness</Title>
+        <LinkTitle href="/fitness" variants={fade} className="homepage-box__title">
+          Fitness
+        </LinkTitle>
+
         <ActivityFilters>
           {renderFilterButton('Swim')}
           {renderFilterButton('Ride')}
@@ -128,6 +132,13 @@ const StravaActivities = ({ activities }: Props) => {
               </ActivityItem>
             )
           })}
+
+        {/* See All Link */}
+        <SeeAllItem variants={fade}>
+          <SeeAllContent href="/fitness">
+            <SeeAllText>See All Activities</SeeAllText>
+          </SeeAllContent>
+        </SeeAllItem>
       </ActivityList>
     </ActivitiesSection>
   )
@@ -157,9 +168,7 @@ const SectionHeader = styled.div`
   padding: 0 1rem 1rem;
 `
 
-const Title = styled(motion.h2)`
-  color: var(--text);
-`
+const LinkTitle = styled(motion.create(Link))``
 
 const ActivityFilters = styled.div`
   display: flex;
@@ -243,4 +252,48 @@ const ActivityDetail = styled.p<{ $best?: boolean }>`
 const ActivityDate = styled.p`
   font-size: 0.7rem;
   color: var(--text-dark);
+`
+
+const SeeAllItem = styled(motion.li)`
+  flex: 1;
+  position: relative;
+  background: var(--dark-bg);
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+`
+
+const SeeAllContent = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px; /* Match approximate height of activity items */
+  border: 2px dashed var(--accent);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+  }
+`
+
+const SeeAllText = styled.span`
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+
+  ${SeeAllContent}:hover & {
+    color: var(--text);
+  }
 `

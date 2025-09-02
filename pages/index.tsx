@@ -23,10 +23,15 @@ type Props = {
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
   await refreshAccessToken()
-  const stravaActivities = await getStravaActivities()
+  const allStravaActivities = await getStravaActivities()
+
+  // Filter to only show specific activity types on homepage and limit to 5 most recent
+  const filteredActivities = allStravaActivities
+    .filter((activity) => ['Run', 'Ride', 'VirtualRide', 'Swim'].includes(activity.type))
+    .slice(0, 5)
 
   return {
-    props: { posts, stravaActivities },
+    props: { posts, stravaActivities: filteredActivities },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
