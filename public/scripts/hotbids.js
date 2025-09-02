@@ -37,9 +37,10 @@
   const LS_POSITION = 'hotbids-position'
   const LS_HIDE_NON_RESULTS = 'hotbids-hide-non-results'
   // eBay selectors
-  const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
-  const SEL_ITEM_CONTAINER = '.s-item'
-  const SEL_ITEM_TITLE = '.s-item__title'
+  const SEL_BID_COUNT =
+    '.s-card .s-card__attribute-row .su-styled-text.secondary.large, .s-item__bidCount, .str-item-card__property-bidCount'
+  const SEL_ITEM_CONTAINER = '.s-card'
+  const SEL_ITEM_TITLE = '.s-card__title'
   // URL constants
   const URL_EBAY_SEARCH = 'https://www.ebay.com/sch/i.html?'
   const PARAM_SOLD = 'LH_Sold=1'
@@ -53,7 +54,7 @@
       this.regexPattern = REGEX_BID_COUNT
       this.matches = []
       this.currentMatchIndex = -1
-      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS)) || 1
+      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS) || '1') || 1
       this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
       this.hideNonResults = localStorage.getItem(LS_HIDE_NON_RESULTS) === 'true'
 
