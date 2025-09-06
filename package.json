@@ -29,7 +29,7 @@
     "remark-rehype": "^11.1.2",
     "sharp": "^0.34.1",
     "strava-v3": "^2.2.1",
-    "styled-components": "^6.1.17",
+    "styled-components": "^6.1.19",
     "unified": "^11.0.5"
   },
   "devDependencies": {
