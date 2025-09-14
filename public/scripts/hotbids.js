@@ -40,6 +40,8 @@
   const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
   const SEL_ITEM_CONTAINER = '.s-item'
   const SEL_ITEM_TITLE = '.s-item__title'
+  // Invalid containers (items within these containers will be ignored)
+  const INVALID_CONTAINERS = ['srp-items-carousel__container']
   // URL constants
   const URL_EBAY_SEARCH = 'https://www.ebay.com/sch/i.html?'
   const PARAM_SOLD = 'LH_Sold=1'
@@ -83,6 +85,10 @@
       const els = document.querySelectorAll(SEL_BID_COUNT)
       this.matches = []
       els.forEach((el) => {
+        // Check if element is within any invalid container
+        const isInInvalidContainer = INVALID_CONTAINERS.some((className) => el.closest(`.${className}`))
+        if (isInInvalidContainer) return // Skip this element
+
         const txt = el.innerText || el.textContent
         const match = txt.match(this.regexPattern)
         if (match) {
