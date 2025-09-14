@@ -136,6 +136,18 @@ const StravaActivities = ({ activities }: Props) => {
         {/* See All Link */}
         <SeeAllItem variants={fade}>
           <SeeAllContent href="/fitness">
+            <FloatingIcon $position="top-left" $rotation={-15} $delay={0}>
+              {ActivityIcons.Run}
+            </FloatingIcon>
+            <FloatingIcon $position="top-right" $rotation={20} $delay={0.1}>
+              {ActivityIcons.Ride}
+            </FloatingIcon>
+            <FloatingIcon $position="bottom-left" $rotation={-25} $delay={0.2}>
+              {ActivityIcons.Swim}
+            </FloatingIcon>
+            <FloatingIcon $position="bottom-right" $rotation={15} $delay={0.3}>
+              {ActivityIcons.WeightTraining}
+            </FloatingIcon>
             <SeeAllText>See All Activities</SeeAllText>
           </SeeAllContent>
         </SeeAllItem>
@@ -257,43 +269,109 @@ const ActivityDate = styled.p`
 const SeeAllItem = styled(motion.li)`
   flex: 1;
   position: relative;
-  background: var(--dark-bg);
-  min-width: 150px;
+  min-width: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  a {
-    width: 100%;
-    height: 100%;
-    text-decoration: none;
-    color: inherit;
-  }
 `
 
 const SeeAllContent = styled(Link)`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 120px; /* Match approximate height of activity items */
-  border: 2px dashed var(--accent);
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  text-decoration: none !important;
+
+  &:before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    height: 200%;
+    width: 200%;
+    left: -50%;
+    top: -50%;
+    background:
+      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.06), transparent 45%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 55%);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    rotate: 0deg;
+    transition: rotate 0.3s ease;
+    transform-origin: center center;
+  }
 
   &:hover {
-    border-color: var(--text);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.4);
+
+    &:before {
+      rotate: 40deg;
+    }
+  }
+`
+
+const FloatingIcon = styled.div<{
+  $position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  $rotation: number
+  $delay: number
+}>`
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.8) rotate(${(props) => props.$rotation}deg);
+  transition: all 0.4s ease;
+  transition-delay: ${(props) => props.$delay}s;
+  pointer-events: none;
+  z-index: 1;
+
+  ${(props) => {
+    switch (props.$position) {
+      case 'top-left':
+        return 'top: 15%; left: 15%;'
+      case 'top-right':
+        return 'top: 20%; right: 15%;'
+      case 'bottom-left':
+        return 'bottom: 20%; left: 20%;'
+      case 'bottom-right':
+        return 'bottom: 15%; right: 20%;'
+      default:
+        return ''
+    }
+  }}
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.15);
+    filter: blur(0.5px);
+  }
+
+  ${SeeAllContent}:hover & {
+    opacity: 1;
+    transform: scale(1) rotate(${(props) => props.$rotation}deg);
   }
 `
 
 const SeeAllText = styled.span`
   color: var(--text-dark);
-  font-size: 0.9rem;
-  font-weight: 400;
-  transition: color 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   ${SeeAllContent}:hover & {
-    color: var(--text);
+    color: var(--heading);
   }
 `
