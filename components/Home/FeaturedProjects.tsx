@@ -3,8 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
-import JukeboxLogo from '/public/logo-jukebox.webp'
-import LiftClubLogo from '/public/logo-liftclub.webp'
+import JukeboxLogo from '../../public/logo-jukebox.webp'
+import LiftClubLogo from '../../public/logo-liftclub.webp'
 
 const VuoriLogo = () => (
   <svg
@@ -70,7 +70,7 @@ const Container = styled(motion.section)`
   color: var(--text);
 `
 
-const ProjectLink = styled(motion.a)`
+const ProjectLink = styled(motion.create(Link))`
   min-width: max-content;
   display: flex;
   gap: 0.5rem;

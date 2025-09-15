@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { fade, photoAnim, staggerFade } from '../animation'
-import StairShadow from '/public/img/art/photography/stair_shadow.jpg'
+import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
