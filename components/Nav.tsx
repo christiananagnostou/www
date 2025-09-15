@@ -248,11 +248,11 @@ const SkipLink = styled.a`
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--accent);
-  color: var(--text);
+  z-index: 10000;
   padding: 8px 16px;
   border-radius: var(--border-radius-sm);
-  z-index: 10000;
+  background: var(--accent);
+  color: var(--text);
   transition: top 0.3s;
   &:focus {
     top: 0;
@@ -275,17 +275,17 @@ const StyledNav = styled.nav`
   position: sticky;
   top: 0;
   z-index: 9999;
-  transition: top 0.4s ease;
   border-bottom: 1px solid var(--accent);
   background: var(--dark-bg);
+  transition: top 0.4s ease;
 
   .nav-inner {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0;
-    margin: auto;
+    align-items: center;
     height: var(--nav-height);
+    margin: auto;
+    padding: 0;
   }
 `
 
@@ -296,30 +296,30 @@ const LogoWrapper = styled(motion.create(Link))`
   fill: var(--text);
 
   svg {
-    user-select: none;
     pointer-events: none;
+    user-select: none;
   }
 `
 
 const Hamburger = styled(motion.button)`
-  background: none;
-  border: none;
-  cursor: pointer;
   display: flex;
-  align-items: end;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
+  align-items: end;
   gap: 0.4rem;
-  flex: 1;
   height: 100%;
   padding: 0 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
 
   span {
     display: block;
     width: 22px;
     height: 1px;
-    background: var(--text-dark);
     border-radius: 1px;
+    background: var(--text-dark);
     transition: all 0.3s ease;
   }
 
@@ -339,31 +339,31 @@ const Hamburger = styled(motion.button)`
 `
 
 const Menu = styled(motion.ul)`
-  list-style: none;
+  position: relative;
   margin: 0;
   padding: 0;
-  position: relative;
+  list-style: none;
 
   /* Desktop */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     display: flex;
     align-items: center;
-    gap: 0rem;
+    gap: 0;
     height: auto !important;
     opacity: 1 !important;
   }
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     position: absolute;
     top: var(--nav-height);
-    left: 0;
     right: 0;
-    background: var(--dark-bg);
-    overflow: hidden;
-    border-bottom: 1px solid var(--accent);
+    left: 0;
     border-top: 1px solid var(--accent);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--accent);
+    background: var(--dark-bg);
+    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+    overflow: hidden;
   }
 `
 
@@ -371,7 +371,7 @@ const MenuItem = styled(motion.li)`
   position: relative;
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     &:last-child {
       margin-bottom: 0.5rem;
     }
@@ -382,19 +382,19 @@ const MenuItem = styled(motion.li)`
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    text-decoration: none;
-    color: var(--heading);
-    font-size: 1rem;
     padding: 0.5rem 1rem;
-    background: none;
     border: none;
+    background: none;
+    font-size: 1rem;
+    color: var(--heading);
+    text-decoration: none;
     cursor: pointer;
     transition: color 0.3s;
 
-    @media (max-width: 767px) {
-      width: 100%;
-      justify-content: end;
+    @media (width <= 767px) {
       flex-direction: row-reverse;
+      justify-content: end;
+      width: 100%;
       padding: 0.75rem 1rem;
     }
   }
@@ -406,7 +406,7 @@ const DropdownToggle = styled.button`
   cursor: s-resize !important;
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     &[aria-expanded='true'] {
       svg {
         transform: rotate(180deg);
@@ -416,15 +416,16 @@ const DropdownToggle = styled.button`
 `
 
 const Submenu = styled(motion.ul)`
-  /* Shared */
-  list-style: none;
   margin: 0;
   padding: 0;
+
+  /* Shared */
+  list-style: none;
   overflow: hidden;
 
   li a {
-    text-decoration: none;
     color: var(--heading);
+    text-decoration: none;
 
     @media (hover: hover) {
       &:hover,
@@ -435,15 +436,15 @@ const Submenu = styled(motion.ul)`
   }
 
   /* Desktop dropdown */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     position: absolute;
     top: 100%;
-    left: -0rem;
-    background: var(--dark-bg);
+    left: -0;
+    min-width: 120px;
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
-    min-width: 120px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: var(--dark-bg);
+    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
 
     li a {
       font-size: 0.95rem;
@@ -451,12 +452,12 @@ const Submenu = styled(motion.ul)`
   }
 
   /* Mobile dropdown */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     li a {
-      padding: 0.5rem 3rem;
       position: relative;
+      padding: 0.5rem 3rem;
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         top: 0;

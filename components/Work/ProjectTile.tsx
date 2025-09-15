@@ -52,15 +52,15 @@ const ProjectContainer = styled(motion.div)`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem;
     padding: 0.25rem 0;
     border-bottom: 1px solid var(--accent);
-    margin-bottom: 0.5rem;
 
     h2 {
       display: inline-block;
       min-width: max-content;
-      font-size: 1.1rem;
       font-weight: 500;
+      font-size: 1.1rem;
       color: var(--heading);
       transition: all 0.2s ease-in-out;
 
@@ -71,13 +71,13 @@ const ProjectContainer = styled(motion.div)`
     .links {
       a,
       span {
-        text-decoration: none;
         display: inline-block;
-        font-size: 0.8rem;
-        font-weight: normal;
-        color: var(--text);
-        transition: all 0.2s ease-in-out;
         margin-left: 20px;
+        font-weight: normal;
+        font-size: 0.8rem;
+        color: var(--text);
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
 
         &:not(span):hover {
           color: #ffffff;
@@ -86,7 +86,7 @@ const ProjectContainer = styled(motion.div)`
     }
   }
 
-  @media screen and (min-width: 768px) {
+  @media screen and (width >= 768px) {
     flex-direction: row;
   }
 
@@ -94,16 +94,16 @@ const ProjectContainer = styled(motion.div)`
     display: inline-flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 100%;
     gap: 1rem;
+    width: 100%;
+    font-weight: normal;
     font-size: 0.9rem;
     line-height: 1.4rem;
-    font-weight: normal;
 
     .date {
       min-width: max-content;
-      font-size: 0.7rem;
       font-weight: 300;
+      font-size: 0.7rem;
       color: var(--text-dark);
     }
   }

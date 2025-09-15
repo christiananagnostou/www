@@ -62,9 +62,9 @@ export default function Projects() {
 }
 
 const Container = styled(motion.div)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `

@@ -227,29 +227,28 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 }
 
 const Container = styled(motion.section)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `
 
 const BookmarkletsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: auto;
   gap: 2rem;
+  margin: auto;
+  place-content: center center;
 `
 
 const BookmarkletItem = styled(motion.div)`
-  width: 100%;
   display: flex;
+  width: 100%;
 
   .main-content {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -260,17 +259,17 @@ const BookmarkletItem = styled(motion.div)`
     gap: 0.5rem;
 
     .icon {
-      font-size: 1.25rem;
-      min-width: 25px;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      min-width: 25px;
+      font-size: 1.25rem;
     }
 
     .title {
       margin: 0;
-      font-size: 1rem;
       font-weight: normal;
+      font-size: 1rem;
 
       & * {
         cursor: grab;
@@ -281,15 +280,15 @@ const BookmarkletItem = styled(motion.div)`
     }
 
     .github-url {
-      margin-left: auto;
       display: flex;
       align-items: center;
-      color: var(--text-dark);
       gap: 0.25rem;
+      margin-left: auto;
       font-size: 0.85rem;
+      color: var(--text-dark);
       text-decoration: none;
-      transition: color 0.2s ease;
       cursor: alias;
+      transition: color 0.2s ease;
 
       &:hover,
       &:focus {
@@ -298,10 +297,10 @@ const BookmarkletItem = styled(motion.div)`
     }
 
     .right-side {
-      margin-left: auto;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin-left: auto;
     }
   }
 
@@ -309,19 +308,19 @@ const BookmarkletItem = styled(motion.div)`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     padding: 0.5rem 0.75rem;
     border: none;
     border-radius: var(--border-radius-sm);
-    width: 100%;
-    text-align: left;
     background: transparent;
+    text-align: left;
     cursor: pointer;
     transition: background 0.2s ease;
 
     .summary {
-      font-size: 0.9rem;
       margin: 0;
       font-weight: 300;
+      font-size: 0.9rem;
       color: var(--text);
     }
 
@@ -331,8 +330,8 @@ const BookmarkletItem = styled(motion.div)`
       transition: color 0.2s ease;
 
       svg {
-        height: 1.2em;
         width: 1.2em;
+        height: 1.2em;
       }
     }
 
@@ -349,19 +348,19 @@ const BookmarkletItem = styled(motion.div)`
 
   .instructions {
     padding: 0.75rem;
-    background: var(--dark-bg);
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
+    background: var(--dark-bg);
 
     p {
       margin: 0.25rem 0;
+      font-weight: 300;
       font-size: 0.8rem;
       line-height: 1.3;
-      font-weight: 300;
     }
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (width <= 500px) {
     flex-direction: column;
 
     .top-row {
@@ -381,10 +380,10 @@ const InstallButton = styled.button<{ disabled?: boolean }>`
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-sm);
   background: transparent;
+  font-size: 0.8rem;
   color: var(--text-dark);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -397,14 +396,14 @@ const InstallButton = styled.button<{ disabled?: boolean }>`
   &:disabled,
   &.installed {
     background: var(--accent);
+    opacity: 0.8;
     color: var(--text);
     cursor: default;
-    opacity: 0.8;
   }
 
   span {
-    font-size: 0.75rem;
     font-weight: 500;
+    font-size: 0.75rem;
   }
 
   svg {

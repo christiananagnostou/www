@@ -59,16 +59,16 @@ const Footer = styled.footer`
   margin-top: 4rem;
   padding-top: 2rem;
   border-top: 1px solid var(--accent);
-  text-align: center;
   font-size: 0.9rem;
+  text-align: center;
   color: var(--text);
 `
 
 const NavLinks = styled.nav`
   display: flex;
   justify-content: space-between;
-  margin: 0 auto;
   gap: 2rem;
+  margin: 0 auto;
 `
 
 const FooterLink = styled(Link)`
@@ -78,20 +78,20 @@ const FooterLink = styled(Link)`
 `
 
 const LinkRows = styled.div`
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  margin-top: 2rem;
 
   a {
-    color: var(--text);
     display: flex;
     align-items: start;
     gap: 0.25rem;
     width: fit-content;
     margin: 0 auto;
+    color: var(--text);
   }
 `
 

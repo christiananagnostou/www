@@ -112,33 +112,36 @@ const Container = styled(motion.div)`
   padding: 2rem 1rem 1rem;
 
   .page-inner-container {
+    position: relative;
+
     /* border: 1px solid var(--accent); */
+
     /* background: var(--body-bg); */
+
     /* padding: 1rem 1rem 1.5rem; */
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 1rem;
     border-radius: var(--border-radius-2xl);
-    position: relative;
   }
 `
 
 const FlexWrap = styled(motion.section)`
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 1rem;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 1rem;
   width: 100%;
 `
 
 const MiddleSection = styled.section`
   display: flex;
-  width: 100%;
   gap: 1rem;
+  width: 100%;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (width <= 768px) {
     flex-direction: column;
   }
 `

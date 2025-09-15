@@ -58,13 +58,13 @@ export default function lab() {
 }
 
 const Container = styled(motion.div)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 2rem 1rem 4rem;
   }
 `
@@ -74,7 +74,7 @@ const LabItems = styled(motion.div)`
   flex-direction: column;
   gap: 4rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     gap: 2rem;
   }
 `
@@ -86,22 +86,22 @@ const Item = styled(motion.div)`
 
 const DateStyle = styled.div`
   width: 100%;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
   text-align: right;
   color: var(--text-dark);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding-right: 1rem;
   }
 `
 
 const Inner = styled.div`
   padding: 4rem;
-  background: var(--dark-bg);
   border-radius: var(--border-radius-lg);
+  background: var(--dark-bg);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 1rem;
   }
 `

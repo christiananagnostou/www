@@ -64,32 +64,32 @@ export default FeaturedProjects
 
 const Container = styled(motion.section)`
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
   gap: 1rem;
-  flex: 1;
   color: var(--text);
 `
 
 const ProjectLink = styled(motion.create(Link))`
-  min-width: max-content;
   display: flex;
-  gap: 0.5rem;
   align-items: center;
-  border-radius: var(--border-radius-sm);
+  gap: 0.5rem;
+  min-width: max-content;
   padding: 0.5rem;
-  background: var(--dark-bg);
   border: 1px solid var(--accent);
-  cursor: alias;
+  border-radius: var(--border-radius-sm);
+  background: var(--dark-bg);
   font-size: 0.85rem;
   letter-spacing: 0.03em;
+  cursor: alias;
 
   svg,
   img {
-    height: 18px;
     width: 18px;
-    object-fit: contain;
-    transition: filter 0.2s ease;
+    height: 18px;
     filter: grayscale(1);
+    transition: filter 0.2s ease;
+    object-fit: contain;
 
     &.darker {
       filter: grayscale(1) brightness(0.7);

@@ -159,12 +159,12 @@ const StravaActivities = ({ activities }: Props) => {
 export default StravaActivities
 
 const ActivitiesSection = styled(motion.section)`
-  width: 100%;
   position: relative;
-  border-radius: var(--border-radius-md);
+  width: 100%;
   padding: 1rem 0;
-  background: var(--dark-bg);
   border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
   color: var(--text);
 
   * {
@@ -189,11 +189,11 @@ const ActivityFilters = styled.div`
 
 const ActivityFilter = styled(motion.button)`
   padding: 0.15rem 0.25rem;
-  border-radius: var(--border-radius-sm);
-  color: inherit;
-  font-size: 0.8rem;
-  background: none;
   border: 1px solid var(--accent);
+  border-radius: var(--border-radius-sm);
+  background: none;
+  font-size: 0.8rem;
+  color: inherit;
   cursor: pointer;
 
   &.active {
@@ -206,17 +206,17 @@ const ActivityFilter = styled(motion.button)`
 `
 
 const ActivityList = styled.ul`
-  list-style: none;
-  user-select: none;
   display: flex;
   gap: 1rem;
   padding: 0 1rem;
-  overflow-x: auto;
+  list-style: none;
   cursor: grab;
+  user-select: none;
+  overflow-x: auto;
+  -ms-overflow-style: none;
 
   /* Hide scrollbar */
   scrollbar-width: none;
-  -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -227,16 +227,16 @@ const ActivityList = styled.ul`
 `
 
 const ActivityItem = styled(motion.li)`
-  flex: 1;
   position: relative;
-  background: var(--dark-bg);
+  flex: 1;
   min-width: 200px;
+  background: var(--dark-bg);
 `
 
 const MapContainer = styled.div`
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
   width: 100px;
   height: 100px;
 `
@@ -244,19 +244,19 @@ const MapContainer = styled.div`
 const ActivityType = styled.div`
   margin-bottom: -0.25rem;
   svg {
-    height: 1.25rem;
     width: 1.25rem;
+    height: 1.25rem;
   }
 `
 
 const ActivityDetail = styled.p<{ $best?: boolean }>`
-  margin: 0.5rem 0;
-  color: var(--text-dark);
-  font-size: 0.8rem;
   position: relative;
+  margin: 0.5rem 0;
+  font-size: 0.8rem;
+  color: var(--text-dark);
   strong {
-    font-size: 0.75rem;
     font-weight: 600;
+    font-size: 0.75rem;
     color: ${(props) => (props.$best ? 'var(--text)' : 'inherit')};
   }
 `
@@ -267,52 +267,51 @@ const ActivityDate = styled.p`
 `
 
 const SeeAllItem = styled(motion.li)`
-  flex: 1;
   position: relative;
-  min-width: 180px;
   display: flex;
-  align-items: center;
+  flex: 1;
   justify-content: center;
+  align-items: center;
+  min-width: 180px;
 `
 
 const SeeAllContent = styled(Link)`
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   border-radius: var(--border-radius-xl);
-  text-decoration: none;
   color: inherit;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  backdrop-filter: blur(8px);
   text-decoration: none !important;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    border-radius: 50%;
-    height: 200%;
-    width: 200%;
-    left: -50%;
     top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    border-radius: 50%;
     background:
-      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.06), transparent 45%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 55%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 70% 20%, rgb(255 255 255 / 6%), transparent 45%),
+      linear-gradient(135deg, rgb(255 255 255 / 3%), transparent 55%);
     pointer-events: none;
-    rotate: 0deg;
-    transition: rotate 0.3s ease;
     transform-origin: center center;
+    transition: rotate 0.3s ease;
+    mix-blend-mode: overlay;
+    rotate: 0deg;
   }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.4);
+    border-color: rgb(255 255 255 / 15%);
+    box-shadow: 0 8px 32px -12px rgb(0 0 0 / 40%);
 
-    &:before {
+    &::before {
       rotate: 40deg;
     }
   }
@@ -324,12 +323,12 @@ const FloatingIcon = styled.div<{
   $delay: number
 }>`
   position: absolute;
+  z-index: 1;
   opacity: 0;
+  pointer-events: none;
   transform: scale(0.8) rotate(${(props) => props.$rotation}deg);
   transition: all 0.4s ease;
   transition-delay: ${(props) => props.$delay}s;
-  pointer-events: none;
-  z-index: 1;
 
   ${(props) => {
     switch (props.$position) {
@@ -349,8 +348,8 @@ const FloatingIcon = styled.div<{
   svg {
     width: 24px;
     height: 24px;
-    color: rgba(255, 255, 255, 0.15);
     filter: blur(0.5px);
+    color: rgb(255 255 255 / 15%);
   }
 
   ${SeeAllContent}:hover & {
@@ -360,16 +359,16 @@ const FloatingIcon = styled.div<{
 `
 
 const SeeAllText = styled.span`
-  color: var(--text-dark);
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: all 0.3s ease;
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
 
   ${SeeAllContent}:hover & {
     color: var(--heading);

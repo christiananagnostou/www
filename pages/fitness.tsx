@@ -487,129 +487,127 @@ const FitnessPage = ({ activities }: Props) => {
 export default FitnessPage
 
 const Container = styled(motion.section)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `
 
 const Hero = styled(motion.section)`
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 2.5rem clamp(1.25rem, 3vw, 3rem);
   margin: 1rem 0 2.75rem;
   padding: 2.25rem clamp(1.5rem, 3vw, 2.75rem) 2.4rem;
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #181818 40%, #1f1f1f 100%);
   border: 1px solid #202020;
   border-radius: var(--border-radius-md);
-  overflow: hidden;
+  background: linear-gradient(135deg, var(--dark-bg) 0%, #181818 40%, #1f1f1f 100%);
   box-shadow:
-    0 4px 18px -8px rgba(0, 0, 0, 0.6),
-    0 1px 0 rgba(255, 255, 255, 0.02) inset;
+    0 4px 18px -8px rgb(0 0 0 / 60%),
+    0 1px 0 rgb(255 255 255 / 2%) inset;
+  overflow: hidden;
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     pointer-events: none;
   }
 
-  &:before {
-    inset: 0;
+  &::before {
     background:
-      radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.06), transparent 55%),
-      linear-gradient(160deg, rgba(255, 255, 255, 0.05), transparent 60%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 85% 15%, rgb(255 255 255 / 6%), transparent 55%),
+      linear-gradient(160deg, rgb(255 255 255 / 5%), transparent 60%);
     opacity: 0.85;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
 
-  &:after {
-    inset: 0;
-    border-radius: inherit;
+  &::after {
     padding: 1px;
+    border-radius: inherit;
     background: linear-gradient(
       120deg,
-      rgba(255, 255, 255, 0.08),
-      rgba(255, 255, 255, 0) 35% 65%,
-      rgba(255, 255, 255, 0.07)
+      rgb(255 255 255 / 8%),
+      rgb(255 255 255 / 0%) 35% 65%,
+      rgb(255 255 255 / 7%)
     );
-    mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    -webkit-mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
     opacity: 0.55;
+    inset: 0;
+    mask:
+      linear-gradient(#000000, #000000) content-box,
+      linear-gradient(#000000, #000000);
+    mask-composite: xor;
+    mask-composite: exclude;
   }
 
   .hero-left {
-    max-width: 540px;
     position: relative;
     z-index: 2;
+    max-width: 540px;
   }
 
   h1 {
     margin: 0 0 0.65rem;
-    font-size: clamp(1.9rem, 5vw, 2.9rem);
-    line-height: 1.05;
     background: linear-gradient(90deg, var(--heading), #d0d0d0 55%, #a7a7a7);
     background-clip: text;
-    -webkit-background-clip: text;
+    font-size: clamp(1.9rem, 5vw, 2.9rem);
+    line-height: 1.05;
     color: transparent;
     letter-spacing: 0.5px;
   }
   p {
     margin: 0.4rem 0;
-    color: var(--text-dark);
     font-weight: 300;
+    color: var(--text-dark);
   }
   .streak-line {
-    font-size: 0.8rem;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    opacity: 0.85;
     margin-top: 0.75rem;
+    opacity: 0.85;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
   }
 
   .hero-grid {
     --tile-min: 92px;
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--tile-min), 1fr));
-    gap: 0.85rem;
-    flex: 1;
-    min-width: 260px;
     z-index: 2;
+    display: grid;
+    flex: 1;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(var(--tile-min), 1fr));
+    min-width: 260px;
 
     .hero-grid-header {
       display: flex;
-      align-items: center;
       justify-content: left;
-      grid-column: 1 / -1;
-      margin-bottom: 0.5rem;
+      align-items: center;
       width: 100%;
+      margin-bottom: 0.5rem;
+      grid-column: 1 / -1;
 
       .lifetime-label {
-        font-size: 0.6rem;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        color: var(--text-dark);
-        font-weight: 600;
         padding: 0.35rem 0.75rem;
+        font-weight: 600;
+        font-size: 0.6rem;
+        color: var(--text-dark);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
       }
     }
   }
-  @media (max-width: 880px) {
+
+  @media (width <= 880px) {
     gap: 2rem 1.75rem;
     padding: 1.8rem 1.5rem 2rem;
   }
-  @media (max-width: 620px) {
+
+  @media (width <= 620px) {
     .hero-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -621,72 +619,73 @@ const HeroStat = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 0.85rem 0.65rem 0.9rem;
-  background: var(--tile-bg);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius-md);
+  align-items: center;
   min-width: 86px;
-  isolation: isolate;
-  overflow: hidden;
+  padding: 0.85rem 0.65rem 0.9rem;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: var(--border-radius-md);
+  background: var(--tile-bg);
   box-shadow:
-    0 2px 6px -2px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.015) inset;
-  backdrop-filter: blur(4px);
+    0 2px 6px -2px rgb(0 0 0 / 60%),
+    0 0 0 1px rgb(255 255 255 / 1.5%) inset;
+  overflow: hidden;
   transition:
     border-color 0.25s ease,
     transform 0.25s ease;
+  backdrop-filter: blur(4px);
+  isolation: isolate;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
     background:
-      linear-gradient(140deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 40%),
-      radial-gradient(circle at 30% 110%, rgba(255, 255, 255, 0.15), transparent 60%);
-    mix-blend-mode: overlay;
+      linear-gradient(140deg, rgb(255 255 255 / 12%), rgb(255 255 255 / 0%) 40%),
+      radial-gradient(circle at 30% 110%, rgb(255 255 255 / 15%), transparent 60%);
     opacity: 0.9;
     pointer-events: none;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
-  &:after {
+  &::after {
     content: '';
     position: absolute;
-    inset: 0;
     background: linear-gradient(
       120deg,
-      rgba(255, 255, 255, 0.08),
-      rgba(255, 255, 255, 0) 35% 65%,
-      rgba(255, 255, 255, 0.08)
+      rgb(255 255 255 / 8%),
+      rgb(255 255 255 / 0%) 35% 65%,
+      rgb(255 255 255 / 8%)
     );
     opacity: 0;
-    transition: opacity 0.35s ease;
     pointer-events: none;
+    transition: opacity 0.35s ease;
+    inset: 0;
   }
   span {
-    font-size: clamp(1.25rem, 2.8vw, 1.85rem);
+    filter: drop-shadow(0 2px 2px rgb(0 0 0 / 35%));
     font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--heading);
+    font-size: clamp(1.25rem, 2.8vw, 1.85rem);
     line-height: 1.05;
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+    color: var(--heading);
+    letter-spacing: 0.5px;
   }
   label {
     margin-top: 0.4rem;
-    font-size: 0.55rem;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text-dark);
-    font-weight: 500;
     opacity: 0.9;
+    font-weight: 500;
+    font-size: 0.55rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
   }
   &:hover {
-    border-color: rgba(255, 255, 255, 0.16);
+    border-color: rgb(255 255 255 / 16%);
   }
-  &:hover:after {
+  &:hover::after {
     opacity: 0.85;
   }
-  @media (max-width: 620px) {
+
+  @media (width <= 620px) {
     padding: 0.75rem 0.55rem 0.8rem;
     span {
       font-size: clamp(1.15rem, 5vw, 1.6rem);
@@ -709,189 +708,185 @@ const YearStatsContainer = styled.div`
 
 const PrimaryStatsRow = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     grid-template-columns: 1fr;
   }
 `
 
 const PrimaryStatTile = styled(motion.div)`
   position: relative;
-  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--border-radius-md);
   padding: 2rem 1.75rem 2.25rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
   overflow: hidden;
   transition: all 0.3s ease;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
     background:
-      radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.06), transparent 50%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 60%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 80% 20%, rgb(255 255 255 / 6%), transparent 50%),
+      linear-gradient(135deg, rgb(255 255 255 / 4%), transparent 60%);
     pointer-events: none;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 60%);
-    -webkit-mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgb(255 255 255 / 12%), transparent 60%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    inset: 0;
+    mask:
+      linear-gradient(#000000, #000000) content-box,
+      linear-gradient(#000000, #000000);
+    mask-composite: xor;
+    mask-composite: exclude;
   }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.4);
+    border-color: rgb(255 255 255 / 15%);
+    box-shadow: 0 12px 40px -8px rgb(0 0 0 / 40%);
 
-    &:after {
+    &::after {
       opacity: 0.7;
     }
   }
 `
 
 const PrimaryStatNumber = styled.div`
-  font-size: clamp(2.5rem, 6vw, 3.5rem);
-  font-weight: 700;
-  color: var(--heading);
-  line-height: 1;
-  margin-bottom: 0.75rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   position: relative;
   z-index: 2;
+  margin-bottom: 0.75rem;
   background: linear-gradient(135deg, var(--heading), var(--accent) 70%);
-  -webkit-background-clip: text;
   background-clip: text;
+  filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));
+  font-weight: bold;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  line-height: 1;
+  color: var(--heading);
   color: transparent;
 `
 
 const PrimaryStatLabel = styled.div`
+  position: relative;
+  z-index: 2;
+  margin-bottom: 1rem;
+  font-weight: 500;
   font-size: 0.9rem;
   color: var(--text-dark);
   letter-spacing: 0.5px;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 2;
 `
 
 const StatProgress = styled.div<{ $percentage: number }>`
   position: relative;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: var(--border-radius-xs);
   z-index: 2;
+  height: 4px;
   margin-top: 0.25rem;
+  border-radius: var(--border-radius-xs);
+  background: rgb(255 255 255 / 8%);
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
-    left: 0;
     top: 0;
-    height: 100%;
+    left: 0;
     width: ${({ $percentage }) => Math.min($percentage, 100)}%;
-    background: linear-gradient(90deg, var(--accent), #4fa3ff);
+    height: 100%;
     border-radius: var(--border-radius-xs);
+    background: linear-gradient(90deg, var(--accent), #4fa3ff);
     transition: width 0.6s ease;
   }
 `
 
 const ProgressLabel = styled.div`
   position: absolute;
-  right: 0;
   top: -1.25rem;
+  right: 0;
+  opacity: 0.8;
+  font-weight: 500;
   font-size: 0.6rem;
   color: var(--text-dark);
   letter-spacing: 0.5px;
-  opacity: 0.8;
-  font-weight: 500;
 `
 
 const SecondaryStatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
 `
 
 const SecondaryStatTile = styled(motion.div)`
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius-sm);
-  padding: 1.25rem;
   display: flex;
   align-items: center;
+  padding: 1.25rem;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: var(--border-radius-sm);
+  background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-    box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.3);
+    border-color: rgb(255 255 255 / 12%);
+    background: linear-gradient(135deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%));
+    box-shadow: 0 4px 20px -8px rgb(0 0 0 / 30%);
   }
 `
 
 const SecondaryStatNumber = styled.div`
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--heading);
-  line-height: 1;
   margin-bottom: 0.25rem;
+  font-weight: bold;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--heading);
 `
 
 const SecondaryStatLabel = styled.div`
+  opacity: 0.9;
+  font-weight: 500;
   font-size: 0.7rem;
   color: var(--text-dark);
-  letter-spacing: 0.5px;
   text-transform: uppercase;
-  font-weight: 500;
-  opacity: 0.9;
+  letter-spacing: 0.5px;
 `
 
 // New Minimal Activity List Components
 const ActivityItem = styled(motion.div)`
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgb(255 255 255 / 6%);
   border-radius: var(--border-radius-lg);
+  background: linear-gradient(135deg, rgb(255 255 255 / 2%), rgb(255 255 255 / 1%));
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-    box-shadow: 0 4px 16px -8px rgba(0, 0, 0, 0.3);
+    border-color: rgb(255 255 255 / 12%);
+    background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
+    box-shadow: 0 4px 16px -8px rgb(0 0 0 / 30%);
   }
 
   &.pulse {
     border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 0 0 2px rgb(var(--accent-rgb), 0.3);
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
@@ -901,20 +896,20 @@ const ActivityItem = styled(motion.div)`
 
 const ActivityItemLeft = styled.div`
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 0.75rem;
   min-width: 0;
-  flex: 1;
 `
 
 const ActivityTypeIcon = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 2rem;
   height: 2rem;
-  background: linear-gradient(135deg, var(--accent), #404040);
   border-radius: var(--border-radius-lg);
+  background: linear-gradient(135deg, var(--accent), #404040);
   flex-shrink: 0;
 
   svg {
@@ -925,27 +920,27 @@ const ActivityTypeIcon = styled.div`
 `
 
 const ActivityItemInfo = styled.div`
-  min-width: 0;
   flex: 1;
+  min-width: 0;
 `
 
 const ActivityItemTitle = styled.div`
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--heading);
-  line-height: 1.2;
   margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: var(--heading);
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 `
 
 const ActivityItemDate = styled.div`
+  font-weight: 500;
   font-size: 0.65rem;
   color: var(--text-dark);
-  font-weight: 500;
-  letter-spacing: 0.3px;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
 `
 
 const ActivityItemRight = styled.div`
@@ -953,33 +948,33 @@ const ActivityItemRight = styled.div`
   align-items: center;
   gap: 0.75rem;
 
-  @media (max-width: 768px) {
-    width: 100%;
+  @media (width <= 768px) {
     justify-content: space-between;
+    width: 100%;
   }
 `
 
 const ActivityItemStats = styled.div`
   display: flex;
-  gap: 0.75rem;
   align-items: center;
+  gap: 0.75rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     flex-wrap: wrap;
     gap: 0.5rem;
   }
 `
 
 const ActivityItemStat = styled.div`
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: var(--border-radius-sm);
+  background: rgb(255 255 255 / 4%);
+  font-weight: 500;
   font-size: 0.7rem;
   color: var(--text-dark);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  white-space: nowrap;
-  font-weight: 500;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 `
 
 const ActivityItemMap = styled.div`
@@ -991,36 +986,36 @@ const ActivityItemMap = styled.div`
 // Compact Filter Section Components
 const CompactFilterSection = styled(motion.section)`
   position: relative;
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
+  margin: 0 0 2rem;
+  padding: 1.5rem clamp(1.25rem, 3vw, 2.25rem);
   border: 1px solid #242424;
   border-radius: var(--border-radius-md);
-  padding: 1.5rem clamp(1.25rem, 3vw, 2.25rem);
-  margin: 0 0 2rem;
+  background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
+  box-shadow:
+    0 8px 32px -12px rgb(0 0 0 / 40%),
+    0 2px 0 rgb(255 255 255 / 2%) inset;
   overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow:
-    0 8px 32px -12px rgba(0, 0, 0, 0.4),
-    0 2px 0 rgba(255, 255, 255, 0.02) inset;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
     background:
-      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.04), transparent 45%),
-      linear-gradient(145deg, rgba(255, 255, 255, 0.03), transparent 55%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 70% 20%, rgb(255 255 255 / 4%), transparent 45%),
+      linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 55%);
     pointer-events: none;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
 `
 
 const FilterRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: 2rem;
-  flex-wrap: wrap;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     flex-direction: column;
     gap: 1.25rem;
   }
@@ -1033,29 +1028,29 @@ const YearSelector = styled.div`
   min-width: 100px;
 
   label {
-    font-size: 0.6rem;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text-dark);
     font-weight: 600;
+    font-size: 0.6rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
   }
 
   select {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text);
     padding: 0.45rem 0.6rem;
+    border: 1px solid rgb(255 255 255 / 8%);
     border-radius: var(--border-radius-md);
+    background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
+    font-weight: 500;
     font-size: 0.75rem;
+    color: var(--text);
     cursor: pointer;
     transition: all 0.25s ease;
-    font-weight: 500;
 
     &:hover,
     &:focus {
-      border-color: rgba(255, 255, 255, 0.15);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border-color: rgb(255 255 255 / 15%);
       outline: none;
+      background: linear-gradient(135deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%));
     }
 
     option {
@@ -1066,18 +1061,18 @@ const YearSelector = styled.div`
 `
 
 const ActivityTypeFilters = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 0.5rem;
   min-width: 280px;
 
   label {
-    font-size: 0.6rem;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text-dark);
     font-weight: 600;
+    font-size: 0.6rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
   }
 `
 
@@ -1093,21 +1088,21 @@ const FilterActions = styled.div`
   gap: 0.6rem;
 
   button {
-    background: none;
-    border: none;
-    color: var(--text-dark);
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    cursor: pointer;
     padding: 0.2rem 0.4rem;
+    border: none;
     border-radius: var(--border-radius-sm);
+    background: none;
+    font-weight: 600;
+    font-size: 0.6rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover:enabled {
+      background: rgb(255 255 255 / 5%);
       color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
     }
 
     &:disabled {

@@ -140,57 +140,57 @@ const ContactStyle = styled(motion.div)`
   justify-content: flex-end;
   align-items: center;
   max-width: 500px;
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
 
   .success-message {
-    transition: opacity 0.3s ease;
-    text-align: center;
     width: 100%;
     margin-bottom: 2rem;
+    text-align: center;
+    transition: opacity 0.3s ease;
   }
 `
 
 const StyledForm = styled(motion.form)`
   width: 100%;
-  margin-bottom: 2rem;
   margin-top: -1rem;
+  margin-bottom: 2rem;
 `
 
 const FormGroup = styled.div`
-  margin: auto;
-  width: 100%;
-  max-width: var(--max-w-screen);
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: var(--max-w-screen);
+  margin: auto;
 
   label {
-    color: var(--text);
     margin: 1rem 0 0.2rem;
+    color: var(--text);
   }
   .form-input {
-    background: var(--dark-bg);
+    padding: 0.5rem;
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
-    padding: 0.5rem;
-    font-size: 1.1rem;
+    background: var(--dark-bg);
     font-weight: 300;
-    color: var(--heading);
+    font-size: 1.1rem;
     font-family: inherit;
+    color: var(--heading);
     letter-spacing: 0.5px;
   }
   textarea {
-    resize: vertical;
-    overflow: auto;
     border-radius: var(--border-radius-sm);
+    overflow: auto;
+    resize: vertical;
   }
   .form-btn {
-    padding: 1rem;
-    color: var(--heading);
-    background: var(--accent);
-    border-radius: var(--border-radius-sm);
-    border: none;
     margin-top: 1rem;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background: var(--accent);
+    color: var(--heading);
     cursor: pointer;
   }
 `

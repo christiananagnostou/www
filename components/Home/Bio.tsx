@@ -60,8 +60,8 @@ const GiantsSlotContainer = styled(motion.em)`
 const Slot = styled.span`
   position: relative;
   display: inline-block;
-  overflow: hidden;
   vertical-align: bottom;
+  overflow: hidden;
 `
 
 // The "SF" text which animates upward on hover.
@@ -73,52 +73,52 @@ const TextSlot = styled(motion.span)`
 // The SVG starts below and slides upward into view.
 const SVGSlot = styled(motion.span)`
   position: absolute;
-  inset: 0;
-  margin: auto;
   display: block;
   height: 70%;
+  margin: auto;
+  inset: 0;
   svg {
-    height: 100%;
     width: 100%;
+    height: 100%;
     color: #fd5a1e;
   }
 `
 
 const Description = styled(motion.section)`
-  margin: auto;
-  border-radius: var(--border-radius-md);
-  padding: 1rem;
-  background: var(--dark-bg);
-  border: 1px solid var(--accent);
-  text-align: left;
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
+  text-align: left;
 
   em {
-    font-family: var(--font-serif);
     font-weight: normal;
+    font-family: var(--font-serif);
     letter-spacing: 0.03em;
   }
 
   h1 {
-    font-size: 1.1rem;
-    font-weight: 200;
     margin: 0 0 2rem;
+    font-weight: 200;
+    font-size: 1.1rem;
   }
 
   hr {
+    margin: 0 0 1rem;
     border: none;
     border-top: 1px solid var(--accent);
-    margin: 0 0 1rem;
   }
 
   p {
+    margin: 0 0 1rem;
     font-weight: 200;
     font-size: 0.95rem;
     line-height: 1.5rem;
-    margin: 0 0 1rem;
 
     &:last-child {
       margin: 0;

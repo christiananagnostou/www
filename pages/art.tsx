@@ -155,11 +155,11 @@ const Art = () => {
 export default Art
 
 const Container = styled(motion.section)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `
 
 const Columns = styled.section<{ $numColumns: number }>`
@@ -169,28 +169,28 @@ const Columns = styled.section<{ $numColumns: number }>`
 
 const Column = styled.div<{ $numColumns: number }>`
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
-  flex: 1;
 `
 
 const HoverBox = styled.div`
   position: absolute;
-  left: 0;
   bottom: 0;
-  width: 100%;
-  transform: translateY(100%);
-  transition: transform 0.25s ease-in-out;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
-  padding: 50px 10px 10px;
+  left: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
+  padding: 50px 10px 10px;
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 90%));
   color: var(--heading);
+  transform: translateY(100%);
+  transition: transform 0.25s ease-in-out;
 
   p,
   button {
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for readability */
+    text-shadow: 0 0 5px rgb(0 0 0 / 50%); /* Subtle shadow for readability */
   }
 
   .title-date {
@@ -218,28 +218,28 @@ const HoverBox = styled.div`
   }
 
   .tags button {
+    min-width: max-content;
     padding: 2px 5px;
-    font-size: 0.7rem;
-    background: var(--border);
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
+    background: var(--border);
+    font-size: 0.7rem;
     color: var(--text);
+    text-transform: capitalize;
     cursor: pointer;
     transition: all 0.25s ease;
-    text-transform: capitalize;
-    min-width: max-content;
 
     &.selected {
-      color: #ffffff;
       background: var(--accent);
+      color: #ffffff;
     }
   }
 `
 const ImageWrapper = styled.div`
   position: relative;
-  overflow: hidden;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
+  overflow: hidden;
 
   img {
     display: block;

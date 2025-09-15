@@ -9,11 +9,11 @@ export default Signature
 
 const StyledImage = styled(Image)`
   display: block;
-  pointer-events: none;
-  user-select: none;
-  align-self: center;
-  transform-origin: center center;
-  transform: translateY(0.5rem) scale(0.9);
   width: 100px;
   height: 45px;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(0.5rem) scale(0.9);
+  transform-origin: center center;
+  align-self: center;
 `

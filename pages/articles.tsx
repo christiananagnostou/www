@@ -113,40 +113,39 @@ const Articles = ({ posts }: Props) => {
 export default Articles
 
 const Container = styled(motion.section)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `
 
 const PostsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: auto;
   gap: 2.5rem;
+  margin: auto;
+  place-content: center center;
 `
 
 const PostItem = styled(motion.div)`
-  width: 100%;
   display: flex;
+  width: 100%;
 
   .date {
-    font-size: 0.7rem;
-    font-weight: 300;
-    margin-top: 0.7rem;
     min-width: 100px;
+    margin-top: 0.7rem;
+    font-weight: 300;
+    font-size: 0.7rem;
   }
 
   .inner-link {
     display: block;
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
     text-decoration: none;
     transition: all 0.25s ease;
-    border-radius: var(--border-radius-sm);
-    padding: 0.5rem 1rem;
-    flex: 1;
 
     &:hover {
       background: #262626;
@@ -157,21 +156,21 @@ const PostItem = styled(motion.div)`
       flex-direction: column;
 
       h2 {
-        font-weight: 300;
         width: fit-content;
+        font-weight: 300;
         font-size: 1rem;
         color: #ffffff;
       }
 
       p {
-        font-size: 0.8rem;
         margin: 0.5rem 0 0;
         font-weight: 300;
+        font-size: 0.8rem;
       }
     }
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (width <= 500px) {
     flex-direction: column-reverse;
 
     .date {

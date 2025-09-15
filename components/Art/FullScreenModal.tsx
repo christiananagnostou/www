@@ -137,36 +137,33 @@ export default FullscreenModal
 
 const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
   z-index: 10000;
   display: flex;
   flex-direction: column;
+  background: rgb(0 0 0 / 95%);
+  inset: 0;
 `
 
 const ImageArea = styled.div`
-  flex: 1;
   position: relative;
+  flex: 1;
 `
 
 const MotionImageContainer = styled(motion.div)`
   position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
   max-width: 800px;
+  height: 100%;
   margin: auto;
+  inset: 0;
 `
 
 const MetadataArea = styled(motion.div)`
-  padding: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: end;
   width: 100%;
+  padding: 0.5rem;
   font-size: 0.9rem;
   p {
     color: var(--text-dark);
@@ -174,22 +171,22 @@ const MetadataArea = styled(motion.div)`
 `
 
 const BottomBar = styled.div`
-  height: 120px;
-  background: rgba(0, 0, 0, 0.8);
-  border-top: 1px solid var(--accent);
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 0 1rem;
+  align-items: center;
   gap: 1rem;
+  height: 120px;
+  padding: 0 1rem;
+  border-top: 1px solid var(--accent);
+  background: rgb(0 0 0 / 80%);
 
   button {
-    color: var(--text-dark);
-    font-size: 1.5rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
     flex: 1;
     height: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    cursor: pointer;
   }
 `

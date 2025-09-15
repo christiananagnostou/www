@@ -100,25 +100,25 @@ const Detail = ({ title, description, index }: { title: string; description: str
 
 const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
-  padding: 1rem;
   margin: auto;
+  padding: 1rem;
 
   h2 {
-    color: #cfcfcf;
     padding-top: 5vh;
-    font-size: 1.8rem;
     font-weight: 300;
+    font-size: 1.8rem;
+    color: #cfcfcf;
   }
   .link-container {
     display: flex;
     margin: 1rem 0;
 
     .live-link {
+      margin-right: 30px;
       font-size: 1rem;
       color: #cccccc;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
-      margin-right: 30px;
 
       &:hover {
         color: #ffffff;
@@ -137,16 +137,16 @@ const MobileAndText = styled.div`
 
   .mobile-imgs {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    justify-content: space-between;
     img {
     }
   }
 `
 
 const Details = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
 `
@@ -164,8 +164,8 @@ const DetailStyle = styled.div`
   }
 
   h3 {
-    font-size: 1.25rem;
     font-weight: 300;
+    font-size: 1.25rem;
   }
   p {
     padding-top: 1rem;
@@ -176,25 +176,25 @@ const DetailStyle = styled.div`
 
 const DesktopImage = styled.div`
   img {
-    max-width: 100%;
-    margin-bottom: 2rem;
     display: block;
+    max-width: 100%;
     height: auto;
+    margin-bottom: 2rem;
     border-radius: var(--border-radius-sm);
   }
 `
 
 const MobileImage = styled.div`
-  margin: 0 1rem;
   flex: 1;
+  margin: 0 1rem;
 
   img {
-    margin: auto;
-    margin-bottom: 2rem;
     display: block;
     width: auto;
-    max-height: 500px;
     max-width: 100%;
+    max-height: 500px;
+    margin: auto;
+    margin-bottom: 2rem;
     border-radius: var(--border-radius-sm);
   }
 `

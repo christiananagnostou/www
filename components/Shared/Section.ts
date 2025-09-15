@@ -13,86 +13,85 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
     switch ($variant) {
       case 'transparent':
         return css`
-          background: transparent;
-          border: none;
-          box-shadow: none;
-          padding: 0;
           margin: 2rem 0;
-          &:before {
+          padding: 0;
+          border: none;
+          background: transparent;
+          box-shadow: none;
+          &::before {
             display: none;
           }
         `
       case 'elevated':
         return css`
+          border: 1px solid rgb(255 255 255 / 8%);
           border-radius: var(--border-radius-md);
           background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
-          border: 1px solid rgba(255, 255, 255, 0.08);
           box-shadow:
-            0 16px 40px -12px rgba(0, 0, 0, 0.4),
-            0 2px 0 rgba(255, 255, 255, 0.02) inset;
+            0 16px 40px -12px rgb(0 0 0 / 40%),
+            0 2px 0 rgb(255 255 255 / 2%) inset;
 
           &:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+            border-color: rgb(255 255 255 / 15%);
+            box-shadow: 0 20px 50px -12px rgb(0 0 0 / 50%);
           }
         `
       default:
         return css`
+          border: 1px solid #242424;
           border-radius: var(--border-radius-md);
           background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
-          border: 1px solid #242424;
           box-shadow:
-            0 8px 32px -12px rgba(0, 0, 0, 0.4),
-            0 2px 0 rgba(255, 255, 255, 0.02) inset;
+            0 8px 32px -12px rgb(0 0 0 / 40%),
+            0 2px 0 rgb(255 255 255 / 2%) inset;
         `
     }
   }}
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
     background:
-      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.04), transparent 45%),
-      linear-gradient(145deg, rgba(255, 255, 255, 0.03), transparent 55%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 70% 20%, rgb(255 255 255 / 4%), transparent 45%),
+      linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 55%);
     pointer-events: none;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
 `
 
 // Unified section header with gradient text and optional actions
 export const SectionHeader = styled.div<{ $align?: 'left' | 'center' | 'between' }>`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: ${({ $align = 'between' }) =>
     $align === 'center' ? 'center' : $align === 'left' ? 'flex-start' : 'space-between'};
-  margin-bottom: 1.75rem;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 1rem;
+  margin-bottom: 1.75rem;
 
   h1,
   h2,
   h3,
   h4 {
     margin: 0;
-    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
-    font-weight: 600;
-    letter-spacing: 0.5px;
     background: linear-gradient(90deg, var(--heading), #c0c0c0 70%);
-    -webkit-background-clip: text;
     background-clip: text;
+    font-weight: 600;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
     color: transparent;
+    letter-spacing: 0.5px;
   }
 
   .section-meta {
-    background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 0.4rem 0.8rem;
+    border: 1px solid rgb(255 255 255 / 8%);
     border-radius: var(--border-radius-md);
+    background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
+    font-weight: 500;
     font-size: 0.75rem;
     color: var(--text-dark);
     letter-spacing: 0.5px;
-    font-weight: 500;
   }
 `
 
@@ -103,8 +102,8 @@ export const Grid = styled.div<{
   $minWidth?: string
 }>`
   display: grid;
-  grid-template-columns: ${({ $cols, $minWidth = '140px' }) => $cols || `repeat(auto-fit, minmax(${$minWidth}, 1fr))`};
   gap: ${({ $gap = '1rem' }) => $gap};
+  grid-template-columns: ${({ $cols, $minWidth = '140px' }) => $cols || `repeat(auto-fit, minmax(${$minWidth}, 1fr))`};
 `
 
 // Enhanced button component with multiple variants
@@ -114,30 +113,30 @@ export const Button = styled.button<{
   $active?: boolean
 }>`
   position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   border-radius: var(--border-radius-md);
-  cursor: pointer;
   font-weight: 500;
   letter-spacing: 0.3px;
-  transition: all 0.25s ease;
+  cursor: pointer;
   overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.25s ease;
 
   ${({ $size = 'md' }) => {
     switch ($size) {
       case 'sm':
         return css`
           padding: 0.35rem 0.6rem;
-          font-size: 0.65rem;
           border-radius: var(--border-radius-md);
+          font-size: 0.65rem;
         `
       case 'lg':
         return css`
           padding: 0.7rem 1.2rem;
-          font-size: 0.9rem;
           border-radius: var(--border-radius-md);
+          font-size: 0.9rem;
         `
       default:
         return css`
@@ -151,12 +150,12 @@ export const Button = styled.button<{
     switch ($variant) {
       case 'secondary':
         return css`
+          border: 1px solid rgb(255 255 255 / 8%);
           background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
-          border: 1px solid rgba(255, 255, 255, 0.08);
           color: var(--text-dark);
 
           &:hover {
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: rgb(255 255 255 / 15%);
             color: var(--text);
           }
         `
@@ -166,57 +165,57 @@ export const Button = styled.button<{
           color: var(--text-dark);
 
           &:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             color: var(--text);
           }
         `
       case 'chip':
         return css`
-          background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          color: var(--text-dark);
+          border: 1px solid rgb(255 255 255 / 8%);
           border-radius: var(--border-radius-md);
+          background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
+          color: var(--text-dark);
 
           ${$active &&
           css`
+            border-color: rgb(255 255 255 / 20%);
             background: linear-gradient(135deg, var(--accent), #404040);
+            box-shadow: 0 4px 12px -4px rgb(0 0 0 / 30%);
             color: var(--heading);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.3);
           `}
 
           &:hover {
             ${!$active &&
             css`
+              border-color: rgb(255 255 255 / 20%);
               background: linear-gradient(135deg, var(--accent), #404040);
               color: var(--heading);
-              border-color: rgba(255, 255, 255, 0.2);
             `}
           }
         `
       default:
         return css`
+          border: 1px solid rgb(255 255 255 / 10%);
           background: linear-gradient(135deg, var(--accent), #404040);
           color: var(--dark-bg);
-          border: 1px solid rgba(255, 255, 255, 0.1);
 
           &:hover {
-            box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px -6px rgb(0 0 0 / 30%);
           }
         `
     }
   }}
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 60%);
+    background: linear-gradient(135deg, rgb(255 255 255 / 10%), transparent 60%);
     opacity: 0;
     transition: opacity 0.25s ease;
+    inset: 0;
   }
 
-  &:hover:before {
+  &:hover::before {
     opacity: 1;
   }
 

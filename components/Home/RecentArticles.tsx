@@ -33,8 +33,8 @@ export default function RecentArticles({ posts }: ArticlesProps) {
 const LinkTitle = styled(motion.create(Link))``
 
 const ArticlesContainer = styled(HomepageBox)`
-  min-width: 70%;
   flex: 1;
+  min-width: 70%;
   color: var(--text);
 
   ul {
@@ -51,8 +51,8 @@ const ArticlesContainer = styled(HomepageBox)`
 
       .recent-article__title {
         text-decoration: underline solid var(--accent);
-        text-underline-offset: 3px;
         transition: all 0.2s ease;
+        text-underline-offset: 3px;
 
         &:hover,
         &:active {
@@ -62,12 +62,12 @@ const ArticlesContainer = styled(HomepageBox)`
       }
 
       .recent-article__summary {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         margin-top: 0.25rem;
         font-size: 0.8rem;
         color: var(--text-dark);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
     }
   }

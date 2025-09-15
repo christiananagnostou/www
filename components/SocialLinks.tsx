@@ -34,28 +34,28 @@ function SocialLinks() {
 }
 
 const SocialLinkList = styled(motion.ul)`
-  width: fit-content;
-  margin: 0;
   display: flex;
-  gap: 0.75rem;
-  padding: 0.05rem 0.75rem;
   justify-content: center;
   align-items: center;
-  list-style: none;
+  gap: 0.75rem;
+  width: fit-content;
   height: fit-content;
+  margin: 0;
+  padding: 0.05rem 0.75rem;
+  border: 1px solid var(--accent);
 
   border-radius: var(--border-radius-sm);
   background: var(--dark-bg);
-  border: 1px solid var(--accent);
+  list-style: none;
 
   li {
     flex: 1;
 
     a {
-      padding: 0.5rem 0.25rem;
       display: block;
-      cursor: alias;
+      padding: 0.5rem 0.25rem;
       color: var(--text-dark);
+      cursor: alias;
       transition: color 0.3s ease;
 
       &:hover {

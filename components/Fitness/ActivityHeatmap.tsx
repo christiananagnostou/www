@@ -196,37 +196,36 @@ const HeatmapContainer = styled.div`
 
 const HeaderRow = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 `
 
 const HeatmapTitle = styled.h3`
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
   background: linear-gradient(90deg, var(--heading), #c0c0c0 70%);
-  -webkit-background-clip: text;
   background-clip: text;
+  font-weight: 600;
+  font-size: 1rem;
   color: transparent;
+  letter-spacing: 0.5px;
 `
 
 const HeatmapGrid = styled.div`
   display: flex;
   gap: 3px;
-  overflow-x: auto;
   padding: 1rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgb(255 255 255 / 6%);
   border-radius: var(--border-radius-xl);
+  background: linear-gradient(135deg, rgb(255 255 255 / 2%), rgb(255 255 255 / 1%));
+  overflow-x: auto;
   backdrop-filter: blur(4px);
+  -ms-overflow-style: none;
 
   /* Hide scrollbar */
   scrollbar-width: none;
-  -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -241,11 +240,8 @@ const Week = styled.div`
 const Day = styled.div<{ $intensity: number; $hasActivities: boolean; $isFuture: boolean }>`
   width: 12px;
   height: 12px;
+  border: 1px solid rgb(255 255 255 / 3%);
   border-radius: var(--border-radius-xs);
-  cursor: ${(props) => (props.$hasActivities ? 'pointer' : 'default')};
-  transition: all 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  opacity: ${(props) => (props.$isFuture ? 0.3 : 1)};
 
   background-color: ${(props) => {
     switch (props.$intensity) {
@@ -261,39 +257,42 @@ const Day = styled.div<{ $intensity: number; $hasActivities: boolean; $isFuture:
         return 'rgba(255,255,255,0.04)'
     }
   }};
+  opacity: ${(props) => (props.$isFuture ? 0.3 : 1)};
+  cursor: ${(props) => (props.$hasActivities ? 'pointer' : 'default')};
+  transition: all 0.25s ease;
 
   &:hover {
-    outline: ${(props) => (props.$hasActivities ? '2px solid rgba(255,255,255,0.3)' : 'none')};
-    transform: ${(props) => (props.$hasActivities ? 'scale(1.15)' : 'none')};
     border-color: ${(props) => (props.$hasActivities ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.03)')};
+    outline: ${(props) => (props.$hasActivities ? '2px solid rgba(255,255,255,0.3)' : 'none')};
     box-shadow: ${(props) => (props.$hasActivities ? '0 0 8px rgba(255,255,255,0.1)' : 'none')};
+    transform: ${(props) => (props.$hasActivities ? 'scale(1.15)' : 'none')};
   }
 `
 
 const Tooltip = styled.div`
   position: absolute;
-  transform: translate(-50%, -100%);
-  background: rgba(17, 17, 17, 0.95);
-  color: var(--text);
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.7rem;
-  white-space: nowrap;
   z-index: 20;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: var(--border-radius-lg);
+  background: rgb(17 17 17 / 95%);
+  box-shadow: 0 8px 32px -8px rgb(0 0 0 / 60%);
+  font-size: 0.7rem;
+  color: var(--text);
+  white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -100%);
   backdrop-filter: blur(8px);
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
-    left: 50%;
     bottom: -6px;
-    transform: translateX(-50%);
-    border-width: 6px 6px 0 6px;
+    left: 50%;
+    border-width: 6px 6px 0;
     border-style: solid;
-    border-color: rgba(255, 255, 255, 0.12) transparent transparent transparent;
+    border-color: rgb(255 255 255 / 12%) transparent transparent;
+    transform: translateX(-50%);
   }
 `
 
@@ -301,28 +300,28 @@ const YearNav = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius-lg);
   padding: 0.25rem;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: var(--border-radius-lg);
+  background: rgb(255 255 255 / 4%);
 `
 
 const YearButton = styled.button`
-  background: transparent;
-  color: var(--text-dark);
-  border: none;
-  padding: 0.4rem 0.5rem;
-  height: 2rem;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 2rem;
+  padding: 0.4rem 0.5rem;
+  border: none;
   border-radius: var(--border-radius-sm);
-  cursor: pointer;
+  background: transparent;
   font-size: 0.8rem;
+  color: var(--text-dark);
+  cursor: pointer;
   transition: all 0.25s ease;
 
   &:hover:enabled {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgb(255 255 255 / 8%);
     color: var(--text);
     transform: translateY(-1px);
   }
@@ -334,19 +333,19 @@ const YearButton = styled.button`
 `
 
 const YearSelect = styled.select`
-  background: transparent;
-  color: var(--text);
+  padding: 0.4rem 0.5rem;
   border: none;
   border-radius: var(--border-radius-sm);
-  padding: 0.4rem 0.5rem;
-  font-size: 0.75rem;
+  background: transparent;
   font-weight: 500;
-  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text);
   letter-spacing: 0.3px;
+  cursor: pointer;
 
   &:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgb(255 255 255 / 8%);
   }
 
   option {
@@ -363,13 +362,13 @@ const DayLabels = styled.div`
 `
 
 const DayLabel = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 12px;
   height: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
   font-weight: 500;
+  font-size: 0.65rem;
   color: var(--text-dark);
   letter-spacing: 0.3px;
 `

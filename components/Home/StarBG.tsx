@@ -97,43 +97,44 @@ const SineWaveSVG = (
 
 const SparkleSVG = styled.span`
   position: absolute;
-  animation: sparkle 5s linear forwards;
-  opacity: 0;
   top: var(--top);
   left: var(--left);
+  opacity: 0;
   color: #414141;
-  --initial-rotate: var(--rotate);
+  animation: sparkle 5s linear forwards;
   rotate: var(--initial-rotate);
+
+  --initial-rotate: var(--rotate);
 
   @keyframes sparkle {
     0% {
-      scale: 0;
       opacity: 0;
       rotate: var(--initial-rotate);
+      scale: 0;
     }
     70% {
       opacity: 0.8;
       scale: 1;
     }
     100% {
-      opacity: 0;
-      scale: 0.7;
       top: calc(var(--top) + 300px);
+      opacity: 0;
       rotate: calc(var(--initial-rotate) * -1);
+      scale: 0.7;
     }
   }
 `
 
 const Container = styled.div<{ show: boolean }>`
-  height: 100vh;
-  width: 100vw;
   position: fixed;
   top: 0;
   left: 0;
   z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(var(--body-bg) 50%, rgb(10 10 10));
+  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
+  background-size: 100% 200%;
   pointer-events: none;
   transition: background-position 1.5s ease;
-  background: linear-gradient(var(--body-bg) 50%, rgb(10, 10, 10));
-  background-size: 100% 200%;
-  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
 `

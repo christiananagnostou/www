@@ -4,10 +4,10 @@ import { styled } from 'styled-components'
 export const HomepageBox = styled(motion.div)`
   position: relative;
   flex: 1;
-  border-radius: var(--border-radius-md);
   padding: 1rem;
-  background: var(--dark-bg);
   border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
 
   * {
     font-weight: 200;
@@ -15,10 +15,10 @@ export const HomepageBox = styled(motion.div)`
   }
 
   .homepage-box__title {
-    display: block;
-    margin-bottom: 1rem;
-    width: fit-content;
     position: relative;
     z-index: 1;
+    display: block;
+    width: fit-content;
+    margin-bottom: 1rem;
   }
 `

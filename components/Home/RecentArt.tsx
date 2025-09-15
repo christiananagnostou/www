@@ -46,23 +46,23 @@ const ArtContainer = styled(HomepageBox)`
 
   .recent-art__hover-box {
     position: absolute;
-    left: 0;
     bottom: -50px;
-    height: 50px;
-    width: 100%;
-    transition: bottom 0.25s ease-in-out;
-    display: flex;
-    align-items: end;
-    justify-content: center;
+    left: 0;
     z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+    height: 50px;
     text-align: center;
+    transition: bottom 0.25s ease-in-out;
 
     p {
-      font-size: 0.8rem;
       padding-bottom: 3px;
-      scale: 0.8;
-      transition: scale 0.25s ease-in-out;
+      font-size: 0.8rem;
       color: var(--text-dark);
+      transition: scale 0.25s ease-in-out;
+      scale: 0.8;
     }
   }
 
@@ -71,12 +71,12 @@ const ArtContainer = styled(HomepageBox)`
     position: absolute;
     top: 100%;
     left: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
-    z-index: 1;
     background: linear-gradient(to bottom, transparent 20%, #171717);
-    transition: top 0.28s ease-in-out;
     pointer-events: none;
+    transition: top 0.28s ease-in-out;
   }
 
   &:hover {
@@ -99,15 +99,15 @@ const RecentImage = styled(motion.div)`
   top: 0;
   left: 0;
   z-index: 0;
-  filter: brightness(0.25);
   width: 100%;
   height: 100%;
+  filter: brightness(0.25);
 
   img {
-    min-height: 100%;
     min-width: 100%;
-    max-height: 100%;
     max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
     object-fit: cover;
   }
 `

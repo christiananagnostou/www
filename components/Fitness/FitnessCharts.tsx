@@ -320,59 +320,56 @@ const ChartsWrapper = styled.section`
 
 const ChartCard = styled.div`
   position: relative;
-  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--border-radius-md);
-  padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  min-height: 320px;
   display: flex;
   flex-direction: column;
+  min-height: 320px;
+  padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
+  overflow: hidden;
+  transition: all 0.3s ease;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
     background:
-      radial-gradient(circle at 70% 15%, rgba(255, 255, 255, 0.04), transparent 50%),
-      linear-gradient(145deg, rgba(255, 255, 255, 0.03), transparent 60%);
-    mix-blend-mode: overlay;
+      radial-gradient(circle at 70% 15%, rgb(255 255 255 / 4%), transparent 50%),
+      linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 60%);
     pointer-events: none;
+    inset: 0;
+    mix-blend-mode: overlay;
   }
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 65%);
-    -webkit-mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    mask:
-      linear-gradient(#000, #000) content-box,
-      linear-gradient(#000, #000);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgb(255 255 255 / 10%), transparent 65%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    inset: 0;
+    mask:
+      linear-gradient(#000000, #000000) content-box,
+      linear-gradient(#000000, #000000);
+    mask-composite: xor;
+    mask-composite: exclude;
   }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.4);
+    border-color: rgb(255 255 255 / 15%);
+    box-shadow: 0 16px 40px -12px rgb(0 0 0 / 40%);
 
-    &:after {
+    &::after {
       opacity: 0.8;
     }
   }
 
   .uplot-host {
-    flex: 1;
     position: relative;
     z-index: 2;
+    flex: 1;
   }
 
   .uplot {
@@ -388,74 +385,73 @@ const ChartCard = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    background: rgba(17, 17, 17, 0.95);
-    color: var(--text);
-    font-size: 0.65rem;
-    padding: 0.45rem 0.65rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--border-radius-lg);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-    white-space: nowrap;
-    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
     z-index: 10;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: var(--border-radius-lg);
+    background: rgb(17 17 17 / 95%);
+    box-shadow: 0 8px 32px -8px rgb(0 0 0 / 60%);
+    opacity: 0;
+    font-size: 0.65rem;
+    color: var(--text);
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    backdrop-filter: blur(8px);
   }
 `
 
 const ChartHeader = styled.div`
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.25rem;
-  position: relative;
-  z-index: 2;
 
   h3 {
     margin: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
     background: linear-gradient(90deg, var(--heading), #c0c0c0 70%);
-    -webkit-background-clip: text;
     background-clip: text;
+    font-weight: 600;
+    font-size: 0.9rem;
     color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .mode-toggle {
     display: flex;
     gap: 0.25rem;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: var(--border-radius-lg);
     padding: 0.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: var(--border-radius-lg);
+    background: rgb(255 255 255 / 4%);
   }
 
   .mode-toggle button {
-    background: transparent;
-    border: none;
-    color: var(--text-dark);
-    font-size: 0.65rem;
-    font-weight: 500;
-    padding: 0.4rem 0.7rem;
-    border-radius: var(--border-radius-lg);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
     position: relative;
+    padding: 0.4rem 0.7rem;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    background: transparent;
+    font-weight: 500;
+    font-size: 0.65rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: pointer;
     overflow: hidden;
+    transition: all 0.25s ease;
 
-    &:before {
+    &::before {
       content: '';
       position: absolute;
-      inset: 0;
+      z-index: -1;
       background: linear-gradient(135deg, var(--accent), #404040);
       opacity: 0;
       transition: opacity 0.25s ease;
-      z-index: -1;
+      inset: 0;
     }
 
     &:hover {
@@ -463,10 +459,10 @@ const ChartHeader = styled.div`
     }
 
     &.active {
-      color: var(--heading);
       font-weight: 600;
+      color: var(--heading);
 
-      &:before {
+      &::before {
         opacity: 1;
       }
     }
