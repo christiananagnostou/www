@@ -99,7 +99,7 @@ const DateStyle = styled.div`
 const Inner = styled.div`
   padding: 4rem;
   background: var(--dark-bg);
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
 
   @media (max-width: 768px) {
     padding: 1rem;

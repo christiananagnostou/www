@@ -118,7 +118,7 @@ const Container = styled(motion.div)`
     flex-direction: column;
     align-items: end;
     gap: 1rem;
-    border-radius: 14px;
+    border-radius: var(--border-radius-2xl);
     position: relative;
   }
 `

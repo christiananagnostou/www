@@ -24,7 +24,7 @@ const StyledLink = styled(Link)`
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
   letter-spacing: 0.03em;
 
@@ -33,7 +33,10 @@ const StyledLink = styled(Link)`
 
   text-decoration: none !important;
   color: var(--fire-color) !important;
-  text-shadow: 0 0 1px var(--fire-color), 0 0 1px var(--fire-color), 0 0 1px var(--fire-color);
+  text-shadow:
+    0 0 1px var(--fire-color),
+    0 0 1px var(--fire-color),
+    0 0 1px var(--fire-color);
   transition: all 0.3s ease-in-out;
 
   .fire-svg {
@@ -43,6 +46,9 @@ const StyledLink = styled(Link)`
 
   &:hover {
     --fire-color: #ff8c3b;
-    text-shadow: 0 0 10px var(--fire-color), 0 0 40px var(--fire-color), 0 0 80px var(--fire-color);
+    text-shadow:
+      0 0 10px var(--fire-color),
+      0 0 40px var(--fire-color),
+      0 0 80px var(--fire-color);
   }
 `

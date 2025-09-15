@@ -49,7 +49,7 @@ export const TopBarButton = styled(motion.button)`
   border: 1px solid var(--accent);
   color: inherit;
   padding: 0.25rem;
-  border-radius: 3px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -72,7 +72,7 @@ export const TopBarButton = styled(motion.button)`
 
 export const TitleWrap = styled.div`
   left: 1rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   text-align: left;
 
   h1 {
@@ -145,7 +145,7 @@ export const ArticleContent = styled.article`
     max-width: 100%;
     white-space: pre-wrap;
     word-break: keep-all;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     background-color: rgba(0, 0, 0, 0.2);
   }
 
@@ -196,7 +196,7 @@ export const ArticleContent = styled.article`
       padding: 0.5rem;
       background: var(--background);
       border: 1px solid var(--accent);
-      border-radius: 5px;
+      border-radius: var(--border-radius-sm);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       width: 220px;
       font-size: 0.8em;
@@ -223,7 +223,7 @@ export const ArticleContent = styled.article`
       text-decoration: none;
       color: var(--text);
       padding: 0.3rem 0.5rem;
-      border-radius: 4px;
+      border-radius: var(--border-radius-sm);
       transition:
         background 0.3s ease,
         color 0.3s ease;
@@ -240,7 +240,7 @@ export const ArticleContent = styled.article`
   }
 
   img {
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     max-width: 100%;
     display: block;
     margin: auto;
@@ -281,7 +281,7 @@ export const ArticleContent = styled.article`
     /* var(--highlight-bg) */
     background: rgba(0, 0, 0, 0.2);
     padding: 1rem;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     overflow: auto;
     margin-bottom: 0.75rem;
   }

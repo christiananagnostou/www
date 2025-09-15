@@ -6,7 +6,6 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
   position: relative;
   margin: 3rem 0;
   padding: 2rem clamp(1.25rem, 3vw, 2.25rem);
-  border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s ease;
 
@@ -25,6 +24,7 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
         `
       case 'elevated':
         return css`
+          border-radius: var(--border-radius-md);
           background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
           border: 1px solid rgba(255, 255, 255, 0.08);
           box-shadow:
@@ -38,6 +38,7 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
         `
       default:
         return css`
+          border-radius: var(--border-radius-md);
           background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
           border: 1px solid #242424;
           box-shadow:
@@ -87,7 +88,7 @@ export const SectionHeader = styled.div<{ $align?: 'left' | 'center' | 'between'
     background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
     border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 0.4rem 0.8rem;
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     font-size: 0.75rem;
     color: var(--text-dark);
     letter-spacing: 0.5px;
@@ -114,7 +115,7 @@ export const Button = styled.button<{
 }>`
   position: relative;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -130,13 +131,13 @@ export const Button = styled.button<{
         return css`
           padding: 0.35rem 0.6rem;
           font-size: 0.65rem;
-          border-radius: 8px;
+          border-radius: var(--border-radius-md);
         `
       case 'lg':
         return css`
           padding: 0.7rem 1.2rem;
           font-size: 0.9rem;
-          border-radius: 12px;
+          border-radius: var(--border-radius-md);
         `
       default:
         return css`
@@ -157,7 +158,6 @@ export const Button = styled.button<{
           &:hover {
             border-color: rgba(255, 255, 255, 0.15);
             color: var(--text);
-            transform: translateY(-1px);
           }
         `
       case 'ghost':
@@ -175,7 +175,7 @@ export const Button = styled.button<{
           background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
           border: 1px solid rgba(255, 255, 255, 0.08);
           color: var(--text-dark);
-          border-radius: 12px;
+          border-radius: var(--border-radius-md);
 
           ${$active &&
           css`
@@ -186,7 +186,6 @@ export const Button = styled.button<{
           `}
 
           &:hover {
-            transform: translateY(-1px);
             ${!$active &&
             css`
               background: linear-gradient(135deg, var(--accent), #404040);
@@ -202,7 +201,6 @@ export const Button = styled.button<{
           border: 1px solid rgba(255, 255, 255, 0.1);
 
           &:hover {
-            transform: translateY(-1px);
             box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.3);
           }
         `
@@ -225,6 +223,5 @@ export const Button = styled.button<{
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    transform: none !important;
   }
 `

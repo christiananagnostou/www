@@ -75,7 +75,7 @@ const ProjectLink = styled(motion.a)`
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   padding: 0.5rem;
   background: var(--dark-bg);
   border: 1px solid var(--accent);

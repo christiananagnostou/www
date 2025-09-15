@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 export const HomepageBox = styled(motion.div)`
   position: relative;
   flex: 1;
-  border-radius: 7px;
+  border-radius: var(--border-radius-md);
   padding: 1rem;
   background: var(--dark-bg);
   border: 1px solid var(--accent);

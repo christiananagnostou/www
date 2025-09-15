@@ -311,7 +311,7 @@ const BookmarkletItem = styled(motion.div)`
     align-items: center;
     padding: 0.5rem 0.75rem;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     width: 100%;
     text-align: left;
     background: transparent;
@@ -351,7 +351,7 @@ const BookmarkletItem = styled(motion.div)`
     padding: 0.75rem;
     background: var(--dark-bg);
     border: 1px solid var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
 
     p {
       margin: 0.25rem 0;
@@ -383,7 +383,7 @@ const InstallButton = styled.button<{ disabled?: boolean }>`
   padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
   border: 1px solid var(--accent);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   background: transparent;
   color: var(--text-dark);
   cursor: pointer;

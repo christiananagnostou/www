@@ -321,7 +321,7 @@ const ChartCard = styled.div`
   position: relative;
   background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: var(--border-radius-md);
   padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
   overflow: hidden;
   transition: all 0.3s ease;
@@ -392,7 +392,7 @@ const ChartCard = styled.div`
     font-size: 0.65rem;
     padding: 0.45rem 0.65rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
+    border-radius: var(--border-radius-lg);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.15s ease;
@@ -427,7 +427,7 @@ const ChartHeader = styled.div`
     display: flex;
     gap: 0.25rem;
     background: rgba(255, 255, 255, 0.04);
-    border-radius: 10px;
+    border-radius: var(--border-radius-lg);
     padding: 0.25rem;
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
@@ -439,7 +439,7 @@ const ChartHeader = styled.div`
     font-size: 0.65rem;
     font-weight: 500;
     padding: 0.4rem 0.7rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
     transition: all 0.25s ease;
     letter-spacing: 0.3px;

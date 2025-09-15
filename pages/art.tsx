@@ -222,7 +222,7 @@ const HoverBox = styled.div`
     font-size: 0.7rem;
     background: var(--border);
     border: 1px solid var(--accent);
-    border-radius: 3px;
+    border-radius: var(--border-radius-sm);
     color: var(--text);
     cursor: pointer;
     transition: all 0.25s ease;
@@ -238,7 +238,7 @@ const HoverBox = styled.div`
 const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
 
   img {

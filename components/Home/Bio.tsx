@@ -86,7 +86,7 @@ const SVGSlot = styled(motion.span)`
 
 const Description = styled(motion.section)`
   margin: auto;
-  border-radius: 7px;
+  border-radius: var(--border-radius-md);
   padding: 1rem;
   background: var(--dark-bg);
   border: 1px solid var(--accent);

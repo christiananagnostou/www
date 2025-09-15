@@ -169,9 +169,13 @@ const Knob = styled(motion.div)`
       var(--s1) 59.2%,
       var(--s2) 90%
     );
-    box-shadow: 0 0.1em 0.2em 0 rgba(var(--s1), 0.9) inset, 0 -0.1em 0.3em 0 rgba(var(--s1), 0.3) inset,
-      0 0.08em 0.3em 0 rgba(#000011, 0.3), 0.5em 0 1em 0 rgba(var(--s1), 0.5) inset,
-      -0.5em 0 1em 0 rgba(var(--s4), 0.3) inset, 0 4em 1em -3.5em rgba(#000022, 0.3);
+    box-shadow:
+      0 0.1em 0.2em 0 rgba(var(--s1), 0.9) inset,
+      0 -0.1em 0.3em 0 rgba(var(--s1), 0.3) inset,
+      0 0.08em 0.3em 0 rgba(#000011, 0.3),
+      0.5em 0 1em 0 rgba(var(--s1), 0.5) inset,
+      -0.5em 0 1em 0 rgba(var(--s4), 0.3) inset,
+      0 4em 1em -3.5em rgba(#000022, 0.3);
   }
 
   .knob::before {
@@ -226,7 +230,7 @@ const TVControls = styled(motion.div)`
     height: 100%;
     background: var(--body-bg);
     border: 1px solid var(--accent);
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
     padding: 0 1rem;
     min-width: 60px;
     text-align: center;

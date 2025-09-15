@@ -161,7 +161,7 @@ export default StravaActivities
 const ActivitiesSection = styled(motion.section)`
   width: 100%;
   position: relative;
-  border-radius: 7px;
+  border-radius: var(--border-radius-md);
   padding: 1rem 0;
   background: var(--dark-bg);
   border: 1px solid var(--accent);
@@ -189,7 +189,7 @@ const ActivityFilters = styled.div`
 
 const ActivityFilter = styled(motion.button)`
   padding: 0.15rem 0.25rem;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   color: inherit;
   font-size: 0.8rem;
   background: none;
@@ -282,7 +282,7 @@ const SeeAllContent = styled(Link)`
   justify-content: center;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: var(--border-radius-xl);
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;

@@ -15,7 +15,7 @@ export const ButtonRow = styled(motion.div)`
   button {
     font-size: 0.85rem;
     padding: 0.25rem 0.75rem;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     background: var(--border);
     border: 1px solid var(--accent);
     color: var(--text);

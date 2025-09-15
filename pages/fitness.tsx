@@ -504,7 +504,7 @@ const Hero = styled(motion.section)`
   padding: 2.25rem clamp(1.5rem, 3vw, 2.75rem) 2.4rem;
   background: linear-gradient(135deg, var(--dark-bg) 0%, #181818 40%, #1f1f1f 100%);
   border: 1px solid #202020;
-  border-radius: 18px;
+  border-radius: var(--border-radius-md);
   overflow: hidden;
   box-shadow:
     0 4px 18px -8px rgba(0, 0, 0, 0.6),
@@ -625,7 +625,7 @@ const HeroStat = styled.div`
   padding: 0.85rem 0.65rem 0.9rem;
   background: var(--tile-bg);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
+  border-radius: var(--border-radius-md);
   min-width: 86px;
   isolation: isolate;
   overflow: hidden;
@@ -720,7 +720,7 @@ const PrimaryStatTile = styled(motion.div)`
   position: relative;
   background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
+  border-radius: var(--border-radius-md);
   padding: 2rem 1.75rem 2.25rem;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -794,7 +794,7 @@ const StatProgress = styled.div<{ $percentage: number }>`
   position: relative;
   height: 4px;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  border-radius: var(--border-radius-xs);
   z-index: 2;
   margin-top: 0.25rem;
 
@@ -806,7 +806,7 @@ const StatProgress = styled.div<{ $percentage: number }>`
     height: 100%;
     width: ${({ $percentage }) => Math.min($percentage, 100)}%;
     background: linear-gradient(90deg, var(--accent), #4fa3ff);
-    border-radius: 2px;
+    border-radius: var(--border-radius-xs);
     transition: width 0.6s ease;
   }
 `
@@ -836,7 +836,7 @@ const SecondaryStatTile = styled(motion.div)`
   position: relative;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
+  border-radius: var(--border-radius-sm);
   padding: 1.25rem;
   display: flex;
   align-items: center;
@@ -876,7 +876,7 @@ const ActivityItem = styled(motion.div)`
   padding: 0.75rem 1rem;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
   transition: all 0.3s ease;
 
   &:hover {
@@ -913,7 +913,7 @@ const ActivityTypeIcon = styled.div`
   width: 2rem;
   height: 2rem;
   background: linear-gradient(135deg, var(--accent), #404040);
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   flex-shrink: 0;
 
   svg {
@@ -974,7 +974,7 @@ const ActivityItemStat = styled.div`
   color: var(--text-dark);
   background: rgba(255, 255, 255, 0.04);
   padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
   font-weight: 500;
@@ -992,7 +992,7 @@ const CompactFilterSection = styled(motion.section)`
   position: relative;
   background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
   border: 1px solid #242424;
-  border-radius: 16px;
+  border-radius: var(--border-radius-md);
   padding: 1.5rem clamp(1.25rem, 3vw, 2.25rem);
   margin: 0 0 2rem;
   overflow: hidden;
@@ -1044,7 +1044,7 @@ const YearSelector = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--text);
     padding: 0.45rem 0.6rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.25s ease;
@@ -1101,7 +1101,7 @@ const FilterActions = styled.div`
     text-transform: uppercase;
     cursor: pointer;
     padding: 0.2rem 0.4rem;
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
     transition: all 0.2s ease;
 
     &:hover:enabled {

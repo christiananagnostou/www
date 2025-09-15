@@ -143,7 +143,7 @@ const PostItem = styled(motion.div)`
     display: block;
     text-decoration: none;
     transition: all 0.25s ease;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     padding: 0.5rem 1rem;
     flex: 1;
 

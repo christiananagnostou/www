@@ -171,7 +171,7 @@ const FormGroup = styled.div`
   .form-input {
     background: var(--dark-bg);
     border: 1px solid var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     padding: 0.5rem;
     font-size: 1.1rem;
     font-weight: 300;
@@ -182,13 +182,13 @@ const FormGroup = styled.div`
   textarea {
     resize: vertical;
     overflow: auto;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
   }
   .form-btn {
     padding: 1rem;
     color: var(--heading);
     background: var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     border: none;
     margin-top: 1rem;
     cursor: pointer;

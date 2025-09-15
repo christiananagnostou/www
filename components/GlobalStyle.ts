@@ -13,6 +13,14 @@ const GlobalStyle = createGlobalStyle`
     --font-fallback: -apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
     --font-serif: "Newsreader","Signifier","Times",serif;
     --font-display: "Inter",var(--font-fallback);
+    
+    /* Border Radius Variables */
+    --border-radius-xs: 2px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 7px;
+    --border-radius-lg: 10px;
+    --border-radius-xl: 12px;
+    --border-radius-2xl: 14px;
   }
 
   .max-w-screen {

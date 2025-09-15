@@ -252,6 +252,7 @@ const SkipLink = styled.a`
   background: var(--accent);
   color: var(--text);
   padding: 8px 16px;
+  border-radius: var(--border-radius-sm);
   z-index: 10000;
   transition: top 0.3s;
   &:focus {
@@ -441,7 +442,7 @@ const Submenu = styled(motion.ul)`
     left: -0rem;
     background: var(--dark-bg);
     border: 1px solid var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     min-width: 120px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 

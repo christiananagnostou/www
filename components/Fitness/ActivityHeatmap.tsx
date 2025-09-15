@@ -215,23 +215,14 @@ const HeatmapGrid = styled.div`
   padding: 1rem;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  border-radius: var(--border-radius-xl);
   backdrop-filter: blur(4px);
 
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   &::-webkit-scrollbar {
-    height: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 3px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
+    display: none;
   }
 `
 
@@ -244,7 +235,7 @@ const Week = styled.div`
 const Day = styled.div<{ $intensity: number; $hasActivities: boolean }>`
   width: 12px;
   height: 12px;
-  border-radius: 3px;
+  border-radius: var(--border-radius-xs);
   cursor: ${(props) => (props.$hasActivities ? 'pointer' : 'default')};
   transition: all 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.03);
@@ -294,7 +285,7 @@ const LegendText = styled.span`
 const LegendSquare = styled.div<{ $intensity: number }>`
   width: 12px;
   height: 12px;
-  border-radius: 3px;
+  border-radius: var(--border-radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.06);
 
   background-color: ${(props) => {
@@ -319,7 +310,7 @@ const Tooltip = styled.div`
   background: rgba(17, 17, 17, 0.95);
   color: var(--text);
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 0.7rem;
   white-space: nowrap;
@@ -346,7 +337,7 @@ const YearNav = styled.div`
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
   padding: 0.25rem;
 `
 
@@ -359,7 +350,7 @@ const YearButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: 0.8rem;
   transition: all 0.25s ease;
@@ -380,7 +371,7 @@ const YearSelect = styled.select`
   background: transparent;
   color: var(--text);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   padding: 0.4rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
