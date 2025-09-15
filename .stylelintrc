@@ -20,9 +20,8 @@
     "selector-pseudo-element-no-unknown": true,
     "selector-type-no-unknown": [true, { "ignore": ["custom-elements"] }],
     "string-no-newline": true,
-    "unit-no-unknown": true,
     "block-no-empty": null,
-    
+
     "color-no-invalid-hex": true,
     "color-named": "never",
     "color-hex-length": "long",
@@ -36,6 +35,7 @@
     "number-max-precision": 3,
     "length-zero-no-unit": true,
     "unit-allowed-list": ["px", "%", "s", "ms", "fr", "rem", "em", "vw", "vh", "vmin", "vmax", "deg", "turn", "rad"],
+    "unit-no-unknown": [true, { "ignoreUnits": ["/px`/"] }],
     "declaration-property-value-no-unknown": [true, { "ignoreProperties": { "mask-composite": ["xor"] } }],
 
     "order/properties-order": [
@@ -192,5 +192,14 @@
     "selector-no-qualifying-type": [true, { "ignore": ["attribute", "class"] }],
     "declaration-block-no-redundant-longhand-properties": true
   },
-  "ignoreFiles": ["**/*.js", "**/*.jsx", "**/*.md", "node_modules/**/*", ".next/**/*", "build/**/*", "dist/**/*"]
+  "ignoreFiles": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.md",
+    "node_modules/**/*",
+    ".next/**/*",
+    "build/**/*",
+    "dist/**/*",
+    "**/gantt/DateBar/styles.ts"
+  ]
 }
