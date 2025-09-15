@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 
-export const TitleButton = styled.button<{ $paddingLeft: number; height: number }>`
+export const TitleButton = styled.button<{ $paddingLeft: number; $height: number }>`
   display: flex;
   width: 100%;
   align-items: center;
   text-align: left;
   padding-right: 0.25rem;
   padding-left: calc(${({ $paddingLeft }) => `${$paddingLeft}px`} + 0.25rem);
-  height: ${({ height }) => `${height}px`};
+  height: ${({ $height }) => `${$height}px`};
   background: transparent;
   color: inherit;
   border: none;

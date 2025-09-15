@@ -40,10 +40,11 @@ const ArticlesContainer = styled(HomepageBox)`
   ul {
     padding-left: 1rem;
     list-style-type: circle;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 
     li {
-      margin-bottom: 0.5rem;
-
       a {
         display: block;
         text-decoration: none;
@@ -65,7 +66,7 @@ const ArticlesContainer = styled(HomepageBox)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        margin-top: 0.25rem;
+        margin-top: 0.5rem;
         font-size: 0.8rem;
         color: var(--text-dark);
       }

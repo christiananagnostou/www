@@ -11,7 +11,7 @@ const TodayCursor = ({ dateWidth, itemsDateRange }: Props) => {
   const { firstDate } = itemsDateRange
   const offsetDaysStart = getDayDiff(firstDate, dayjs())
   const barWidth = 2
-  return <TodayCursorStyle width={barWidth} offsetDays={offsetDaysStart} dateWidth={dateWidth} />
+  return <TodayCursorStyle $width={barWidth} $offsetDays={offsetDaysStart} $dateWidth={dateWidth} />
 }
 
 export default TodayCursor
