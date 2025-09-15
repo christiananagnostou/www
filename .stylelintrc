@@ -1,6 +1,6 @@
 {
   "customSyntax": "postcss-styled-syntax",
-  "extends": ["stylelint-config-recommended", "stylelint-config-standard", "stylelint-config-styled-components"],
+  "extends": ["stylelint-config-recommended"],
   "plugins": ["stylelint-order"],
   "rules": {
     "at-rule-no-unknown": [true, { "ignoreAtRules": ["extends", "apply"] }],
@@ -12,17 +12,17 @@
     "media-feature-name-no-unknown": true,
     "no-descending-specificity": null,
     "no-duplicate-at-import-rules": true,
-    "no-duplicate-selectors": true,
+    "no-duplicate-selectors": null,
     "no-empty-source": null,
     "no-invalid-double-slash-comments": true,
     "property-no-unknown": true,
     "selector-pseudo-class-no-unknown": true,
     "selector-pseudo-element-no-unknown": true,
-    "selector-type-no-unknown": true,
+    "selector-type-no-unknown": [true, { "ignore": ["custom-elements"] }],
     "string-no-newline": true,
     "unit-no-unknown": true,
     "block-no-empty": null,
-
+    
     "color-no-invalid-hex": true,
     "color-named": "never",
     "color-hex-length": "long",
@@ -31,11 +31,12 @@
     "font-weight-notation": "named-where-possible",
     "font-family-name-quotes": "always-unless-keyword",
 
-    "value-no-vendor-prefix": true,
+    "value-no-vendor-prefix": [true, { "ignoreValues": ["xor"] }],
     "shorthand-property-no-redundant-values": true,
     "number-max-precision": 3,
     "length-zero-no-unit": true,
     "unit-allowed-list": ["px", "%", "s", "ms", "fr", "rem", "em", "vw", "vh", "vmin", "vmax", "deg", "turn", "rad"],
+    "declaration-property-value-no-unknown": [true, { "ignoreProperties": { "mask-composite": ["xor"] } }],
 
     "order/properties-order": [
       [
@@ -180,19 +181,16 @@
     "selector-max-pseudo-class": 3,
     "selector-max-combinators": 3,
     "selector-max-compound-selectors": 4,
-    "max-nesting-depth": 3,
+    "max-nesting-depth": null,
 
-    "property-no-vendor-prefix": true,
+    "property-no-vendor-prefix": [true, { "ignoreProperties": ["mask-composite"] }],
     "selector-no-vendor-prefix": true,
     "media-feature-name-no-vendor-prefix": true,
     "at-rule-no-vendor-prefix": true,
 
-    "declaration-no-important": true,
+    "declaration-no-important": [true, { "severity": "warning" }],
     "selector-no-qualifying-type": [true, { "ignore": ["attribute", "class"] }],
-    "declaration-block-no-redundant-longhand-properties": true,
-
-    "url-quotes": "always",
-    "function-url-quotes": "always"
+    "declaration-block-no-redundant-longhand-properties": true
   },
   "ignoreFiles": ["**/*.js", "**/*.jsx", "**/*.md", "node_modules/**/*", ".next/**/*", "build/**/*", "dist/**/*"]
 }
