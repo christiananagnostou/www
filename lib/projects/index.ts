@@ -1,4 +1,4 @@
-import { StaticImageData } from 'next/image'
+import type { StaticImageData } from 'next/image'
 // Jukebox
 import JukeboxArtists from '../../public/img/projects/jukebox/artists.webp'
 import JukeboxCollage from '../../public/img/projects/jukebox/collage.webp'
@@ -60,7 +60,7 @@ export interface ProjectType {
   github?: string
   slug: string
   summary: string
-  details: { title: string; description: string }[]
+  details: Array<{ title: string; description: string }>
 }
 
 export const ProjectState: ProjectType[] = [

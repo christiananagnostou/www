@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import uPlot, { Series } from 'uplot'
+import type { Series } from 'uplot'
+import uPlot from 'uplot'
 import 'uplot/dist/uPlot.min.css'
 
 interface WeeklyData {
@@ -26,7 +27,7 @@ const colorFromString = (str: string) => {
 }
 
 const rollingAvg = (data: number[], window = 4) => {
-  const out: (number | null)[] = []
+  const out: Array<number | null> = []
   for (let i = 0; i < data.length; i++) {
     if (i + 1 < window) {
       out.push(null)
@@ -110,7 +111,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             width: 2,
             fill: `${accent.trim()}20`,
             show: mode === 'miles',
-            value: (u, v) => (v == null ? '' : v.toFixed(1) + ' mi'),
+            value: (u, v) => (v == null ? '' : `${v.toFixed(1)} mi`),
             points: { show: false }, // Remove markers
           } as Series,
           {
@@ -120,7 +121,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             width: 2,
             dash: [4, 4],
             show: mode === 'hours',
-            value: (u, v) => (v == null ? '' : v.toFixed(1) + ' h'),
+            value: (u, v) => (v == null ? '' : `${v.toFixed(1)} h`),
             points: { show: false }, // Remove markers
           } as Series,
           {
@@ -130,7 +131,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             width: 2,
             dash: [6, 4],
             show: mode === 'miles',
-            value: (u, v) => (v == null ? '' : v.toFixed(1) + ' mi'),
+            value: (u, v) => (v == null ? '' : `${v.toFixed(1)} mi`),
             points: { show: false }, // Remove markers
           } as Series,
         ],
@@ -141,7 +142,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
           setCursor: [
             (u) => {
               if (!tooltipRef.current) return
-              const idx = u.cursor.idx
+              const { idx } = u.cursor
               if (idx == null || idx < 0 || idx >= xVals.length) {
                 tooltipRef.current.style.opacity = '0'
                 return
@@ -238,7 +239,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
           setCursor: [
             (u) => {
               if (!distTooltipRef.current) return
-              const idx = u.cursor.idx
+              const { idx } = u.cursor
               if (idx == null || idx < 0 || idx >= distribution.labels.length) {
                 distTooltipRef.current.style.opacity = '0'
                 return

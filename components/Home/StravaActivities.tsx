@@ -8,7 +8,7 @@ import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 import MiniMap from './StravaMinimap'
 
-type Props = {
+interface Props {
   activities: StravaActivity[]
 }
 
@@ -45,9 +45,9 @@ const StravaActivities = ({ activities }: Props) => {
 
   const renderFilterButton = (type: keyof typeof ActivityIcons) => (
     <ActivityFilter
-      variants={fade}
-      title={`${type} (${activityCounts[type] ?? 0})`}
       className={filter === type ? 'active' : ''}
+      title={`${type} (${activityCounts[type] ?? 0})`}
+      variants={fade}
       onClick={() => setFilter(filter === type ? '' : type)}
     >
       {ActivityIcons[type]}
@@ -90,7 +90,7 @@ const StravaActivities = ({ activities }: Props) => {
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
-        <LinkTitle href="/fitness" variants={fade} className="homepage-box__title">
+        <LinkTitle className="homepage-box__title" href="/fitness" variants={fade}>
           Fitness
         </LinkTitle>
 
@@ -102,7 +102,7 @@ const StravaActivities = ({ activities }: Props) => {
         </ActivityFilters>
       </SectionHeader>
 
-      <ActivityList ref={activityListRef} onMouseDown={handleMouseDown} tabIndex={0}>
+      <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
         {activities
           .filter((activity) => (filter ? activity.type === filter : true))
           .map((activity, index) => {
@@ -114,20 +114,20 @@ const StravaActivities = ({ activities }: Props) => {
               <ActivityItem key={index} variants={fade}>
                 <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
-                {activity.MapPolyline && (
+                {activity.MapPolyline ? (
                   <MapContainer>
-                    <MiniMap polyline={activity.MapPolyline} width={100} height={100} />
+                    <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
                   </MapContainer>
-                )}
+                ) : null}
 
-                {activity.MovingTime && renderActivityDetail('MovingTime', activity)}
-                {activity.Distance && renderActivityDetail('Distance', activity)}
-                {activity.Pace && renderActivityDetail('Pace', activity)}
-                {activity.AverageSpeed && renderActivityDetail('AverageSpeed', activity)}
-                {activity.ElevationGain && renderActivityDetail('ElevationGain', activity)}
+                {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
+                {activity.Distance ? renderActivityDetail('Distance', activity) : null}
+                {activity.Pace ? renderActivityDetail('Pace', activity) : null}
+                {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
+                {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
 
-                {isToday && <ActivityDate>Today</ActivityDate>}
-                {isYesterday && <ActivityDate>Yesterday</ActivityDate>}
+                {isToday ? <ActivityDate>Today</ActivityDate> : null}
+                {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
                 {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
               </ActivityItem>
             )
@@ -136,16 +136,16 @@ const StravaActivities = ({ activities }: Props) => {
         {/* See All Link */}
         <SeeAllItem variants={fade}>
           <SeeAllContent href="/fitness">
-            <FloatingIcon $position="top-left" $rotation={-15} $delay={0}>
+            <FloatingIcon $delay={0} $position="top-left" $rotation={-15}>
               {ActivityIcons.Run}
             </FloatingIcon>
-            <FloatingIcon $position="top-right" $rotation={20} $delay={0.1}>
+            <FloatingIcon $delay={0.1} $position="top-right" $rotation={20}>
               {ActivityIcons.Ride}
             </FloatingIcon>
-            <FloatingIcon $position="bottom-left" $rotation={-25} $delay={0.2}>
+            <FloatingIcon $delay={0.2} $position="bottom-left" $rotation={-25}>
               {ActivityIcons.Swim}
             </FloatingIcon>
-            <FloatingIcon $position="bottom-right" $rotation={15} $delay={0.3}>
+            <FloatingIcon $delay={0.3} $position="bottom-right" $rotation={15}>
               {ActivityIcons.WeightTraining}
             </FloatingIcon>
             <SeeAllText>See All Activities</SeeAllText>

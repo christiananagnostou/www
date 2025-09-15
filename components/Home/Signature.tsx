@@ -1,10 +1,8 @@
 import Image from 'next/image'
 import styled from 'styled-components'
 
-type Props = {}
-
-const Signature = (props: Props) => {
-  return <StyledImage src="/signature.png" width={128} height={74} alt="Signature of Christian Anagnostou" />
+const Signature = () => {
+  return <StyledImage alt="Signature of Christian Anagnostou" height={74} src="/signature.png" width={128} />
 }
 
 export default Signature

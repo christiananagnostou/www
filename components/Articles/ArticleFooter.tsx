@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import LeftArrow from '../SVG/LeftArrow'
 import RightArrow from '../SVG/RightArrow'
 import Twitter from '../SVG/Twitter'
-import { BASE_URL } from '../../lib/constants'
 
 interface ArticleFooterProps {
   prevArticle?: {
@@ -32,19 +31,19 @@ export const ArticleFooter = ({ prevArticle, nextArticle }: ArticleFooterProps) 
             <LeftArrow /> All Articles
           </FooterLink>
         )}
-        {nextArticle && (
+        {nextArticle ? (
           <FooterLink href={`/article/${nextArticle.slug}`}>
             {nextArticle.title} <RightArrow />
           </FooterLink>
-        )}
+        ) : null}
       </NavLinks>
 
       <LinkRows>
-        <a href="/api/article-rss" target="_blank" rel="noreferrer">
+        <a href="/api/article-rss" rel="noreferrer" target="_blank">
           RSS Feed
         </a>
 
-        <a href="https://x.com/javascramble" target="_blank" rel="noreferrer" aria-label="X">
+        <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           Follow me on <Twitter />
         </a>
 

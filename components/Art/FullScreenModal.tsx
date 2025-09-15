@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ArtImage } from '../../lib/art'
+import type { ArtImage } from '../../lib/art'
 import LeftArrow from '../SVG/LeftArrow'
 import RightArrow from '../SVG/RightArrow'
 
@@ -62,11 +62,11 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
       <AnimatePresence custom={direction} mode="wait">
         <MetadataArea
           key={currentIndex}
-          custom={direction}
-          variants={imageVariants}
-          initial="initial"
           animate="animate"
+          custom={direction}
           exit="exit"
+          initial="initial"
+          variants={imageVariants}
         >
           <p>{image.title}</p>
           <p>{formattedDate}</p>
@@ -77,54 +77,54 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
         <AnimatePresence custom={direction} mode="wait">
           <MotionImageContainer
             key={currentIndex}
-            custom={direction}
-            variants={imageVariants}
-            initial="initial"
             animate="animate"
+            custom={direction}
             exit="exit"
+            initial="initial"
+            variants={imageVariants}
           >
             <Image
-              onClick={(e) => e.stopPropagation()}
-              src={image.image}
               alt={`${image.title} - ${formattedDate}`}
               fill
               quality={100}
               sizes="100vw"
-              unoptimized
+              src={image.image}
               style={{ objectFit: 'contain' }}
+              unoptimized
+              onClick={(e) => e.stopPropagation()}
             />
           </MotionImageContainer>
         </AnimatePresence>
       </ImageArea>
       <BottomBar>
         <button
+          aria-label="Previous image"
           onClick={() => {
             setDirection(-1)
             onNavigate((currentIndex - 1 + images.length) % images.length)
           }}
-          aria-label="Previous image"
         >
           <LeftArrow />
         </button>
-        <button onClick={onClose} aria-label="Close full screen view">
+        <button aria-label="Close full screen view" onClick={onClose}>
           <svg
-            stroke="currentColor"
             fill="currentColor"
+            height="1em"
+            stroke="currentColor"
             strokeWidth="0"
             viewBox="0 0 512 512"
-            height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="m289.94 256 95-95A24 24 0 0 0 351 127l-95 95-95-95a24 24 0 0 0-34 34l95 95-95 95a24 24 0 1 0 34 34l95-95 95 95a24 24 0 0 0 34-34z"></path>
+            <path d="m289.94 256 95-95A24 24 0 0 0 351 127l-95 95-95-95a24 24 0 0 0-34 34l95 95-95 95a24 24 0 1 0 34 34l95-95 95 95a24 24 0 0 0 34-34z" />
           </svg>
         </button>
         <button
+          aria-label="Next image"
           onClick={() => {
             setDirection(1)
             onNavigate((currentIndex + 1) % images.length)
           }}
-          aria-label="Next image"
         >
           <RightArrow />
         </button>

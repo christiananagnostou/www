@@ -1,4 +1,4 @@
-export type StravaActivity = {
+export interface StravaActivity {
   title: string
   link: string
   description: string

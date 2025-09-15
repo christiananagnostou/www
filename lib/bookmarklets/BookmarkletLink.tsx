@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, AnchorHTMLAttributes, JSX, PropsWithChildren } from 'react'
+import type { AnchorHTMLAttributes, JSX, PropsWithChildren } from 'react'
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 interface BookmarkletLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

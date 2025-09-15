@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components'
 import { motion } from 'framer-motion'
+import styled, { css } from 'styled-components'
 
 // Base section with sophisticated gradients and layered effects
 export const Section = styled(motion.section)<{ $variant?: 'default' | 'transparent' | 'elevated' }>`

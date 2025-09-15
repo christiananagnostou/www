@@ -1,18 +1,18 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { ArticleType } from '../../lib/articles'
-import { staggerFade, fade } from '../animation'
+import type { ArticleType } from '../../lib/articles'
+import { fade, staggerFade } from '../animation'
 import { HomepageBox } from './styles'
 
-type ArticlesProps = {
+interface ArticlesProps {
   posts: ArticleType[]
 }
 
 export default function RecentArticles({ posts }: ArticlesProps) {
   return (
     <ArticlesContainer variants={staggerFade}>
-      <LinkTitle href="/articles" variants={fade} className="homepage-box__title">
+      <LinkTitle className="homepage-box__title" href="/articles" variants={fade}>
         Articles
       </LinkTitle>
 

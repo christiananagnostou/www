@@ -1,19 +1,19 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
+import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
+import Checkmark from '../components/SVG/Checkmark'
 import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
 import UpArrow from '../components/SVG/UpArrow'
-import Checkmark from '../components/SVG/Checkmark'
 import { bookmarkletsData } from '../lib/bookmarklets'
-import { BASE_URL } from '../lib/constants'
-import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
 import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
 import { getMetrics } from '../lib/bookmarklets/metrics'
-import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
+import { BASE_URL } from '../lib/constants'
+import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
 
 const PageTitle = 'Bookmarklets | Christian Anagnostou'
 const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
@@ -96,31 +96,31 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={PageUrl} />
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="bookmarklets, javascript, web tools, Christian Anagnostou" />
+        <meta content={PageDescription} name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href={PageUrl} rel="canonical" />
+        <meta content="index, follow" name="robots" />
+        <meta content="bookmarklets, javascript, web tools, Christian Anagnostou" name="keywords" />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={PageTitle} />
-        <meta property="og:description" content={PageDescription} />
-        <meta property="og:url" content={PageUrl} />
+        <meta content="website" property="og:type" />
+        <meta content={PageTitle} property="og:title" />
+        <meta content={PageDescription} property="og:description" />
+        <meta content={PageUrl} property="og:url" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={PageTitle} />
-        <meta name="twitter:description" content={PageDescription} />
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content={PageTitle} name="twitter:title" />
+        <meta content={PageDescription} name="twitter:description" />
 
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getBookmarkletsStructuredData()) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -143,14 +143,14 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                 <div className="main-content">
                   {/* Top row: icon + "title link" */}
                   <div className="top-row">
-                    <div className="icon" aria-hidden="true">
+                    <div aria-hidden="true" className="icon">
                       {icon}
                     </div>
                     <h2 className="title">
                       <BookmarkletLink
+                        aria-label={`Drag or click to use the ${title} bookmarklet.`}
                         code={code}
                         draggable="true"
-                        aria-label={`Drag or click to use the ${title} bookmarklet.`}
                       >
                         {title}
                       </BookmarkletLink>
@@ -158,25 +158,25 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 
                     <div className="right-side">
                       {/* GitHub link */}
-                      {githubUrl && (
+                      {githubUrl ? (
                         <a
-                          href={githubUrl}
                           aria-label={`View the ${title} bookmarklet on GitHub.`}
                           className="github-url"
-                          target="_blank"
+                          href={githubUrl}
                           rel="noopener noreferrer"
+                          target="_blank"
                         >
                           <Github />
                           Source
                         </a>
-                      )}
+                      ) : null}
 
                       {/* Install tracking button */}
                       <InstallButton
-                        onClick={() => handleInstallClick(title)}
+                        className={isInstalled ? 'installed' : ''}
                         disabled={isInstalled}
                         title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
-                        className={isInstalled ? 'installed' : ''}
+                        onClick={() => handleInstallClick(title)}
                       >
                         {isInstalled ? <Checkmark /> : <BookWithBookmark />}
                         <span>{installCount}</span>
@@ -186,10 +186,10 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 
                   {/* Toggleable description (button) */}
                   <button
+                    aria-controls={`instructions-${index}`}
+                    aria-expanded={isOpen}
                     className="toggle-area"
                     onClick={() => toggleOpen(index)}
-                    aria-expanded={isOpen}
-                    aria-controls={`instructions-${index}`}
                   >
                     <p className="summary">{description}</p>
                     <span className="toggle-arrow">{isOpen ? <UpArrow /> : <DownArrow />}</span>
@@ -197,16 +197,16 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 
                   {/* Instructions panel, if open */}
                   <AnimatePresence>
-                    {isOpen && (
+                    {isOpen ? (
                       <motion.div
-                        id={`instructions-${index}`}
-                        aria-label={`${title} instructions`}
-                        role="region"
-                        initial="hidden"
-                        animate="show"
-                        exit="exit"
-                        variants={dropdown}
                         key={title}
+                        animate="show"
+                        aria-label={`${title} instructions`}
+                        exit="exit"
+                        id={`instructions-${index}`}
+                        initial="hidden"
+                        role="region"
+                        variants={dropdown}
                       >
                         <div className="instructions">
                           {instructions.split('\n').map((line, i) => (
@@ -214,7 +214,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                           ))}
                         </div>
                       </motion.div>
-                    )}
+                    ) : null}
                   </AnimatePresence>
                 </div>
               </BookmarkletItem>

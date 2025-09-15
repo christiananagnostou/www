@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
 import { animate, useMotionValue } from 'framer-motion'
-import { DashboardPanel, Readout, SpeedText, ThrottleText, PedalBtn, PedalFace, ThrottleBar } from './styles'
+import React, { useEffect, useRef, useState } from 'react'
 import Dial from './Dial'
+import { DashboardPanel, PedalBtn, PedalFace, Readout, SpeedText, ThrottleBar, ThrottleText } from './styles'
 
 interface SpeedometerProps {
   maxSpeed?: number
@@ -55,7 +55,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
   }
 
   const onThrottleStart = (event: React.MouseEvent | React.TouchEvent) => {
-    const nativeEvent = event.nativeEvent
+    const { nativeEvent } = event
     const y = 'touches' in nativeEvent ? nativeEvent.touches[0].clientY : nativeEvent.clientY
     updateThrottle(y, 0.2)
 
@@ -94,7 +94,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
 
   return (
     <DashboardPanel $size={diameter}>
-      <Dial speed={speed} maxSpeed={maxSpeed} diameter={diameter} />
+      <Dial diameter={diameter} maxSpeed={maxSpeed} speed={speed} />
 
       <Readout>
         <SpeedText>{Math.round(speed)} mph</SpeedText>

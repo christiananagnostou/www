@@ -10,22 +10,22 @@ function SocialLinks() {
   return (
     <SocialLinkList variants={fade}>
       <li>
-        <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer" aria-label="GitHub">
+        <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
         </a>
       </li>
       <li>
-        <a href="https://linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+        <a aria-label="LinkedIn" href="https://linkedin.com/in/ChristianAnagnostou/" rel="noreferrer" target="_blank">
           <LinkedIn />
         </a>
       </li>
       <li>
-        <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer" aria-label="Read my CV">
+        <a aria-label="Read my CV" href="https://read.cv/christian.a" rel="noreferrer" target="_blank">
           <Readcv />
         </a>
       </li>
       <li>
-        <a href="https://x.com/javascramble" target="_blank" rel="noreferrer" aria-label="X">
+        <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           <Twitter />
         </a>
       </li>

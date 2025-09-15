@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { ProjectType } from '../../lib/projects'
+import type { ProjectType } from '../../lib/projects'
 import { fade, lineAnim } from '../animation'
 
-type Props = {
+interface Props {
   project: ProjectType
 }
 
@@ -12,19 +12,19 @@ const ProjectTile = ({ project }: Props) => {
   return (
     <ProjectContainer variants={fade}>
       <motion.header variants={lineAnim}>
-        <Link href={'/work/' + project.slug}>
+        <Link href={`/work/${project.slug}`}>
           <h2>{project.title}</h2>
         </Link>
 
         <div className="links">
-          {project.github && (
-            <a href={project.github} target="_blank" rel="noreferrer">
+          {project.github ? (
+            <a href={project.github} rel="noreferrer" target="_blank">
               GitHub
             </a>
-          )}
+          ) : null}
 
           {project.externalLink ? (
-            <a href={project.externalLink} target="_blank" rel="noreferrer">
+            <a href={project.externalLink} rel="noreferrer" target="_blank">
               Live Site
             </a>
           ) : (
@@ -33,7 +33,7 @@ const ProjectTile = ({ project }: Props) => {
         </div>
       </motion.header>
 
-      <motion.span variants={fade} className="summary">
+      <motion.span className="summary" variants={fade}>
         {project.summary}
 
         <span className="date">{project.date}</span>

@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Image from 'next/image'
-import { GetStaticPaths, GetStaticProps } from 'next/types'
+import type { GetStaticPaths, GetStaticProps } from 'next/types'
 import styled from 'styled-components'
 
 import { pageAnimation } from '../../components/animation'
+import type { ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
-import { ProjectType } from '../../lib/projects'
 
-type Props = {
+interface Props {
   project: ProjectType
 }
 
@@ -29,49 +29,49 @@ const SingleProject = ({ project }: Props) => {
     <>
       <Head>
         <title>{project.title}</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta content="Christian Anagnostou's Web Portfolio" name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <h2>{project.title}</h2>
 
         <div className="link-container">
-          {project.externalLink && (
-            <motion.a className="live-link" href={project.externalLink} target="_blank" rel="noreferrer">
+          {project.externalLink ? (
+            <motion.a className="live-link" href={project.externalLink} rel="noreferrer" target="_blank">
               Live Site
             </motion.a>
-          )}
+          ) : null}
 
-          {project.github && (
-            <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
+          {project.github ? (
+            <motion.a className="live-link" href={project.github} rel="noreferrer" target="_blank">
               Github
             </motion.a>
-          )}
+          ) : null}
         </div>
 
         <DesktopImage>
           <Image
             alt={project.title}
             blurDataURL={project.desktopImgs[0].blurDataURL}
-            src={project.desktopImgs[0]}
-            width={1000}
             height={666}
             loading="eager"
+            src={project.desktopImgs[0]}
+            width={1000}
           />
         </DesktopImage>
 
         <MobileAndText>
           <Details>
             {project.details.map(({ title, description }, i) => (
-              <Detail key={i} title={title} description={description} index={i} />
+              <Detail key={i} description={description} index={i} title={title} />
             ))}
           </Details>
 
           <div className="mobile-imgs">
             {project.mobileImgs.map((image, i) => (
               <MobileImage key={i}>
-                <Image src={image} blurDataURL={image.blurDataURL} alt="mobile" height={600} width={300} />
+                <Image alt="mobile" blurDataURL={image.blurDataURL} height={600} src={image} width={300} />
               </MobileImage>
             ))}
           </div>
@@ -79,7 +79,7 @@ const SingleProject = ({ project }: Props) => {
 
         {project.desktopImgs.slice(1).map((image, i) => (
           <DesktopImage key={i}>
-            <Image src={image} blurDataURL={image.blurDataURL} alt={`desktop ${i}`} width={900} height={600} />
+            <Image alt={`desktop ${i}`} blurDataURL={image.blurDataURL} height={600} src={image} width={900} />
           </DesktopImage>
         ))}
       </Container>
@@ -93,7 +93,7 @@ const Detail = ({ title, description, index }: { title: string; description: str
   return (
     <DetailStyle>
       <h3>{title}</h3>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      <p dangerouslySetInnerHTML={{ __html: description }} />
     </DetailStyle>
   )
 }

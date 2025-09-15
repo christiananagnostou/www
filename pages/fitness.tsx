@@ -1,18 +1,17 @@
-import { motion } from 'framer-motion'
-import Head from 'next/head'
-import { GetStaticProps } from 'next/types'
-import { useState, useMemo } from 'react'
-import styled from 'styled-components'
 import dayjs from 'dayjs'
-import React from 'react'
+import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
-import { pageAnimation, fade, staggerFade } from '../components/animation'
-import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
-import { BASE_URL } from '../lib/constants'
-import { hike, ride, run, swim, weight, zwift } from '../components/SVG/strava/icons'
-import MiniMap from '../components/Home/StravaMinimap'
+import Head from 'next/head'
+import type { GetStaticProps } from 'next/types'
+import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
+import { fade, pageAnimation, staggerFade } from '../components/animation'
 import ActivityHeatmap from '../components/Fitness/ActivityHeatmap'
-import { Section, SectionHeader, Grid, Button } from '../components/Shared/Section'
+import MiniMap from '../components/Home/StravaMinimap'
+import { Button, Grid, Section, SectionHeader } from '../components/Shared/Section'
+import { hike, ride, run, swim, weight, zwift } from '../components/SVG/strava/icons'
+import { BASE_URL } from '../lib/constants'
+import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 
 const PageTitle = 'Fitness | Christian Anagnostou'
 const PageDescription = "Christian Anagnostou's fitness activities and workout history"
@@ -24,7 +23,9 @@ const FitnessCharts = dynamic(() => import('../components/Fitness/FitnessCharts'
   loading: () => <div style={{ margin: '2rem 0', opacity: 0.5, fontSize: '.8rem' }}>Loading charts…</div>,
 })
 
-type Props = { activities: StravaActivity[] }
+interface Props {
+  activities: StravaActivity[]
+}
 
 const ActivityIcons: Record<string, React.ReactElement> = {
   Swim: swim(),
@@ -241,10 +242,10 @@ const FitnessPage = ({ activities }: Props) => {
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <link rel="canonical" href={PageUrl} />
+        <meta content={PageDescription} name="description" />
+        <link href={PageUrl} rel="canonical" />
       </Head>
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Hero variants={fade}>
           <div className="hero-left">
             <h1>Fitness</h1>
@@ -283,7 +284,7 @@ const FitnessPage = ({ activities }: Props) => {
               <label htmlFor="yearSelect">Year</label>
               <select id="yearSelect" value={year} onChange={(e) => setYear(parseInt(e.target.value))}>
                 {years.map((y) => (
-                  <option value={y} key={y}>
+                  <option key={y} value={y}>
                     {y}
                   </option>
                 ))}
@@ -298,10 +299,10 @@ const FitnessPage = ({ activities }: Props) => {
                   return (
                     <Button
                       key={type}
-                      type="button"
-                      $variant="chip"
-                      $size="sm"
                       $active={active}
+                      $size="sm"
+                      $variant="chip"
+                      type="button"
                       onClick={() => toggleType(type)}
                     >
                       {type}
@@ -310,7 +311,7 @@ const FitnessPage = ({ activities }: Props) => {
                 })}
               </ChipContainer>
               <FilterActions>
-                <button type="button" disabled={!selectedTypes.length} onClick={() => setSelectedTypes([])}>
+                <button disabled={!selectedTypes.length} type="button" onClick={() => setSelectedTypes([])}>
                   Clear
                 </button>
                 <button type="button" onClick={() => setSelectedTypes(uniqueActivityTypes)}>
@@ -400,10 +401,10 @@ const FitnessPage = ({ activities }: Props) => {
             <h2>Analytics</h2>
             <div className="section-meta">Performance Insights</div>
           </SectionHeader>
-          <Grid $minWidth="320px" $gap="1.5rem">
+          <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
-              weekly={{ labels: weeklyLabels, miles: weeklyMilesSeries, hours: weeklyHoursSeries }}
               distribution={{ labels: typeLabels, counts: typeCounts }}
+              weekly={{ labels: weeklyLabels, miles: weeklyMilesSeries, hours: weeklyHoursSeries }}
             />
           </Grid>
         </Section>
@@ -415,9 +416,9 @@ const FitnessPage = ({ activities }: Props) => {
           </SectionHeader>
           <ActivityHeatmap
             activities={activities.filter((a) => dayjs(a.pubDate).year() === year)}
-            onDateClick={handleDateClick}
-            year={year}
             availableYears={years}
+            year={year}
+            onDateClick={handleDateClick}
             onYearChange={setYear}
           />
         </Section>
@@ -446,8 +447,8 @@ const FitnessPage = ({ activities }: Props) => {
                 return (
                   <ActivityItem
                     key={activity.guid + idx}
-                    variants={fade}
                     id={`activity-${pubDate.format('YYYY-MM-DD')}`}
+                    variants={fade}
                   >
                     <ActivityItemLeft>
                       <ActivityTypeIcon title={activity.type}>
@@ -462,16 +463,16 @@ const FitnessPage = ({ activities }: Props) => {
                     </ActivityItemLeft>
 
                     <ActivityItemRight>
-                      {activity.MapPolyline && (
+                      {activity.MapPolyline ? (
                         <ActivityItemMap>
-                          <MiniMap polyline={activity.MapPolyline} width={48} height={48} />
+                          <MiniMap height={48} polyline={activity.MapPolyline} width={48} />
                         </ActivityItemMap>
-                      )}
+                      ) : null}
                       <ActivityItemStats>
-                        {activity.Distance && <ActivityItemStat>{activity.Distance}</ActivityItemStat>}
-                        {activity.MovingTime && <ActivityItemStat>{activity.MovingTime}</ActivityItemStat>}
-                        {activity.Pace && <ActivityItemStat>{activity.Pace}</ActivityItemStat>}
-                        {activity.AverageSpeed && <ActivityItemStat>{activity.AverageSpeed}</ActivityItemStat>}
+                        {activity.Distance ? <ActivityItemStat>{activity.Distance}</ActivityItemStat> : null}
+                        {activity.MovingTime ? <ActivityItemStat>{activity.MovingTime}</ActivityItemStat> : null}
+                        {activity.Pace ? <ActivityItemStat>{activity.Pace}</ActivityItemStat> : null}
+                        {activity.AverageSpeed ? <ActivityItemStat>{activity.AverageSpeed}</ActivityItemStat> : null}
                       </ActivityItemStats>
                     </ActivityItemRight>
                   </ActivityItem>

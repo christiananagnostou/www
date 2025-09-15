@@ -1,8 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getMetrics, incrementInstalls, type BookmarkletMetrics } from '../../../../lib/bookmarklets/metrics'
+import { type BookmarkletMetrics, getMetrics, incrementInstalls } from '../../../../lib/bookmarklets/metrics'
 
 type MetricsResponse = BookmarkletMetrics
-type ErrorResponse = { error: string }
+interface ErrorResponse {
+  error: string
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<MetricsResponse | ErrorResponse>) {
   // Add CORS headers to allow bookmarklet requests from any domain (for installs tracking)

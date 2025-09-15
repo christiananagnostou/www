@@ -1,7 +1,7 @@
 import strava from 'strava-v3'
-import { StravaActivity } from './types'
-import { convertDistance, convertElevation, convertSpeed, formatTime, computePace, M_TO_MI } from './utils'
 import { calculateBestValuesByType } from './calculateBest'
+import type { StravaActivity } from './types'
+import { M_TO_MI, computePace, convertDistance, convertElevation, convertSpeed, formatTime } from './utils'
 
 /**
  * Fetches all pages of activities from the Strava API.
@@ -44,13 +44,13 @@ const mapActivity = (activity: any): StravaActivity & { raw: any } => {
   const base: any = {
     title: activity.name,
     link: `https://www.strava.com/activities/${activity.id}`,
-    description: activity.description || '',
+    description: activity.description ?? '',
     pubDate: new Date(activity.start_date).toISOString(),
     guid: activity.id.toString(),
     type: normalizedType,
     Distance: rawDistance != null ? convertDistance(rawDistance) : '',
     MovingTime: rawMovingTime != null ? formatTime(rawMovingTime) : '',
-    MapPolyline: activity.map?.summary_polyline || '',
+    MapPolyline: activity.map?.summary_polyline ?? '',
     raw: {
       Distance: rawDistance,
       ElevationGain: rawElevation,

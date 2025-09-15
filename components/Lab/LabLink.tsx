@@ -3,9 +3,7 @@ import styled from 'styled-components'
 import AnimatedFire from '../SVG/AnimatedFire'
 import Experiment from '../SVG/Experiment'
 
-type Props = {}
-
-const LabLink = (props: Props) => {
+const LabLink = () => {
   return (
     <StyledLink href="/lab">
       <Experiment />

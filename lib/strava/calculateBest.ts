@@ -1,6 +1,6 @@
-import { StravaActivity } from './types'
+import type { StravaActivity } from './types'
 
-export type RawActivityMetrics = {
+export interface RawActivityMetrics {
   Distance: number
   ElevationGain: number
   MovingTime: number
@@ -8,10 +8,10 @@ export type RawActivityMetrics = {
   Pace: number
 }
 
-export const calculateBestValuesByType = (activities: (StravaActivity & { raw: RawActivityMetrics })[]) => {
+export const calculateBestValuesByType = (activities: Array<StravaActivity & { raw: RawActivityMetrics }>) => {
   return activities.reduce(
     (acc, activity) => {
-      const type = activity.type
+      const { type } = activity
       // Initialize the accumulator if it doesn't exist
       if (!acc[type]) {
         acc[type] = {

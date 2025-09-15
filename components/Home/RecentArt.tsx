@@ -2,15 +2,15 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { fade, photoAnim, staggerFade } from '../animation'
 import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
+import { fade, photoAnim, staggerFade } from '../animation'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
   return (
     <ArtContainer variants={staggerFade}>
       <Link href="/art">
-        <motion.p variants={fade} className="homepage-box__title">
+        <motion.p className="homepage-box__title" variants={fade}>
           Photos
         </motion.p>
 
@@ -24,12 +24,12 @@ export default function RecentArt() {
 
         <RecentImage key={StairShadow.src} variants={photoAnim}>
           <Image
-            src={StairShadow}
             alt=""
             blurDataURL={StairShadow.blurDataURL}
-            placeholder="blur"
-            width={300}
             loading="eager"
+            placeholder="blur"
+            src={StairShadow}
+            width={300}
           />
         </RecentImage>
       </Link>

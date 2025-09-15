@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
-import { motion } from 'framer-motion'
-import { useState, useMemo, useRef, useCallback } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { type StravaActivity } from '../../lib/strava'
 
@@ -57,13 +56,13 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     return m
   }, [activities])
 
-  // Compute days for current year with leading padding so first week starts on Monday (ISO week assumption)
+  // Compute days for current year with leading padding so Sunday is at top of each week column
   const { weeks } = useMemo(() => {
     const firstDayOfYear = dayjs().year(currentYear).startOf('year')
     const lastDayOfYear = dayjs().year(currentYear).endOf('year')
-    // Determine how many padding days before first day to align Monday=0 index (dayjs weekday 0=Sunday)
+    // Determine how many padding days before first day to align Sunday=0 index
     const weekday = firstDayOfYear.day() // 0 Sunday ... 6 Saturday
-    const paddingDays = (weekday + 6) % 7 // converts Sunday(0)->6, Monday(1)->0, ... to number of days before
+    const paddingDays = weekday // Sunday(0)->0, Monday(1)->1, Tuesday(2)->2, etc.
     const days: DayData[] = []
     // Add padding days from previous year as empty slots
     for (let p = 0; p < paddingDays; p++) {
@@ -94,6 +93,12 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     return 0
   }
 
+  const isDateInFuture = (dateStr: string): boolean => {
+    const today = dayjs()
+    const date = dayjs(dateStr)
+    return date.isAfter(today, 'day')
+  }
+
   const getTooltipText = (day: DayData): string => {
     const date = dayjs(day.date)
     const dateStr = date.format('MMM D, YYYY')
@@ -118,19 +123,19 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     <HeatmapContainer ref={containerRef}>
       <HeaderRow>
         <HeatmapTitle>Training Calendar {currentYear}</HeatmapTitle>
-        {years.length > 1 && onYearChange && (
+        {years.length > 1 && onYearChange ? (
           <YearNav>
             <YearButton
-              onClick={() => onYearChange(Math.max(years[0], currentYear - 1))}
-              disabled={currentYear === years[0]}
               aria-label="Previous Year"
+              disabled={currentYear === years[0]}
+              onClick={() => onYearChange(Math.max(years[0], currentYear - 1))}
             >
               ◀
             </YearButton>
             <YearSelect
+              aria-label="Select Year"
               value={currentYear}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onYearChange(parseInt(e.target.value))}
-              aria-label="Select Year"
             >
               {years.map((y) => (
                 <option key={y} value={y}>
@@ -139,45 +144,46 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
               ))}
             </YearSelect>
             <YearButton
-              onClick={() => onYearChange(Math.min(years[years.length - 1], currentYear + 1))}
-              disabled={currentYear === years[years.length - 1]}
               aria-label="Next Year"
+              disabled={currentYear === years[years.length - 1]}
+              onClick={() => onYearChange(Math.min(years[years.length - 1], currentYear + 1))}
             >
               ▶
             </YearButton>
           </YearNav>
-        )}
+        ) : null}
       </HeaderRow>
       <HeatmapGrid ref={gridRef}>
+        <DayLabels>
+          <DayLabel>S</DayLabel>
+          <DayLabel />
+          <DayLabel />
+          <DayLabel>W</DayLabel>
+          <DayLabel />
+          <DayLabel />
+          <DayLabel>S</DayLabel>
+        </DayLabels>
         {weeks.map((week, weekIndex) => (
           <Week key={weekIndex}>
             {week.map((day, dayIndex) => (
               <Day
                 key={day.date}
-                $intensity={getIntensity(day.count)}
                 $hasActivities={day.count > 0}
+                $intensity={getIntensity(day.count)}
+                $isFuture={isDateInFuture(day.date)}
+                title={getTooltipText(day)}
                 onClick={() => day.count > 0 && onDateClick(day.date)}
                 onMouseEnter={(e) => handleMouseEnter(e.currentTarget, day)}
                 onMouseLeave={clearHover}
-                title={getTooltipText(day)}
               />
             ))}
           </Week>
         ))}
       </HeatmapGrid>
 
-      <Legend>
-        <LegendText>Less</LegendText>
-        <LegendSquare $intensity={0} />
-        <LegendSquare $intensity={1} />
-        <LegendSquare $intensity={2} />
-        <LegendSquare $intensity={3} />
-        <LegendText>More</LegendText>
-      </Legend>
-
-      {hoveredDay && tooltipPos && (
+      {hoveredDay && tooltipPos ? (
         <Tooltip style={{ left: tooltipPos.x, top: tooltipPos.y }}>{getTooltipText(hoveredDay)}</Tooltip>
-      )}
+      ) : null}
     </HeatmapContainer>
   )
 }
@@ -232,13 +238,14 @@ const Week = styled.div`
   gap: 3px;
 `
 
-const Day = styled.div<{ $intensity: number; $hasActivities: boolean }>`
+const Day = styled.div<{ $intensity: number; $hasActivities: boolean; $isFuture: boolean }>`
   width: 12px;
   height: 12px;
   border-radius: var(--border-radius-xs);
   cursor: ${(props) => (props.$hasActivities ? 'pointer' : 'default')};
   transition: all 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.03);
+  opacity: ${(props) => (props.$isFuture ? 0.3 : 1)};
 
   background-color: ${(props) => {
     switch (props.$intensity) {
@@ -261,47 +268,6 @@ const Day = styled.div<{ $intensity: number; $hasActivities: boolean }>`
     border-color: ${(props) => (props.$hasActivities ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.03)')};
     box-shadow: ${(props) => (props.$hasActivities ? '0 0 8px rgba(255,255,255,0.1)' : 'none')};
   }
-`
-
-const Legend = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: var(--text-dark);
-  margin-top: 1.25rem;
-  padding: 0.75rem 1rem;
-`
-
-const LegendText = styled.span`
-  margin: 0 6px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  color: var(--text-dark);
-  background: none;
-`
-
-const LegendSquare = styled.div<{ $intensity: number }>`
-  width: 12px;
-  height: 12px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-
-  background-color: ${(props) => {
-    switch (props.$intensity) {
-      case 0:
-        return 'rgba(255,255,255,0.04)'
-      case 1:
-        return 'hsl(140deg 60% 25%)'
-      case 2:
-        return 'hsl(140deg 65% 35%)'
-      case 3:
-        return 'hsl(140deg 70% 45%)'
-      default:
-        return 'rgba(255,255,255,0.04)'
-    }
-  }};
 `
 
 const Tooltip = styled.div`
@@ -387,4 +353,23 @@ const YearSelect = styled.select`
     background: var(--dark-bg);
     color: var(--text);
   }
+`
+
+const DayLabels = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-right: 0.5rem;
+`
+
+const DayLabel = styled.div`
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  letter-spacing: 0.3px;
 `
