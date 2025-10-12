@@ -3,13 +3,11 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import ActivityHeatmap from '../components/Fitness/ActivityHeatmap'
-import MiniMap from '../components/Home/StravaMinimap'
 import { Button, Grid, Section, SectionHeader } from '../components/Shared/Section'
-import { hike, ride, run, swim, weight, zwift } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 
@@ -20,23 +18,11 @@ const PageUrl = `${BASE_URL}/fitness`
 // Lazy load charts component (uPlot-based, very small once gzip)
 const FitnessCharts = dynamic(() => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
-  loading: () => <div style={{ margin: '2rem 0', opacity: 0.5, fontSize: '.8rem' }}>Loading charts…</div>,
+  loading: () => <div>Loading charts…</div>,
 })
 
 interface Props {
   activities: StravaActivity[]
-}
-
-const ActivityIcons: Record<string, React.ReactElement> = {
-  Swim: swim(),
-  Ride: ride(),
-  Run: run(),
-  WeightTraining: weight(),
-  Hike: hike(),
-  Zwift: zwift(),
-  Walk: run(),
-  VirtualRide: zwift(),
-  Workout: weight(),
 }
 
 interface FitnessStats {
@@ -151,7 +137,7 @@ const FitnessPage = ({ activities }: Props) => {
       if (selectedTypes.length && !selectedTypes.includes(a.type)) return
       const wk = getWeekNumber(d)
       if (!map.has(wk)) map.set(wk, { miles: 0, seconds: 0 })
-      const e = map.get(wk)!
+      const e = map.get(wk) as { miles: number; seconds: number }
       e.miles += parseMiles(a.Distance)
       e.seconds += parseSeconds(a.MovingTime)
     })
@@ -166,7 +152,7 @@ const FitnessPage = ({ activities }: Props) => {
     activities.forEach((a) => {
       if (dayjs(a.pubDate).year() !== year) return
       if (selectedTypes.length && !selectedTypes.includes(a.type)) return
-      m.set(a.type, (m.get(a.type) || 0) + 1)
+      m.set(a.type, (m.get(a.type) ?? 0) + 1)
     })
     return Array.from(m.entries()).sort((a, b) => b[1] - a[1])
   }, [activities, year, selectedTypes])
@@ -261,19 +247,19 @@ const FitnessPage = ({ activities }: Props) => {
             </div>
             <HeroStat>
               <span>{stats.totalMiles}</span>
-              <label>miles</label>
+              <span className="stat-label">miles</span>
             </HeroStat>
             <HeroStat>
               <span>{stats.totalHours}</span>
-              <label>hours</label>
+              <span className="stat-label">hours</span>
             </HeroStat>
             <HeroStat>
               <span>{stats.totalElevation}k</span>
-              <label>ft climbed</label>
+              <span className="stat-label">ft climbed</span>
             </HeroStat>
             <HeroStat>
               <span>{stats.currentStreak}</span>
-              <label>day streak</label>
+              <span className="stat-label">day streak</span>
             </HeroStat>
           </div>
         </Hero>
@@ -292,7 +278,7 @@ const FitnessPage = ({ activities }: Props) => {
             </YearSelector>
 
             <ActivityTypeFilters>
-              <label>Activity Types</label>
+              <span className="filter-label">Activity Types</span>
               <ChipContainer>
                 {uniqueActivityTypes.map((type) => {
                   const active = selectedTypes.includes(type)
@@ -422,64 +408,6 @@ const FitnessPage = ({ activities }: Props) => {
             onYearChange={setYear}
           />
         </Section>
-
-        <Section variants={fade}>
-          <SectionHeader>
-            <h2>Activity Log</h2>
-            <div className="section-meta">
-              {
-                activities.filter(
-                  (a) =>
-                    dayjs(a.pubDate).year() === year && (selectedTypes.length ? selectedTypes.includes(a.type) : true)
-                ).length
-              }{' '}
-              activities
-            </div>
-          </SectionHeader>
-          <ActivitiesList variants={staggerFade}>
-            {activities
-              .filter((a) => dayjs(a.pubDate).year() === year)
-              .filter((a) => (selectedTypes.length ? selectedTypes.includes(a.type) : true))
-              .map((activity, idx) => {
-                const pubDate = dayjs(activity.pubDate)
-                const isToday = pubDate.isSame(dayjs(), 'day')
-                const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
-                return (
-                  <ActivityItem
-                    key={activity.guid + idx}
-                    id={`activity-${pubDate.format('YYYY-MM-DD')}`}
-                    variants={fade}
-                  >
-                    <ActivityItemLeft>
-                      <ActivityTypeIcon title={activity.type}>
-                        {ActivityIcons[activity.type] || activity.type}
-                      </ActivityTypeIcon>
-                      <ActivityItemInfo>
-                        <ActivityItemTitle>{activity.title}</ActivityItemTitle>
-                        <ActivityItemDate>
-                          {isToday ? 'Today' : isYesterday ? 'Yesterday' : pubDate.format('MMM D, YYYY')}
-                        </ActivityItemDate>
-                      </ActivityItemInfo>
-                    </ActivityItemLeft>
-
-                    <ActivityItemRight>
-                      {activity.MapPolyline ? (
-                        <ActivityItemMap>
-                          <MiniMap height={48} polyline={activity.MapPolyline} width={48} />
-                        </ActivityItemMap>
-                      ) : null}
-                      <ActivityItemStats>
-                        {activity.Distance ? <ActivityItemStat>{activity.Distance}</ActivityItemStat> : null}
-                        {activity.MovingTime ? <ActivityItemStat>{activity.MovingTime}</ActivityItemStat> : null}
-                        {activity.Pace ? <ActivityItemStat>{activity.Pace}</ActivityItemStat> : null}
-                        {activity.AverageSpeed ? <ActivityItemStat>{activity.AverageSpeed}</ActivityItemStat> : null}
-                      </ActivityItemStats>
-                    </ActivityItemRight>
-                  </ActivityItem>
-                )
-              })}
-          </ActivitiesList>
-        </Section>
       </Container>
     </>
   )
@@ -530,12 +458,7 @@ const Hero = styled(motion.section)`
   &::after {
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(
-      120deg,
-      rgb(255 255 255 / 8%),
-      rgb(255 255 255 / 0%) 35% 65%,
-      rgb(255 255 255 / 7%)
-    );
+    background: linear-gradient(120deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 0%) 35% 65%, rgb(255 255 255 / 7%));
     opacity: 0.55;
     inset: 0;
     mask:
@@ -650,12 +573,7 @@ const HeroStat = styled.div`
   &::after {
     content: '';
     position: absolute;
-    background: linear-gradient(
-      120deg,
-      rgb(255 255 255 / 8%),
-      rgb(255 255 255 / 0%) 35% 65%,
-      rgb(255 255 255 / 8%)
-    );
+    background: linear-gradient(120deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 0%) 35% 65%, rgb(255 255 255 / 8%));
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s ease;
@@ -669,7 +587,7 @@ const HeroStat = styled.div`
     color: var(--heading);
     letter-spacing: 0.5px;
   }
-  label {
+  .stat-label {
     margin-top: 0.4rem;
     opacity: 0.9;
     font-weight: 500;
@@ -691,12 +609,6 @@ const HeroStat = styled.div`
       font-size: clamp(1.15rem, 5vw, 1.6rem);
     }
   }
-`
-
-const ActivitiesList = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 `
 
 // Year Statistics Components
@@ -863,126 +775,6 @@ const SecondaryStatLabel = styled.div`
   letter-spacing: 0.5px;
 `
 
-// New Minimal Activity List Components
-const ActivityItem = styled(motion.div)`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: var(--border-radius-lg);
-  background: linear-gradient(135deg, rgb(255 255 255 / 2%), rgb(255 255 255 / 1%));
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: rgb(255 255 255 / 12%);
-    background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
-    box-shadow: 0 4px 16px -8px rgb(0 0 0 / 30%);
-  }
-
-  &.pulse {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgb(var(--accent-rgb), 0.3);
-  }
-
-  @media (width <= 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-  }
-`
-
-const ActivityItemLeft = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-`
-
-const ActivityTypeIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--border-radius-lg);
-  background: linear-gradient(135deg, var(--accent), #404040);
-  flex-shrink: 0;
-
-  svg {
-    width: 1rem;
-    height: 1rem;
-    color: var(--dark-bg);
-  }
-`
-
-const ActivityItemInfo = styled.div`
-  flex: 1;
-  min-width: 0;
-`
-
-const ActivityItemTitle = styled.div`
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  font-size: 0.85rem;
-  line-height: 1.2;
-  color: var(--heading);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-`
-
-const ActivityItemDate = styled.div`
-  font-weight: 500;
-  font-size: 0.65rem;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-`
-
-const ActivityItemRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-
-  @media (width <= 768px) {
-    justify-content: space-between;
-    width: 100%;
-  }
-`
-
-const ActivityItemStats = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-
-  @media (width <= 768px) {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-`
-
-const ActivityItemStat = styled.div`
-  padding: 0.25rem 0.5rem;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: var(--border-radius-sm);
-  background: rgb(255 255 255 / 4%);
-  font-weight: 500;
-  font-size: 0.7rem;
-  color: var(--text-dark);
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-`
-
-const ActivityItemMap = styled.div`
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-`
-
 // Compact Filter Section Components
 const CompactFilterSection = styled(motion.section)`
   position: relative;
@@ -1067,7 +859,7 @@ const ActivityTypeFilters = styled.div`
   gap: 0.5rem;
   min-width: 280px;
 
-  label {
+  .filter-label {
     font-weight: 600;
     font-size: 0.6rem;
     color: var(--text-dark);

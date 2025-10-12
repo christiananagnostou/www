@@ -1,5 +1,5 @@
 import { animate, useMotionValue } from 'framer-motion'
-import { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { DialShell, Label, Marker, Needle, RedlineArc, Tick } from './styles'
 
 interface DialProps {
@@ -30,7 +30,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       stiffness: 170,
       damping: 26,
     })
-  }, [speed, maxSpeed, needleMv])
+  }, [speed, maxSpeed, needleMv, startAngle, angleRange])
 
   // Ticks + labels every 10 mph, minor ticks every 1 mph
   const ticks = useMemo(() => {
@@ -43,7 +43,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       res.push({ angle, major, med, label: major ? String(Math.round(mph)) : undefined })
     }
     return res
-  }, [maxSpeed])
+  }, [angleRange, maxSpeed, startAngle])
 
   const radius = diameter / 2
   const tickInner = radius - 4 // Start of tick inside shell
@@ -58,19 +58,16 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       <RedlineArc $end={redEnd} $size={diameter} $start={redStart} />
 
       {ticks.map(({ angle, major, med, label }, i) => {
-        const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
+        let len = TICK_MINOR
+        if (major) len = TICK_MAJOR
+        else if (med) len = TICK_MED
+
         const rotate = `rotate(${angle}deg)`
         return (
-          <>
-            <Tick
-              key={`t${i}`}
-              $len={len}
-              $major={major}
-              style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }}
-            />
+          <React.Fragment key={i}>
+            <Tick $len={len} $major={major} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
             {label ? (
               <Label
-                key={`l${i}`}
                 style={{
                   transform: `${rotate} translateY(-${labelRadius}px) rotate(${-angle}deg)`,
                 }}
@@ -78,7 +75,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
                 {label}
               </Label>
             ) : null}
-          </>
+          </React.Fragment>
         )
       })}
 
