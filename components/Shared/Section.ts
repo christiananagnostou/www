@@ -64,8 +64,11 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
 export const SectionHeader = styled.div<{ $align?: 'left' | 'center' | 'between' }>`
   display: flex;
   flex-wrap: wrap;
-  justify-content: ${({ $align = 'between' }) =>
-    $align === 'center' ? 'center' : $align === 'left' ? 'flex-start' : 'space-between'};
+  justify-content: ${({ $align = 'between' }) => {
+    if ($align === 'center') return 'center'
+    if ($align === 'left') return 'flex-start'
+    return 'space-between'
+  }};
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.75rem;

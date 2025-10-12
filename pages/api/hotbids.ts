@@ -11,7 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse): void
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
 
     res.status(200).send(fileContents)
-  } catch (error) {
+  } catch {
     res.status(500).send('Failed to load script')
   }
 }

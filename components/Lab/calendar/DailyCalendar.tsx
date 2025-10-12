@@ -98,7 +98,7 @@ const DailyCalendar = () => {
       setNewEvent({ ...eventItem })
     }
 
-    const onEnd = (e: MouseEvent | TouchEvent) => {
+    const onEnd = () => {
       document.body.removeEventListener(moveEventType, onMove)
       document.body.removeEventListener(endEventType, onEnd)
 
@@ -140,7 +140,7 @@ const DailyCalendar = () => {
     }, TOUCH_HOLD_DELAY)
 
     // If touch ends before the hold timer, cancel the event creation
-    const onTouchEndEarly = (e: TouchEvent) => {
+    const onTouchEndEarly = () => {
       clearTimeout(touchHoldTimer)
       isTouchActiveRef.current = false
       document.body.removeEventListener('touchmove', onTouchEndEarly)

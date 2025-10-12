@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import type { GetServerSideProps } from 'next'
 import type { ArticleType } from '../lib/articles'
 import { getAllPosts } from '../lib/articles'
+import { BASE_URL } from '../lib/constants'
 import type { ProjectType } from '../lib/projects'
 import { ProjectState } from '../lib/projects'
 

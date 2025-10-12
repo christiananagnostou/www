@@ -65,12 +65,13 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const handleRowMouseOver = (id: ItemProps['id']) => {
     if (!rightSide.current || !leftSide.current) return
 
-    const bars = rightSide.current.querySelectorAll('.gantt-bar')
-    const titles = leftSide.current.querySelectorAll('.gantt-title')
+    const bars = rightSide.current.querySelectorAll<HTMLElement>('.gantt-bar')
+    const titles = leftSide.current.querySelectorAll<HTMLElement>('.gantt-title')
+    const targetId = String(id)
 
     bars.forEach((bar, i) => {
-      bar.dataset.itemId == id ? bar.classList.add('hovered') : bar.classList.remove('hovered')
-      titles[i].dataset.itemId == id ? titles[i].classList.add('hovered') : titles[i].classList.remove('hovered')
+      bar.classList.toggle('hovered', bar.dataset.itemId === targetId)
+      titles[i]?.classList.toggle('hovered', titles[i]?.dataset.itemId === targetId)
     })
   }
 
@@ -81,7 +82,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
     const clientY = isTouch ? (e as React.TouchEvent).touches[0].clientY : (e as React.MouseEvent).clientY
 
     mousePos.current = { x: clientX, y: clientY }
-    rightSideStartingWidth.current = rightSide.current?.getBoundingClientRect().width || 0
+    rightSideStartingWidth.current = rightSide.current?.getBoundingClientRect().width ?? 0
 
     if (isTouch) {
       document.addEventListener('touchend', handleResizeEnd)
@@ -185,7 +186,6 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
                 item={item}
                 itemsChildrenMap={itemsChildrenMap}
                 itemsDateRange={itemsDateRange}
-                numDaysShown={numDaysShown}
               />
             ))}
           </div>

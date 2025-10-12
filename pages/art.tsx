@@ -20,8 +20,7 @@ const PageDescription = 'A gallery of photography capturing moments by Christian
 const PageUrl = `${BASE_URL}/art`
 
 // OG image: first image of the sorted list
-const ogImage =
-  SortedArtImages[0] && SortedArtImages[0].image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
+const ogImage = SortedArtImages[0]?.image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
 
 const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).sort((a, b) => a.localeCompare(b))
 
@@ -124,7 +123,7 @@ const Art = () => {
                         <button
                           key={tag}
                           className={queriedTag === tag ? 'selected' : ''}
-                          onClick={(e) => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
+                          onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
                         >
                           {tag}
                         </button>

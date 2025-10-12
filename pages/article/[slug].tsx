@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { pageAnimation } from '../../components/animation'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
 import ArticleHead from '../../components/Articles/ArticleHead'
 import { ArticleContent, ArticleStyle, TitleWrap, TopBar, TopBarButton } from '../../components/Articles/ArticleStyles'
@@ -10,6 +11,7 @@ import HeartFull from '../../components/SVG/HeartFull'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import type { ArticleType } from '../../lib/articles'
 import { getAllPosts, getPostBySlug } from '../../lib/articles'
+import { getLikes } from '../../lib/articles/likes'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL } from '../../lib/constants'
 
@@ -64,7 +66,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const PageUrl = `${BASE_URL}/article/${slug}`
 
   useEffect(() => {
-    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
+    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') ?? '{}')
     setLiked(!!likedArticles[slug])
     setLikeCount(likes)
   }, [slug, likes])
@@ -86,7 +88,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
       setLikeCount(data.likes)
       setLiked(true)
 
-      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
+      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') ?? '{}')
       likedArticles[slug] = true
       localStorage.setItem('likedArticles', JSON.stringify(likedArticles))
     }

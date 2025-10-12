@@ -8,7 +8,8 @@ export const useScroll = (): [RefObject<HTMLElement | null>, AnimationControls] 
   const ref = useRef(null)
   const isInView = useInView(ref)
 
-  isInView ? controls.start('show') : controls.start('hidden')
+  if (isInView) controls.start('show')
+  else controls.start('hidden')
 
   return [ref, controls]
 }

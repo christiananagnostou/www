@@ -37,7 +37,7 @@ export async function getStaticProps() {
     bookmarkletsData.map(async (bookmarklet) => {
       const metrics = await getMetrics(bookmarklet.title)
       // Exclude the icon from serialization
-      const { icon, ...serializableBookmarklet } = bookmarklet
+      const { icon: _icon, ...serializableBookmarklet } = bookmarklet
       return { ...serializableBookmarklet, installs: metrics.installs }
     })
   )

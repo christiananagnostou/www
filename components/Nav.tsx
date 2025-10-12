@@ -175,7 +175,7 @@ const Nav: React.FC = () => {
                       onMouseLeave={() => handleMouseLeave(index)}
                     >
                       {!hasSub ? (
-                        <Link aria-current={active ? 'page' : undefined} href={href!}>
+                        <Link aria-current={active ? 'page' : undefined} href={href ?? '#'}>
                           {title}
                         </Link>
                       ) : (

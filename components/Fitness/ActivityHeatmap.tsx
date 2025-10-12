@@ -35,14 +35,14 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     setHoveredDay(null)
     setTooltipPos(null)
   }, [])
+
   // Determine available years from activities
-  const years =
-    availableYears ??
-    useMemo(() => {
-      const set = new Set<number>()
-      activities.forEach((a) => set.add(dayjs(a.pubDate).year()))
-      return Array.from(set).sort((a, b) => a - b)
-    }, [activities])
+  const yearsFromActivities = useMemo(() => {
+    const set = new Set<number>()
+    activities.forEach((a) => set.add(dayjs(a.pubDate).year()))
+    return Array.from(set).sort((a, b) => a - b)
+  }, [activities])
+  const years = availableYears ?? yearsFromActivities
   const currentYear = year
 
   // Build map of all activities for quick lookup (memoized)
@@ -51,7 +51,7 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     activities.forEach((act) => {
       const date = dayjs(act.pubDate).format('YYYY-MM-DD')
       if (!m.has(date)) m.set(date, [])
-      m.get(date)!.push(act)
+      m.get(date)?.push(act)
     })
     return m
   }, [activities])
@@ -165,7 +165,7 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
         </DayLabels>
         {weeks.map((week, weekIndex) => (
           <Week key={weekIndex}>
-            {week.map((day, dayIndex) => (
+            {week.map((day) => (
               <Day
                 key={day.date}
                 $hasActivities={day.count > 0}

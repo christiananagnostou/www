@@ -13,12 +13,12 @@ const Today = dayjs().format('YYYY-MMM-D')
 const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: DatesProps) => {
   const getOpacity = (day: string) => {
     let interval = 2 // Number of days until another date is shown on low zoom
-    dateWidth > 24 && (interval = 1)
-    dateWidth < 14 && (interval = 4)
+    if (dateWidth > 24) interval = 1
+    if (dateWidth < 14) interval = 4
 
     const currentDate = dayjs().date()
 
-    if ((parseInt(day) + (interval - (currentDate % interval))) % interval !== 0) return 0
+    if ((parseInt(day, 10) + (interval - (currentDate % interval))) % interval !== 0) return 0
     return 1
   }
 

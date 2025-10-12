@@ -5,9 +5,9 @@ import styles from './styles.module.css'
 const SCROLL_END_DEBOUNCE = 300
 const LEFT_BUTTON = 0
 
-const debounce = (callback: (...rest: any) => any, wait: number) => {
+const debounce = <T extends (...args: unknown[]) => unknown>(callback: T, wait: number) => {
   let timeoutId: number
-  return (...args: any) => {
+  return (...args: Parameters<T>) => {
     window.clearTimeout(timeoutId)
     timeoutId = window.setTimeout(() => {
       callback(...args)
@@ -80,7 +80,8 @@ const DragScrollContainer = ({
     if (!container || (container.scrollLeft === scrollLeft && container.scrollTop === scrollTop)) return
 
     setScrolling(true)
-    started ? onScroll?.({ external: !internal }) : processStart(false)
+    if (started) onScroll?.({ external: !internal })
+    else processStart(false)
     realScroll()
   }
 
@@ -187,7 +188,7 @@ const DragScrollContainer = ({
       }
     }
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       if (pressed) {
         if (started && (!scrolling || !nativeMobileScroll)) {
           processEnd()

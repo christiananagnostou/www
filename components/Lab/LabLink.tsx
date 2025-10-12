@@ -24,7 +24,7 @@ const StyledLink = styled(Link)`
   align-items: center;
   gap: 0.25rem;
   border-radius: var(--border-radius-sm);
-  filter: url("#fire");
+  filter: url('#fire');
   font-size: 1rem;
   color: var(--fire-color) !important;
 

@@ -32,12 +32,16 @@ const Contact = () => {
     if (!data.from_name) return // Ensuring name is not empty
 
     try {
-      const res = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        data,
-        process.env.NEXT_PUBLIC_EMAILJS_USER_ID
-      )
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+      const userId = process.env.NEXT_PUBLIC_EMAILJS_USER_ID
+
+      if (!serviceId || !templateId) {
+        console.error('Missing EmailJS configuration')
+        return
+      }
+
+      const res = await emailjs.send(serviceId, templateId, data, userId)
       if (res.status === 200) {
         form.reset() // Resetting the form fields
         setSentSuccessful(true)

@@ -7,14 +7,13 @@ import { Bar, BarLabel, BarWrap, EndLabel, ItemBarContainer, StartLabel } from '
 interface RenderItemBarProps {
   item: ItemProps
   dateWidth: number
-  numDaysShown: number
   itemsDateRange: { firstDate: dayjs.Dayjs }
   itemsChildrenMap: Map<ItemProps['id'], ItemProps[]>
   handleRowMouseOver: (id: string | number) => void
 }
 
 const ItemBar = (props: RenderItemBarProps) => {
-  const { item, dateWidth, numDaysShown, itemsDateRange, itemsChildrenMap, handleRowMouseOver } = props
+  const { item, dateWidth, itemsDateRange, itemsChildrenMap, handleRowMouseOver } = props
   const { startDate, endDate } = item
   const daysBetween = getDayDiff(startDate, endDate)
 
