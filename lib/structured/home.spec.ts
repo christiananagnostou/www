@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ArticleType } from '../articles'
-import type { BASE_URL } from '../constants'
+import { BASE_URL } from '../constants'
 import { getHomeStructuredData } from './home'
 
 // Reusable Mock Articles
