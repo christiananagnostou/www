@@ -5,6 +5,7 @@
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always",
+    "source.fixAll.stylelint": "always",
     "source.organizeImports": "never"
   },
   "editor.formatOnSave": true,
@@ -16,5 +17,10 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "typescript.preferences.includePackageJsonAutoImports": "auto",
-  "typescript.suggest.autoImports": true
+  "typescript.suggest.autoImports": true,
+  "stylelint.enable": true,
+  "stylelint.validate": ["css", "less", "postcss", "typescript", "typescriptreact"],
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
 }
