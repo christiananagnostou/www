@@ -15,6 +15,5 @@
   "vueIndentScriptAndStyle": false,
   "endOfLine": "lf",
   "embeddedLanguageFormatting": "auto",
-  "singleAttributePerLine": false,
-  "plugins": ["prettier-plugin-organize-imports"]
+  "singleAttributePerLine": false
 }
