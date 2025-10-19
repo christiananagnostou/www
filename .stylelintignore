@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+build/
+dist/
+coverage/
+
+# Files
+**/*.js
+**/*.jsx
+**/*.md

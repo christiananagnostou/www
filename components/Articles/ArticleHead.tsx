@@ -1,8 +1,8 @@
+import dayjs from 'dayjs'
 import Head from 'next/head'
+import type { ArticleType } from '../../lib/articles'
 import { BASE_URL, X_HANDLE } from '../../lib/constants'
 import { getArticleStructuredData } from '../../lib/structured/article'
-import { ArticleType } from '../../lib/articles'
-import dayjs from 'dayjs'
 
 interface ArticleHeadProps {
   post: ArticleType
@@ -18,38 +18,40 @@ const ArticleHead = ({ post, prevArticle, nextArticle }: ArticleHeadProps) => {
   return (
     <Head>
       <title>{PageTitle}</title>
-      <meta name="description" content={summary} />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="canonical" href={PageUrl} />
+      <meta content={summary} name="description" />
+      <meta content="width=device-width, initial-scale=1" name="viewport" />
+      <link href={PageUrl} rel="canonical" />
 
       {/* Open Graph tags */}
-      <meta property="og:type" content="article" />
-      <meta property="og:url" content={PageUrl} />
-      <meta property="og:title" content={PageTitle} />
-      <meta property="og:description" content={summary} />
-      {coverImg && <meta property="og:image" content={coverImg} />}
+      <meta content="article" property="og:type" />
+      <meta content={PageUrl} property="og:url" />
+      <meta content={PageTitle} property="og:title" />
+      <meta content={summary} property="og:description" />
+      {coverImg ? <meta content={coverImg} property="og:image" /> : null}
 
-      {dateCreated && <meta property="article:published_time" content={dayjs(dateCreated).toISOString()} />}
-      {lastUpdated && <meta property="article:modified_time" content={dayjs(lastUpdated).toISOString()} />}
-      {categories?.map((cat) => <meta key={cat} property="article:tag" content={cat} />)}
-      <meta property="article:author" content="Christian Anagnostou" />
+      {dateCreated ? <meta content={dayjs(dateCreated).toISOString()} property="article:published_time" /> : null}
+      {lastUpdated ? <meta content={dayjs(lastUpdated).toISOString()} property="article:modified_time" /> : null}
+      {categories?.map((cat) => (
+        <meta key={cat} content={cat} property="article:tag" />
+      ))}
+      <meta content="Christian Anagnostou" property="article:author" />
 
       {/* Twitter Card tags */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={X_HANDLE} />
-      <meta name="twitter:title" content={PageTitle} />
-      <meta name="twitter:description" content={summary} />
-      {coverImg && <meta name="twitter:image" content={coverImg} />}
+      <meta content="summary_large_image" name="twitter:card" />
+      <meta content={X_HANDLE} name="twitter:creator" />
+      <meta content={PageTitle} name="twitter:title" />
+      <meta content={summary} name="twitter:description" />
+      {coverImg ? <meta content={coverImg} name="twitter:image" /> : null}
 
       {/* Structured Data (BlogPosting) */}
       <script
-        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(getArticleStructuredData(post)) }}
+        type="application/ld+json"
       />
 
       {/* Pagination Links */}
-      {prevArticle && <link rel="prev" href={`${BASE_URL}/article/${prevArticle.slug}`} />}
-      {nextArticle && <link rel="next" href={`${BASE_URL}/article/${nextArticle.slug}`} />}
+      {prevArticle ? <link href={`${BASE_URL}/article/${prevArticle.slug}`} rel="prev" /> : null}
+      {nextArticle ? <link href={`${BASE_URL}/article/${nextArticle.slug}`} rel="next" /> : null}
     </Head>
   )
 }

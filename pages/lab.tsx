@@ -5,19 +5,19 @@ import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
-import { Heading } from '../components/Shared/Heading'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
+import { Heading } from '../components/Shared/Heading'
 
 export default function lab() {
   return (
     <>
       <Head>
         <title>Lab</title>
-        <meta name="description" content="Christian Anagnostou's Laboratory" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta content="Christian Anagnostou's Laboratory" name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -40,7 +40,7 @@ export default function lab() {
           <Item variants={fade}>
             <DateStyle>May 2024</DateStyle>
             <Inner>
-              <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
+              <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
             </Inner>
           </Item>
 
@@ -58,13 +58,13 @@ export default function lab() {
 }
 
 const Container = styled(motion.div)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 2rem 1rem 4rem;
   }
 `
@@ -74,7 +74,7 @@ const LabItems = styled(motion.div)`
   flex-direction: column;
   gap: 4rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     gap: 2rem;
   }
 `
@@ -86,22 +86,22 @@ const Item = styled(motion.div)`
 
 const DateStyle = styled.div`
   width: 100%;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
   text-align: right;
   color: var(--text-dark);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding-right: 1rem;
   }
 `
 
 const Inner = styled.div`
   padding: 4rem;
+  border-radius: var(--border-radius-lg);
   background: var(--dark-bg);
-  border-radius: 10px;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 1rem;
   }
 `

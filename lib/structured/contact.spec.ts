@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { BASE_URL } from '../constants'
 import { getContactStructuredData } from './contact' // Adjust the path to match your project structure
 

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import React from 'react'
-import { ItemProps, RowHeight } from '..'
+import type { ItemProps } from '..'
+import { RowHeight } from '..'
 import ChildArrow from '../ChildArrow'
 import { TitleButton, TitleSpan } from './styles'
 
@@ -34,41 +34,41 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
   const paddingLeft = level * (level > 1 ? 12 : 8)
 
   return (
-    <React.Fragment>
+    <>
       <TitleButton
-        data-item-id={item.id}
+        $paddingLeft={paddingLeft}
         className="gantt-title"
+        data-item-id={item.id}
+        height={RowHeight}
+        onClick={() => scrollToDate(item.startDate || dayjs().format('YYYY-MM-DD'), 'smooth')}
         onMouseEnter={() => handleRowMouseOver(item.id)}
         onMouseLeave={() => handleRowMouseOver(-1)}
-        onClick={() => scrollToDate(item.startDate || dayjs().format('YYYY-MM-DD'), 'smooth')}
-        $paddingLeft={paddingLeft}
-        height={RowHeight}
       >
-        {item.parentId && (
+        {item.parentId ? (
           <span>
             <ChildArrow
+              color={item.barColor || 'transparent'}
               height={RowHeight * (prevChildCount + 1) * (idx == 0 ? 1.6 : 2.225)}
               rounded={idx == 0}
               width={16}
-              color={item.barColor || 'transparent'}
             />
           </span>
-        )}
+        ) : null}
         <TitleSpan>{item.title}</TitleSpan>
       </TitleButton>
 
       {children?.map((child, i) => (
         <ItemTitle
-          key={child.id + '_title'}
-          item={child}
-          idx={i}
-          level={level + 1}
-          itemsChildrenMap={itemsChildrenMap}
+          key={`${child.id}_title`}
           handleRowMouseOver={handleRowMouseOver}
+          idx={i}
+          item={child}
+          itemsChildrenMap={itemsChildrenMap}
+          level={level + 1}
           scrollToDate={scrollToDate}
         />
       ))}
-    </React.Fragment>
+    </>
   )
 }
 

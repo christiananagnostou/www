@@ -1,6 +1,6 @@
-import { useMotionValue, animate } from 'framer-motion'
-import { useEffect, useMemo } from 'react'
-import { DialShell, Tick, Needle, Label, Marker, RedlineArc } from './styles'
+import { animate, useMotionValue } from 'framer-motion'
+import React, { useEffect, useMemo } from 'react'
+import { DialShell, Label, Marker, Needle, RedlineArc, Tick } from './styles'
 
 interface DialProps {
   speed: number
@@ -30,11 +30,11 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       stiffness: 170,
       damping: 26,
     })
-  }, [speed, maxSpeed, needleMv])
+  }, [speed, maxSpeed, needleMv, startAngle, angleRange])
 
   // Ticks + labels every 10 mph, minor ticks every 1 mph
   const ticks = useMemo(() => {
-    const res: { angle: number; major: boolean; med: boolean; label?: string }[] = []
+    const res: Array<{ angle: number; major: boolean; med: boolean; label?: string }> = []
     for (let mph = 0; mph <= maxSpeed; mph += 1) {
       const fraction = mph / maxSpeed
       const angle = startAngle + fraction * angleRange
@@ -43,7 +43,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       res.push({ angle, major, med, label: major ? String(Math.round(mph)) : undefined })
     }
     return res
-  }, [maxSpeed])
+  }, [angleRange, maxSpeed, startAngle])
 
   const radius = diameter / 2
   const tickInner = radius - 4 // Start of tick inside shell
@@ -55,30 +55,27 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
 
   return (
     <DialShell $size={diameter}>
-      <RedlineArc $size={diameter} $start={redStart} $end={redEnd} />
+      <RedlineArc $end={redEnd} $size={diameter} $start={redStart} />
 
       {ticks.map(({ angle, major, med, label }, i) => {
-        const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
+        let len = TICK_MINOR
+        if (major) len = TICK_MAJOR
+        else if (med) len = TICK_MED
+
         const rotate = `rotate(${angle}deg)`
         return (
-          <>
-            <Tick
-              key={`t${i}`}
-              $major={major}
-              $len={len}
-              style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }}
-            />
-            {label && (
+          <React.Fragment key={i}>
+            <Tick $len={len} $major={major} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
+            {label ? (
               <Label
-                key={`l${i}`}
                 style={{
                   transform: `${rotate} translateY(-${labelRadius}px) rotate(${-angle}deg)`,
                 }}
               >
                 {label}
               </Label>
-            )}
-          </>
+            ) : null}
+          </React.Fragment>
         )
       })}
 

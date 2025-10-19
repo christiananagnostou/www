@@ -8,42 +8,40 @@ import { BASE_URL } from '../lib/constants'
 import { ProjectState } from '../lib/projects'
 import { getProjectsStructuredData } from '../lib/structured/projects'
 
-type Props = {}
-
 const PageTitle = 'Projects | Christian Anagnostou'
 const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
 
-export default function Projects({}: Props) {
+export default function Projects() {
   return (
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="Christian Anagnostou" />
-        <meta name="keywords" content="projects, portfolio, freelance, personal, open-source, Christian Anagnostou" />
-        <link rel="canonical" href={`${BASE_URL}/projects`} />
+        <meta content={PageDescription} name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="index, follow" name="robots" />
+        <meta content="Christian Anagnostou" name="author" />
+        <meta content="projects, portfolio, freelance, personal, open-source, Christian Anagnostou" name="keywords" />
+        <link href={`${BASE_URL}/projects`} rel="canonical" />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={PageTitle} />
-        <meta property="og:description" content={PageDescription} />
-        <meta property="og:url" content={`${BASE_URL}/projects`} />
+        <meta content="website" property="og:type" />
+        <meta content={PageTitle} property="og:title" />
+        <meta content={PageDescription} property="og:description" />
+        <meta content={`${BASE_URL}/projects`} property="og:url" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={PageTitle} />
-        <meta name="twitter:description" content={PageDescription} />
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content={PageTitle} name="twitter:title" />
+        <meta content={PageDescription} name="twitter:description" />
 
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getProjectsStructuredData()) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Projects</h1>
           <p>
@@ -55,7 +53,7 @@ export default function Projects({}: Props) {
 
         <motion.section variants={staggerFade}>
           {ProjectState.map((project) => (
-            <ProjectTile project={project} key={project.title} />
+            <ProjectTile key={project.title} project={project} />
           ))}
         </motion.section>
       </Container>
@@ -64,9 +62,9 @@ export default function Projects({}: Props) {
 }
 
 const Container = styled(motion.div)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `

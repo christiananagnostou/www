@@ -1,7 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { BASE_URL } from '../constants'
 import { getSiteNavigationStructuredData } from './navigation'
-import { NavLinks } from '../../components/Nav'
 
 const BASE_STRUCTURE = {
   '@context': 'https://schema.org',

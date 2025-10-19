@@ -1,4 +1,4 @@
-import { BrokenGlass, MoneyMagnify, Pokeball } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [

@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Image from 'next/image'
-import { GetStaticPaths, GetStaticProps } from 'next/types'
+import type { GetStaticPaths, GetStaticProps } from 'next/types'
 import styled from 'styled-components'
 
 import { pageAnimation } from '../../components/animation'
+import type { ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
-import { ProjectType } from '../../lib/projects'
 
-type Props = {
+interface Props {
   project: ProjectType
 }
 
@@ -29,49 +29,49 @@ const SingleProject = ({ project }: Props) => {
     <>
       <Head>
         <title>{project.title}</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta content="Christian Anagnostou's Web Portfolio" name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <h2>{project.title}</h2>
 
         <div className="link-container">
-          {project.externalLink && (
-            <motion.a className="live-link" href={project.externalLink} target="_blank" rel="noreferrer">
+          {project.externalLink ? (
+            <motion.a className="live-link" href={project.externalLink} rel="noreferrer" target="_blank">
               Live Site
             </motion.a>
-          )}
+          ) : null}
 
-          {project.github && (
-            <motion.a className="live-link" href={project.github} target="_blank" rel="noreferrer">
+          {project.github ? (
+            <motion.a className="live-link" href={project.github} rel="noreferrer" target="_blank">
               Github
             </motion.a>
-          )}
+          ) : null}
         </div>
 
         <DesktopImage>
           <Image
             alt={project.title}
             blurDataURL={project.desktopImgs[0].blurDataURL}
-            src={project.desktopImgs[0]}
-            width={1000}
             height={666}
             loading="eager"
+            src={project.desktopImgs[0]}
+            width={1000}
           />
         </DesktopImage>
 
         <MobileAndText>
           <Details>
             {project.details.map(({ title, description }, i) => (
-              <Detail key={i} title={title} description={description} index={i} />
+              <Detail key={i} description={description} title={title} />
             ))}
           </Details>
 
           <div className="mobile-imgs">
             {project.mobileImgs.map((image, i) => (
               <MobileImage key={i}>
-                <Image src={image} blurDataURL={image.blurDataURL} alt="mobile" height={600} width={300} />
+                <Image alt="mobile" blurDataURL={image.blurDataURL} height={600} src={image} width={300} />
               </MobileImage>
             ))}
           </div>
@@ -79,7 +79,7 @@ const SingleProject = ({ project }: Props) => {
 
         {project.desktopImgs.slice(1).map((image, i) => (
           <DesktopImage key={i}>
-            <Image src={image} blurDataURL={image.blurDataURL} alt={`desktop ${i}`} width={900} height={600} />
+            <Image alt={`desktop ${i}`} blurDataURL={image.blurDataURL} height={600} src={image} width={900} />
           </DesktopImage>
         ))}
       </Container>
@@ -89,36 +89,36 @@ const SingleProject = ({ project }: Props) => {
 
 export default SingleProject
 
-const Detail = ({ title, description, index }: { title: string; description: string; index: number }) => {
+const Detail = ({ title, description }: { title: string; description: string }) => {
   return (
     <DetailStyle>
       <h3>{title}</h3>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      <p dangerouslySetInnerHTML={{ __html: description }} />
     </DetailStyle>
   )
 }
 
 const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
-  padding: 1rem;
   margin: auto;
+  padding: 1rem;
 
   h2 {
-    color: #cfcfcf;
     padding-top: 5vh;
-    font-size: 1.8rem;
     font-weight: 300;
+    font-size: 1.8rem;
+    color: #cfcfcf;
   }
   .link-container {
     display: flex;
     margin: 1rem 0;
 
     .live-link {
+      margin-right: 30px;
       font-size: 1rem;
       color: #cccccc;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
-      margin-right: 30px;
 
       &:hover {
         color: #ffffff;
@@ -137,16 +137,16 @@ const MobileAndText = styled.div`
 
   .mobile-imgs {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    justify-content: space-between;
     img {
     }
   }
 `
 
 const Details = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
 `
@@ -156,16 +156,16 @@ const DetailStyle = styled.div`
   background: var(--dark-bg);
 
   &:first-child {
-    border-radius: 5px 5px 0 0;
+    border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
   }
   &:last-child {
     margin-bottom: 2rem;
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
   }
 
   h3 {
-    font-size: 1.25rem;
     font-weight: 300;
+    font-size: 1.25rem;
   }
   p {
     padding-top: 1rem;
@@ -176,25 +176,25 @@ const DetailStyle = styled.div`
 
 const DesktopImage = styled.div`
   img {
-    max-width: 100%;
-    margin-bottom: 2rem;
     display: block;
+    max-width: 100%;
     height: auto;
-    border-radius: 5px;
+    margin-bottom: 2rem;
+    border-radius: var(--border-radius-sm);
   }
 `
 
 const MobileImage = styled.div`
-  margin: 0 1rem;
   flex: 1;
+  margin: 0 1rem;
 
   img {
-    margin: auto;
-    margin-bottom: 2rem;
     display: block;
     width: auto;
-    max-height: 500px;
     max-width: 100%;
-    border-radius: 5px;
+    max-height: 500px;
+    margin: auto;
+    margin-bottom: 2rem;
+    border-radius: var(--border-radius-sm);
   }
 `

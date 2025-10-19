@@ -1,12 +1,15 @@
-import { AnimationControls, useAnimation, useInView } from 'framer-motion'
-import { MutableRefObject, useRef } from 'react'
+import type { AnimationControls } from 'framer-motion'
+import { useAnimation, useInView } from 'framer-motion'
+import type { RefObject } from 'react'
+import { useRef } from 'react'
 
-export const useScroll = (): [MutableRefObject<HTMLElement | null>, AnimationControls] => {
+export const useScroll = (): [RefObject<HTMLElement | null>, AnimationControls] => {
   const controls = useAnimation()
   const ref = useRef(null)
   const isInView = useInView(ref)
 
-  isInView ? controls.start('show') : controls.start('hidden')
+  if (isInView) controls.start('show')
+  else controls.start('hidden')
 
   return [ref, controls]
 }
