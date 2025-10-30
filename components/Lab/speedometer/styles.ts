@@ -195,7 +195,7 @@ export const PedalFace = styled(motion.div)`
   }
 `
 
-export const ThrottleBar = styled.div<{ throttle: number }>`
+export const ThrottleBar = styled.div<{ $throttle: number }>`
   position: absolute;
   right: calc(0.5rem + var(--pedal-w) + 0.5rem);
   bottom: 0.5rem;
@@ -211,7 +211,7 @@ export const ThrottleBar = styled.div<{ throttle: number }>`
     bottom: 0;
     left: 0;
     width: 100%;
-    height: ${({ throttle }) => throttle * 100}%;
+    height: ${({ $throttle }) => $throttle * 100}%;
     background: var(--accent-light);
   }
 `
