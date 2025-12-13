@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "npx --yes oxlint .",
     "lint:css": "stylelint './**/*.{tsx,js,ts}'",
     "test": "vitest"
   },
@@ -18,7 +18,7 @@
     "emailjs-com": "^3.2.0",
     "framer-motion": "^12.9.2",
     "gray-matter": "^4.0.3",
-    "next": "^15.5.7",
+    "next": "^16.0.10",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "redis": "^5.10.0",
