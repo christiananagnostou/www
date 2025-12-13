@@ -30,6 +30,7 @@
     "value-no-vendor-prefix": true,
     "shorthand-property-no-redundant-values": true,
     "number-max-precision": 3,
-    "unit-allowed-list": ["px", "%", "s", "ms", "fr", "rem", "em", "vw", "vh", "deg"]
+    "unit-allowed-list": ["px", "%", "s", "ms", "fr", "rem", "em", "vw", "vh", "deg"],
+    "nesting-selector-no-missing-scoping-root": null
   }
 }
