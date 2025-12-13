@@ -40,7 +40,7 @@ function Bio() {
 
 export default Bio
 
-const spring = { type: 'spring', stiffness: 300, damping: 20 } // Spring animation for slot transitions.
+const spring = { type: 'spring', stiffness: 300, damping: 20 } as const
 
 const textSlotVariants = {
   rest: { y: 0, opacity: 1, transition: spring },
