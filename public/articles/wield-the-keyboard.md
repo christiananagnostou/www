@@ -50,5 +50,5 @@ Some shortcuts and references I use often:
 - [Vim for VSCode](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
 - [MacOS](https://support.apple.com/en-us/HT201236)
 - [Chrome](https://support.google.com/chrome/answer/157179?hl=en&co=GENIE.Platform%3DDesktop#zippy=)
-- [Arc](https://www.hongkiat.com/blog/arc-browser-keyboard-shortcuts/)
 - [Music](https://support.apple.com/guide/music/keyboard-shortcuts-mus1019/mac)
+- [Rectangle](https://github.com/rxhanson/Rectangle)
