@@ -15,7 +15,7 @@ Turns out every single page was requesting the user’s full order history on lo
 
 I’ve lived some version of this story at least five times in the last four years. Different companies, different stacks, same probable root cause: engineers treating AI-generated code as "finished" or "good enough" instead of as a first draft.
 
-The AI tools are better now, but somehow the standards aren’t. Now that the blast radius of a sloppy change is 10× what it used to be, the standard of quality must also 10x. A junior, misguided by StackOverflow in 2015, could push a bad regex and maybe break a few reports, but an AI-empowered junior in 2025 will let Copilot write an unbounded database query that costs the company six figures in egress fees before anyone notices.
+The AI tools are better now, but somehow the standards aren’t. Now that the blast radius of a sloppy change is 10x what it used to be, the standard of quality must also 10x. A junior, misguided by StackOverflow in 2015, could push a bad regex and maybe break a few reports, but an AI-empowered junior in 2025 will let Copilot write an unbounded database query that costs the company six figures in egress fees before anyone notices.
 
 The fine details used to be what separated senior engineers from the rest of the pack, but now that everyone has a senior engineer in their back pocket, it's the price of admission just to stay in the game.
 
