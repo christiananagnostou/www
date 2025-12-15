@@ -11,12 +11,7 @@ const fetchAllActivities = async (per_page = 200): Promise<any[]> => {
   let page = 1
 
   while (true) {
-    const activities: any[] = await new Promise((resolve, reject) => {
-      strava.athlete.listActivities({ page, per_page }, (err, payload) => {
-        if (err) return reject(err)
-        resolve(payload)
-      })
-    })
+    const activities: any[] = await strava.athlete.listActivities({ page, per_page })
 
     if (activities.length === 0) break
     allActivities = allActivities.concat(activities)
