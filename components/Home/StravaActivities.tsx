@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
-import { type StravaActivity } from '../../lib/strava'
+import { type StravaActivity, type StravaActivityType } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 import MiniMap from './StravaMinimap'
@@ -12,15 +12,16 @@ interface Props {
   activities: StravaActivity[]
 }
 
-const ActivityIcons = {
+const ActivityIcons: Record<StravaActivityType, ReactElement> = {
   Swim: swim(),
   Ride: ride(),
   Run: run(),
   WeightTraining: weight(),
   Hike: hike(),
   Zwift: zwift(),
+  VirtualRide: zwift(),
   Walk: run(),
-} as const
+}
 
 const AlternateMetricTitles = {
   MovingTime: 'Time',
@@ -99,6 +100,7 @@ const StravaActivities = ({ activities }: Props) => {
           {renderFilterButton('Ride')}
           {renderFilterButton('Run')}
           {renderFilterButton('Zwift')}
+          {renderFilterButton('VirtualRide')}
         </ActivityFilters>
       </SectionHeader>
 

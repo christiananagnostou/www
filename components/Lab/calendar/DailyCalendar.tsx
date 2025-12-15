@@ -27,7 +27,7 @@ dayjs.extend(timezone)
 dayjs.extend(advancedFormat)
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-const HOURS = [...new Array(24)].map((_, i) => i)
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 const TOUCH_HOLD_DELAY = 500
 const BAR_INTERVAL_MINS = 15

@@ -18,6 +18,10 @@ const getBaseUrl = () => {
 
 module.exports = {
   reactStrictMode: true,
+  eslint: {
+    // ESLint removed in favor of oxlint; skip Next's built-in lint step
+    ignoreDuringBuilds: true,
+  },
   env: {
     NEXT_PUBLIC_BASE_URL: getBaseUrl(), // available on client & server
   },

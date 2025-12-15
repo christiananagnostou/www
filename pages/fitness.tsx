@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import ActivityHeatmap from '../components/Fitness/ActivityHeatmap'
@@ -16,13 +16,14 @@ const PageDescription = "Christian Anagnostou's fitness activities and workout h
 const PageUrl = `${BASE_URL}/fitness`
 
 // Lazy load charts component (uPlot-based, very small once gzip)
-const FitnessCharts = dynamic(() => import('../components/Fitness/FitnessCharts'), {
+const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
   loading: () => <div>Loading charts…</div>,
 })
 
 interface Props {
   activities: StravaActivity[]
+  error?: string
 }
 
 interface FitnessStats {
@@ -38,10 +39,28 @@ interface FitnessStats {
   longestStreak: number
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  await refreshAccessToken()
-  const activities = await getStravaActivities()
-  return { props: { activities }, revalidate: 60 * 60 * 12 }
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const requiredEnv = ['STRAVA_REFRESH_TOKEN', 'STRAVA_CLIENT_ID', 'STRAVA_CLIENT_SECRET', 'STRAVA_REDIRECT_URI']
+  const missing = requiredEnv.filter((key) => !process.env[key])
+
+  if (missing.length) {
+    return {
+      props: { activities: [], error: 'Strava credentials are not configured; fitness data is unavailable.' },
+      revalidate: 60 * 30,
+    }
+  }
+
+  try {
+    await refreshAccessToken()
+    const activities = await getStravaActivities()
+    return { props: { activities }, revalidate: 60 * 60 * 12 }
+  } catch (error) {
+    console.error('Failed to load Strava activities', error)
+    return {
+      props: { activities: [], error: 'Unable to load Strava activities right now. Please try again soon.' },
+      revalidate: 60 * 30,
+    }
+  }
 }
 
 // Parsing helpers (activities already store pre-formatted values like "12.34 mi")
@@ -113,15 +132,24 @@ const calculateStats = (all: StravaActivity[], year: number, selectedTypes: stri
   }
 }
 
-const FitnessPage = ({ activities }: Props) => {
+const FitnessPage = ({ activities, error }: Props) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+
   const years = useMemo(() => {
     const s = new Set<number>()
     activities.forEach((a) => s.add(dayjs(a.pubDate).year()))
-    return Array.from(s).sort((a, b) => a - b)
+    const arr = Array.from(s).sort((a, b) => a - b)
+    return arr.length ? arr : [dayjs().year()]
   }, [activities])
-  const [year, setYear] = useState(years[years.length - 1])
+
+  const [year, setYear] = useState(() => years[years.length - 1])
+  useEffect(() => {
+    setYear(years[years.length - 1])
+  }, [years])
+
   const stats = useMemo(() => calculateStats(activities, year, selectedTypes), [activities, year, selectedTypes])
+
+  const hasData = activities.length > 0
 
   // Weekly trend data
   interface WeeklyPoint {
@@ -184,16 +212,15 @@ const FitnessPage = ({ activities }: Props) => {
     setSelectedTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
 
   // earliest + timeline extents
-  const earliest = useMemo(
-    () =>
-      activities.reduce(
-        (min, a) => (dayjs(a.pubDate).isBefore(min) ? dayjs(a.pubDate) : min),
-        dayjs(activities[0].pubDate)
-      ),
-    [activities]
-  )
+  const earliest = useMemo(() => {
+    if (!activities.length) return dayjs()
+    return activities.reduce(
+      (min, a) => (dayjs(a.pubDate).isBefore(min) ? dayjs(a.pubDate) : min),
+      dayjs(activities[0].pubDate)
+    )
+  }, [activities])
   const today = dayjs()
-  const totalDaysActive = today.diff(earliest, 'day') + 1
+  const totalDaysActive = hasData ? today.diff(earliest, 'day') + 1 : 0
   const yearsActive = Math.floor(totalDaysActive / 365)
   const monthsActive = Math.floor((totalDaysActive % 365) / 30)
   const daysRemainder = totalDaysActive - yearsActive * 365 - monthsActive * 30
@@ -223,6 +250,27 @@ const FitnessPage = ({ activities }: Props) => {
   const weeklyHoursSeries = weeklyTrend.map((p) => p.hours)
   const typeLabels = typeDistribution.map((t) => t[0])
   const typeCounts = typeDistribution.map((t) => t[1])
+
+  if (!hasData) {
+    return (
+      <>
+        <Head>
+          <title>{PageTitle}</title>
+          <meta content={PageDescription} name="description" />
+          <link href={PageUrl} rel="canonical" />
+        </Head>
+        <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+          <Section $variant="elevated" variants={fade}>
+            <SectionHeader>
+              <h2>Fitness</h2>
+              <div className="section-meta">Data offline</div>
+            </SectionHeader>
+            <p>{error ?? 'Fitness data is not available right now. Please try again later.'}</p>
+          </Section>
+        </Container>
+      </>
+    )
+  }
 
   return (
     <>

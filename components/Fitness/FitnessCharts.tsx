@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import type { Series } from 'uplot'
+import type { AlignedData, Series } from 'uplot'
 import uPlot from 'uplot'
 import 'uplot/dist/uPlot.min.css'
 
@@ -70,7 +70,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
 
     // Data shape for uPlot: [x, y1, y2, y3]
     const xVals = weekly.labels
-    const data: any[] = [xVals, weekly.miles, weekly.hours, milesMA]
+    const data: AlignedData = [xVals, weekly.miles, weekly.hours, milesMA]
 
     tooltipRef.current = document.createElement('div')
     tooltipRef.current.className = 'uplot-tooltip'
@@ -191,7 +191,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
     const grid = '#2c2c2c'
 
     const idxs = distribution.counts.map((_, i) => i)
-    const data: any[] = [idxs, distribution.counts]
+    const data: AlignedData = [idxs, distribution.counts]
 
     distTooltipRef.current = document.createElement('div')
     distTooltipRef.current.className = 'uplot-tooltip'

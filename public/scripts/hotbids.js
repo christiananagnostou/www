@@ -373,7 +373,7 @@
     }
 
     handleKeyPress(e) {
-      const target = e.target
+      const { target } = e
       const tagName = target.tagName.toLowerCase()
       if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
         return // Don't trigger shortcuts while typing

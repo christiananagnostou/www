@@ -8,6 +8,4 @@ dist/
 coverage/
 
 # Files
-**/*.js
-**/*.jsx
 **/*.md

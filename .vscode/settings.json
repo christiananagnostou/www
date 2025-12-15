@@ -1,10 +1,5 @@
 {
-  "eslint.useFlatConfig": true,
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "eslint.run": "onType",
-  "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always",
     "source.fixAll.stylelint": "always",
     "source.organizeImports": "never"
   },
@@ -19,6 +14,7 @@
   "typescript.preferences.includePackageJsonAutoImports": "auto",
   "typescript.suggest.autoImports": true,
   "stylelint.enable": true,
+  "stylelint.configFile": "stylelint.config.mjs",
   "stylelint.validate": ["css", "less", "postcss", "typescript", "typescriptreact"],
   "css.validate": false,
   "less.validate": false,

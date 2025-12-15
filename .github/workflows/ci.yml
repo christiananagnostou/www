@@ -22,10 +22,13 @@ jobs:
         run: npm ci
 
       - name: Run linting
-        run: npm run lint
+        run: npm run ci:lint
 
       - name: Run CSS linting
-        run: npm run lint:css
+        run: npm run ci:lint:css
 
       - name: Run tests
-        run: npm run test
+        run: npm run ci:test
+
+      - name: Type check
+        run: npm run ci:tsc
