@@ -12,12 +12,12 @@ export const GanttContainer = styled.div`
 `
 
 export const TopBar = styled.div`
-  margin-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  margin-bottom: 1rem;
 `
 
 export const Title = styled.p`
@@ -32,8 +32,8 @@ export const Label = styled.label`
 
 export const ZoomTitle = styled.span`
   margin-right: 0.5rem;
-  font-size: 0.875rem;
   font-weight: 300;
+  font-size: 0.875rem;
 `
 
 export const ZoomInput = styled.input`
@@ -42,23 +42,22 @@ export const ZoomInput = styled.input`
   --input-thumb-size: 15px;
 
   display: block;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: var(--border-color);
   width: var(--input-width);
   height: var(--input-height);
-  border-radius: 5px;
   margin: 0 auto;
+  border-radius: 5px;
   outline: 0;
+  background-color: var(--border-color);
+  appearance: none;
 
   &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    background-color: var(--accent-color);
     width: var(--input-thumb-size);
     height: var(--input-thumb-size);
-    border-radius: 50%;
     border: 1px solid var(--border-color);
+    border-radius: 50%;
+    background-color: var(--accent-color);
     cursor: pointer;
+    appearance: none;
     transition: 0.2s ease;
   }
   &::-webkit-slider-thumb:hover,
@@ -68,17 +67,17 @@ export const ZoomInput = styled.input`
 `
 
 export const Chart = styled.div`
-  border-radius: 0.375rem;
-  border: 1px solid var(--border-color);
+  display: flex;
   max-width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
   background-color: var(--bg);
   overflow: hidden;
-  display: flex;
 `
 
 export const LeftSide = styled.div`
-  min-width: var(--left-side-min-width);
   flex: 1;
+  min-width: var(--left-side-min-width);
   user-select: none;
   overflow: hidden;
 `
@@ -86,66 +85,65 @@ export const LeftSide = styled.div`
 export const ScrollToTodayBtn = styled.button`
   display: block;
   width: 100%;
-  background: transparent;
-  border: none;
-  color: inherit;
-  cursor: pointer;
   height: var(--date-bar-height);
-  border-bottom: 1px solid var(--border-color);
   padding: 0 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
   text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
+  color: inherit;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
 
   &:hover,
   &:focus {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgb(0 0 0 / 10%);
   }
 `
 
 export const Resizer = styled.div`
   --resizer-width: 9px;
-  cursor: col-resize;
   z-index: 25;
   width: var(--resizer-width);
   margin: 0 calc(-1 * ((var(--resizer-width) - 1px) / 2));
+  cursor: col-resize;
 
   &:active {
     box-shadow: 0 0 0 1px var(--accent-color);
   }
 
-  &:after {
+  &::after {
     content: '';
     display: block;
     width: 1px;
-    margin: auto;
     height: 100%;
+    margin: auto;
     background-color: var(--border-color);
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     --resizer-width: 13px;
   }
 `
 
 export const RightSide = styled.div`
-  width: 75%;
-  max-width: calc(100% - var(--left-side-min-width));
-  min-width: var(--right-side-min-width);
   position: relative;
-  overflow-x: auto;
-  overflow-y: hidden;
+  width: 75%;
+  min-width: var(--right-side-min-width);
+  max-width: calc(100% - var(--left-side-min-width));
+  overflow: auto hidden;
   overscroll-behavior-x: none;
 `
 
 export const Legend = styled.div`
-  margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   gap: 1.5rem;
+  margin-top: 1rem;
 `
 
 export const LegendItem = styled.div`
@@ -156,8 +154,8 @@ export const LegendItem = styled.div`
 
 export const LegendColor = styled.span`
   display: block;
-  margin-right: 0.25rem;
-  height: 0.75rem;
   width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.25rem;
   border-radius: 9999px;
 `

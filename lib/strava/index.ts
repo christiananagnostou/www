@@ -1,8 +1,8 @@
-export * from './utils'
-export * from './types'
-export * from './getActivities'
-export * from './calculateBest'
 export * from './auth'
+export * from './calculateBest'
+export * from './getActivities'
+export * from './types'
+export * from './utils'
 
 /**
 

@@ -1,12 +1,12 @@
 const ChildArrow = ({ height = 24, width = 24, rounded = false, color = 'currentColor' }) => {
   return (
     <svg
-      width={width}
-      height={height}
-      viewBox="0 0 36 36"
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
       fill={color}
+      height={height}
+      version="1.1"
+      viewBox="0 0 36 36"
+      width={width}
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
         d={`M 24.82,15.8
@@ -25,7 +25,7 @@ const ChildArrow = ({ height = 24, width = 24, rounded = false, color = 'current
           a 1,1 0 0 0 .7-.3
           L 31,22
           Z`}
-      ></path>
+      />
     </svg>
   )
 }

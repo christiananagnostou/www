@@ -1,17 +1,17 @@
-import { NavLinks } from '../../components/Nav'
+import type { NavLinks } from '../../components/Nav'
 import { BASE_URL } from '../constants'
 
 const getActiveNavItem = (navLinks: NavLinks, pathname: string) => {
   // Determine the active navigation item for breadcrumb markup.
   let activeNavItem: { title: string; href: string } | null = null
   if (pathname) {
-    for (let link of navLinks) {
+    for (const link of navLinks) {
       if (link.href && link.href === pathname) {
         activeNavItem = { title: link.title, href: link.href }
         break
       }
       if (link.subLinks) {
-        for (let sub of link.subLinks) {
+        for (const sub of link.subLinks) {
           if (sub.href === pathname) {
             activeNavItem = { title: sub.title, href: sub.href }
             break
@@ -36,7 +36,7 @@ export const getBreadcrumbStructuredData = (navLinks: NavLinks, pathname: string
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: BASE_URL + '/',
+        item: `${BASE_URL}/`,
       },
       ...(activeNavItem && pathname !== '/'
         ? [

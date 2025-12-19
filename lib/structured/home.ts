@@ -1,4 +1,4 @@
-import { ArticleType } from '../articles'
+import type { ArticleType } from '../articles'
 import { BASE_URL } from '../constants'
 
 export const getHomeStructuredData = (posts: ArticleType[]) =>

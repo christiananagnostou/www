@@ -2,13 +2,13 @@ import styled from 'styled-components'
 
 export const ItemBarContainer = styled.div<{ height: number }>`
   display: inline-flex;
-  user-select: none;
   align-items: center;
   width: 100%;
   height: ${({ height }) => `${height}px`};
+  user-select: none;
 
   &.hovered {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgb(0 0 0 / 10%);
   }
 `
 
@@ -19,25 +19,25 @@ export const BarWrap = styled.div<{ rightMargin: number }>`
 export const Bar = styled.div<{ width: number; height: number; marginLeft: number; backgroundColor: string }>`
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  border-radius: 4px;
-  font-size: 0.65rem;
+  align-items: center;
   width: ${({ width }) => `${width}px`};
   height: ${({ height }) => `${height}px`};
   margin-left: ${({ marginLeft }) => `${marginLeft}px`};
+  border-radius: 4px;
   background-color: ${({ backgroundColor }) => backgroundColor};
+  font-size: 0.65rem;
 `
 
 export const BarLabel = styled.span`
   position: sticky;
   left: 0;
-  margin-left: 0.25rem;
   width: 100%;
-  overflow: hidden;
+  margin-left: 0.25rem;
+  color: #000000;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #000000;
+  overflow: hidden;
 `
 
 export const StartLabel = styled.span`

@@ -11,7 +11,7 @@ Steps to add a new image:
 
 */
 
-import { StaticImageData } from 'next/image'
+import type { StaticImageData } from 'next/image'
 
 import AdobeBNW from '../../public/img/art/photography/adobe_bnw.jpg'
 import AdobeBuildings from '../../public/img/art/photography/adobe_buildings.jpg'

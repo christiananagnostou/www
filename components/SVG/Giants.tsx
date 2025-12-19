@@ -1,20 +1,20 @@
-import { CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 
-type Props = {
+interface Props {
   style?: CSSProperties
 }
 
 const Giants = ({ style }: Props) => {
   return (
     <svg
-      version="1.0"
-      xmlns="http://www.w3.org/2000/svg"
-      width="191.000000pt"
       height="264.000000pt"
-      viewBox="0 0 191.000000 264.000000"
       style={style}
+      version="1.0"
+      viewBox="0 0 191.000000 264.000000"
+      width="191.000000pt"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <g transform="translate(0.000000,264.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+      <g fill="currentColor" stroke="none" transform="translate(0.000000,264.000000) scale(0.100000,-0.100000)">
         <path
           d="M217 2563 c-38 -40 -95 -89 -128 -109 l-59 -37 7 -66 c10 -85 10
     -484 0 -578 l-7 -73 42 -26 c54 -34 142 -117 180 -169 l29 -39 132 -1 132 0 3

@@ -13,7 +13,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Nav />
-      {shouldShowBlur && <div className="blur" aria-hidden="true" />}
+      {shouldShowBlur ? <div aria-hidden="true" className="blur" /> : null}
 
       <main id="main-content" tabIndex={-1}>
         {children}

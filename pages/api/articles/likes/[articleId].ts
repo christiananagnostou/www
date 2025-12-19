@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getLikes, incrementLikes } from '../../../../lib/articles/likes'
 
-type LikesResponse = { likes: number }
-type ErrorResponse = { error: string }
+interface LikesResponse {
+  likes: number
+}
+interface ErrorResponse {
+  error: string
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LikesResponse | ErrorResponse>) {
   const { articleId } = req.query as { articleId: string }

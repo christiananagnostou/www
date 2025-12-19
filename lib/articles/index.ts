@@ -32,7 +32,7 @@ export function getPostBySlug(slug: string) {
     ...data,
     categories: data.categories?.split(',') || [],
     slug: realSlug,
-    content: content,
+    content,
   } as ArticleType
 
   return items

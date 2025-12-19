@@ -14,31 +14,31 @@ const upperBackground = `linear-gradient(to bottom, ${upperColor}, ${upperColor}
 const lowerBackground = `linear-gradient(to bottom, ${lowerColor}, ${lowerColor}) 100% 50% / 100% ${trackHeight} no-repeat transparent`
 
 const Range = styled.input`
-  overflow: hidden;
   display: block;
-  appearance: none;
   min-width: 100%;
-  margin: 0;
   height: ${height};
-  cursor: pointer;
+  margin: 0;
   background: transparent;
+  cursor: pointer;
+  appearance: none;
+  overflow: hidden;
 
   &::-webkit-slider-runnable-track {
-    border-radius: ${height};
     width: 100%;
     height: ${height};
+    border-radius: ${height};
     background: ${lowerBackground};
   }
 
   &::-webkit-slider-thumb {
     position: relative;
-    appearance: none;
-    height: ${thumbHeight}px;
-    width: ${thumbHeight}px;
-    background: ${thumbColor};
-    border-radius: 100%;
-    border: 0;
     top: 50%;
+    width: ${thumbHeight}px;
+    height: ${thumbHeight}px;
+    border: 0;
+    border-radius: 100%;
+    background: ${thumbColor};
+    appearance: none;
     transform: translateY(-50%);
     transition: background-color 150ms;
   }
@@ -55,13 +55,13 @@ const Range = styled.input`
   }
 
   &::-moz-range-thumb {
-    appearance: none;
-    margin: 0;
-    height: ${thumbHeight};
     width: ${thumbHeight};
-    background: ${thumbColor};
-    border-radius: 100%;
+    height: ${thumbHeight};
+    margin: 0;
     border: 0;
+    border-radius: 100%;
+    background: ${thumbColor};
+    appearance: none;
     transition: background-color 150ms;
   }
 
@@ -69,9 +69,10 @@ const Range = styled.input`
     width: 100%;
     height: ${height};
     border: 0;
+    background: transparent;
+
     /* color needed to hide track marks */
     color: transparent;
-    background: transparent;
   }
 
   &::-ms-fill-lower {
@@ -83,17 +84,17 @@ const Range = styled.input`
   }
 
   &::-ms-thumb {
-    appearance: none;
-    height: ${thumbHeight};
-    width: ${thumbHeight};
-    background: ${thumbColor};
-    border-radius: 100%;
-    border: 0;
-    transition: background-color 150ms;
     /* IE Edge thinks it can support -webkit prefixes */
     top: 0;
+    width: ${thumbHeight};
+    height: ${thumbHeight};
     margin: 0;
+    border: 0;
+    border-radius: 100%;
+    background: ${thumbColor};
     box-shadow: none;
+    appearance: none;
+    transition: background-color 150ms;
   }
 
   &:hover {
