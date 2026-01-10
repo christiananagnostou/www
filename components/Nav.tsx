@@ -288,7 +288,7 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled(motion(Link))`
+const LogoWrapper = styled(motion.create(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
