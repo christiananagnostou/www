@@ -191,17 +191,47 @@ export const ArticleContent = styled.article`
     nav {
       display: block;
       position: sticky;
-      top: 70px;
+      top: 80px;
       right: 100%;
-      padding: 0.5rem;
-      background: var(--background);
-      border: 1px solid var(--accent);
-      border-radius: 5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      padding: 0.35rem 0.75rem;
+      --toc-bg: rgba(20, 20, 20, 0.75);
+      --toc-highlight-color: rgba(255, 255, 255, 0.08);
+      background: var(--toc-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
       width: 220px;
       font-size: 0.8em;
       float: left;
       margin-left: calc(-220px - 2rem);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    nav::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: var(--toc-highlight-top, 0px);
+      width: 100%;
+      height: var(--toc-highlight-height, 0px);
+      background: linear-gradient(
+        180deg,
+        var(--toc-bg) 0%,
+        var(--toc-highlight-color) var(--toc-highlight-gradient-start, 16%),
+        var(--toc-highlight-color) var(--toc-highlight-gradient-end, 84%),
+        var(--toc-bg) 100%
+      );
+      opacity: 0;
+      transition:
+        top 0.3s ease,
+        height 0.3s ease,
+        opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+    nav[data-has-highlight='true']::after {
+      opacity: 1;
     }
     nav ol,
     nav li {
@@ -216,20 +246,25 @@ export const ArticleContent = styled.article`
     }
     nav ol ol {
       padding-left: 0.75rem;
-      border-left: 1px solid var(--accent);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
       margin-left: 0.5rem;
     }
     nav a {
       text-decoration: none;
-      color: var(--text);
-      padding: 0.3rem 0.5rem;
-      border-radius: 4px;
+      color: var(--text-dark);
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      position: relative;
+      z-index: 1;
       transition:
-        background 0.3s ease,
-        color 0.3s ease;
+        color 0.3s ease,
+        transform 0.3s ease;
     }
     nav a:hover {
-      background: var(--accent);
+      color: var(--heading);
+      transform: translateX(2px);
+    }
+    nav a[data-active='true'] {
       color: var(--heading);
     }
 
