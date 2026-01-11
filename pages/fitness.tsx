@@ -512,7 +512,6 @@ const Hero = styled(motion.section)`
     mask:
       linear-gradient(#000000, #000000) content-box,
       linear-gradient(#000000, #000000);
-    mask-composite: xor;
     mask-composite: exclude;
   }
 
@@ -708,7 +707,6 @@ const PrimaryStatTile = styled(motion.div)`
     mask:
       linear-gradient(#000000, #000000) content-box,
       linear-gradient(#000000, #000000);
-    mask-composite: xor;
     mask-composite: exclude;
   }
 
@@ -940,14 +938,14 @@ const FilterActions = styled.div`
     cursor: pointer;
     transition: all 0.2s ease;
 
-    &:hover:enabled {
-      background: rgb(255 255 255 / 5%);
-      color: var(--text);
-    }
-
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
+    }
+
+    &:hover:enabled {
+      background: rgb(255 255 255 / 5%);
+      color: var(--text);
     }
   }
 `

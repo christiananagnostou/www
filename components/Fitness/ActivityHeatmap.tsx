@@ -320,15 +320,15 @@ const YearButton = styled.button`
   cursor: pointer;
   transition: all 0.25s ease;
 
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
   &:hover:enabled {
     background: rgb(255 255 255 / 8%);
     color: var(--text);
     transform: translateY(-1px);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
   }
 `
 

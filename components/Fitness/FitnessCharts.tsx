@@ -353,7 +353,6 @@ const ChartCard = styled.div`
     mask:
       linear-gradient(#000000, #000000) content-box,
       linear-gradient(#000000, #000000);
-    mask-composite: xor;
     mask-composite: exclude;
   }
 
