@@ -1,31 +1,29 @@
-import type { StaticImageData } from 'next/image'
-
 declare module '*.png' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
 
 declare module '*.jpg' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
 
 declare module '*.jpeg' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
 
 declare module '*.gif' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
 
 declare module '*.webp' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
 
 declare module '*.svg' {
-  const content: StaticImageData
+  const content: import('next/image').StaticImageData
   export default content
 }
