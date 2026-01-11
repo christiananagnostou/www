@@ -88,7 +88,7 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
     rafId.current = requestAnimationFrame(step)
 
     return () => {
-      rafId.current && cancelAnimationFrame(rafId.current)
+      if (rafId.current) cancelAnimationFrame(rafId.current)
     }
   }, [maxSpeed, throttleMv, speedMv])
 
