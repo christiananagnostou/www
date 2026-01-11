@@ -2,9 +2,9 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { fade, staggerFade } from '../animation'
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
+import { fade, staggerFade } from '../animation'
 
 const VuoriLogo = () => (
   <svg

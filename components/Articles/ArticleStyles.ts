@@ -2,21 +2,21 @@ import { motion } from 'framer-motion'
 import { styled } from 'styled-components'
 
 export const ArticleStyle = styled(motion.section)`
-  position: relative;
-  max-width: var(--max-w-screen);
-  margin: 2rem auto;
-  padding: 0 1rem;
   color: var(--text);
+  max-width: var(--max-w-screen);
+  padding: 0 1rem;
+  margin: 2rem auto;
+  position: relative;
 
-  @media (width <= 1000px) {
+  @media (max-width: 1000px) {
     padding: 0.5rem 1rem;
   }
 `
 
 export const TopBar = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: start;
+  justify-content: space-between;
   margin-bottom: 4rem;
   font-size: 0.9rem;
 
@@ -39,49 +39,49 @@ export const TopBar = styled.div`
     }
   }
 
-  @media (width <= 768px) {
+  @media (max-width: 768px) {
     margin-bottom: 3rem;
   }
 `
 
 export const TopBarButton = styled(motion.button)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-sm);
   background: transparent;
-  line-height: 0.7;
+  border: 1px solid var(--accent);
   color: inherit;
+  padding: 0.25rem;
+  border-radius: 3px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  line-height: 0.7;
   overflow: hidden;
 
   svg {
     width: 1.25rem;
-    min-width: 1.25rem;
     height: 1.25rem;
+    min-width: 1.25rem;
   }
 
   span {
-    min-width: max-content;
     font-weight: inherit;
+    min-width: max-content;
   }
 `
 
 export const TitleWrap = styled.div`
   left: 1rem;
-  border-radius: var(--border-radius-sm);
+  border-radius: 5px;
   text-align: left;
 
   h1 {
+    font-size: 2rem;
     margin-bottom: 1.5rem;
     font-weight: 500;
-    font-size: 2rem;
   }
 
-  @media (width <= 768px) {
+  @media (max-width: 768px) {
     padding: 0;
     h1 {
       font-size: 1.75rem;
@@ -90,9 +90,9 @@ export const TitleWrap = styled.div`
 `
 
 export const ArticleContent = styled.article`
-  position: relative;
-  margin: auto;
   text-align: left;
+  margin: auto;
+  position: relative;
 
   h1,
   h2,
@@ -116,9 +116,9 @@ export const ArticleContent = styled.article`
   }
 
   blockquote {
+    border-left: 2px solid var(--accent);
     margin: 1.5em 0;
     padding: 0.5em 1em;
-    border-left: 2px solid var(--accent);
     text-align: left;
   }
 
@@ -141,35 +141,35 @@ export const ArticleContent = styled.article`
   }
 
   code {
-    max-width: 100%;
     padding: 3px 5px;
-    border-radius: var(--border-radius-sm);
-    background-color: rgb(0 0 0 / 20%);
+    max-width: 100%;
     white-space: pre-wrap;
     word-break: keep-all;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
   ul,
   ol {
+    padding-left: 0.5rem;
+    margin-left: 0.5rem;
+    margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    margin-left: 0.5rem;
-    padding-left: 0.5rem;
-    list-style-position: inside;
     line-height: 1.8;
+    list-style-position: inside;
 
     li {
-      font-weight: 300;
       color: var(--text);
+      font-weight: 300;
 
       a {
         display: flex;
-        justify-content: start;
         align-items: center;
-        gap: 5px;
+        justify-content: start;
         width: fit-content;
+        gap: 5px;
       }
 
       &::marker {
@@ -187,49 +187,84 @@ export const ArticleContent = styled.article`
     display: none;
   }
 
-  @media screen and (width >= 1300px) {
+  @media screen and (min-width: 1300px) {
     nav {
-      position: sticky;
-      top: 70px;
-      right: 100%;
       display: block;
-      float: left;
+      position: sticky;
+      top: 80px;
+      right: 100%;
+      padding: 0.35rem 0.75rem;
+      --toc-bg: rgba(20, 20, 20, 0.75);
+      --toc-highlight-color: rgba(255, 255, 255, 0.08);
+      background: var(--toc-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
       width: 220px;
-      margin-left: calc(-220px - 2rem);
-      padding: 0.5rem;
-      border: 1px solid var(--accent);
-      border-radius: var(--border-radius-sm);
-      background: var(--background);
-      box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
       font-size: 0.8em;
+      float: left;
+      margin-left: calc(-220px - 2rem);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    nav::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: var(--toc-highlight-top, 0px);
+      width: 100%;
+      height: var(--toc-highlight-height, 0px);
+      background: linear-gradient(
+        180deg,
+        var(--toc-bg) 0%,
+        var(--toc-highlight-color) var(--toc-highlight-gradient-start, 16%),
+        var(--toc-highlight-color) var(--toc-highlight-gradient-end, 84%),
+        var(--toc-bg) 100%
+      );
+      opacity: 0;
+      transition:
+        top 0.3s ease,
+        height 0.3s ease,
+        opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+    nav[data-has-highlight='true']::after {
+      opacity: 1;
     }
     nav ol,
     nav li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      list-style: none;
       line-height: 1.4;
+      width: 100%;
     }
     nav ol ol {
-      margin-left: 0.5rem;
       padding-left: 0.75rem;
-      border-left: 1px solid var(--accent);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      margin-left: 0.5rem;
     }
     nav a {
-      padding: 0.3rem 0.5rem;
-      border-radius: var(--border-radius-sm);
-      color: var(--text);
       text-decoration: none;
+      color: var(--text-dark);
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      position: relative;
+      z-index: 1;
       transition:
-        background 0.3s ease,
-        color 0.3s ease;
+        color 0.3s ease,
+        transform 0.3s ease;
     }
     nav a:hover {
-      background: var(--accent);
+      color: var(--heading);
+      transform: translateX(2px);
+    }
+    nav a[data-active='true'] {
       color: var(--heading);
     }
 
@@ -240,12 +275,12 @@ export const ArticleContent = styled.article`
   }
 
   img {
-    display: block;
+    border-radius: 5px;
     max-width: 100%;
+    display: block;
     margin: auto;
-    border-radius: var(--border-radius-sm);
 
-    @media (width >= 550px) {
+    @media (min-width: 550px) {
       max-width: 90%;
     }
   }
@@ -265,27 +300,25 @@ export const ArticleContent = styled.article`
     */
 
   code.hljs {
+    padding: 3px 5px;
     width: 100%;
     max-width: 100%;
-    padding: 3px 5px;
   }
   pre code.hljs {
     display: block;
-    padding: 1em;
     overflow-x: auto;
+    padding: 1em;
   }
 
   .hljs {
-    margin-bottom: 0.75rem;
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-
-    /* var(--highlight-bg) */
-    background: rgb(0 0 0 / 20%);
-
     /* var(--highlight-color) */
     color: #c9d1d9;
+    /* var(--highlight-bg) */
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 5px;
     overflow: auto;
+    margin-bottom: 0.75rem;
   }
 
   .hljs-subst {
@@ -394,7 +427,7 @@ export const ArticleContent = styled.article`
     /* purposely ignored */
   }
 
-  @media (width <= 1000px) {
+  @media (max-width: 1000px) {
     font-size: 90%;
   }
 `

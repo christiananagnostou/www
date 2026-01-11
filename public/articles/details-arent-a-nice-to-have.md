@@ -5,17 +5,9 @@ summary: 'AI makes us fast. Only obsessive attention to detail keeps us employed
 categories: 'AI'
 ---
 
-A three-person team gets two months to build a brand-new customer account portal. Dashboard, order history, order details, loyalty page, settings—the works. They ship on time. It looks gorgeous. Leadership is thrilled.
+I’ve seen teams ship beautiful features on time, only to discover a few weeks later that the hidden costs are eating them alive - performance, bandwidth, security. The root cause is rarely exotic; it’s the missing details that AI didn’t catch because they weren't thought about in the first place.
 
-Three weeks after launch, finance pings the eng channel: "Why did our CDN bill triple last month?"
-
-Perf team digs in. Core Web Vitals are in the toilet; CLS is glowing red in Search Console.
-
-Turns out every single page was requesting the user’s full order history on load, then re-rendering the entire DOM on every keystroke in the settings form because somebody let the AI write the React state updates without debouncing.
-
-I’ve lived some version of this story at least five times in the last four years. Different companies, different stacks, same probable root cause: engineers treating AI-generated code as "finished" or "good enough" instead of as a first draft.
-
-The AI tools are better now, but somehow the standards aren’t. Now that the blast radius of a sloppy change is 10x what it used to be, the standard of quality must also 10x. A junior, misguided by StackOverflow in 2015, could push a bad regex and maybe break a few reports, but an AI-empowered junior in 2025 will let Copilot write an unbounded database query that costs the company six figures in egress fees before anyone notices.
+The AI tools are better now, but somehow the standards aren’t. Now that the blast radius of a sloppy change is 10x what it used to be, the standard of quality must also 10x. A junior, misguided by StackOverflow in 2015, could push a bad regex and maybe break a few reports, but an agent-empowered junior in 2025 will let Copilot write an unbounded database query that costs the company six figures in egress fees before anyone notices.
 
 The fine details used to be what separated senior engineers from the rest of the pack, but now that everyone has a senior engineer in their back pocket, it's the price of admission just to stay in the game.
 
@@ -39,11 +31,11 @@ Like a beautiful painting, lasting software takes shape in three acts:
 
 1. Rough sketch — architecture, major shapes, get the skeleton standing.
 2. Mid-tones — flesh out features, make it feel alive.
-3. Final pass — the excruciating, time-consuming, career-defining details.
+3. Final passes — the excruciating, time-consuming, career-defining details.
 
 AI crushes Act 1 and is pretty decent at Act 2. However it's catastrophically bad at Act 3 unless you stand over its shoulder with a magnifying glass and tell it exactly what’s missing.
 
-That last 20% of polish is where the money is made—and where the money is lost. It’s also the part most engineers now skip because "the ticket is closed" or "Claude didn’t think we needed it."
+That last 20% of polish is where the money is made...and where the money is lost. It’s also the part most engineers now skip because "it meets ticket acceptance criteria" or "Claude didn’t think we needed it."
 
 ## Closing Thought
 

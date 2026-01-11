@@ -1,19 +1,18 @@
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
+import markdownToHtml from '../../lib/articles/markdownToHtml'
+import { BASE_URL } from '../../lib/constants'
 import { pageAnimation } from '../../components/animation'
+import LeftArrow from '../../components/SVG/LeftArrow'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
-import ArticleHead from '../../components/Articles/ArticleHead'
-import { ArticleContent, ArticleStyle, TitleWrap, TopBar, TopBarButton } from '../../components/Articles/ArticleStyles'
 import ChainLink from '../../components/SVG/ChainLink'
 import Checkmark from '../../components/SVG/Checkmark'
 import HeartEmpty from '../../components/SVG/HeartEmpty'
+import ArticleHead from '../../components/Articles/ArticleHead'
+import { ArticleStyle, TopBar, TopBarButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
-import LeftArrow from '../../components/SVG/LeftArrow'
-import type { ArticleType } from '../../lib/articles'
-import { getAllPosts, getPostBySlug } from '../../lib/articles'
 import { getLikes } from '../../lib/articles/likes'
-import markdownToHtml from '../../lib/articles/markdownToHtml'
-import { BASE_URL } from '../../lib/constants'
 
 interface ArticleWithLikes extends ArticleType {
   likes: number
@@ -24,6 +23,8 @@ interface Props {
   prevArticle?: { slug: string; title: string }
   nextArticle?: { slug: string; title: string }
 }
+
+const TOC_HIGHLIGHT_PADDING_RATIO = 0.1
 
 export async function getStaticPaths() {
   const posts = getAllPosts({ allowNoList: true })
@@ -63,13 +64,119 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const [copied, setCopied] = useState(false)
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(likes)
+  const contentRef = useRef<HTMLElement | null>(null)
   const PageUrl = `${BASE_URL}/article/${slug}`
 
   useEffect(() => {
-    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') ?? '{}')
+    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
     setLiked(!!likedArticles[slug])
     setLikeCount(likes)
   }, [slug, likes])
+
+  useEffect(() => {
+    const contentEl = contentRef.current
+    if (!contentEl) return
+
+    const tocNav = contentEl.querySelector('nav')
+    if (!tocNav) return
+
+    const links = Array.from(tocNav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+    if (!links.length) return
+
+    const targets = links
+      .map((link) => {
+        const href = link.getAttribute('href')
+        if (!href) return null
+        const id = decodeURIComponent(href.replace('#', ''))
+        if (!id) return null
+        const heading = document.getElementById(id)
+        if (!heading) return null
+        return { id, link, heading }
+      })
+      .filter(Boolean) as { id: string; link: HTMLAnchorElement; heading: HTMLElement }[]
+
+    if (!targets.length) return
+
+    const targetsById = new Map(targets.map((target) => [target.id, target]))
+
+    const updateHighlight = () => {
+      const activeLinks = links.filter((link) => link.getAttribute('data-active') === 'true')
+      if (!activeLinks.length) {
+        tocNav.style.removeProperty('--toc-highlight-top')
+        tocNav.style.removeProperty('--toc-highlight-height')
+        tocNav.style.removeProperty('--toc-highlight-gradient-start')
+        tocNav.style.removeProperty('--toc-highlight-gradient-end')
+        tocNav.removeAttribute('data-has-highlight')
+        return
+      }
+
+      const positions = activeLinks.map((link) => {
+        const top = link.offsetTop
+        const height = link.offsetHeight
+        return { top, bottom: top + height }
+      })
+      const top = Math.min(...positions.map((rect) => rect.top))
+      const bottom = Math.max(...positions.map((rect) => rect.bottom))
+      const height = bottom - top
+      const padding = height * TOC_HIGHLIGHT_PADDING_RATIO
+      const gradientStart = TOC_HIGHLIGHT_PADDING_RATIO * 100
+      const gradientEnd = 100 - gradientStart
+      const navPadding = Number.parseFloat(window.getComputedStyle(tocNav).paddingTop) || 0
+
+      tocNav.style.setProperty('--toc-highlight-top', `${top - padding - navPadding}px`)
+      tocNav.style.setProperty('--toc-highlight-height', `${height + padding * 2 + navPadding * 2}px`)
+
+      tocNav.style.setProperty('--toc-highlight-gradient-start', `${gradientStart}%`)
+      tocNav.style.setProperty('--toc-highlight-gradient-end', `${gradientEnd}%`)
+      tocNav.setAttribute('data-has-highlight', 'true')
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const target = targetsById.get(entry.target.id)
+          if (!target) return
+          if (entry.isIntersecting) {
+            target.link.setAttribute('data-active', 'true')
+          } else {
+            target.link.removeAttribute('data-active')
+          }
+        })
+        updateHighlight()
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -25% 0px',
+      }
+    )
+
+    const setInitialActive = () => {
+      const viewportBottom = window.innerHeight * 0.75
+      targets.forEach((target) => {
+        const rect = target.heading.getBoundingClientRect()
+        const inView = rect.top < viewportBottom && rect.bottom > 0
+        if (inView) {
+          target.link.setAttribute('data-active', 'true')
+        } else {
+          target.link.removeAttribute('data-active')
+        }
+      })
+      updateHighlight()
+    }
+
+    const onResize = () => {
+      updateHighlight()
+    }
+
+    targets.forEach((target) => observer.observe(target.heading))
+    setInitialActive()
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', onResize)
+    }
+  }, [content])
 
   const copyUrl = () => {
     navigator.clipboard
@@ -88,7 +195,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
       setLikeCount(data.likes)
       setLiked(true)
 
-      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') ?? '{}')
+      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}')
       likedArticles[slug] = true
       localStorage.setItem('likedArticles', JSON.stringify(likedArticles))
     }
@@ -96,9 +203,9 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
 
   return (
     <>
-      <ArticleHead nextArticle={nextArticle} post={post} prevArticle={prevArticle} />
+      <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
 
-      <ArticleStyle animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
         <TopBar>
           <Link href="/articles">
             <LeftArrow />
@@ -109,12 +216,12 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
             <p className="date">{dateCreated}</p>
             <div className="top-bar__right-side__buttons">
               <TopBarButton
-                animate={copied ? 'copied' : 'notCopied'}
+                onClick={copyUrl}
                 aria-label="Copy URL"
                 title="Copy URL"
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 variants={{ notCopied: { width: 30 }, copied: { width: 106 } }}
-                onClick={copyUrl}
+                animate={copied ? 'copied' : 'notCopied'}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 {copied ? (
                   <>
@@ -136,9 +243,9 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
           <h1 className="heading-gradient">{title}</h1>
         </TitleWrap>
 
-        <ArticleContent dangerouslySetInnerHTML={{ __html: content }} />
+        <ArticleContent ref={contentRef} dangerouslySetInnerHTML={{ __html: content }} />
 
-        <ArticleFooter nextArticle={nextArticle} prevArticle={prevArticle} />
+        <ArticleFooter prevArticle={prevArticle} nextArticle={nextArticle} />
       </ArticleStyle>
     </>
   )

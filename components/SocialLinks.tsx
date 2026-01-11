@@ -43,7 +43,6 @@ const SocialLinkList = styled(motion.ul)`
   margin: 0;
   padding: 0.05rem 0.75rem;
   border: 1px solid var(--accent);
-
   border-radius: var(--border-radius-sm);
   background: var(--dark-bg);
   list-style: none;
