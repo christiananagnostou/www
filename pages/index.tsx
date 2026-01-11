@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import { useState } from 'react'
 import styled from 'styled-components'
+
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
@@ -24,21 +24,18 @@ interface Props {
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
   await refreshAccessToken()
-  const stravaActivities = await getStravaActivities()
+  const allStravaActivities = await getStravaActivities()
+  const filteredActivities = allStravaActivities
+    .filter((activity) => ['Run', 'Ride', 'VirtualRide', 'Swim'].includes(activity.type))
+    .slice(0, 5)
 
   return {
-    props: { posts, stravaActivities },
+    props: { posts, stravaActivities: filteredActivities },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
 
 const Home = ({ posts, stravaActivities }: Props) => {
-  const [showRevealBar, setShowRevealBar] = useState(false)
-
-  const revealBarStyle = showRevealBar
-    ? { marginTop: '-1rem', opacity: 0.7, height: 50, transition: 'opacity .75s .15s ease, height .3s ease' }
-    : { marginTop: '-1rem', opacity: 0, height: 0, transition: 'opacity .3s ease, height .3s .1s ease' }
-
   return (
     <>
       <Head>
