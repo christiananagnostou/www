@@ -1,4 +1,5 @@
-import dayjs, { Dayjs } from 'dayjs'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -11,11 +12,11 @@ import {
   DailyCalendarStyle,
   DateWrap,
   EventWrap,
+  HOUR_BAR_HEIGHT,
   HourBar,
   HourBarTime,
   HourBarWrap,
   HourListWrap,
-  HOUR_BAR_HEIGHT,
   StickyHeader,
   Timezone,
 } from './styles'
@@ -174,23 +175,23 @@ const DailyCalendar = () => {
           {/* Existing Events */}
           {dailyEvents.map((dailyEvent) => (
             <DailyEvent
-              dailyEvent={dailyEvent}
-              setSelectedEventId={setSelectedEventId}
-              selectedEventId={selectedEventId}
-              pointerEventToDate={pointerEventToDate}
-              updateDailyEvent={updateDailyEvent}
-              deleteDailyEvent={deleteDailyEvent}
               key={dailyEvent.id}
+              dailyEvent={dailyEvent}
+              deleteDailyEvent={deleteDailyEvent}
               layoutStyle={layoutMapping[dailyEvent.id]}
+              pointerEventToDate={pointerEventToDate}
+              selectedEventId={selectedEventId}
+              setSelectedEventId={setSelectedEventId}
+              updateDailyEvent={updateDailyEvent}
             />
           ))}
 
           {/* New Event */}
-          {newEvent && <DailyEvent dailyEvent={newEvent} layoutStyle={layoutMapping[newEvent.id]} />}
+          {newEvent ? <DailyEvent dailyEvent={newEvent} layoutStyle={layoutMapping[newEvent.id]} /> : null}
         </EventWrap>
 
         {/* Current Time */}
-        <CurrentTimeBar style={{ top: timeToPx(dateToTime(dayjs())) }} id="CurrentTime" />
+        <CurrentTimeBar id="CurrentTime" style={{ top: timeToPx(dateToTime(dayjs())) }} />
 
         {/* Hours */}
         <HourBarWrap>

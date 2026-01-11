@@ -1,18 +1,17 @@
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
-import markdownToHtml from '../../lib/articles/markdownToHtml'
-import { BASE_URL } from '../../lib/constants'
-import { pageAnimation } from '../../components/animation'
-import LeftArrow from '../../components/SVG/LeftArrow'
+import { useEffect, useState } from 'react'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
+import ArticleHead from '../../components/Articles/ArticleHead'
+import { ArticleContent, ArticleStyle, TitleWrap, TopBar, TopBarButton } from '../../components/Articles/ArticleStyles'
 import ChainLink from '../../components/SVG/ChainLink'
 import Checkmark from '../../components/SVG/Checkmark'
 import HeartEmpty from '../../components/SVG/HeartEmpty'
-import ArticleHead from '../../components/Articles/ArticleHead'
-import { ArticleStyle, TopBar, TopBarButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
-import { getLikes } from '../../lib/articles/likes'
+import LeftArrow from '../../components/SVG/LeftArrow'
+import type { ArticleType } from '../../lib/articles'
+import { getAllPosts, getPostBySlug } from '../../lib/articles'
+import markdownToHtml from '../../lib/articles/markdownToHtml'
+import { BASE_URL } from '../../lib/constants'
 
 interface ArticleWithLikes extends ArticleType {
   likes: number
@@ -95,9 +94,9 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
 
   return (
     <>
-      <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
+      <ArticleHead nextArticle={nextArticle} post={post} prevArticle={prevArticle} />
 
-      <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <ArticleStyle animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <TopBar>
           <Link href="/articles">
             <LeftArrow />
@@ -108,12 +107,12 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
             <p className="date">{dateCreated}</p>
             <div className="top-bar__right-side__buttons">
               <TopBarButton
-                onClick={copyUrl}
+                animate={copied ? 'copied' : 'notCopied'}
                 aria-label="Copy URL"
                 title="Copy URL"
-                variants={{ notCopied: { width: 30 }, copied: { width: 106 } }}
-                animate={copied ? 'copied' : 'notCopied'}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                variants={{ notCopied: { width: 30 }, copied: { width: 106 } }}
+                onClick={copyUrl}
               >
                 {copied ? (
                   <>
@@ -137,7 +136,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
 
         <ArticleContent dangerouslySetInnerHTML={{ __html: content }} />
 
-        <ArticleFooter prevArticle={prevArticle} nextArticle={nextArticle} />
+        <ArticleFooter nextArticle={nextArticle} prevArticle={prevArticle} />
       </ArticleStyle>
     </>
   )

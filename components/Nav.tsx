@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -7,18 +6,18 @@ import styled from 'styled-components'
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
 import { dropdown, fade, staggerFade } from './animation'
-import DownArrow from './SVG/DownArrow'
 import A from './SVG/A'
+import DownArrow from './SVG/DownArrow'
 
 interface SubLink {
   href: string
   title: string
 }
-export type NavLinks = {
+export type NavLinks = Array<{
   href?: string
   title: string
   subLinks?: SubLink[]
-}[]
+}>
 
 const NAV_LINKS: NavLinks = [
   { href: '/', title: 'Home' },
@@ -126,9 +125,9 @@ const Nav: React.FC = () => {
       <SkipLink href="#main-content">Skip to main content</SkipLink>
 
       {/* Structured Data for Navigation */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} />
+      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} type="application/ld+json" />
       {/* Breadcrumb structured data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
+      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} type="application/ld+json" />
 
       <StyledNav
         aria-label="Main Navigation"
@@ -137,28 +136,28 @@ const Nav: React.FC = () => {
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
         <motion.div
-          className="nav-inner max-w-screen"
-          variants={staggerFade}
-          initial="hidden"
           animate="show"
+          className="nav-inner max-w-screen"
           exit="exit"
+          initial="hidden"
+          variants={staggerFade}
         >
-          <LogoWrapper href="/" aria-label="Home" variants={fade}>
-            <A width="30px" height="30px" />
+          <LogoWrapper aria-label="Home" href="/" variants={fade}>
+            <A height="30px" width="30px" />
           </LogoWrapper>
 
           <AnimatePresence>
-            {(menuOpen || isDesktop) && (
+            {menuOpen || isDesktop ? (
               <Menu
                 key="main-menu"
-                variants={menuAnimation}
-                initial="hidden"
                 animate="show"
                 exit="exit"
+                initial="hidden"
                 style={{
                   height: isDesktop ? 'auto' : undefined,
                   opacity: isDesktop ? 1 : undefined,
                 }}
+                variants={menuAnimation}
               >
                 {NAV_LINKS.map(({ href, title, subLinks }, index) => {
                   const active = href === pathname
@@ -170,21 +169,21 @@ const Nav: React.FC = () => {
                   return (
                     <MenuItem
                       key={title}
+                      variants={fade}
                       onMouseEnter={() => handleMouseEnter(index)}
                       onMouseLeave={() => handleMouseLeave(index)}
-                      variants={fade}
                     >
                       {!hasSub ? (
-                        <Link href={href!} aria-current={active ? 'page' : undefined}>
+                        <Link aria-current={active ? 'page' : undefined} href={href!}>
                           {title}
                         </Link>
                       ) : (
                         <>
                           <DropdownToggle
+                            aria-expanded={isSubmenuOpen}
+                            aria-haspopup="true"
                             type="button"
                             onClick={() => toggleSubmenu(title)}
-                            aria-haspopup="true"
-                            aria-expanded={isSubmenuOpen}
                           >
                             {title}
                             <DownArrow />
@@ -192,27 +191,27 @@ const Nav: React.FC = () => {
 
                           {/* Animate submenu in/out */}
                           <AnimatePresence>
-                            {isSubmenuOpen && (
+                            {isSubmenuOpen ? (
                               <Submenu
                                 key={`${title}-submenu`}
-                                variants={isDesktop ? desktopSubmenuAnimation : dropdown}
-                                initial="hidden"
                                 animate="show"
-                                exit="exit"
                                 aria-label={`${title} Submenu`}
+                                exit="exit"
+                                initial="hidden"
+                                variants={isDesktop ? desktopSubmenuAnimation : dropdown}
                               >
-                                {subLinks!.map((sub) => {
+                                {subLinks.map((sub) => {
                                   const subActive = sub.href === pathname
                                   return (
                                     <li key={sub.href}>
-                                      <Link href={sub.href} aria-current={subActive ? 'page' : undefined}>
+                                      <Link aria-current={subActive ? 'page' : undefined} href={sub.href}>
                                         {sub.title}
                                       </Link>
                                     </li>
                                   )
                                 })}
                               </Submenu>
-                            )}
+                            ) : null}
                           </AnimatePresence>
                         </>
                       )}
@@ -220,16 +219,16 @@ const Nav: React.FC = () => {
                   )
                 })}
               </Menu>
-            )}
+            ) : null}
           </AnimatePresence>
 
           {/* Hamburger (mobile) */}
           {!isDesktop && (
             <Hamburger
-              onClick={toggleMenu}
-              aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
+              aria-label="Toggle navigation menu"
               variants={fade}
+              onClick={toggleMenu}
             >
               <span />
               <span />

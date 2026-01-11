@@ -13,72 +13,73 @@ export const DailyCalendarStyle = styled.div`
   --daily-event-text-color: #cccccc;
   --time-bar-width: 3.75rem;
   --hour-bar-height: ${HOUR_BAR_HEIGHT}px;
-
-  max-width: calc(50% - 0.5rem);
-  @media (max-width: 768px) {
-    max-width: 100%;
-  }
-
-  border: 1px solid var(--border-color);
-  background: var(--bg);
-  border-radius: 10px;
   position: relative;
   width: 100%;
+
+  max-width: calc(50% - 0.5rem);
   margin: auto;
+
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg);
   user-select: none;
   overflow: hidden;
 
+  @media (width <= 768px) {
+    max-width: 100%;
+  }
+
   &::after {
     content: '';
-    display: block;
-    width: 1px;
     position: absolute;
     bottom: 0;
     left: calc(var(--time-bar-width) - 1px);
-    background: var(--border-color);
-    height: calc(500px + 15px);
     z-index: 1;
+    display: block;
+    width: 1px;
+    height: calc(500px + 15px);
+    background: var(--border-color);
   }
 `
 
 export const StickyHeader = styled.div`
   display: grid;
-  grid-template-columns: var(--row-grid);
   align-items: end;
+  grid-template-columns: var(--row-grid);
   border-bottom: 1px solid var(--border-color);
 `
 
 export const Timezone = styled.span`
-  font-size: 8px;
-  padding-bottom: 0.25rem;
-  text-align: center;
   position: relative;
+  padding-bottom: 0.25rem;
+  font-size: 8px;
+  text-align: center;
 `
 
 export const DateWrap = styled.div`
-  padding: 0.25rem 1.25rem;
   display: grid;
-  place-items: center;
   width: min-content;
+  padding: 0.25rem 1.25rem;
+  place-items: center;
 `
 
 export const CurrentDay = styled.div`
+  margin-bottom: 2px;
+  font-weight: 600;
+  font-size: 11px;
   color: var(--blue);
   text-transform: uppercase;
-  font-size: 11px;
-  font-weight: 600;
-  margin-bottom: 2px;
 `
 
 export const CurrentDate = styled.div`
-  height: 30px;
+  display: grid;
   width: 30px;
+  height: 30px;
   border-radius: 100%;
   background: var(--blue);
-  display: grid;
-  place-items: center;
   font-size: 18px;
   color: var(--header-curr-date-color);
+  place-items: center;
 `
 
 export const HourListWrap = styled.div`
@@ -91,11 +92,11 @@ export const HourListWrap = styled.div`
 export const HourBarWrap = styled.div``
 
 export const HourBar = styled.div`
-  height: var(--hour-bar-height);
-  max-width: 100%;
-  display: grid;
   position: relative;
+  display: grid;
   grid-template-columns: var(--row-grid);
+  max-width: 100%;
+  height: var(--hour-bar-height);
   &:not(:last-child)::after {
     content: '';
     width: 100%;
@@ -104,27 +105,27 @@ export const HourBar = styled.div`
 `
 
 export const HourBarTime = styled.span`
+  position: relative;
   display: block;
-  transform: translateY(-50%);
   height: 12px;
+  padding-left: 0.5rem;
   font-size: 12px;
   line-height: 12px;
-  padding-left: 0.5rem;
   user-select: none;
-  position: relative;
+  transform: translateY(-50%);
 `
 
 export const EventWrap = styled.div`
   position: relative;
-  width: calc(100% - var(--time-bar-width));
   left: var(--time-bar-width);
+  width: calc(100% - var(--time-bar-width));
 `
 
 export const DailyEventContainer = styled.div`
   position: absolute;
   z-index: 1;
-  background: var(--red);
   border-radius: 4px;
+  background: var(--red);
   transition:
     top 50ms ease-in-out,
     height 50ms ease-in-out,
@@ -141,8 +142,8 @@ export const DailyEventRelative = styled.div`
   position: relative;
   height: 100%;
   padding: 0.05rem 0.5rem;
-  font-size: 10px;
   font-weight: bold;
+  font-size: 10px;
 `
 
 export const DailyEventInner = styled.div`
@@ -152,16 +153,16 @@ export const DailyEventInner = styled.div`
 export const TimeRange = styled.p``
 
 export const DeleteButton = styled.button`
-  background: none;
-  padding: 0;
-  margin: 0;
-  border: none;
   position: absolute;
   top: 0;
   right: 0;
-  transition: opacity 0.2s ease-in-out;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
   color: var(--text);
   cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
 
   &:hover {
     opacity: 0.5;
@@ -170,34 +171,34 @@ export const DeleteButton = styled.button`
 
 export const ResizeBar = styled.div`
   --height: 6px;
-  background: var(--resize-bar-bg);
-  border: 1px solid var(--border-color);
-  height: var(--height);
-  width: 40px;
-  border-radius: 10px;
-  display: block;
   position: absolute;
-  left: 0;
   right: 0;
+  left: 0;
+  display: block;
+  width: 40px;
+  height: var(--height);
   margin: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--resize-bar-bg);
   cursor: ns-resize;
 `
 
 export const CurrentTimeBar = styled.div`
-  background: var(--red);
-  height: 2px;
   position: absolute;
+  left: var(--time-bar-width);
   z-index: 2;
   width: calc(100% - var(--time-bar-width));
-  left: var(--time-bar-width);
+  height: 2px;
+  background: var(--red);
   pointer-events: none;
   &::after {
     content: '';
-    height: 12px;
-    width: 12px;
     display: block;
-    transform: translate(-50%, calc(-50% + 1px));
+    width: 12px;
+    height: 12px;
     border-radius: 10px;
     background: var(--red);
+    transform: translate(-50%, calc(-50% + 1px));
   }
 `

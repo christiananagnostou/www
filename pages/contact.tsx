@@ -36,7 +36,7 @@ const Contact = () => {
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         data,
-        process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
+        process.env.NEXT_PUBLIC_EMAILJS_USER_ID
       )
       if (res.status === 200) {
         form.reset() // Resetting the form fields
@@ -51,31 +51,31 @@ const Contact = () => {
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={PageUrl} />
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="contact, Christian Anagnostou, portfolio, inquiries, collaboration" />
+        <meta content={PageDescription} name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href={PageUrl} rel="canonical" />
+        <meta content="index, follow" name="robots" />
+        <meta content="contact, Christian Anagnostou, portfolio, inquiries, collaboration" name="keywords" />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={PageTitle} />
-        <meta property="og:description" content={PageDescription} />
-        <meta property="og:url" content={PageUrl} />
+        <meta content="website" property="og:type" />
+        <meta content={PageTitle} property="og:title" />
+        <meta content={PageDescription} property="og:description" />
+        <meta content={PageUrl} property="og:url" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={PageTitle} />
-        <meta name="twitter:description" content={PageDescription} />
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content={PageTitle} name="twitter:title" />
+        <meta content={PageDescription} name="twitter:description" />
 
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getContactStructuredData()) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <ContactStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <ContactStyle animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Contact</h1>
           <p>
@@ -84,43 +84,43 @@ const Contact = () => {
           </p>
         </Heading>
 
-        <StyledForm variants={staggerFade} onSubmit={handleSubmit} method="POST">
+        <StyledForm method="POST" variants={staggerFade} onSubmit={handleSubmit}>
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="name">
                 Name <span>*</span>
               </label>
-              <input id="name" name="name" type="text" className="form-input custom-focus" required />
+              <input className="form-input custom-focus" id="name" name="name" required type="text" />
             </FormGroup>
           </motion.div>
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="email">Email</label>
-              <input id="email" name="email" type="email" className="form-input custom-focus" />
+              <input className="form-input custom-focus" id="email" name="email" type="email" />
             </FormGroup>
           </motion.div>
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="subject">Subject</label>
-              <input id="subject" name="subject" type="text" className="form-input custom-focus" autoComplete="off" />
+              <input autoComplete="off" className="form-input custom-focus" id="subject" name="subject" type="text" />
             </FormGroup>
           </motion.div>
           <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="message">Message</label>
-              <textarea id="message" name="message" className="form-input custom-focus" rows={6}></textarea>
+              <textarea className="form-input custom-focus" id="message" name="message" rows={6} />
             </FormGroup>
           </motion.div>
           <motion.div variants={fade}>
             <FormGroup>
-              <button type="submit" className="form-btn custom-focus">
+              <button className="form-btn custom-focus" type="submit">
                 SEND
               </button>
             </FormGroup>
           </motion.div>
         </StyledForm>
 
-        <p style={{ opacity: sentSuccessful ? 1 : 0 }} className="success-message">
+        <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
           Sent successfully. You&apos;ll hear from me soon!
         </p>
 

@@ -1,4 +1,5 @@
-import React, { CSSProperties, ElementType, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import type { CSSProperties, ElementType, ReactNode } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
 const SCROLL_END_DEBOUNCE = 300
@@ -152,7 +153,7 @@ const DragScrollContainer = ({
     if (typeof innerRef === 'function') {
       innerRef(containerRef.current)
     } else if (innerRef) {
-      ;(innerRef as React.MutableRefObject<HTMLElement | null>).current = containerRef.current
+      innerRef.current = containerRef.current
     }
   }, [innerRef])
 
@@ -284,8 +285,6 @@ const DragScrollContainer = ({
   return (
     <Component
       ref={containerRef}
-      style={style}
-      onScroll={handleScroll}
       className={`
         ${className} 
         ${styles.container} 
@@ -293,6 +292,8 @@ const DragScrollContainer = ({
         ${isMobile ? styles.nativeScroll : ''} 
         ${hideScrollbars ? styles.hideScrollbars : ''}
       `}
+      style={style}
+      onScroll={handleScroll}
     >
       {children}
       <style>{'.body-dragging { cursor: grab; }'}</style>

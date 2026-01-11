@@ -1,4 +1,4 @@
-import { NavLinks } from '../../components/Nav'
+import type { NavLinks } from '../../components/Nav'
 import { BASE_URL } from '../constants'
 
 export const getSiteNavigationStructuredData = (links: NavLinks) => {

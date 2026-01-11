@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, AnchorHTMLAttributes, JSX, PropsWithChildren } from 'react'
+import type { AnchorHTMLAttributes, JSX, PropsWithChildren } from 'react'
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 interface BookmarkletLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -24,14 +25,14 @@ export default function BookmarkletLink({
 }
 
 const TitleLink = styled.a`
-  color: var(--heading);
   font-weight: 300;
+  color: var(--heading);
   text-decoration: underline solid var(--accent);
   text-underline-offset: 3px;
 
   &:hover,
   &:focus {
-    text-decoration: underline solid var(--text-dark);
     outline: none;
+    text-decoration: underline solid var(--text-dark);
   }
 `

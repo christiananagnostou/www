@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { NavLinks } from '../../components/Nav'
+import { describe, expect, it } from 'vitest'
+import type { NavLinks } from '../../components/Nav'
 import { BASE_URL } from '../constants'
 import { getBreadcrumbStructuredData } from './breadcrumbs'
 
 // Helper function to generate expected BreadcrumbList structured data
-const getExpectedBreadcrumbList = (items: { name: string; item: string }[]) => ({
+const getExpectedBreadcrumbList = (items: Array<{ name: string; item: string }>) => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: items.map((item, index) => ({

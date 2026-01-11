@@ -10,22 +10,22 @@ function SocialLinks() {
   return (
     <SocialLinkList variants={fade}>
       <li>
-        <a href="https://github.com/ChristianAnagnostou" target="_blank" rel="noreferrer" aria-label="GitHub">
+        <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
         </a>
       </li>
       <li>
-        <a href="https://linkedin.com/in/ChristianAnagnostou/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+        <a aria-label="LinkedIn" href="https://linkedin.com/in/ChristianAnagnostou/" rel="noreferrer" target="_blank">
           <LinkedIn />
         </a>
       </li>
       <li>
-        <a href="https://read.cv/christian.a" target="_blank" rel="noreferrer" aria-label="Read my CV">
+        <a aria-label="Read my CV" href="https://read.cv/christian.a" rel="noreferrer" target="_blank">
           <Readcv />
         </a>
       </li>
       <li>
-        <a href="https://x.com/javascramble" target="_blank" rel="noreferrer" aria-label="X">
+        <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           <Twitter />
         </a>
       </li>
@@ -34,28 +34,28 @@ function SocialLinks() {
 }
 
 const SocialLinkList = styled(motion.ul)`
-  width: fit-content;
-  margin: 0;
   display: flex;
-  gap: 0.75rem;
-  padding: 0.05rem 0.75rem;
   justify-content: center;
   align-items: center;
-  list-style: none;
+  gap: 0.75rem;
+  width: fit-content;
   height: fit-content;
+  margin: 0;
+  padding: 0.05rem 0.75rem;
+  border: 1px solid var(--accent);
 
   border-radius: 5px;
   background: var(--dark-bg);
-  border: 1px solid var(--accent);
+  list-style: none;
 
   li {
     flex: 1;
 
     a {
-      padding: 0.5rem 0.25rem;
       display: block;
-      cursor: alias;
+      padding: 0.5rem 0.25rem;
       color: var(--text-dark);
+      cursor: alias;
       transition: color 0.3s ease;
 
       &:hover {

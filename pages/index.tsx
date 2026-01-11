@@ -1,21 +1,22 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
-import { GetStaticProps } from 'next/types'
+import type { GetStaticProps } from 'next/types'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
-import StravaActivities from '../components/Home/StravaActivities'
-import SocialLinks from '../components/SocialLinks'
-import { ArticleType, getAllPosts } from '../lib/articles'
-import { BASE_URL } from '../lib/constants'
-import { getHomeStructuredData } from '../lib/structured/home'
-import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
+import StravaActivities from '../components/Home/StravaActivities'
+import SocialLinks from '../components/SocialLinks'
+import type { ArticleType } from '../lib/articles'
+import { getAllPosts } from '../lib/articles'
+import { BASE_URL } from '../lib/constants'
+import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
+import { getHomeStructuredData } from '../lib/structured/home'
 
-type Props = {
+interface Props {
   posts: ArticleType[]
   stravaActivities: StravaActivity[]
 }
@@ -42,34 +43,34 @@ const Home = ({ posts, stravaActivities }: Props) => {
     <>
       <Head>
         <title>Christian Anagnostou</title>
-        <meta name="description" content="Christian Anagnostou's Web Portfolio" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={BASE_URL} />
-        <meta name="robots" content="index, follow" />
+        <meta content="Christian Anagnostou's Web Portfolio" name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href={BASE_URL} rel="canonical" />
+        <meta content="index, follow" name="robots" />
         <meta
-          name="keywords"
           content="software engineer, web developer, programmer, portfolio, articles, art, projects, Strava, Christian Anagnostou"
+          name="keywords"
         />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Christian Anagnostou" />
-        <meta property="og:description" content="Christian Anagnostou's Web Portfolio" />
-        <meta property="og:url" content={BASE_URL} />
+        <meta content="website" property="og:type" />
+        <meta content="Christian Anagnostou" property="og:title" />
+        <meta content="Christian Anagnostou's Web Portfolio" property="og:description" />
+        <meta content={BASE_URL} property="og:url" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Christian Anagnostou" />
-        <meta name="twitter:description" content="Christian Anagnostou's Web Portfolio" />
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content="Christian Anagnostou" name="twitter:title" />
+        <meta content="Christian Anagnostou's Web Portfolio" name="twitter:description" />
 
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getHomeStructuredData(posts)) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <div className="page-inner-container">
           <Bio />
 
