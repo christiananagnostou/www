@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL } from '../../lib/constants'
