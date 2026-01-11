@@ -5,7 +5,7 @@ interface RefProp extends HTMLDivElement {
   eX: number
 }
 
-const names = new Map<string, React.MutableRefObject<RefProp | null>[]>()
+const names = new Map<string, Array<React.RefObject<RefProp | null>>>()
 
 export const useScrollSync = (id: string) => {
   const ref = useRef<RefProp>(null)

@@ -1,4 +1,5 @@
-import { motion, PanInfo } from 'framer-motion'
+import type { PanInfo } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useWindowSize } from '../Hooks'
@@ -38,7 +39,7 @@ const Sections = [
   'transform',
 ]
 
-type Props = {
+interface Props {
   onBarFilled: (filled: boolean) => void
 }
 
@@ -66,7 +67,7 @@ const TVBar = ({ onBarFilled }: Props) => {
 
     setPercentToFull(percentToFull)
 
-    knobRef.current.style.rotate = (percentToFull / 100) * 360 + 'deg'
+    knobRef.current.style.rotate = `${(percentToFull / 100) * 360}deg`
     knobRef.current.dataset.currentDeg = newPos.toString()
   }
 
@@ -78,15 +79,15 @@ const TVBar = ({ onBarFilled }: Props) => {
     <>
       <TVControls>
         <Knob onPan={onKnobPan}>
-          <div className="knob" ref={knobRef} style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
+          <div ref={knobRef} className="knob" style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
         </Knob>
 
-        <motion.div className="bar-wrap" ref={barsRef} onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
+        <motion.div ref={barsRef} className="bar-wrap" onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
           <div className="bar">
             <div
               className="bar-inner"
               style={{
-                left: -(100 - percentToFull) + '%',
+                left: `${-(100 - percentToFull)}%`,
                 background: BarGradient,
               }}
             />
@@ -95,18 +96,18 @@ const TVBar = ({ onBarFilled }: Props) => {
 
         <div className="current-control">
           <motion.button
-            className={`button ${isBarFull ? 'highlight' : ''}`}
             ref={buttonRef}
+            className={`button ${isBarFull ? 'highlight' : ''}`}
+            disabled={!isBarFull}
+            style={{ width: Sections[sectionIndex].length * 10 }}
             onClick={
               isBarFull ? () => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1)) : () => {}
             }
-            disabled={!isBarFull}
-            style={{ width: Sections[sectionIndex].length * 10 }}
           >
             {Sections.map((section) => (
               <span
-                className="inner"
                 key={section}
+                className="inner"
                 style={Sections[sectionIndex] === section ? { top: 0, opacity: 1 } : { top: '150%', opacity: 0 }}
               >
                 {section}

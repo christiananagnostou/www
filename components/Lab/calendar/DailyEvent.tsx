@@ -1,15 +1,15 @@
-import { Dayjs } from 'dayjs'
+import type { Dayjs } from 'dayjs'
 import X from '../../SVG/X'
-import { DailyEventT } from './DailyCalendar'
+import type { DailyEventT } from './DailyCalendar'
 import { DailyEventContainer, DailyEventInner, DailyEventRelative, DeleteButton, ResizeBar, TimeRange } from './styles'
 import { dateToTime, timeToPx } from './utils'
 
-type LayoutStyle = {
+interface LayoutStyle {
   left: string
   width: string
 }
 
-type Props = {
+interface Props {
   dailyEvent: DailyEventT
   updateDailyEvent?: (dailyEvent: DailyEventT) => void
   pointerEventToDate?: (e: MouseEvent) => Dayjs
@@ -88,13 +88,13 @@ const DailyEvent = ({
           <DailyEventInner>
             <TimeRange>
               {dailyEvent.start.isBefore(dailyEvent.end)
-                ? dateToTime(dailyEvent.start, 12) + ' - ' + dateToTime(dailyEvent.end, 12)
-                : dateToTime(dailyEvent.end, 12) + ' - ' + dateToTime(dailyEvent.start, 12)}
+                ? `${dateToTime(dailyEvent.start, 12)} - ${dateToTime(dailyEvent.end, 12)}`
+                : `${dateToTime(dailyEvent.end, 12)} - ${dateToTime(dailyEvent.start, 12)}`}
             </TimeRange>
 
             {/* Delete */}
             {selectedEventId === dailyEvent.id && (
-              <DeleteButton onClick={() => deleteDailyEvent && deleteDailyEvent(dailyEvent)} aria-label="Delete event">
+              <DeleteButton aria-label="Delete event" onClick={() => deleteDailyEvent?.(dailyEvent)}>
                 <X />
               </DeleteButton>
             )}
@@ -102,8 +102,8 @@ const DailyEvent = ({
         )}
         {selectedEventId === dailyEvent.id && (
           <>
-            <ResizeBar onMouseDown={(e) => onResizeDown(e, 'start')} style={{ top: 'calc(var(--height) / -2)' }} />
-            <ResizeBar onMouseDown={(e) => onResizeDown(e, 'end')} style={{ bottom: 'calc(var(--height) / -2)' }} />
+            <ResizeBar style={{ top: 'calc(var(--height) / -2)' }} onMouseDown={(e) => onResizeDown(e, 'start')} />
+            <ResizeBar style={{ bottom: 'calc(var(--height) / -2)' }} onMouseDown={(e) => onResizeDown(e, 'end')} />
           </>
         )}
       </DailyEventRelative>

@@ -5,12 +5,12 @@ import Giants from '../SVG/Giants'
 
 function Bio() {
   return (
-    <Description variants={staggerFade} className="max-w-screen">
+    <Description className="max-w-screen" variants={staggerFade}>
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
         Creating web experiences that <em>inspire</em>. Currently working as a senior software engineer at{' '}
-        <a href="https://vuoriclothing.com/" target="_blank" rel="noreferrer" aria-label="Visit Vuori website">
+        <a aria-label="Visit Vuori website" href="https://vuoriclothing.com/" rel="noreferrer" target="_blank">
           <em>Vuori</em>
         </a>
         .
@@ -18,10 +18,10 @@ function Bio() {
 
       <motion.p variants={fade}>
         Among other things, I&apos;m a huge fan of the{' '}
-        <GiantsSlotContainer initial="rest" whileHover="hover" animate="rest">
+        <GiantsSlotContainer animate="rest" initial="rest" whileHover="hover">
           <Slot>
             <TextSlot variants={textSlotVariants}>SF</TextSlot>
-            <SVGSlot variants={svgSlotVariants} aria-hidden="true">
+            <SVGSlot aria-hidden="true" variants={svgSlotVariants}>
               <Giants />
             </SVGSlot>
           </Slot>

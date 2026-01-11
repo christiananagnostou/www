@@ -1,18 +1,18 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { ArticleType } from '../../lib/articles'
-import { staggerFade, fade } from '../animation'
+import type { ArticleType } from '../../lib/articles'
+import { fade, staggerFade } from '../animation'
 import { HomepageBox } from './styles'
 
-type ArticlesProps = {
+interface ArticlesProps {
   posts: ArticleType[]
 }
 
 export default function RecentArticles({ posts }: ArticlesProps) {
   return (
     <ArticlesContainer variants={staggerFade}>
-      <LinkTitle href="/articles" variants={fade} className="homepage-box__title">
+      <LinkTitle className="homepage-box__title" href="/articles" variants={fade}>
         Articles
       </LinkTitle>
 
@@ -33,8 +33,8 @@ export default function RecentArticles({ posts }: ArticlesProps) {
 const LinkTitle = styled(motion.create(Link))``
 
 const ArticlesContainer = styled(HomepageBox)`
-  min-width: 70%;
   flex: 1;
+  min-width: 70%;
   color: var(--text);
 
   ul {
@@ -51,8 +51,8 @@ const ArticlesContainer = styled(HomepageBox)`
 
       .recent-article__title {
         text-decoration: underline solid var(--accent);
-        text-underline-offset: 3px;
         transition: all 0.2s ease;
+        text-underline-offset: 3px;
 
         &:hover,
         &:active {
@@ -62,12 +62,12 @@ const ArticlesContainer = styled(HomepageBox)`
       }
 
       .recent-article__summary {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         margin-top: 0.25rem;
         font-size: 0.8rem;
         color: var(--text-dark);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
     }
   }

@@ -6,10 +6,10 @@ export const TodayCursorStyle = styled.div<{
   dateWidth: number
 }>`
   position: absolute;
+  bottom: 0;
+  left: ${({ offsetDays, dateWidth, width }) => offsetDays * dateWidth + dateWidth / 2 - width / 2}px;
   z-index: 20;
+  width: ${({ width }) => width}px;
   height: calc(100% - var(--date-bar-height) + 0.5rem);
   background-color: var(--accent-color);
-  width: ${({ width }) => width}px;
-  left: ${({ offsetDays, dateWidth, width }) => offsetDays * dateWidth + dateWidth / 2 - width / 2}px;
-  bottom: 0;
 `
