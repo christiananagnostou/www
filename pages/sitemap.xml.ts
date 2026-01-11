@@ -1,9 +1,8 @@
+import { GetServerSideProps } from 'next'
 import dayjs from 'dayjs'
-import type { GetServerSideProps } from 'next'
-import type { ArticleType } from '../lib/articles'
-import { getAllPosts } from '../lib/articles'
-import type { ProjectType } from '../lib/projects'
-import { ProjectState } from '../lib/projects'
+import { getAllPosts, ArticleType } from '../lib/articles'
+import { ProjectType, ProjectState } from '../lib/projects'
+import { BASE_URL } from '../lib/constants'
 
 /**
  * Dynamic sitemap served at /sitemap.xml
