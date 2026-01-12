@@ -53,7 +53,7 @@ const GlobalStyle = createGlobalStyle`
     ::selection {
       background: rgb(60 60 60 / 50%); /* WebKit/Blink Browsers */
     }
-    ::selection {
+    ::-moz-selection {
       background: rgb(60 60 60 / 50%); /* Gecko Browsers */
     }
   }
