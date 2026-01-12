@@ -47,6 +47,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
   const distPlotRef = useRef<uPlot | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
   const distTooltipRef = useRef<HTMLDivElement | null>(null)
+  const modeRef = useRef<'miles' | 'hours'>('miles')
 
   const [mode, setMode] = useState<'miles' | 'hours'>('miles')
 
@@ -61,6 +62,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
 
     // Destroy existing on re-init (structure changes only when weekly arrays length changes)
     weeklyPlotRef.current?.destroy()
+    tooltipRef.current?.remove()
 
     const rootStyles = getComputedStyle(document.documentElement)
     const accent = rootStyles.getPropertyValue('--accent') || '#6cf'
@@ -78,23 +80,27 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
 
     weeklyPlotRef.current = new uPlot(
       {
-        width: Math.max(weeklyRef.current.clientWidth - 20, 300), // Account for padding and ensure minimum width
+        width: Math.max(weeklyRef.current.clientWidth - 24, 280), // Account for padding and ensure minimum width
         height: 220,
         pxAlign: 0,
+        padding: [12, 12, 26, 40],
         scales: { x: { time: false }, miles: {}, hours: {}, ma: {} },
         axes: [
           {
+            size: 26,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
             values: (u, ticks) => ticks.map((t) => `W${t}`),
           },
           {
+            size: 32,
             scale: 'miles',
             stroke: textDark,
             values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
           },
           {
+            size: 32,
             scale: 'hours',
             side: 1,
             stroke: textDark,
@@ -110,7 +116,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             stroke: accent,
             width: 2,
             fill: `${accent.trim()}20`,
-            show: mode === 'miles',
+            show: modeRef.current === 'miles',
             value: (u, v) => (v == null ? '' : `${v.toFixed(1)} mi`),
             points: { show: false }, // Remove markers
           } as Series,
@@ -120,7 +126,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             stroke: '#4fa3ff',
             width: 2,
             dash: [4, 4],
-            show: mode === 'hours',
+            show: modeRef.current === 'hours',
             value: (u, v) => (v == null ? '' : `${v.toFixed(1)} h`),
             points: { show: false }, // Remove markers
           } as Series,
@@ -130,7 +136,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
             stroke: 'orange',
             width: 2,
             dash: [6, 4],
-            show: mode === 'miles',
+            show: modeRef.current === 'miles',
             value: (u, v) => (v == null ? '' : `${v.toFixed(1)} mi`),
             points: { show: false }, // Remove markers
           } as Series,
@@ -169,10 +175,17 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
       data,
       weeklyRef.current
     )
-  }, [weekly, milesMA, mode])
+
+    return () => {
+      weeklyPlotRef.current?.destroy()
+      weeklyPlotRef.current = null
+      tooltipRef.current?.remove()
+    }
+  }, [weekly, milesMA])
 
   // Update series visibility on mode change without full re-init
   useEffect(() => {
+    modeRef.current = mode
     const wp = weeklyPlotRef.current
     if (!wp) return
     // Miles series index 1, hours series index 2, MA index 3
@@ -185,6 +198,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
   useEffect(() => {
     if (!distRef.current) return
     distPlotRef.current?.destroy()
+    distTooltipRef.current?.remove()
 
     const rootStyles = getComputedStyle(document.documentElement)
     const textDark = rootStyles.getPropertyValue('--text-dark') || '#999'
@@ -199,17 +213,20 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
 
     distPlotRef.current = new uPlot(
       {
-        width: Math.max(distRef.current.clientWidth - 20, 300), // Account for padding and ensure minimum width
+        width: Math.max(distRef.current.clientWidth - 24, 280), // Account for padding and ensure minimum width
         height: 260,
         pxAlign: 0,
+        padding: [12, 12, 32, 36],
         scales: { x: { time: false }, y: {} },
         axes: [
           {
+            size: 28,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
             values: (u, ticks) => ticks.map((t) => distribution.labels[t] || ''),
           },
           {
+            size: 32,
             stroke: textDark,
             values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
@@ -264,6 +281,12 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
       data,
       distRef.current
     )
+
+    return () => {
+      distPlotRef.current?.destroy()
+      distPlotRef.current = null
+      distTooltipRef.current?.remove()
+    }
   }, [distribution, distColors])
 
   // Apply colored overlays to bars post-render (canvas overlay approach)
@@ -274,6 +297,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
     if (!ctx) return
     const plot = distPlotRef.current
     if (!plot) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     // Draw color stripes (light overlay) on top of generic bars
     distribution.counts.forEach((_, i) => {
       const x = plot.valToPos(i, 'x', true)

@@ -39,6 +39,14 @@ interface FitnessStats {
   longestStreak: number
 }
 
+interface ParsedActivity {
+  activity: StravaActivity
+  date: dayjs.Dayjs
+  miles: number
+  seconds: number
+  elevation: number
+}
+
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const requiredEnv = ['STRAVA_REFRESH_TOKEN', 'STRAVA_CLIENT_ID', 'STRAVA_CLIENT_SECRET', 'STRAVA_REDIRECT_URI']
   const missing = requiredEnv.filter((key) => !process.env[key])
@@ -76,8 +84,8 @@ const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, ''
 // Helper: compute week number (1-based) without dayjs plugins
 const getWeekNumber = (d: dayjs.Dayjs) => Math.floor(d.diff(d.startOf('year'), 'day') / 7) + 1
 
-const calculateStats = (all: StravaActivity[], year: number, selectedTypes: string[]): FitnessStats => {
-  const filtered = all.filter((a) => !selectedTypes.length || selectedTypes.includes(a.type))
+const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: string[]): FitnessStats => {
+  const filtered = all.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type))
   const uniqueDays = new Set<string>()
   let totalMiles = 0,
     totalSeconds = 0,
@@ -86,18 +94,14 @@ const calculateStats = (all: StravaActivity[], year: number, selectedTypes: stri
     yearSeconds = 0
   const yStart = dayjs().year(year).startOf('year')
   const yEnd = dayjs().year(year).endOf('year')
-  filtered.forEach((a) => {
-    const miles = parseMiles(a.Distance)
-    const secs = parseSeconds(a.MovingTime)
-    const elev = parseElevation(a.ElevationGain)
+  filtered.forEach(({ miles, seconds, elevation, date }) => {
     totalMiles += miles
-    totalSeconds += secs
-    totalElevation += elev
-    const d = dayjs(a.pubDate)
-    uniqueDays.add(d.format('YYYY-MM-DD'))
-    if (d.isAfter(yStart.subtract(1, 'day')) && d.isBefore(yEnd.add(1, 'day'))) {
+    totalSeconds += seconds
+    totalElevation += elevation
+    uniqueDays.add(date.format('YYYY-MM-DD'))
+    if (date.isAfter(yStart.subtract(1, 'day')) && date.isBefore(yEnd.add(1, 'day'))) {
       yearMiles += miles
-      yearSeconds += secs
+      yearSeconds += seconds
     }
   })
   // streaks
@@ -114,7 +118,7 @@ const calculateStats = (all: StravaActivity[], year: number, selectedTypes: stri
   })
   // weekly averages (week numbers inside year using helper)
   const weeksSet = new Set<number>()
-  filtered.filter((a) => dayjs(a.pubDate).year() === year).forEach((a) => weeksSet.add(getWeekNumber(dayjs(a.pubDate))))
+  filtered.filter(({ date }) => date.year() === year).forEach(({ date }) => weeksSet.add(getWeekNumber(date)))
   const weekCount = weeksSet.size || 1
   const avgWeeklyMiles = yearMiles / weekCount
   const avgWeeklyHours = yearSeconds / 3600 / weekCount
@@ -135,19 +139,31 @@ const calculateStats = (all: StravaActivity[], year: number, selectedTypes: stri
 const FitnessPage = ({ activities, error }: Props) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
 
+  const parsedActivities = useMemo<ParsedActivity[]>(
+    () =>
+      activities.map((activity) => ({
+        activity,
+        date: dayjs(activity.pubDate),
+        miles: parseMiles(activity.Distance),
+        seconds: parseSeconds(activity.MovingTime),
+        elevation: parseElevation(activity.ElevationGain),
+      })),
+    [activities]
+  )
+
   const years = useMemo(() => {
     const s = new Set<number>()
-    activities.forEach((a) => s.add(dayjs(a.pubDate).year()))
+    parsedActivities.forEach(({ date }) => s.add(date.year()))
     const arr = Array.from(s).sort((a, b) => a - b)
     return arr.length ? arr : [dayjs().year()]
-  }, [activities])
+  }, [parsedActivities])
 
   const [year, setYear] = useState(() => years[years.length - 1])
   useEffect(() => {
     setYear(years[years.length - 1])
   }, [years])
 
-  const stats = useMemo(() => calculateStats(activities, year, selectedTypes), [activities, year, selectedTypes])
+  const stats = useMemo(() => calculateStats(parsedActivities, year, selectedTypes), [parsedActivities, year, selectedTypes])
 
   const hasData = activities.length > 0
 
@@ -159,31 +175,30 @@ const FitnessPage = ({ activities, error }: Props) => {
   }
   const weeklyTrend: WeeklyPoint[] = useMemo(() => {
     const map = new Map<number, { miles: number; seconds: number }>()
-    activities.forEach((a) => {
-      const d = dayjs(a.pubDate)
-      if (d.year() !== year) return
-      if (selectedTypes.length && !selectedTypes.includes(a.type)) return
-      const wk = getWeekNumber(d)
+    parsedActivities.forEach(({ activity, date, miles, seconds }) => {
+      if (date.year() !== year) return
+      if (selectedTypes.length && !selectedTypes.includes(activity.type)) return
+      const wk = getWeekNumber(date)
       if (!map.has(wk)) map.set(wk, { miles: 0, seconds: 0 })
       const e = map.get(wk) as { miles: number; seconds: number }
-      e.miles += parseMiles(a.Distance)
-      e.seconds += parseSeconds(a.MovingTime)
+      e.miles += miles
+      e.seconds += seconds
     })
     return Array.from(map.entries())
       .sort((a, b) => a[0] - b[0])
       .map(([week, v]) => ({ week, miles: v.miles, hours: v.seconds / 3600 }))
-  }, [activities, year, selectedTypes])
+  }, [parsedActivities, year, selectedTypes])
 
   // Type distribution
   const typeDistribution = useMemo(() => {
     const m = new Map<string, number>()
-    activities.forEach((a) => {
-      if (dayjs(a.pubDate).year() !== year) return
-      if (selectedTypes.length && !selectedTypes.includes(a.type)) return
-      m.set(a.type, (m.get(a.type) ?? 0) + 1)
+    parsedActivities.forEach(({ activity, date }) => {
+      if (date.year() !== year) return
+      if (selectedTypes.length && !selectedTypes.includes(activity.type)) return
+      m.set(activity.type, (m.get(activity.type) ?? 0) + 1)
     })
     return Array.from(m.entries()).sort((a, b) => b[1] - a[1])
-  }, [activities, year, selectedTypes])
+  }, [parsedActivities, year, selectedTypes])
 
   const handleDateClick = (date: string) => {
     const el = document.getElementById(`activity-${date}`)
@@ -196,11 +211,11 @@ const FitnessPage = ({ activities, error }: Props) => {
 
   const activityCounts = useMemo(
     () =>
-      activities.reduce<Record<string, number>>((acc, a) => {
-        acc[a.type] = (acc[a.type] || 0) + 1
+      parsedActivities.reduce<Record<string, number>>((acc, { activity }) => {
+        acc[activity.type] = (acc[activity.type] || 0) + 1
         return acc
       }, {}),
-    [activities]
+    [parsedActivities]
   )
   const uniqueActivityTypes = useMemo(() => {
     const priorityTypes = ['Ride', 'Run', 'Swim', 'Zwift']
@@ -213,12 +228,9 @@ const FitnessPage = ({ activities, error }: Props) => {
 
   // earliest + timeline extents
   const earliest = useMemo(() => {
-    if (!activities.length) return dayjs()
-    return activities.reduce(
-      (min, a) => (dayjs(a.pubDate).isBefore(min) ? dayjs(a.pubDate) : min),
-      dayjs(activities[0].pubDate)
-    )
-  }, [activities])
+    if (!parsedActivities.length) return dayjs()
+    return parsedActivities.reduce((min, { date }) => (date.isBefore(min) ? date : min), parsedActivities[0].date)
+  }, [parsedActivities])
   const today = dayjs()
   const totalDaysActive = hasData ? today.diff(earliest, 'day') + 1 : 0
   const yearsActive = Math.floor(totalDaysActive / 365)
@@ -227,16 +239,16 @@ const FitnessPage = ({ activities, error }: Props) => {
 
   // Derived metrics
   const totalActivities = useMemo(
-    () => activities.filter((a) => !selectedTypes.length || selectedTypes.includes(a.type)).length,
-    [activities, selectedTypes]
+    () => parsedActivities.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type)).length,
+    [parsedActivities, selectedTypes]
   )
   const avgMilesPerActivity = totalActivities ? (stats.totalMiles / totalActivities).toFixed(1) : '0'
   const yearActivities = useMemo(
     () =>
-      activities.filter(
-        (a) => dayjs(a.pubDate).year() === year && (!selectedTypes.length || selectedTypes.includes(a.type))
+      parsedActivities.filter(
+        ({ activity, date }) => date.year() === year && (!selectedTypes.length || selectedTypes.includes(activity.type))
       ).length,
-    [activities, year, selectedTypes]
+    [parsedActivities, year, selectedTypes]
   )
   const daysElapsedThisYear =
     today.year() === year
