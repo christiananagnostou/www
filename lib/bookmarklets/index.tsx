@@ -21,6 +21,34 @@ export const bookmarkletsData = [
       2. Click the HotBids bookmarklet.
       3. Enjoy!`,
   },
+  {
+    title: 'TCDB Scout',
+    description: 'Scans TCDB collection pages and prepares quick eBay searches for each card.',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/tcdb-scout.js',
+    icon: MoneyMagnify,
+    code: /*js*/ `
+      javascript:(function(){
+        var s = document.getElementById('tcdb-scout-script');
+        if (!s) {
+          s = document.createElement('script');
+          s.id = 'tcdb-scout-script';
+          s.src = '${BASE_URL}/scripts/tcdb-scout.js';
+          s.onload = function(){
+            if (window.TCDBScout) window.TCDBScout();
+          };
+          document.body.appendChild(s);
+        } else if (window.TCDBScout) {
+          window.TCDBScout();
+        }
+      })();`,
+    instructions: `
+      TCDB Scout pulls card titles from your TCDB collection page and gives you one-click eBay searches for active and sold listings.
+      -
+      Instructions:
+      1. Open your TCDB collection page.
+      2. Click the TCDB Scout bookmarklet.
+      3. Use the Active or Sold buttons, or Open all with a limit.`,
+  },
   // {
   //   title: 'PokeBattle',
   //   description:
