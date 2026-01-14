@@ -1,4 +1,4 @@
-import { BrokenGlass, MoneyMagnify } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
@@ -25,7 +25,7 @@ export const bookmarkletsData = [
     title: 'TCDB Scout',
     description: 'Scans TCDB collection pages and prepares quick eBay searches for each card.',
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/tcdb-scout.js',
-    icon: MoneyMagnify,
+    icon: TCDBScout,
     code: /*js*/ `
       javascript:(function(){
         var s = document.getElementById('tcdb-scout-script');
