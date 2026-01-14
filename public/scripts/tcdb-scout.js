@@ -55,39 +55,70 @@ const STYLESHEET = /*css*/ `
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 1.25rem;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.6rem 1.25rem;
     border-bottom: 1px solid #222;
   }
 
-  .tcdb-scout-limit {
+  .tcdb-scout-meta-left,
+  .tcdb-scout-meta-right {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .tcdb-scout-limit,
+  .tcdb-scout-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
     color: #c7c7c7;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .tcdb-scout-label {
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
   }
 
   .tcdb-scout-limit input,
   .tcdb-scout-search input {
-    width: 72px;
-    background: #1c1c1c;
-    border: 1px solid #2d2d2d;
+    width: 60px;
+    background: transparent;
+    border: none;
     color: #f5f5f5;
-    border-radius: 6px;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .tcdb-scout-search {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: #c7c7c7;
+    padding: 0.1rem 0.25rem;
+    font-size: 0.8rem;
   }
 
   .tcdb-scout-search input {
-    width: 160px;
+    width: 150px;
+  }
+
+  .tcdb-scout-search input::placeholder {
+    color: #6f6f6f;
+  }
+
+  .tcdb-scout-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    color: #9fd0ff;
+  }
+
+  .tcdb-scout-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
   }
 
   .tcdb-scout-reset {
@@ -104,11 +135,18 @@ const STYLESHEET = /*css*/ `
     background: #232323;
     border: 1px solid #2f2f2f;
     color: #f5f5f5;
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .tcdb-scout-btn--compact {
+    padding: 0.3rem 0.65rem;
   }
 
   .tcdb-scout-btn:hover {
@@ -163,7 +201,7 @@ const STYLESHEET = /*css*/ `
     border-radius: 8px;
     padding: 0.75rem;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
   }
@@ -239,6 +277,10 @@ const STYLESHEET = /*css*/ `
   const EBAY_SEARCH_URL = 'https://www.ebay.com/sch/i.html?_nkw='
   const EBAY_SOLD_PARAMS = '&LH_Sold=1&LH_Complete=1'
   const TCDB_COLLECTION_URL = 'https://www.tcdb.com/ViewCollectionMode.cfm'
+  const ICON_SEARCH =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3a7 7 0 0 1 5.65 11.12l4.62 4.62-1.41 1.41-4.62-4.62A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>'
+  const ICON_RESET =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4H3l3.5-3.5L10 9H7.84A5 5 0 1 0 12 7z"/></svg>'
 
   const ensureStyles = () => {
     if (document.getElementById(ID_STYLESHEET)) return
@@ -259,10 +301,13 @@ const STYLESHEET = /*css*/ `
     if (!cell) return ''
     const caption = cell.querySelector('figcaption')
     if (caption) {
-      return normalizeText(caption.textContent || '')
+      const captionText = normalizeText(caption.textContent || '')
+      return captionText || ''
     }
-    if (/\bVAR\b/i.test(fallbackText)) {
-      return 'VAR'
+    const match = fallbackText.match(/\bVAR\b:?\s*([^\n\r]*)/i)
+    if (match) {
+      const detail = normalizeText(match[1] || '')
+      return detail ? `VAR: ${detail}` : 'VAR'
     }
     return ''
   }
@@ -415,18 +460,27 @@ const STYLESHEET = /*css*/ `
             <button class="tcdb-scout-close" id="${ID_CLOSE}" aria-label="Close">×</button>
           </div>
           <div class="tcdb-scout-meta">
-            <label class="tcdb-scout-limit">
-              Open all max
-              <input type="number" min="1" id="${ID_LIMIT}" value="${limit}" />
-            </label>
-            <label class="tcdb-scout-search">
-              Search
-              <input type="text" id="${ID_SEARCH}" placeholder="Filter cards" />
-            </label>
-            <button class="tcdb-scout-btn tcdb-scout-reset" id="${ID_RESET}" type="button">Clear opened</button>
-            <div class="tcdb-scout-open-all">
-              <button class="tcdb-scout-btn" id="${ID_OPEN_ALL_ACTIVE}">Open all active</button>
-              <button class="tcdb-scout-btn" id="${ID_OPEN_ALL_SOLD}">Open all sold</button>
+            <div class="tcdb-scout-meta-left">
+              <label class="tcdb-scout-search">
+                <span class="tcdb-scout-icon">${ICON_SEARCH}</span>
+                <input type="text" id="${ID_SEARCH}" placeholder="Search cards" />
+              </label>
+            </div>
+            <div class="tcdb-scout-meta-right">
+              <label class="tcdb-scout-limit">
+                <span class="tcdb-scout-label">Max</span>
+                <input type="number" min="1" id="${ID_LIMIT}" value="${limit}" />
+              </label>
+              <button class="tcdb-scout-btn tcdb-scout-reset" id="${ID_RESET}" type="button">
+                <span class="tcdb-scout-icon">${ICON_RESET}</span>
+                Clear opened
+              </button>
+              <button class="tcdb-scout-btn tcdb-scout-btn--compact" id="${ID_OPEN_ALL_ACTIVE}">
+                Open active
+              </button>
+              <button class="tcdb-scout-btn tcdb-scout-btn--compact" id="${ID_OPEN_ALL_SOLD}">
+                Open sold
+              </button>
             </div>
           </div>
           <div class="tcdb-scout-note" id="${ID_HOST_NOTE}" style="display: ${hostMatches ? 'none' : 'block'};">
@@ -517,7 +571,10 @@ const STYLESHEET = /*css*/ `
       updateCount(entries.length)
     }
 
-    const handleClose = () => removeOverlay()
+    const handleClose = () => {
+      removeOverlay()
+    }
+
     closeButton.addEventListener('click', handleClose)
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) handleClose()
