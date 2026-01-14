@@ -125,12 +125,6 @@ const STYLESHEET = /*css*/ `
     background: #1e1e1e;
   }
 
-  .tcdb-scout-open-all {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: auto;
-  }
-
   .tcdb-scout-btn {
     background: #232323;
     border: 1px solid #2f2f2f;
@@ -430,25 +424,6 @@ const STYLESHEET = /*css*/ `
     const itemIndexMap = new Map(items.map((item, index) => [item, index]))
     let currentEntries = items.map((item, index) => ({ item, index }))
 
-    const itemRows = items
-      .map(
-        (item, index) => /*html*/ `
-          <div class="tcdb-scout-item">
-            <div class="tcdb-scout-info">
-              <div class="tcdb-scout-title" title="${item.title}">
-                ${item.title}${item.serial ? `<span class=\"tcdb-scout-serial\">${item.serial}</span>` : ''}
-              </div>
-              ${item.variant ? `<div class=\"tcdb-scout-variant\">${item.variant}</div>` : ''}
-            </div>
-            <div class="tcdb-scout-actions">
-              <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
-              <button class="tcdb-scout-btn" data-action="open-sold" data-index="${index}">Sold</button>
-            </div>
-          </div>
-        `
-      )
-      .join('')
-
     const html = /*html*/ `
       <div id="${ID_OVERLAY}">
         <div id="${ID_PANEL}" role="dialog" aria-modal="true" aria-label="TCDB Scout">
@@ -490,9 +465,7 @@ const STYLESHEET = /*css*/ `
           <div class="tcdb-scout-note" id="${ID_EMPTY_NOTE}" style="display: ${items.length ? 'none' : 'block'};">
             No TCDB collection items were detected on this page.
           </div>
-          <div id="${ID_LIST}">
-            ${itemRows || ''}
-          </div>
+          <div id="${ID_LIST}"></div>
         </div>
       </div>
     `
@@ -517,8 +490,8 @@ const STYLESHEET = /*css*/ `
         openedState.opened[key] = true
         saveOpenedState(openedState)
       }
-      const index = items.indexOf(item)
-      if (index >= 0) {
+      const index = itemIndexMap.get(item)
+      if (typeof index === 'number') {
         const selector = `button[data-action="${action}"][data-index="${index}"]`
         setButtonOpened(panel.querySelector(selector), true)
       }
@@ -542,30 +515,33 @@ const STYLESHEET = /*css*/ `
       countLabel.textContent = `${visibleCount} item${suffix} found${extra}`
     }
 
+    const renderItems = (entries) =>
+      entries
+        .map(
+          ({ item, index }) => /*html*/ `
+            <div class="tcdb-scout-item">
+              <div class="tcdb-scout-info">
+                <div class="tcdb-scout-title" title="${item.title}">
+                  ${item.title}${item.serial ? `<span class=\"tcdb-scout-serial\">${item.serial}</span>` : ''}
+                </div>
+                ${item.variant ? `<div class=\"tcdb-scout-variant\">${item.variant}</div>` : ''}
+              </div>
+              <div class="tcdb-scout-actions">
+                <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
+                <button class="tcdb-scout-btn" data-action="open-sold" data-index="${index}">Sold</button>
+              </div>
+            </div>
+          `
+        )
+        .join('')
+
     const updateList = (entries, query) => {
       currentEntries = entries
       if (!list) return
       if (!entries.length && query) {
         list.innerHTML = `<div class="tcdb-scout-empty">No matches for "${query}".</div>`
       } else {
-        list.innerHTML = entries
-          .map(
-            ({ item, index }) => /*html*/ `
-              <div class="tcdb-scout-item">
-                <div class="tcdb-scout-info">
-                  <div class="tcdb-scout-title" title="${item.title}">
-                    ${item.title}${item.serial ? `<span class=\"tcdb-scout-serial\">${item.serial}</span>` : ''}
-                  </div>
-                  ${item.variant ? `<div class=\"tcdb-scout-variant\">${item.variant}</div>` : ''}
-                </div>
-                <div class="tcdb-scout-actions">
-                  <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
-                  <button class="tcdb-scout-btn" data-action="open-sold" data-index="${index}">Sold</button>
-                </div>
-              </div>
-            `
-          )
-          .join('')
+        list.innerHTML = renderItems(entries)
       }
       applyOpenedStates()
       updateCount(entries.length)
@@ -597,7 +573,7 @@ const STYLESHEET = /*css*/ `
           threshold: matchSorter.rankings ? matchSorter.rankings.CONTAINS : undefined,
         })
         updateList(
-          ranked.map((item) => ({ item, index: itemIndexMap.get(item) ?? items.indexOf(item) })),
+          ranked.map((item) => ({ item, index: itemIndexMap.get(item) })),
           trimmed
         )
         return
