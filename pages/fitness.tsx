@@ -114,7 +114,7 @@ const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: stri
     }
   })
   // streaks
-  const daysSorted = Array.from(uniqueDays).sort()
+  const daysSorted = Array.from(uniqueDays).toSorted()
   let current = 0,
     longest = 0,
     prev: dayjs.Dayjs | null = null
@@ -163,7 +163,7 @@ const FitnessPage = ({ activities, error }: Props) => {
   const years = useMemo(() => {
     const s = new Set<number>()
     parsedActivities.forEach(({ date }) => s.add(date.year()))
-    const arr = Array.from(s).sort((a, b) => a - b)
+    const arr = Array.from(s).toSorted((a, b) => a - b)
     return arr.length ? arr : [dayjs().year()]
   }, [parsedActivities])
 
@@ -197,7 +197,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       e.seconds += seconds
     })
     return Array.from(map.entries())
-      .sort((a, b) => a[0] - b[0])
+      .toSorted((a, b) => a[0] - b[0])
       .map(([week, v]) => ({ week, miles: v.miles, hours: v.seconds / 3600 }))
   }, [parsedActivities, year, selectedTypes])
 
@@ -209,7 +209,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       if (selectedTypes.length && !selectedTypes.includes(activity.type)) return
       m.set(activity.type, (m.get(activity.type) ?? 0) + 1)
     })
-    return Array.from(m.entries()).sort((a, b) => b[1] - a[1])
+    return Array.from(m.entries()).toSorted((a, b) => b[1] - a[1])
   }, [parsedActivities, year, selectedTypes])
 
   const activityCounts = useMemo(
@@ -222,7 +222,7 @@ const FitnessPage = ({ activities, error }: Props) => {
   )
   const uniqueActivityTypes = useMemo(() => {
     const priorityTypes = ['Ride', 'Run', 'Swim', 'Zwift']
-    const allTypes = Object.keys(activityCounts).sort()
+    const allTypes = Object.keys(activityCounts).toSorted()
     const otherTypes = allTypes.filter((type) => !priorityTypes.includes(type))
     return [...priorityTypes.filter((type) => allTypes.includes(type)), ...otherTypes]
   }, [activityCounts])

@@ -48,8 +48,9 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
   const yearsFromActivities = useMemo(() => {
     const set = new Set<number>()
     activities.forEach((a) => set.add(dayjs(a.pubDate).year()))
-    return Array.from(set).sort((a, b) => a - b)
+    return Array.from(set).toSorted((a, b) => a - b)
   }, [activities])
+
   const years = availableYears ?? yearsFromActivities
   const currentYear = year
 
