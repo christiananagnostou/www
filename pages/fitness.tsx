@@ -279,8 +279,8 @@ const FitnessPage = ({ activities, error }: Props) => {
           <Section $variant="elevated" variants={fade}>
             <SectionHeader>
               <h2>Fitness</h2>
-              <div className="section-meta">Data offline</div>
             </SectionHeader>
+
             <p>{error ?? 'Fitness data is not available right now. Please try again later.'}</p>
           </Section>
         </Container>
@@ -374,8 +374,7 @@ const FitnessPage = ({ activities, error }: Props) => {
 
         <Section $variant="transparent" variants={staggerFade}>
           <SectionHeader>
-            <h2>Year Statistics</h2>
-            <div className="section-meta">{year}</div>
+            <h2>Overview</h2>
           </SectionHeader>
 
           <YearStatsContainer>
@@ -449,7 +448,6 @@ const FitnessPage = ({ activities, error }: Props) => {
         <Section variants={fade}>
           <SectionHeader>
             <h2>Analytics</h2>
-            <div className="section-meta">Performance Insights</div>
           </SectionHeader>
           <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
@@ -461,9 +459,9 @@ const FitnessPage = ({ activities, error }: Props) => {
 
         <Section variants={fade}>
           <SectionHeader>
-            <h2>Training Calendar</h2>
-            <div className="section-meta">{year}</div>
+            <h2>Activity Heatmap</h2>
           </SectionHeader>
+
           <ActivityHeatmap
             activities={activities.filter((a) => dayjs(a.pubDate).year() === year)}
             availableYears={years}

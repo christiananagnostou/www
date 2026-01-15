@@ -86,16 +86,6 @@ export const SectionHeader = styled.div<{ $align?: 'left' | 'center' | 'between'
     letter-spacing: 0.5px;
   }
 
-  .section-meta {
-    padding: 0.4rem 0.8rem;
-    border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: var(--border-radius-md);
-    background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
-    font-weight: 500;
-    font-size: 0.75rem;
-    color: var(--text-dark);
-    letter-spacing: 0.5px;
-  }
 `
 
 // Grid layouts for responsive content
