@@ -9,6 +9,7 @@
     "lint": "oxlint .",
     "lint:css": "stylelint './**/*.{tsx,js,ts}'",
     "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "test": "vitest"
   },
   "dependencies": {
