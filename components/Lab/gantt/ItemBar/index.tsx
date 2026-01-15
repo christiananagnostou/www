@@ -14,7 +14,7 @@ interface RenderItemBarProps {
 }
 
 const ItemBar = (props: RenderItemBarProps) => {
-  const { item, dateWidth, numDaysShown, itemsDateRange, itemsChildrenMap, handleRowMouseOver } = props
+  const { item, dateWidth, itemsDateRange, itemsChildrenMap, handleRowMouseOver } = props
   const { startDate, endDate } = item
   const daysBetween = getDayDiff(startDate, endDate)
 

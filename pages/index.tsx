@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import { useState } from 'react'
 import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
@@ -33,12 +32,6 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Home = ({ posts, stravaActivities }: Props) => {
-  const [showRevealBar, setShowRevealBar] = useState(false)
-
-  const revealBarStyle = showRevealBar
-    ? { marginTop: '-1rem', opacity: 0.7, height: 50, transition: 'opacity .75s .15s ease, height .3s ease' }
-    : { marginTop: '-1rem', opacity: 0, height: 0, transition: 'opacity .3s ease, height .3s .1s ease' }
-
   return (
     <>
       <Head>

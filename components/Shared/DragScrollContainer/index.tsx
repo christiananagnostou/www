@@ -80,7 +80,11 @@ const DragScrollContainer = ({
     if (!container || (container.scrollLeft === scrollLeft && container.scrollTop === scrollTop)) return
 
     setScrolling(true)
-    started ? onScroll?.({ external: !internal }) : processStart(false)
+    if (started) {
+      onScroll?.({ external: !internal })
+    } else {
+      processStart(false)
+    }
     realScroll()
   }
 
@@ -187,7 +191,7 @@ const DragScrollContainer = ({
       }
     }
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       if (pressed) {
         if (started && (!scrolling || !nativeMobileScroll)) {
           processEnd()
