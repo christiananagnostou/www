@@ -33,6 +33,7 @@ interface FitnessStats {
   totalElevation: number
   yearMiles: number
   yearHours: number
+  yearElevation: number
   avgWeeklyMiles: number
   avgWeeklyHours: number
   currentStreak: number
@@ -100,7 +101,8 @@ const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: stri
     totalSeconds = 0,
     totalElevation = 0,
     yearMiles = 0,
-    yearSeconds = 0
+    yearSeconds = 0,
+    yearElevation = 0
   const yStart = dayjs().year(year).startOf('year')
   const yEnd = dayjs().year(year).endOf('year')
   filtered.forEach(({ miles, seconds, elevation, date }) => {
@@ -111,6 +113,7 @@ const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: stri
     if (date.isAfter(yStart.subtract(1, 'day')) && date.isBefore(yEnd.add(1, 'day'))) {
       yearMiles += miles
       yearSeconds += seconds
+      yearElevation += elevation
     }
   })
   // streaks
@@ -138,6 +141,7 @@ const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: stri
     totalElevation: Math.round(totalElevation / 1000),
     yearMiles: Math.round(yearMiles),
     yearHours: Math.round(yearSeconds / 3600),
+    yearElevation: Math.round(yearElevation / 1000),
     avgWeeklyMiles: Math.round(avgWeeklyMiles * 10) / 10,
     avgWeeklyHours: Math.round(avgWeeklyHours * 10) / 10,
     currentStreak: current,
@@ -254,6 +258,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       ).length,
     [parsedActivities, year, selectedTypes]
   )
+  const avgHoursPerActivity = yearActivities ? (stats.yearHours / yearActivities).toFixed(1) : '0'
   const daysElapsedThisYear =
     today.year() === year
       ? today.diff(dayjs().startOf('year'), 'day') + 1
@@ -439,6 +444,20 @@ const FitnessPage = ({ activities, error }: Props) => {
                 <div>
                   <SecondaryStatNumber>{avgMilesPerDayYear}</SecondaryStatNumber>
                   <SecondaryStatLabel>Avg Miles / Day</SecondaryStatLabel>
+                </div>
+              </SecondaryStatTile>
+
+              <SecondaryStatTile variants={fade}>
+                <div>
+                  <SecondaryStatNumber>{stats.yearElevation}</SecondaryStatNumber>
+                  <SecondaryStatLabel>Elevation in {year} (k ft)</SecondaryStatLabel>
+                </div>
+              </SecondaryStatTile>
+
+              <SecondaryStatTile variants={fade}>
+                <div>
+                  <SecondaryStatNumber>{avgHoursPerActivity}</SecondaryStatNumber>
+                  <SecondaryStatLabel>Avg Hours / Activity</SecondaryStatLabel>
                 </div>
               </SecondaryStatTile>
             </SecondaryStatsGrid>
