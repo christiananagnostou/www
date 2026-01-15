@@ -69,8 +69,16 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
     const titles = leftSide.current.querySelectorAll('.gantt-title') as NodeListOf<HTMLButtonElement>
 
     bars.forEach((bar, i) => {
-      bar.dataset.itemId == id ? bar.classList.add('hovered') : bar.classList.remove('hovered')
-      titles[i].dataset.itemId == id ? titles[i].classList.add('hovered') : titles[i].classList.remove('hovered')
+      if (bar.dataset.itemId == id) {
+        bar.classList.add('hovered')
+      } else {
+        bar.classList.remove('hovered')
+      }
+      if (titles[i].dataset.itemId == id) {
+        titles[i].classList.add('hovered')
+      } else {
+        titles[i].classList.remove('hovered')
+      }
     })
   }
 

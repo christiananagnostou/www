@@ -275,6 +275,11 @@ const STYLESHEET = /*css*/ `
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3a7 7 0 0 1 5.65 11.12l4.62 4.62-1.41 1.41-4.62-4.62A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>'
   const ICON_RESET =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4H3l3.5-3.5L10 9H7.84A5 5 0 1 0 12 7z"/></svg>'
+  const EMPTY_STRING = ''
+  const OPENED_KEY_SEPARATOR = ':'
+  const DATE_KEY_LENGTH = 10
+  const ARIA_PRESSED = 'aria-pressed'
+  const MATCH_SORTER_KEY = 'matchSorter'
 
   const ensureStyles = () => {
     if (document.getElementById(ID_STYLESHEET)) return
@@ -284,11 +289,14 @@ const STYLESHEET = /*css*/ `
     document.head.appendChild(style)
   }
 
-  const normalizeText = (value) => value.replace(/\s+/g, ' ').trim()
+  const normalizeText = (value) => {
+    const trimmed = value.replace(/\s+/g, ' ').trim()
+    return trimmed || EMPTY_STRING
+  }
 
   const getSerial = (text) => {
     const match = text.match(/SN\s*(\d+)/i)
-    return match ? `/${match[1]}` : ''
+    return match ? `/${match[1]}` : EMPTY_STRING
   }
 
   const getVariant = (cell, fallbackText) => {
@@ -334,7 +342,7 @@ const STYLESHEET = /*css*/ `
     localStorage.setItem(LS_OPEN_LIMIT, `${parsed}`)
   }
 
-  const getTodayKey = () => new Date().toISOString().slice(0, 10)
+  const getTodayKey = () => new Date().toISOString().slice(0, DATE_KEY_LENGTH)
 
   const loadOpenedState = () => {
     const fallback = { date: getTodayKey(), opened: {} }
@@ -346,7 +354,8 @@ const STYLESHEET = /*css*/ `
         return fallback
       }
       return parsed
-    } catch (error) {
+    } catch (_error) {
+      console.error(_error)
       return fallback
     }
   }
@@ -355,11 +364,12 @@ const STYLESHEET = /*css*/ `
     localStorage.setItem(LS_OPENED, JSON.stringify(state))
   }
 
-  const buildOpenedKey = (action, item) => `${action}:${item.query}`
+  const buildOpenedKey = (action, item) => `${action}${OPENED_KEY_SEPARATOR}${item.query}`
 
   const getMatchSorter = () => {
-    if (!window.matchSorter) return null
-    return window.matchSorter.matchSorter || window.matchSorter.default || window.matchSorter
+    const matchSorter = window[MATCH_SORTER_KEY]
+    if (!matchSorter) return null
+    return matchSorter.matchSorter || matchSorter.default || matchSorter
   }
 
   const ensureMatchSorter = (() => {
@@ -375,8 +385,8 @@ const STYLESHEET = /*css*/ `
         const script = document.createElement('script')
         script.id = ID_MATCH_SORTER_SCRIPT
         script.src = 'https://unpkg.com/match-sorter@6.3.1/dist/match-sorter.umd.js'
-        script.onload = () => resolve(getMatchSorter())
-        script.onerror = () => resolve(null)
+        script.addEventListener('load', () => resolve(getMatchSorter()))
+        script.addEventListener('error', () => resolve(null))
         document.head.appendChild(script)
       })
       return loader
@@ -391,7 +401,7 @@ const STYLESHEET = /*css*/ `
   const setButtonOpened = (button, opened) => {
     if (!button) return
     button.classList.toggle('tcdb-scout-btn--opened', opened)
-    button.setAttribute('aria-pressed', opened ? 'true' : 'false')
+    button.setAttribute(ARIA_PRESSED, opened ? 'true' : 'false')
   }
 
   const openSearch = (item, sold) => {
@@ -522,9 +532,9 @@ const STYLESHEET = /*css*/ `
             <div class="tcdb-scout-item">
               <div class="tcdb-scout-info">
                 <div class="tcdb-scout-title" title="${item.title}">
-                  ${item.title}${item.serial ? `<span class=\"tcdb-scout-serial\">${item.serial}</span>` : ''}
+                  ${item.title}${item.serial ? `<span class="tcdb-scout-serial">${item.serial}</span>` : EMPTY_STRING}
                 </div>
-                ${item.variant ? `<div class=\"tcdb-scout-variant\">${item.variant}</div>` : ''}
+                ${item.variant ? `<div class="tcdb-scout-variant">${item.variant}</div>` : EMPTY_STRING}
               </div>
               <div class="tcdb-scout-actions">
                 <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
