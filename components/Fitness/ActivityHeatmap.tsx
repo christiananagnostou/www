@@ -17,6 +17,14 @@ interface DayData {
   activities: StravaActivity[]
 }
 
+const getIntensity = (count: number): number => {
+  if (count === 0) return 0
+  if (count === 1) return 1
+  if (count === 2) return 2
+  if (count >= 3) return 3
+  return 0
+}
+
 const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYearChange }: ActivityHeatmapProps) => {
   const [hoveredDay, setHoveredDay] = useState<DayData | null>(null)
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null)
@@ -84,14 +92,6 @@ const ActivityHeatmap = ({ activities, onDateClick, year, availableYears, onYear
     }
     return { weeks }
   }, [activityMap, currentYear])
-
-  const getIntensity = (count: number): number => {
-    if (count === 0) return 0
-    if (count === 1) return 1
-    if (count === 2) return 2
-    if (count >= 3) return 3
-    return 0
-  }
 
   const isDateInFuture = (dateStr: string): boolean => {
     const today = dayjs()

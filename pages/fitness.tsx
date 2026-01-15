@@ -84,6 +84,15 @@ const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, ''
 // Helper: compute week number (1-based) without dayjs plugins
 const getWeekNumber = (d: dayjs.Dayjs) => Math.floor(d.diff(d.startOf('year'), 'day') / 7) + 1
 
+const handleDateClick = (date: string) => {
+  const el = document.getElementById(`activity-${date}`)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.classList.add('pulse')
+    setTimeout(() => el.classList.remove('pulse'), 1600)
+  }
+}
+
 const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: string[]): FitnessStats => {
   const filtered = all.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type))
   const uniqueDays = new Set<string>()
@@ -199,15 +208,6 @@ const FitnessPage = ({ activities, error }: Props) => {
     })
     return Array.from(m.entries()).sort((a, b) => b[1] - a[1])
   }, [parsedActivities, year, selectedTypes])
-
-  const handleDateClick = (date: string) => {
-    const el = document.getElementById(`activity-${date}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      el.classList.add('pulse')
-      setTimeout(() => el.classList.remove('pulse'), 1600)
-    }
-  }
 
   const activityCounts = useMemo(
     () =>
