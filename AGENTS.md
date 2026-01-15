@@ -38,8 +38,8 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 - JS/TS lint: `npm run lint`
 - CSS/styled-components lint: `npm run lint:css`
-- Format with Prettier if needed: `npx prettier --write .`
-- Prettier runs with `prettier-plugin-organize-imports` enabled.
+- Format with Oxfmt: `npm run format`
+- Format check: `npm run format:check`
 
 ## Tests
 
@@ -62,7 +62,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 - Use `import type` for type-only imports.
 - Keep paths short; prefer local barrel files when present.
 
-## Formatting (Prettier)
+## Formatting (Oxfmt)
 
 - No semicolons.
 - Single quotes.
