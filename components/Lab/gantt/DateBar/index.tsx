@@ -13,8 +13,12 @@ const Today = dayjs().format('YYYY-MMM-D')
 const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: DatesProps) => {
   const getOpacity = (day: string) => {
     let interval = 2 // Number of days until another date is shown on low zoom
-    dateWidth > 24 && (interval = 1)
-    dateWidth < 14 && (interval = 4)
+    if (dateWidth > 24) {
+      interval = 1
+    }
+    if (dateWidth < 14) {
+      interval = 4
+    }
 
     const currentDate = dayjs().date()
 
@@ -23,10 +27,9 @@ const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: Date
   }
 
   const { lastDate } = itemsDateRange
-  const dates = Array(numDaysShown)
-    .fill(null)
-    .map((_, i) => dayjs(lastDate).subtract(i, 'day').format('YYYY-MMM-D'))
-    .reverse()
+  const dates = Array.from({ length: numDaysShown }, (_, i) =>
+    dayjs(lastDate).subtract(i, 'day').format('YYYY-MMM-D')
+  ).toReversed()
 
   return (
     <DateBarContainer>

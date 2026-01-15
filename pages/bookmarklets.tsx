@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'

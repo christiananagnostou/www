@@ -932,4 +932,4 @@ export const ArtImages: ArtImage[] = [
   },
 ]
 
-export const SortedArtImages = ArtImages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+export const SortedArtImages = ArtImages.toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

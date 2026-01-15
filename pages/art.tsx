@@ -23,7 +23,9 @@ const PageUrl = `${BASE_URL}/art`
 const ogImage =
   SortedArtImages[0] && SortedArtImages[0].image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
 
-const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).sort((a, b) => a.localeCompare(b))
+const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).toSorted((a, b) =>
+  a.localeCompare(b)
+)
 
 const Art = () => {
   const router = useRouter()
@@ -124,7 +126,7 @@ const Art = () => {
                         <button
                           key={tag}
                           className={queriedTag === tag ? 'selected' : ''}
-                          onClick={(e) => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
+                          onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
                         >
                           {tag}
                         </button>

@@ -64,7 +64,7 @@ const SingleProject = ({ project }: Props) => {
         <MobileAndText>
           <Details>
             {project.details.map(({ title, description }, i) => (
-              <Detail key={i} description={description} index={i} title={title} />
+              <Detail key={i} description={description} title={title} />
             ))}
           </Details>
 
@@ -89,7 +89,7 @@ const SingleProject = ({ project }: Props) => {
 
 export default SingleProject
 
-const Detail = ({ title, description, index }: { title: string; description: string; index: number }) => {
+const Detail = ({ title, description }: { title: string; description: string }) => {
   return (
     <DetailStyle>
       <h3>{title}</h3>
