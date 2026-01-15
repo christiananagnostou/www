@@ -3,19 +3,22 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import ActivityHeatmap from '../components/Fitness/ActivityHeatmap'
-import { Button, Grid, Section, SectionHeader } from '../components/Shared/Section'
+import { Grid } from '../components/Shared/Section'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 
 const PageTitle = 'Fitness | Christian Anagnostou'
-const PageDescription = "Christian Anagnostou's fitness activities and workout history"
+const PageDescription = "Christian Anagnostou's triathlon training dashboard"
 const PageUrl = `${BASE_URL}/fitness`
 
-// Lazy load charts component (uPlot-based, very small once gzip)
+const WINDOW_OPTIONS = [6, 12, 24]
+const EVEREST_HEIGHT_FT = 29029
+const OLYMPIC_POOL_MILES = 0.0311
+
 const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
   loading: () => <div>Loading charts…</div>,
@@ -26,19 +29,9 @@ interface Props {
   error?: string
 }
 
-interface FitnessStats {
-  totalDays: number
-  totalMiles: number
-  totalHours: number
-  totalElevation: number
-  yearMiles: number
-  yearHours: number
-  yearElevation: number
-  avgWeeklyMiles: number
-  avgWeeklyHours: number
-  currentStreak: number
-  longestStreak: number
-}
+type Discipline = 'swim' | 'bike' | 'run' | 'other'
+
+type BikeKind = 'road' | 'zwift'
 
 interface ParsedActivity {
   activity: StravaActivity
@@ -46,6 +39,36 @@ interface ParsedActivity {
   miles: number
   seconds: number
   elevation: number
+  discipline: Discipline
+  bikeKind?: BikeKind
+}
+
+interface ZoneStat {
+  label: string
+  seconds: number
+}
+
+interface LaneStats {
+  discipline: Discipline
+  label: string
+  color: string
+  miles: number
+  hours: number
+  elevation: number
+  avgPace: number | null
+  avgSpeed: number | null
+  zones: ZoneStat[]
+  weeklyMiles: number[]
+  weeklyHours: number[]
+  weeklyLabels: number[]
+  bikeMix?: { roadHours: number; zwiftHours: number }
+}
+
+const DISCIPLINE_CONFIG: Record<Discipline, { label: string; color: string; accent: string }> = {
+  swim: { label: 'Swim', color: '#47a8ff', accent: '#5fd3ff' },
+  bike: { label: 'Bike', color: '#b5ff63', accent: '#f4ff7a' },
+  run: { label: 'Run', color: '#ff7b5f', accent: '#ffb36a' },
+  other: { label: 'Other', color: '#9f9f9f', accent: '#d4d4d4' },
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
@@ -72,205 +95,217 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   }
 }
 
-// Parsing helpers (activities already store pre-formatted values like "12.34 mi")
 const parseMiles = (distance?: string) => (distance ? Number(distance.replace(/ mi$/, '')) || 0 : 0)
+
 const parseSeconds = (moving?: string) => {
   if (!moving) return 0
   const parts = moving.split(':').map(Number)
   if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
   return 0
 }
+
 const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, '')) || 0 : 0)
 
-// Helper: compute week number (1-based) without dayjs plugins
-const getWeekNumber = (d: dayjs.Dayjs) => Math.floor(d.diff(d.startOf('year'), 'day') / 7) + 1
-
-const handleDateClick = (date: string) => {
-  const el = document.getElementById(`activity-${date}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    el.classList.add('pulse')
-    setTimeout(() => el.classList.remove('pulse'), 1600)
+const classifyActivity = (activity: StravaActivity): { discipline: Discipline; bikeKind?: BikeKind } => {
+  if (activity.type === 'Swim') return { discipline: 'swim' }
+  if (activity.type === 'Run') return { discipline: 'run' }
+  if (activity.type === 'Zwift' || activity.type === 'VirtualRide') {
+    return { discipline: 'bike', bikeKind: 'zwift' }
   }
+  if (activity.type === 'Ride') return { discipline: 'bike', bikeKind: 'road' }
+  return { discipline: 'other' }
 }
 
-const calculateStats = (all: ParsedActivity[], year: number, selectedTypes: string[]): FitnessStats => {
-  const filtered = all.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type))
-  const uniqueDays = new Set<string>()
-  let totalMiles = 0,
-    totalSeconds = 0,
-    totalElevation = 0,
-    yearMiles = 0,
-    yearSeconds = 0,
-    yearElevation = 0
-  const yStart = dayjs().year(year).startOf('year')
-  const yEnd = dayjs().year(year).endOf('year')
-  filtered.forEach(({ miles, seconds, elevation, date }) => {
-    totalMiles += miles
-    totalSeconds += seconds
-    totalElevation += elevation
-    uniqueDays.add(date.format('YYYY-MM-DD'))
-    if (date.isAfter(yStart.subtract(1, 'day')) && date.isBefore(yEnd.add(1, 'day'))) {
-      yearMiles += miles
-      yearSeconds += seconds
-      yearElevation += elevation
+const getWeekIndex = (date: dayjs.Dayjs, start: dayjs.Dayjs) => date.diff(start, 'week')
+
+const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: number) => {
+  const miles = Array.from({ length: weeks }, () => 0)
+  const hours = Array.from({ length: weeks }, () => 0)
+  const labels = Array.from({ length: weeks }, (_, i) => i + 1)
+
+  items.forEach((item) => {
+    const idx = getWeekIndex(item.date, start)
+    if (idx < 0 || idx >= weeks) return
+    miles[idx] += item.miles
+    hours[idx] += item.seconds / 3600
+  })
+
+  return { miles, hours, labels }
+}
+
+const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
+  const zones: ZoneStat[] =
+    discipline === 'run'
+      ? [
+          { label: 'Easy 10+', seconds: 0 },
+          { label: 'Steady 8-10', seconds: 0 },
+          { label: 'Tempo 7-8', seconds: 0 },
+          { label: 'Fast <7', seconds: 0 },
+        ]
+      : discipline === 'swim'
+        ? [
+            { label: 'Easy <1.5', seconds: 0 },
+            { label: 'Steady 1.5-2', seconds: 0 },
+            { label: 'Strong 2-2.5', seconds: 0 },
+            { label: 'Sprint 2.5+', seconds: 0 },
+          ]
+        : [
+            { label: 'Cruise <15', seconds: 0 },
+            { label: 'Endurance 15-20', seconds: 0 },
+            { label: 'Tempo 20-25', seconds: 0 },
+            { label: 'Fast 25+', seconds: 0 },
+          ]
+
+  items.forEach((item) => {
+    if (!item.miles || !item.seconds) return
+    const hours = item.seconds / 3600
+    const speed = item.miles / hours
+    const pace = item.seconds / 60 / item.miles
+
+    if (discipline === 'run') {
+      if (pace >= 10) zones[0].seconds += item.seconds
+      else if (pace >= 8) zones[1].seconds += item.seconds
+      else if (pace >= 7) zones[2].seconds += item.seconds
+      else zones[3].seconds += item.seconds
+      return
     }
+
+    if (discipline === 'swim') {
+      if (speed < 1.5) zones[0].seconds += item.seconds
+      else if (speed < 2) zones[1].seconds += item.seconds
+      else if (speed < 2.5) zones[2].seconds += item.seconds
+      else zones[3].seconds += item.seconds
+      return
+    }
+
+    if (speed < 15) zones[0].seconds += item.seconds
+    else if (speed < 20) zones[1].seconds += item.seconds
+    else if (speed < 25) zones[2].seconds += item.seconds
+    else zones[3].seconds += item.seconds
   })
-  // streaks
-  const daysSorted = Array.from(uniqueDays).toSorted()
-  let current = 0,
-    longest = 0,
-    prev: dayjs.Dayjs | null = null
-  daysSorted.forEach((ds) => {
-    const d = dayjs(ds)
-    if (prev && d.diff(prev, 'day') === 1) current += 1
-    else current = 1
-    if (current > longest) longest = current
-    prev = d
-  })
-  // weekly averages (week numbers inside year using helper)
-  const weeksSet = new Set<number>()
-  filtered.filter(({ date }) => date.year() === year).forEach(({ date }) => weeksSet.add(getWeekNumber(date)))
-  const weekCount = weeksSet.size || 1
-  const avgWeeklyMiles = yearMiles / weekCount
-  const avgWeeklyHours = yearSeconds / 3600 / weekCount
-  return {
-    totalDays: uniqueDays.size,
-    totalMiles: Math.round(totalMiles),
-    totalHours: Math.round(totalSeconds / 3600),
-    totalElevation: Math.round(totalElevation / 1000),
-    yearMiles: Math.round(yearMiles),
-    yearHours: Math.round(yearSeconds / 3600),
-    yearElevation: Math.round(yearElevation / 1000),
-    avgWeeklyMiles: Math.round(avgWeeklyMiles * 10) / 10,
-    avgWeeklyHours: Math.round(avgWeeklyHours * 10) / 10,
-    currentStreak: current,
-    longestStreak: longest,
-  }
+
+  return zones
 }
+
+const formatHours = (hours: number) => hours.toFixed(0)
 
 const FitnessPage = ({ activities, error }: Props) => {
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+  const [windowMonths, setWindowMonths] = useState(12)
 
   const parsedActivities = useMemo<ParsedActivity[]>(
     () =>
-      activities.map((activity) => ({
-        activity,
-        date: dayjs(activity.pubDate),
-        miles: parseMiles(activity.Distance),
-        seconds: parseSeconds(activity.MovingTime),
-        elevation: parseElevation(activity.ElevationGain),
-      })),
+      activities.map((activity) => {
+        const { discipline, bikeKind } = classifyActivity(activity)
+        return {
+          activity,
+          date: dayjs(activity.pubDate),
+          miles: parseMiles(activity.Distance),
+          seconds: parseSeconds(activity.MovingTime),
+          elevation: parseElevation(activity.ElevationGain),
+          discipline,
+          bikeKind,
+        }
+      }),
     [activities]
   )
 
-  const years = useMemo(() => {
-    const s = new Set<number>()
-    parsedActivities.forEach(({ date }) => s.add(date.year()))
-    const arr = Array.from(s).toSorted((a, b) => a - b)
-    return arr.length ? arr : [dayjs().year()]
-  }, [parsedActivities])
+  const windowEnd = dayjs().endOf('day')
+  const windowStart = useMemo(() => windowEnd.subtract(windowMonths, 'month').startOf('day'), [windowEnd, windowMonths])
 
-  const [year, setYear] = useState(() => years[years.length - 1])
-  useEffect(() => {
-    setYear(years[years.length - 1])
-  }, [years])
-
-  const stats = useMemo(
-    () => calculateStats(parsedActivities, year, selectedTypes),
-    [parsedActivities, year, selectedTypes]
+  const windowedActivities = useMemo(
+    () => parsedActivities.filter((item) => item.date.isAfter(windowStart) && item.date.isBefore(windowEnd)),
+    [parsedActivities, windowEnd, windowStart]
   )
 
-  const hasData = activities.length > 0
+  const weeksInWindow = Math.max(windowEnd.diff(windowStart, 'week') + 1, 1)
 
-  // Weekly trend data
-  interface WeeklyPoint {
-    week: number
-    miles: number
-    hours: number
-  }
-  const weeklyTrend: WeeklyPoint[] = useMemo(() => {
-    const map = new Map<number, { miles: number; seconds: number }>()
-    parsedActivities.forEach(({ activity, date, miles, seconds }) => {
-      if (date.year() !== year) return
-      if (selectedTypes.length && !selectedTypes.includes(activity.type)) return
-      const wk = getWeekNumber(date)
-      if (!map.has(wk)) map.set(wk, { miles: 0, seconds: 0 })
-      const e = map.get(wk) as { miles: number; seconds: number }
-      e.miles += miles
-      e.seconds += seconds
+  const laneStats = useMemo(() => {
+    const result: LaneStats[] = []
+
+    ;(['swim', 'bike', 'run'] as Discipline[]).forEach((discipline) => {
+      const laneItems = windowedActivities.filter((item) => item.discipline === discipline)
+      const miles = laneItems.reduce((acc, item) => acc + item.miles, 0)
+      const hours = laneItems.reduce((acc, item) => acc + item.seconds / 3600, 0)
+      const elevation = laneItems.reduce((acc, item) => acc + item.elevation, 0)
+      const weekly = buildWeeklySeries(laneItems, windowStart, weeksInWindow)
+      const zones = buildZones(laneItems, discipline)
+      const avgSpeed = hours ? miles / hours : null
+      const avgPace = miles ? (hours * 60) / miles : null
+
+      const bikeMix =
+        discipline === 'bike'
+          ? {
+              roadHours: laneItems
+                .filter((item) => item.bikeKind === 'road')
+                .reduce((acc, item) => acc + item.seconds / 3600, 0),
+              zwiftHours: laneItems
+                .filter((item) => item.bikeKind === 'zwift')
+                .reduce((acc, item) => acc + item.seconds / 3600, 0),
+            }
+          : undefined
+
+      result.push({
+        discipline,
+        label: DISCIPLINE_CONFIG[discipline].label,
+        color: DISCIPLINE_CONFIG[discipline].color,
+        miles,
+        hours,
+        elevation,
+        avgPace,
+        avgSpeed,
+        zones,
+        weeklyMiles: weekly.miles,
+        weeklyHours: weekly.hours,
+        weeklyLabels: weekly.labels,
+        bikeMix,
+      })
     })
-    return Array.from(map.entries())
-      .toSorted((a, b) => a[0] - b[0])
-      .map(([week, v]) => ({ week, miles: v.miles, hours: v.seconds / 3600 }))
-  }, [parsedActivities, year, selectedTypes])
 
-  // Type distribution
-  const typeDistribution = useMemo(() => {
-    const m = new Map<string, number>()
-    parsedActivities.forEach(({ activity, date }) => {
-      if (date.year() !== year) return
-      if (selectedTypes.length && !selectedTypes.includes(activity.type)) return
-      m.set(activity.type, (m.get(activity.type) ?? 0) + 1)
+    return result
+  }, [weeksInWindow, windowStart, windowedActivities])
+
+  const otherActivities = useMemo(
+    () => windowedActivities.filter((item) => item.discipline === 'other'),
+    [windowedActivities]
+  )
+
+  const totalHours = useMemo(
+    () => windowedActivities.reduce((acc, item) => acc + item.seconds / 3600, 0),
+    [windowedActivities]
+  )
+
+  const totalMiles = useMemo(() => windowedActivities.reduce((acc, item) => acc + item.miles, 0), [windowedActivities])
+
+  const totalSessions = windowedActivities.length
+
+  const totalElevation = useMemo(
+    () => windowedActivities.reduce((acc, item) => acc + item.elevation, 0),
+    [windowedActivities]
+  )
+
+  const everestCount = totalElevation / EVEREST_HEIGHT_FT
+
+  const totalWeeklySeries = useMemo(
+    () => buildWeeklySeries(windowedActivities, windowStart, weeksInWindow),
+    [windowedActivities, windowStart, weeksInWindow]
+  )
+
+  const disciplineMix = useMemo(() => {
+    const mix = { swim: 0, bike: 0, run: 0, other: 0 }
+    windowedActivities.forEach((item) => {
+      mix[item.discipline] += item.seconds / 3600
     })
-    return Array.from(m.entries()).toSorted((a, b) => b[1] - a[1])
-  }, [parsedActivities, year, selectedTypes])
+    return mix
+  }, [windowedActivities])
 
-  const activityCounts = useMemo(
-    () =>
-      parsedActivities.reduce<Record<string, number>>((acc, { activity }) => {
-        acc[activity.type] = (acc[activity.type] || 0) + 1
-        return acc
-      }, {}),
-    [parsedActivities]
-  )
-  const uniqueActivityTypes = useMemo(() => {
-    const priorityTypes = ['Ride', 'Run', 'Swim', 'Zwift']
-    const allTypes = Object.keys(activityCounts).toSorted()
-    const otherTypes = allTypes.filter((type) => !priorityTypes.includes(type))
-    return [...priorityTypes.filter((type) => allTypes.includes(type)), ...otherTypes]
-  }, [activityCounts])
-  const toggleType = (type: string) =>
-    setSelectedTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
+  const distributionLabels = ['Swim', 'Bike', 'Run', 'Other']
+  const distributionCounts = [disciplineMix.swim, disciplineMix.bike, disciplineMix.run, disciplineMix.other]
 
-  // earliest + timeline extents
-  const earliest = useMemo(() => {
-    if (!parsedActivities.length) return dayjs()
-    return parsedActivities.reduce((min, { date }) => (date.isBefore(min) ? date : min), parsedActivities[0].date)
-  }, [parsedActivities])
-  const today = dayjs()
-  const totalDaysActive = hasData ? today.diff(earliest, 'day') + 1 : 0
-  const yearsActive = Math.floor(totalDaysActive / 365)
-  const monthsActive = Math.floor((totalDaysActive % 365) / 30)
-  const daysRemainder = totalDaysActive - yearsActive * 365 - monthsActive * 30
+  const bikeMixCounts = laneStats.find((lane) => lane.discipline === 'bike')?.bikeMix
+  const bikeMixLabels = ['Road', 'Zwift']
+  const bikeMixValues = bikeMixCounts ? [bikeMixCounts.roadHours, bikeMixCounts.zwiftHours] : [0, 0]
 
-  // Derived metrics
-  const totalActivities = useMemo(
-    () =>
-      parsedActivities.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type)).length,
-    [parsedActivities, selectedTypes]
-  )
-  const avgMilesPerActivity = totalActivities ? (stats.totalMiles / totalActivities).toFixed(1) : '0'
-  const yearActivities = useMemo(
-    () =>
-      parsedActivities.filter(
-        ({ activity, date }) => date.year() === year && (!selectedTypes.length || selectedTypes.includes(activity.type))
-      ).length,
-    [parsedActivities, year, selectedTypes]
-  )
-  const avgHoursPerActivity = yearActivities ? (stats.yearHours / yearActivities).toFixed(1) : '0'
-  const daysElapsedThisYear =
-    today.year() === year
-      ? today.diff(dayjs().startOf('year'), 'day') + 1
-      : dayjs(`${year}-12-31`).diff(dayjs(`${year}-01-01`), 'day') + 1
-  const avgMilesPerDayYear = stats.yearMiles ? (stats.yearMiles / daysElapsedThisYear).toFixed(1) : '0'
-
-  // Data for charts
-  const weeklyLabels = weeklyTrend.map((p) => p.week)
-  const weeklyMilesSeries = weeklyTrend.map((p) => p.miles)
-  const weeklyHoursSeries = weeklyTrend.map((p) => p.hours)
-  const typeLabels = typeDistribution.map((t) => t[0])
-  const typeCounts = typeDistribution.map((t) => t[1])
+  const hasData = windowedActivities.length > 0
 
   if (!hasData) {
     return (
@@ -281,13 +316,12 @@ const FitnessPage = ({ activities, error }: Props) => {
           <link href={PageUrl} rel="canonical" />
         </Head>
         <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
-          <Section $variant="elevated" variants={fade}>
-            <SectionHeader>
+          <SectionCard variants={fade}>
+            <SectionHeaderText>
               <h2>Fitness</h2>
-            </SectionHeader>
-
-            <p>{error ?? 'Fitness data is not available right now. Please try again later.'}</p>
-          </Section>
+              <span>{error ?? 'Fitness data is not available right now. Please try again later.'}</span>
+            </SectionHeaderText>
+          </SectionCard>
         </Container>
       </>
     )
@@ -301,684 +335,466 @@ const FitnessPage = ({ activities, error }: Props) => {
         <link href={PageUrl} rel="canonical" />
       </Head>
       <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
-        <Hero variants={fade}>
-          <div className="hero-left">
-            <h1>Fitness</h1>
-            <p>Swim · Bike · Run · Strength — consolidated training history.</p>
-            <p className="streak-line">
-              Since {earliest.format('MMM D, YYYY')} · {yearsActive}y {monthsActive}m {daysRemainder}d ·{' '}
-              {totalDaysActive} days
-            </p>
-          </div>
-          <div className="hero-grid">
-            <div className="hero-grid-header">
-              <span className="lifetime-label">Lifetime Totals</span>
-            </div>
+        <HeroPanel variants={fade}>
+          <HeroGlow />
+          <HeroBadge>Rolling {windowMonths} months</HeroBadge>
+          <HeroTitle>Triathlon Dashboard</HeroTitle>
+          <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
+          <HeroStats>
             <HeroStat>
-              <span>{stats.totalMiles}</span>
-              <span className="stat-label">miles</span>
+              <span>{formatHours(totalHours)}</span>
+              <small>training hours</small>
             </HeroStat>
             <HeroStat>
-              <span>{stats.totalHours}</span>
-              <span className="stat-label">hours</span>
+              <span>{totalMiles.toFixed(0)}</span>
+              <small>miles covered</small>
             </HeroStat>
             <HeroStat>
-              <span>{stats.totalElevation}k</span>
-              <span className="stat-label">ft climbed</span>
+              <span>{totalSessions}</span>
+              <small>sessions logged</small>
             </HeroStat>
             <HeroStat>
-              <span>{stats.currentStreak}</span>
-              <span className="stat-label">day streak</span>
+              <span>{everestCount.toFixed(1)}x</span>
+              <small>Everest climbed</small>
             </HeroStat>
-          </div>
-        </Hero>
+          </HeroStats>
+          <HeroControls>
+            {WINDOW_OPTIONS.map((months) => (
+              <ToggleButton key={months} $active={windowMonths === months} onClick={() => setWindowMonths(months)}>
+                {months}m
+              </ToggleButton>
+            ))}
+          </HeroControls>
+        </HeroPanel>
 
-        <CompactFilterSection variants={fade}>
-          <FilterRow>
-            <YearSelector>
-              <label htmlFor="yearSelect">Year</label>
-              <select id="yearSelect" value={year} onChange={(e) => setYear(parseInt(e.target.value))}>
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            </YearSelector>
+        <LaneGrid variants={staggerFade}>
+          {laneStats.map((lane) => (
+            <LaneCard key={lane.discipline} variants={fade} $accent={lane.color}>
+              <LaneHeader>
+                <LaneBadge $accent={lane.color}>{lane.label}</LaneBadge>
+                <LaneMeta>
+                  {lane.hours.toFixed(0)} hrs · {lane.miles.toFixed(0)} mi
+                </LaneMeta>
+              </LaneHeader>
+              <LaneChart>
+                <Sparkline values={lane.weeklyMiles} color={lane.color} />
+                <ChartLabel>Weekly mileage</ChartLabel>
+              </LaneChart>
+              <LaneStats>
+                <StatBlock>
+                  <span>{lane.avgSpeed ? lane.avgSpeed.toFixed(1) : '—'}</span>
+                  <small>avg speed</small>
+                </StatBlock>
+                <StatBlock>
+                  <span>{lane.avgPace ? lane.avgPace.toFixed(1) : '—'}</span>
+                  <small>{lane.discipline === 'bike' ? 'avg pace (min/mi)' : 'avg pace (min/mi)'}</small>
+                </StatBlock>
+                <StatBlock>
+                  <span>{lane.elevation.toFixed(0)} ft</span>
+                  <small>elevation</small>
+                </StatBlock>
+              </LaneStats>
+              <ZoneRow>
+                <ZoneLabel>{lane.discipline === 'bike' ? 'Speed zones' : 'Pace zones'}</ZoneLabel>
+                <ZoneBar>
+                  {lane.zones.map((zone) => (
+                    <ZoneSegment
+                      key={zone.label}
+                      $color={lane.color}
+                      $weight={zone.seconds}
+                      title={`${zone.label}: ${(zone.seconds / 3600).toFixed(1)}h`}
+                    />
+                  ))}
+                </ZoneBar>
+              </ZoneRow>
+              {lane.discipline === 'bike' && lane.bikeMix ? (
+                <MixRow>
+                  <ZoneLabel>Bike mix</ZoneLabel>
+                  <ZoneBar>
+                    <ZoneSegment
+                      $color={DISCIPLINE_CONFIG.bike.accent}
+                      $weight={lane.bikeMix.roadHours}
+                      title={`Road: ${lane.bikeMix.roadHours.toFixed(1)}h`}
+                    />
+                    <ZoneSegment
+                      $color={lane.color}
+                      $weight={lane.bikeMix.zwiftHours}
+                      title={`Zwift: ${lane.bikeMix.zwiftHours.toFixed(1)}h`}
+                    />
+                  </ZoneBar>
+                </MixRow>
+              ) : null}
+              <FunStat>
+                {lane.discipline === 'swim'
+                  ? `${(lane.miles / OLYMPIC_POOL_MILES).toFixed(0)} Olympic pools`
+                  : lane.discipline === 'run'
+                    ? `${(lane.elevation / EVEREST_HEIGHT_FT).toFixed(2)} Everests`
+                    : lane.discipline === 'bike'
+                      ? `${(lane.miles / 112).toFixed(1)} Ironman rides`
+                      : null}
+              </FunStat>
+            </LaneCard>
+          ))}
+        </LaneGrid>
 
-            <ActivityTypeFilters>
-              <span className="filter-label">Activity Types</span>
-              <ChipContainer>
-                {uniqueActivityTypes.map((type) => {
-                  const active = selectedTypes.includes(type)
-                  return (
-                    <Button
-                      key={type}
-                      $active={active}
-                      $size="sm"
-                      $variant="chip"
-                      type="button"
-                      onClick={() => toggleType(type)}
-                    >
-                      {type}
-                    </Button>
-                  )
-                })}
-              </ChipContainer>
-              <FilterActions>
-                <button disabled={!selectedTypes.length} type="button" onClick={() => setSelectedTypes([])}>
-                  Clear
-                </button>
-                <button type="button" onClick={() => setSelectedTypes(uniqueActivityTypes)}>
-                  All
-                </button>
-              </FilterActions>
-            </ActivityTypeFilters>
-          </FilterRow>
-        </CompactFilterSection>
-
-        <Section $variant="transparent" variants={staggerFade}>
-          <SectionHeader>
-            <h2>Overview</h2>
-          </SectionHeader>
-
-          <YearStatsContainer>
-            {/* Primary Featured Stats */}
-            <PrimaryStatsRow>
-              <PrimaryStatTile variants={fade}>
-                <PrimaryStatNumber>{stats.yearMiles}</PrimaryStatNumber>
-                <PrimaryStatLabel>Miles in {year}</PrimaryStatLabel>
-                <StatProgress $percentage={Math.min((stats.yearMiles / 3650) * 100, 100)}>
-                  <ProgressLabel>3,650 mi</ProgressLabel>
-                </StatProgress>
-              </PrimaryStatTile>
-
-              <PrimaryStatTile variants={fade}>
-                <PrimaryStatNumber>{yearActivities}</PrimaryStatNumber>
-                <PrimaryStatLabel>Activities in {year}</PrimaryStatLabel>
-                <StatProgress $percentage={Math.min((yearActivities / 365) * 100, 100)}>
-                  <ProgressLabel>365 activities</ProgressLabel>
-                </StatProgress>
-              </PrimaryStatTile>
-
-              <PrimaryStatTile variants={fade}>
-                <PrimaryStatNumber>{stats.yearHours}</PrimaryStatNumber>
-                <PrimaryStatLabel>Hours in {year}</PrimaryStatLabel>
-                <StatProgress $percentage={Math.min((stats.yearHours / 365) * 100, 100)}>
-                  <ProgressLabel>365 hrs</ProgressLabel>
-                </StatProgress>
-              </PrimaryStatTile>
-            </PrimaryStatsRow>
-
-            {/* Secondary Stats Grid */}
-            <SecondaryStatsGrid>
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{stats.avgWeeklyMiles}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Avg Miles / Week</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{stats.avgWeeklyHours}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Avg Hours / Week</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{avgMilesPerActivity}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Avg Miles / Activity</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{stats.longestStreak}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Longest Streak (Days)</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{avgMilesPerDayYear}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Avg Miles / Day</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{stats.yearElevation}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Elevation in {year} (k ft)</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-
-              <SecondaryStatTile variants={fade}>
-                <div>
-                  <SecondaryStatNumber>{avgHoursPerActivity}</SecondaryStatNumber>
-                  <SecondaryStatLabel>Avg Hours / Activity</SecondaryStatLabel>
-                </div>
-              </SecondaryStatTile>
-            </SecondaryStatsGrid>
-          </YearStatsContainer>
-        </Section>
-
-        <Section variants={fade}>
-          <SectionHeader>
-            <h2>Analytics</h2>
-          </SectionHeader>
+        <SectionCard variants={fade}>
+          <SectionHeaderText>
+            <h2>Shared timeline</h2>
+            <span>Volume trends and discipline mix (rolling {windowMonths} months)</span>
+          </SectionHeaderText>
           <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
-              distribution={{ labels: typeLabels, counts: typeCounts }}
-              weekly={{ labels: weeklyLabels, miles: weeklyMilesSeries, hours: weeklyHoursSeries }}
+              distribution={{ labels: distributionLabels, counts: distributionCounts }}
+              distributionTitle="Discipline Mix (Hours)"
+              modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
+              weekly={{
+                labels: totalWeeklySeries.labels,
+                miles: totalWeeklySeries.miles,
+                hours: totalWeeklySeries.hours,
+              }}
+              weeklyTitle="Weekly Volume"
+            />
+            <FitnessCharts
+              distribution={{ labels: bikeMixLabels, counts: bikeMixValues }}
+              distributionTitle="Bike Mix (Hours)"
+              modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
+              weekly={{
+                labels: totalWeeklySeries.labels,
+                miles: totalWeeklySeries.miles,
+                hours: totalWeeklySeries.hours,
+              }}
+              weeklyTitle="All Training"
             />
           </Grid>
-        </Section>
+        </SectionCard>
 
-        <Section variants={fade}>
-          <SectionHeader>
-            <h2>Activity Heatmap</h2>
-          </SectionHeader>
+        <SectionCard variants={fade}>
+          <SectionHeaderText>
+            <h2>Training heatmap</h2>
+            <span>Daily intensity bands by discipline</span>
+          </SectionHeaderText>
+          <ActivityHeatmap activities={windowedActivities} startDate={windowStart} />
+        </SectionCard>
 
-          <ActivityHeatmap
-            activities={activities.filter((a) => dayjs(a.pubDate).year() === year)}
-            availableYears={years}
-            year={year}
-            onDateClick={handleDateClick}
-            onYearChange={setYear}
-          />
-        </Section>
+        <SectionCard variants={fade}>
+          <SectionHeaderText>
+            <h2>Other training</h2>
+            <span>Everything outside the swim-bike-run core</span>
+          </SectionHeaderText>
+          <OtherGrid>
+            <OtherStat>
+              <strong>{otherActivities.length}</strong>
+              <span>sessions</span>
+            </OtherStat>
+            <OtherStat>
+              <strong>{otherActivities.reduce((acc, item) => acc + item.seconds / 3600, 0).toFixed(1)}</strong>
+              <span>hours</span>
+            </OtherStat>
+            <OtherStat>
+              <strong>{otherActivities.reduce((acc, item) => acc + item.miles, 0).toFixed(0)}</strong>
+              <span>miles</span>
+            </OtherStat>
+          </OtherGrid>
+        </SectionCard>
       </Container>
     </>
   )
 }
+
+const Sparkline = ({ values, color }: { values: number[]; color: string }) => {
+  const max = Math.max(...values, 1)
+  const points = values.map((val, idx) => {
+    const x = (idx / Math.max(values.length - 1, 1)) * 100
+    const y = 40 - (val / max) * 36
+    return `${x},${y}`
+  })
+  const path = `M${points.join(' L ')}`
+
+  return (
+    <svg aria-hidden="true" className="sparkline" viewBox="0 0 100 40">
+      <path d={path} fill="none" stroke={color} strokeWidth="2" />
+      <path d={`${path} L 100 40 L 0 40 Z`} fill={`${color}30`} />
+    </svg>
+  )
+}
+
 export default FitnessPage
 
-const Container = styled(motion.section)`
-  max-width: var(--max-w-screen);
-  margin: 2rem auto;
-  padding: 0 1rem;
-  color: var(--text);
+const Container = styled(motion.main)`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+`
+
+const HeroPanel = styled(motion.section)`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: clamp(2rem, 6vw, 3.5rem);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: var(--border-radius-xl);
+  background: radial-gradient(circle at top left, rgb(255 255 255 / 6%), transparent 60%),
+    linear-gradient(140deg, #151515, #1f1f1f);
   overflow: hidden;
 `
 
-const Hero = styled(motion.section)`
+const HeroGlow = styled.div`
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgb(79 163 255 / 20%), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgb(181 255 99 / 15%), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgb(255 123 95 / 20%), transparent 55%);
+  opacity: 0.6;
+  pointer-events: none;
+`
+
+const HeroBadge = styled.div`
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2.5rem clamp(1.25rem, 3vw, 3rem);
-  margin: 1rem 0 2.75rem;
-  padding: 2.25rem clamp(1.5rem, 3vw, 2.75rem) 2.4rem;
-  border: 1px solid #202020;
-  border-radius: var(--border-radius-md);
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #181818 40%, #1f1f1f 100%);
-  box-shadow:
-    0 4px 18px -8px rgb(0 0 0 / 60%),
-    0 1px 0 rgb(255 255 255 / 2%) inset;
-  overflow: hidden;
+  z-index: 1;
+  width: fit-content;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-dark);
+`
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-  }
+const HeroTitle = styled.h1`
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: -0.02em;
+`
 
-  &::before {
-    background:
-      radial-gradient(circle at 85% 15%, rgb(255 255 255 / 6%), transparent 55%),
-      linear-gradient(160deg, rgb(255 255 255 / 5%), transparent 60%);
-    opacity: 0.85;
-    inset: 0;
-    mix-blend-mode: overlay;
-  }
+const HeroSubtitle = styled.p`
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: var(--text-dark);
+`
 
-  &::after {
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(120deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 0%) 35% 65%, rgb(255 255 255 / 7%));
-    opacity: 0.55;
-    inset: 0;
-    mask:
-      linear-gradient(#000000, #000000) content-box,
-      linear-gradient(#000000, #000000);
-    mask-composite: exclude;
-  }
-
-  .hero-left {
-    position: relative;
-    z-index: 2;
-    max-width: 540px;
-  }
-
-  h1 {
-    margin: 0 0 0.65rem;
-    background: linear-gradient(90deg, var(--heading), #d0d0d0 55%, #a7a7a7);
-    background-clip: text;
-    font-size: clamp(1.9rem, 5vw, 2.9rem);
-    line-height: 1.05;
-    color: transparent;
-    letter-spacing: 0.5px;
-  }
-  p {
-    margin: 0.4rem 0;
-    font-weight: 300;
-    color: var(--text-dark);
-  }
-  .streak-line {
-    margin-top: 0.75rem;
-    opacity: 0.85;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-  }
-
-  .hero-grid {
-    --tile-min: 92px;
-    position: relative;
-    z-index: 2;
-    display: grid;
-    flex: 1;
-    gap: 0.85rem;
-    grid-template-columns: repeat(auto-fit, minmax(var(--tile-min), 1fr));
-    min-width: 260px;
-
-    .hero-grid-header {
-      display: flex;
-      justify-content: left;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 0.5rem;
-      grid-column: 1 / -1;
-
-      .lifetime-label {
-        padding: 0.35rem 0.75rem;
-        font-weight: 600;
-        font-size: 0.6rem;
-        color: var(--text-dark);
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-      }
-    }
-  }
-
-  @media (width <= 880px) {
-    gap: 2rem 1.75rem;
-    padding: 1.8rem 1.5rem 2rem;
-  }
-
-  @media (width <= 620px) {
-    .hero-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
+const HeroStats = styled.div`
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
 `
 
 const HeroStat = styled.div`
-  --tile-bg: linear-gradient(180deg, #202020 0%, #181818 90%);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-width: 86px;
-  padding: 0.85rem 0.65rem 0.9rem;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: var(--border-radius-md);
-  background: var(--tile-bg);
-  box-shadow:
-    0 2px 6px -2px rgb(0 0 0 / 60%),
-    0 0 0 1px rgb(255 255 255 / 1.5%) inset;
-  overflow: hidden;
-  transition:
-    border-color 0.25s ease,
-    transform 0.25s ease;
-  backdrop-filter: blur(4px);
-  isolation: isolate;
-
-  &::before {
-    content: '';
-    position: absolute;
-    background:
-      linear-gradient(140deg, rgb(255 255 255 / 12%), rgb(255 255 255 / 0%) 40%),
-      radial-gradient(circle at 30% 110%, rgb(255 255 255 / 15%), transparent 60%);
-    opacity: 0.9;
-    pointer-events: none;
-    inset: 0;
-    mix-blend-mode: overlay;
-  }
-  &::after {
-    content: '';
-    position: absolute;
-    background: linear-gradient(120deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 0%) 35% 65%, rgb(255 255 255 / 8%));
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s ease;
-    inset: 0;
-  }
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--border-radius-lg);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 8%);
   span {
-    filter: drop-shadow(0 2px 2px rgb(0 0 0 / 35%));
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
     font-weight: 600;
-    font-size: clamp(1.25rem, 2.8vw, 1.85rem);
-    line-height: 1.05;
-    color: var(--heading);
+  }
+  small {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-dark);
     letter-spacing: 0.5px;
   }
-  .stat-label {
-    margin-top: 0.4rem;
-    opacity: 0.9;
-    font-weight: 500;
-    font-size: 0.55rem;
-    color: var(--text-dark);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-  }
-  &:hover {
-    border-color: rgb(255 255 255 / 16%);
-  }
-  &:hover::after {
-    opacity: 0.85;
-  }
-
-  @media (width <= 620px) {
-    padding: 0.75rem 0.55rem 0.8rem;
-    span {
-      font-size: clamp(1.15rem, 5vw, 1.6rem);
-    }
-  }
 `
 
-// Year Statistics Components
-const YearStatsContainer = styled.div`
+const HeroControls = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`
+
+const ToggleButton = styled.button<{ $active?: boolean }>`
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  background: ${({ $active }) => ($active ? 'rgb(255 255 255 / 18%)' : 'transparent')};
+  color: ${({ $active }) => ($active ? 'var(--heading)' : 'var(--text-dark)')};
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+`
+
+const LaneGrid = styled(motion.section)`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+`
+
+const LaneCard = styled(motion.div)<{ $accent: string }>`
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-`
-
-const PrimaryStatsRow = styled.div`
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-  @media (width <= 900px) {
-    grid-template-columns: 1fr;
-  }
-`
-
-const PrimaryStatTile = styled(motion.div)`
-  position: relative;
-  padding: 2rem 1.75rem 2.25rem;
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: var(--border-radius-md);
-  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
-  overflow: hidden;
-  transition: all 0.3s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    background:
-      radial-gradient(circle at 80% 20%, rgb(255 255 255 / 6%), transparent 50%),
-      linear-gradient(135deg, rgb(255 255 255 / 4%), transparent 60%);
-    pointer-events: none;
-    inset: 0;
-    mix-blend-mode: overlay;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgb(255 255 255 / 12%), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    inset: 0;
-    mask:
-      linear-gradient(#000000, #000000) content-box,
-      linear-gradient(#000000, #000000);
-    mask-composite: exclude;
-  }
-
-  &:hover {
-    border-color: rgb(255 255 255 / 15%);
-    box-shadow: 0 12px 40px -8px rgb(0 0 0 / 40%);
-
-    &::after {
-      opacity: 0.7;
-    }
-  }
-`
-
-const PrimaryStatNumber = styled.div`
-  position: relative;
-  z-index: 2;
-  margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, var(--heading), var(--accent) 70%);
-  background-clip: text;
-  filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));
-  font-weight: bold;
-  font-size: clamp(2.5rem, 6vw, 3.5rem);
-  line-height: 1;
-  color: var(--heading);
-  color: transparent;
-`
-
-const PrimaryStatLabel = styled.div`
-  position: relative;
-  z-index: 2;
-  margin-bottom: 1rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-dark);
-  letter-spacing: 0.5px;
-`
-
-const StatProgress = styled.div<{ $percentage: number }>`
-  position: relative;
-  z-index: 2;
-  height: 4px;
-  margin-top: 0.25rem;
-  border-radius: var(--border-radius-xs);
-  background: rgb(255 255 255 / 8%);
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: ${({ $percentage }) => Math.min($percentage, 100)}%;
-    height: 100%;
-    border-radius: var(--border-radius-xs);
-    background: linear-gradient(90deg, var(--accent), #4fa3ff);
-    transition: width 0.6s ease;
-  }
-`
-
-const ProgressLabel = styled.div`
-  position: absolute;
-  top: -1.25rem;
-  right: 0;
-  opacity: 0.8;
-  font-weight: 500;
-  font-size: 0.6rem;
-  color: var(--text-dark);
-  letter-spacing: 0.5px;
-`
-
-const SecondaryStatsGrid = styled.div`
-  display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 1.5rem;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid rgb(255 255 255 / 10%);
+  background: linear-gradient(140deg, rgb(255 255 255 / 3%), transparent);
+  box-shadow: 0 20px 40px -30px rgb(0 0 0 / 60%);
+  overflow: hidden;
 
-  @media (width <= 640px) {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, ${({ $accent }) => `${$accent}33`}, transparent 55%);
+    pointer-events: none;
   }
 `
 
-const SecondaryStatTile = styled(motion.div)`
-  position: relative;
+const LaneHeader = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 1.25rem;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: var(--border-radius-sm);
-  background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-
-  &:hover {
-    border-color: rgb(255 255 255 / 12%);
-    background: linear-gradient(135deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%));
-    box-shadow: 0 4px 20px -8px rgb(0 0 0 / 30%);
-  }
 `
 
-const SecondaryStatNumber = styled.div`
-  margin-bottom: 0.25rem;
-  font-weight: bold;
-  font-size: 1.4rem;
-  line-height: 1;
-  color: var(--heading);
+const LaneBadge = styled.span<{ $accent: string }>`
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: ${({ $accent }) => `${$accent}26`};
+  color: ${({ $accent }) => $accent};
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 `
 
-const SecondaryStatLabel = styled.div`
-  opacity: 0.9;
-  font-weight: 500;
+const LaneMeta = styled.span`
   font-size: 0.7rem;
   color: var(--text-dark);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 `
 
-// Compact Filter Section Components
-const CompactFilterSection = styled(motion.section)`
+const LaneChart = styled.div`
   position: relative;
-  margin: 0 0 2rem;
-  padding: 1.5rem clamp(1.25rem, 3vw, 2.25rem);
-  border: 1px solid #242424;
-  border-radius: var(--border-radius-md);
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #171717 50%, #1a1a1a 100%);
-  box-shadow:
-    0 8px 32px -12px rgb(0 0 0 / 40%),
-    0 2px 0 rgb(255 255 255 / 2%) inset;
-  overflow: hidden;
-  transition: all 0.3s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    background:
-      radial-gradient(circle at 70% 20%, rgb(255 255 255 / 4%), transparent 45%),
-      linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 55%);
-    pointer-events: none;
-    inset: 0;
-    mix-blend-mode: overlay;
-  }
-`
-
-const FilterRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 2rem;
-
-  @media (width <= 768px) {
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-`
-
-const YearSelector = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 0.5rem;
-  min-width: 100px;
 
-  label {
-    font-weight: 600;
-    font-size: 0.6rem;
-    color: var(--text-dark);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-  }
-
-  select {
-    padding: 0.45rem 0.6rem;
-    border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: var(--border-radius-md);
-    background: linear-gradient(135deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 2%));
-    font-weight: 500;
-    font-size: 0.75rem;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    &:hover,
-    &:focus {
-      border-color: rgb(255 255 255 / 15%);
-      outline: none;
-      background: linear-gradient(135deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%));
-    }
-
-    option {
-      background: var(--dark-bg);
-      color: var(--text);
-    }
+  .sparkline {
+    width: 100%;
+    height: 80px;
   }
 `
 
-const ActivityTypeFilters = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+const ChartLabel = styled.span`
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-dark);
+`
+
+const LaneStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+`
+
+const StatBlock = styled.div`
+  display: grid;
+  gap: 0.15rem;
+  span {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  small {
+    font-size: 0.65rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+`
+
+const ZoneRow = styled.div`
+  display: grid;
   gap: 0.5rem;
-  min-width: 280px;
+`
 
-  .filter-label {
-    font-weight: 600;
-    font-size: 0.6rem;
+const MixRow = styled(ZoneRow)``
+
+const ZoneLabel = styled.span`
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-dark);
+`
+
+const ZoneBar = styled.div`
+  display: flex;
+  gap: 0.25rem;
+  height: 12px;
+`
+
+const ZoneSegment = styled.span<{ $color: string; $weight: number }>`
+  flex: ${({ $weight }) => Math.max($weight, 0.1)};
+  border-radius: 999px;
+  background: ${({ $color }) => $color};
+  opacity: 0.6;
+`
+
+const FunStat = styled.div`
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-dark);
+`
+
+const SectionCard = styled(motion.section)`
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid rgb(255 255 255 / 10%);
+  background: linear-gradient(140deg, rgb(255 255 255 / 2%), transparent);
+`
+
+const SectionHeaderText = styled.div`
+  display: grid;
+  gap: 0.35rem;
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  span {
+    font-size: 0.7rem;
     color: var(--text-dark);
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.4px;
   }
 `
 
-const ChipContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.25rem 0 0.5rem;
+const OtherGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
 `
 
-const FilterActions = styled.div`
-  display: flex;
-  gap: 0.6rem;
-
-  button {
-    padding: 0.2rem 0.4rem;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    background: none;
-    font-weight: 600;
-    font-size: 0.6rem;
-    color: var(--text-dark);
+const OtherStat = styled.div`
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 4%);
+  strong {
+    font-size: 1.4rem;
+  }
+  span {
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    &:hover:enabled {
-      background: rgb(255 255 255 / 5%);
-      color: var(--text);
-    }
+    color: var(--text-dark);
+    letter-spacing: 0.4px;
   }
 `

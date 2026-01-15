@@ -16,6 +16,9 @@ interface DistributionData {
 interface Props {
   weekly: WeeklyData
   distribution: DistributionData
+  weeklyTitle?: string
+  distributionTitle?: string
+  modeLabels?: { primary: string; secondary: string }
 }
 
 // Generate a consistent color from a string
@@ -40,7 +43,7 @@ const rollingAvg = (data: number[], window = 4) => {
   return out
 }
 
-const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
+const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, distributionTitle, modeLabels }) => {
   const weeklyRef = useRef<HTMLDivElement>(null)
   const distRef = useRef<HTMLDivElement>(null)
   const weeklyPlotRef = useRef<uPlot | null>(null)
@@ -50,6 +53,10 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
   const modeRef = useRef<'miles' | 'hours'>('miles')
 
   const [mode, setMode] = useState<'miles' | 'hours'>('miles')
+  const weeklyHeading = weeklyTitle ?? `Weekly ${mode === 'miles' ? 'Miles' : 'Hours'}`
+  const distributionHeading = distributionTitle ?? 'Activity Distribution'
+  const primaryLabel = modeLabels?.primary ?? 'Miles'
+  const secondaryLabel = modeLabels?.secondary ?? 'Hours'
 
   // Pre-compute rolling avg for miles
   const milesMA = useMemo(() => rollingAvg(weekly.miles, 4), [weekly.miles])
@@ -315,13 +322,13 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
     <ChartsWrapper>
       <ChartCard>
         <ChartHeader>
-          <h3>Weekly {mode === 'miles' ? 'Miles' : 'Hours'}</h3>
+          <h3>{weeklyHeading}</h3>
           <div className="mode-toggle">
             <button className={mode === 'miles' ? 'active' : ''} onClick={() => setMode('miles')}>
-              Miles
+              {primaryLabel}
             </button>
             <button className={mode === 'hours' ? 'active' : ''} onClick={() => setMode('hours')}>
-              Hours
+              {secondaryLabel}
             </button>
           </div>
         </ChartHeader>
@@ -329,7 +336,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
       </ChartCard>
       <ChartCard>
         <ChartHeader>
-          <h3>Activity Distribution</h3>
+          <h3>{distributionHeading}</h3>
         </ChartHeader>
         <div ref={distRef} className="uplot-host" />
       </ChartCard>
