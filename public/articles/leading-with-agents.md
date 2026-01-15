@@ -1,7 +1,7 @@
 ---
 title: 'Leading With Agents'
 dateCreated: 'Jan 09, 2026'
-summary: 'From Copilot''s autocomplete to agent teams, why adoption must be bottom-up to stick.'
+summary: "From Copilot's autocomplete to agent teams, why adoption must be bottom-up to stick."
 coverImg: '/img/articles/leading-with-agents/agent-mastermind.webp'
 hidden: false
 categories: 'AI'
