@@ -1,12 +1,4 @@
-export type StravaActivityType =
-  | 'Swim'
-  | 'Ride'
-  | 'Run'
-  | 'WeightTraining'
-  | 'Hike'
-  | 'Zwift'
-  | 'VirtualRide'
-  | 'Walk'
+export type StravaActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'VirtualRide' | 'Walk'
 
 export interface StravaActivity {
   title: string

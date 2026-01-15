@@ -30,7 +30,7 @@ export const Section = styled(motion.section)<{ $variant?: 'default' | 'transpar
           box-shadow:
             0 16px 40px -12px rgb(0 0 0 / 40%),
             0 2px 0 rgb(255 255 255 / 2%) inset;
-
+          
           &:hover {
             border-color: rgb(255 255 255 / 15%);
             box-shadow: 0 20px 50px -12px rgb(0 0 0 / 50%);
@@ -156,7 +156,7 @@ export const Button = styled.button<{
           border: 1px solid rgb(255 255 255 / 8%);
           background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
           color: var(--text-dark);
-
+          
           &:hover {
             border-color: rgb(255 255 255 / 15%);
             color: var(--text);
@@ -166,7 +166,7 @@ export const Button = styled.button<{
         return css`
           background: transparent;
           color: var(--text-dark);
-
+          
           &:hover {
             background: rgb(255 255 255 / 5%);
             color: var(--text);
@@ -179,21 +179,25 @@ export const Button = styled.button<{
           background: linear-gradient(135deg, var(--body-bg), #1c1c1c);
           color: var(--text-dark);
 
-          ${$active &&
-          css`
-            border-color: rgb(255 255 255 / 20%);
-            background: linear-gradient(135deg, var(--accent), #404040);
-            box-shadow: 0 4px 12px -4px rgb(0 0 0 / 30%);
-            color: var(--heading);
-          `}
-
-          &:hover {
-            ${!$active &&
+          ${
+            $active &&
             css`
               border-color: rgb(255 255 255 / 20%);
               background: linear-gradient(135deg, var(--accent), #404040);
+              box-shadow: 0 4px 12px -4px rgb(0 0 0 / 30%);
               color: var(--heading);
-            `}
+            `
+          }
+
+          &:hover {
+            ${
+              !$active &&
+              css`
+                border-color: rgb(255 255 255 / 20%);
+                background: linear-gradient(135deg, var(--accent), #404040);
+                color: var(--heading);
+              `
+            }
           }
         `
       default:
@@ -201,7 +205,7 @@ export const Button = styled.button<{
           border: 1px solid rgb(255 255 255 / 10%);
           background: linear-gradient(135deg, var(--accent), #404040);
           color: var(--dark-bg);
-
+          
           &:hover {
             box-shadow: 0 6px 20px -6px rgb(0 0 0 / 30%);
           }

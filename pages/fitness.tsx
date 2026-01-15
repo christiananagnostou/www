@@ -172,7 +172,10 @@ const FitnessPage = ({ activities, error }: Props) => {
     setYear(years[years.length - 1])
   }, [years])
 
-  const stats = useMemo(() => calculateStats(parsedActivities, year, selectedTypes), [parsedActivities, year, selectedTypes])
+  const stats = useMemo(
+    () => calculateStats(parsedActivities, year, selectedTypes),
+    [parsedActivities, year, selectedTypes]
+  )
 
   const hasData = activities.length > 0
 
@@ -239,7 +242,8 @@ const FitnessPage = ({ activities, error }: Props) => {
 
   // Derived metrics
   const totalActivities = useMemo(
-    () => parsedActivities.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type)).length,
+    () =>
+      parsedActivities.filter(({ activity }) => !selectedTypes.length || selectedTypes.includes(activity.type)).length,
     [parsedActivities, selectedTypes]
   )
   const avgMilesPerActivity = totalActivities ? (stats.totalMiles / totalActivities).toFixed(1) : '0'
