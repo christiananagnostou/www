@@ -83,24 +83,24 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
         width: Math.max(weeklyRef.current.clientWidth - 24, 280), // Account for padding and ensure minimum width
         height: 220,
         pxAlign: 0,
-        padding: [8, 10, 20, 30],
+        padding: [6, 8, 18, 24],
         scales: { x: { time: false }, miles: {}, hours: {}, ma: {} },
         axes: [
           {
-            size: 22,
+            size: 18,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
             values: (u, ticks) => ticks.map((t) => `W${t}`),
           },
           {
-            size: 26,
+            size: 22,
             scale: 'miles',
             stroke: textDark,
             values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
           },
           {
-            size: 26,
+            size: 22,
             scale: 'hours',
             side: 1,
             stroke: textDark,
@@ -216,17 +216,17 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution }) => {
         width: Math.max(distRef.current.clientWidth - 24, 280), // Account for padding and ensure minimum width
         height: 260,
         pxAlign: 0,
-        padding: [8, 10, 24, 28],
+        padding: [6, 8, 20, 22],
         scales: { x: { time: false }, y: {} },
         axes: [
           {
-            size: 22,
+            size: 18,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
             values: (u, ticks) => ticks.map((t) => distribution.labels[t] || ''),
           },
           {
-            size: 26,
+            size: 22,
             stroke: textDark,
             values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
