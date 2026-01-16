@@ -154,7 +154,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
           } as Series,
         ],
         cursor: {
-          points: { size: 6, stroke: text, fill: '#000' },
+          points: { size: 6, stroke: text, fill: text },
         },
         hooks: {
           setCursor: [
@@ -177,14 +177,16 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
 
               const scale = modeRef.current === 'hours' ? 'hours' : 'miles'
               const value = modeRef.current === 'hours' ? hoursVal : milesVal
-              const rawTop = u.valToPos(value, scale, true) - 16
+              const rawTop = u.valToPos(value, scale, true) - 24
+              const cursorTop = (u as any).cursor?.top ?? rawTop
               const chartHeight = weeklyRef.current?.clientHeight || 0
-              const clampedTop = Math.max(4, Math.min(rawTop, chartHeight - 36))
+              const clampedTop = Math.max(4, Math.min(cursorTop - 24, chartHeight - 36))
 
               // Keep tooltip within chart bounds
               const chartWidth = weeklyRef.current?.clientWidth || 0
               const tooltipWidth = 120 // approximate tooltip width
-              const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
+              const cursorLeft = (u as any).cursor?.left ?? left
+              const clampedLeft = Math.max(tooltipWidth / 2, Math.min(cursorLeft, chartWidth - tooltipWidth / 2))
               tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
             },
           ],

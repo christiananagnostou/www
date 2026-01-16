@@ -99,6 +99,7 @@ const FitnessLaneChart = ({
     tooltipRef.current?.remove()
 
     const rootStyles = getComputedStyle(document.documentElement)
+    const text = rootStyles.getPropertyValue('--text') || '#eee'
     const textDark = rootStyles.getPropertyValue('--text-dark') || '#999'
     const grid = 'rgb(255 255 255 / 8%)'
 
@@ -135,7 +136,7 @@ const FitnessLaneChart = ({
       ],
       series: seriesConfig,
       cursor: {
-        points: { size: 6, stroke: '#fff', fill: '#000' },
+        points: { size: 6, stroke: text, fill: text },
       },
       hooks: {
         setCursor: [
@@ -168,13 +169,16 @@ const FitnessLaneChart = ({
             tooltipRef.current.style.opacity = '1'
 
             const primaryValue = valuesAtIndex[0]?.value ?? 0
-            const rawTop = u.valToPos(primaryValue, 'y', true) - 16
+            const rawTop = u.valToPos(primaryValue, 'y', true) - 24
+            const cursorTop = (u as any).cursor?.top ?? rawTop
+
             const chartHeight = chartRef.current?.clientHeight || 0
-            const clampedTop = Math.max(4, Math.min(rawTop, chartHeight - 36))
+            const clampedTop = Math.max(4, Math.min(cursorTop - 24, chartHeight - 36))
 
             const chartWidth = chartRef.current?.clientWidth || 0
             const tooltipWidth = 120
-            const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
+            const cursorLeft = (u as any).cursor?.left ?? left
+            const clampedLeft = Math.max(tooltipWidth / 2, Math.min(cursorLeft, chartWidth - tooltipWidth / 2))
             tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
           },
         ],
