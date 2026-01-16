@@ -29,11 +29,6 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
   loading: () => <div>Loading chart…</div>,
 })
 
-const FitnessZoneChart = dynamic(async () => import('../components/Fitness/FitnessZoneChart'), {
-  ssr: false,
-  loading: () => <div>Loading chart…</div>,
-})
-
 interface Props {
   activities: StravaActivity[]
   error?: string
@@ -519,21 +514,6 @@ const FitnessPage = ({ activities, error }: Props) => {
                   <small>avg watts</small>
                 </StatBlock>
               </LaneStats>
-              <LaneZoneCharts>
-                <FitnessZoneChart
-                  labels={lane.zones.map((zone) => zone.label)}
-                  title={lane.discipline === 'bike' ? 'Speed zones' : 'Pace zones'}
-                  values={lane.zones.map((zone) => zone.seconds / 3600)}
-                />
-                {lane.discipline === 'bike' && lane.bikeMix ? (
-                  <FitnessZoneChart
-                    labels={['Road', 'Zwift']}
-                    title="Bike mix (hours)"
-                    values={[lane.bikeMix.roadHours, lane.bikeMix.zwiftHours]}
-                    colors={[DISCIPLINE_CONFIG.bike.accent, lane.color]}
-                  />
-                ) : null}
-              </LaneZoneCharts>
               <FunStat>
                 {lane.discipline === 'swim'
                   ? `${(lane.miles / OLYMPIC_POOL_MILES).toFixed(0)} Olympic pools`
@@ -814,11 +794,6 @@ const StatBlock = styled.div`
     text-transform: uppercase;
     letter-spacing: 0.4px;
   }
-`
-
-const LaneZoneCharts = styled.div`
-  display: grid;
-  gap: 1rem;
 `
 
 const FunStat = styled.div`

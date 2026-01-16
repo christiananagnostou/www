@@ -182,7 +182,15 @@ const FitnessLaneChart = ({
     <ChartCard>
       <ChartHeader>
         <h4>{title}</h4>
-        <ChartLabel $color={primaryColor}>{primaryLabel}</ChartLabel>
+        <ChartLegend>
+          <ChartLabel $color={primaryColor}>{primaryLabel}</ChartLabel>
+          {secondarySeries ? (
+            <ChartLabel $color={secondaryColor ?? '#4fa3ff'}>{secondaryLabel ?? 'Series 2'}</ChartLabel>
+          ) : null}
+          {tertiarySeries ? (
+            <ChartLabel $color={tertiaryColor ?? '#f4ff7a'}>{tertiaryLabel ?? 'Series 3'}</ChartLabel>
+          ) : null}
+        </ChartLegend>
       </ChartHeader>
       <div ref={chartRef} className="uplot-host" />
     </ChartCard>
@@ -250,6 +258,12 @@ const ChartHeader = styled.div`
   }
 `
 
+const ChartLegend = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+`
+
 const ChartLabel = styled.span<{ $color: string }>`
   display: inline-flex;
   align-items: center;
@@ -258,6 +272,7 @@ const ChartLabel = styled.span<{ $color: string }>`
   text-transform: uppercase;
   letter-spacing: 0.4px;
   color: var(--text-dark);
+  white-space: nowrap;
 
   &::before {
     content: '';
