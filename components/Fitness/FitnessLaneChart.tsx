@@ -204,11 +204,11 @@ const ChartCard = styled.div`
     top: 0;
     left: 0;
     z-index: 10;
-    padding: 0.4rem 0.55rem;
+    padding: 0.3rem 0.45rem;
     border: 1px solid rgb(255 255 255 / 12%);
     border-radius: var(--border-radius-lg);
     background: rgb(17 17 17 / 95%);
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     color: var(--text);
     white-space: nowrap;
     pointer-events: none;
@@ -220,7 +220,7 @@ const ChartCard = styled.div`
 
 const ChartHeader = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
@@ -238,25 +238,25 @@ const Legend = styled.div`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 0.4rem 0.75rem;
+  gap: 0.3rem 0.6rem;
   white-space: nowrap;
 `
 
 const LegendItem = styled.span<{ $color: string }>`
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  min-width: 60px;
-  font-size: 0.5rem;
+  gap: 0.2rem;
+  min-width: 44px;
+  font-size: 0.45rem;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.25px;
   color: var(--text-dark);
   white-space: nowrap;
 
   &::before {
     content: '';
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     border-radius: 999px;
     background: ${({ $color }) => $color};
   }
