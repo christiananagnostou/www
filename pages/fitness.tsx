@@ -434,7 +434,10 @@ const FitnessPage = ({ activities, error }: Props) => {
         <HeroPanel variants={fade}>
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
-          <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
+          <HeroTitleRow>
+            <HeroTitle>Triathlon Training Dashboard</HeroTitle>
+            <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
+          </HeroTitleRow>
           <HeroStats>
             <HeroStat>
               <span>{formatHours(totalHours)}</span>
@@ -646,9 +649,26 @@ const HeroBadge = styled.div`
   color: var(--text-dark);
 `
 
-const HeroSubtitle = styled.p`
+const HeroTitleRow = styled.div`
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+`
+
+const HeroTitle = styled.h1`
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--heading);
+`
+
+const HeroSubtitle = styled.p`
   margin: 0;
   font-size: clamp(1rem, 2vw, 1.4rem);
   color: var(--text-dark);
