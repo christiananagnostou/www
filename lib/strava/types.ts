@@ -14,6 +14,8 @@ export interface StravaActivity {
   Pace?: string
   AverageHeartRate?: number | null
   AverageWatts?: number | null
+  HasHeartRate?: boolean
+  DeviceWatts?: boolean
   MaxSpeed?: string | null
   MapPolyline: string | null
   best: {

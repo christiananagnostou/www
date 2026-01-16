@@ -15,6 +15,8 @@ interface RawActivity {
   average_speed?: number
   average_heartrate?: number
   average_watts?: number
+  device_watts?: boolean
+  has_heartrate?: boolean
   max_speed?: number
   map?: { summary_polyline?: string }
 }
@@ -46,8 +48,8 @@ const mapActivity = (activity: RawActivity): StravaActivity & { raw: RawActivity
   const rawElevation = activity.total_elevation_gain ?? 0
   const rawMovingTime = activity.moving_time ?? 0
   const rawAverageSpeed = activity.average_speed ?? 0
-  const rawAverageHeartRate = activity.average_heartrate ?? null
-  const rawAverageWatts = activity.average_watts ?? null
+  const rawAverageHeartRate = activity.has_heartrate === false ? null : (activity.average_heartrate ?? null)
+  const rawAverageWatts = activity.device_watts === false ? null : (activity.average_watts ?? null)
 
   const computedPaceSeconds: number | null =
     rawDistance != null && rawDistance > 0 && rawMovingTime != null ? rawMovingTime / (rawDistance * M_TO_MI) : null
@@ -66,6 +68,8 @@ const mapActivity = (activity: RawActivity): StravaActivity & { raw: RawActivity
     MovingTime: rawMovingTime != null ? formatTime(rawMovingTime) : '',
     AverageHeartRate: rawAverageHeartRate ?? null,
     AverageWatts: rawAverageWatts ?? null,
+    HasHeartRate: activity.has_heartrate ?? false,
+    DeviceWatts: activity.device_watts ?? false,
     MapPolyline: activity.map?.summary_polyline ?? '',
     raw: {
       Distance: rawDistance,
