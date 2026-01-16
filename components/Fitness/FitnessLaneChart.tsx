@@ -147,23 +147,35 @@ const FitnessLaneChart = ({
               return
             }
             const left = u.valToPos(labels[idx], 'x', true)
-            const top = 6
             const label = labelTexts?.[idx] ?? `W${labels[idx] + 1}`
             const lines: string[] = [label]
+            const valuesAtIndex = seriesConfig
+              .slice(1)
+              .map((series, index) => ({
+                label: series.label,
+                value: (data[index + 1][idx] as number | null) ?? null,
+                format: index === 0 ? 'float' : 'int',
+              }))
+              .filter((entry) => entry.value != null)
 
-            seriesConfig.slice(1).forEach((series, index) => {
-              const value = (data[index + 1][idx] as number | null) ?? null
-              if (value == null) return
-              const formatted = index === 0 ? value.toFixed(1) : value.toFixed(0)
-              lines.push(`${series.label}: ${formatted}`)
+            valuesAtIndex.forEach((entry) => {
+              const value = entry.value as number
+              const formatted = entry.format === 'float' ? value.toFixed(1) : value.toFixed(0)
+              lines.push(`${entry.label}: ${formatted}`)
             })
+
             tooltipRef.current.innerHTML = lines.join('<br />')
             tooltipRef.current.style.opacity = '1'
+
+            const primaryValue = valuesAtIndex[0]?.value ?? 0
+            const rawTop = u.valToPos(primaryValue, 'y', true) - 16
+            const chartHeight = chartRef.current?.clientHeight || 0
+            const clampedTop = Math.max(4, Math.min(rawTop, chartHeight - 36))
 
             const chartWidth = chartRef.current?.clientWidth || 0
             const tooltipWidth = 120
             const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
-            tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${top}px)`
+            tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
           },
         ],
       },

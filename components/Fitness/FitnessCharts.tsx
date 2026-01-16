@@ -166,7 +166,6 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
                 return
               }
               const left = u.valToPos(xVals[idx], 'x', true)
-              const top = 8
               const milesVal = weekly.miles[idx]
               const hoursVal = weekly.hours[idx]
               const maVal = milesMA[idx]
@@ -176,11 +175,17 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
               }`
               tooltipRef.current.style.opacity = '1'
 
+              const scale = modeRef.current === 'hours' ? 'hours' : 'miles'
+              const value = modeRef.current === 'hours' ? hoursVal : milesVal
+              const rawTop = u.valToPos(value, scale, true) - 16
+              const chartHeight = weeklyRef.current?.clientHeight || 0
+              const clampedTop = Math.max(4, Math.min(rawTop, chartHeight - 36))
+
               // Keep tooltip within chart bounds
               const chartWidth = weeklyRef.current?.clientWidth || 0
               const tooltipWidth = 120 // approximate tooltip width
               const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
-              tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${top}px)`
+              tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
             },
           ],
         },
