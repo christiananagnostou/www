@@ -175,16 +175,13 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
               }`
               tooltipRef.current.style.opacity = '1'
 
-              const scale = modeRef.current === 'hours' ? 'hours' : 'miles'
-              const value = modeRef.current === 'hours' ? hoursVal : milesVal
-              const rawTop = u.valToPos(value, scale, true) - 24
-              const cursorTop = (u as any).cursor?.top ?? rawTop
+              const cursorTop = (u as any).cursor?.top ?? 0
               const chartHeight = weeklyRef.current?.clientHeight || 0
-              const clampedTop = Math.max(4, Math.min(cursorTop - 24, chartHeight - 36))
+              const clampedTop = Math.max(4, Math.min(cursorTop - 20, chartHeight - 36))
 
               // Keep tooltip within chart bounds
               const chartWidth = weeklyRef.current?.clientWidth || 0
-              const tooltipWidth = 120 // approximate tooltip width
+              const tooltipWidth = 140 // approximate tooltip width
               const cursorLeft = (u as any).cursor?.left ?? left
               const clampedLeft = Math.max(tooltipWidth / 2, Math.min(cursorLeft, chartWidth - tooltipWidth / 2))
               tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
@@ -396,6 +393,12 @@ const ChartCard = styled.div`
     position: relative;
     margin-top: 1rem;
     min-height: 220px;
+  }
+
+  .u-cursor-pt,
+  .u-cursor-pt.u-off {
+    background: var(--text) !important;
+    border-color: var(--text) !important;
   }
 
 

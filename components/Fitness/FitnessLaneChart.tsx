@@ -168,15 +168,12 @@ const FitnessLaneChart = ({
             tooltipRef.current.innerHTML = lines.join('<br />')
             tooltipRef.current.style.opacity = '1'
 
-            const primaryValue = valuesAtIndex[0]?.value ?? 0
-            const rawTop = u.valToPos(primaryValue, 'y', true) - 24
-            const cursorTop = (u as any).cursor?.top ?? rawTop
-
+            const cursorTop = (u as any).cursor?.top ?? 0
             const chartHeight = chartRef.current?.clientHeight || 0
-            const clampedTop = Math.max(4, Math.min(cursorTop - 24, chartHeight - 36))
+            const clampedTop = Math.max(4, Math.min(cursorTop - 20, chartHeight - 36))
 
             const chartWidth = chartRef.current?.clientWidth || 0
-            const tooltipWidth = 120
+            const tooltipWidth = 140
             const cursorLeft = (u as any).cursor?.left ?? left
             const clampedLeft = Math.max(tooltipWidth / 2, Math.min(cursorLeft, chartWidth - tooltipWidth / 2))
             tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
@@ -227,6 +224,12 @@ const ChartCard = styled.div`
   .uplot-host {
     position: relative;
     min-height: 120px;
+  }
+
+  .u-cursor-pt,
+  .u-cursor-pt.u-off {
+    background: var(--text) !important;
+    border-color: var(--text) !important;
   }
 
   .u-axis .u-val {
