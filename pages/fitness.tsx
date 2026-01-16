@@ -204,6 +204,31 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets:
   return { miles, hours, labels, labelTexts, weeklyHeartRate, weeklyWatts }
 }
 
+const buildBikeMixSeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets: number, interval: 'day' | 'week') => {
+  const road = Array.from({ length: buckets }, () => 0)
+  const zwift = Array.from({ length: buckets }, () => 0)
+  const labels = Array.from({ length: buckets }, (_, i) => i)
+  const labelTexts = labels.map((i) => {
+    if (interval === 'day') {
+      const format = buckets <= 8 ? 'ddd' : 'MMM D'
+      return start.add(i, 'day').format(format)
+    }
+    return `W${i + 1}`
+  })
+
+  items.forEach((item) => {
+    const idx = getBucketIndex(item.date, start, interval)
+    if (idx < 0 || idx >= buckets) return
+    if (item.bikeKind === 'road') {
+      road[idx] += item.seconds / 3600
+    } else if (item.bikeKind === 'zwift') {
+      zwift[idx] += item.seconds / 3600
+    }
+  })
+
+  return { road, zwift, labels, labelTexts }
+}
+
 const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
   const zones: ZoneStat[] =
     discipline === 'run'
@@ -385,6 +410,11 @@ const FitnessPage = ({ activities, error }: Props) => {
     [bucketInterval, bucketsInWindow, windowedActivities, windowStart]
   )
 
+  const bikeMixSeries = useMemo(() => {
+    const bikeActivities = windowedActivities.filter((item) => item.discipline === 'bike')
+    return buildBikeMixSeries(bikeActivities, windowStart, bucketsInWindow, bucketInterval)
+  }, [bucketInterval, bucketsInWindow, windowedActivities, windowStart])
+
   const disciplineMix = useMemo(() => {
     const mix = { swim: 0, bike: 0, run: 0, other: 0 }
     windowedActivities.forEach((item) => {
@@ -531,7 +561,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         <SectionCard variants={fade}>
           <SectionHeaderText>
             <h2>Shared timeline</h2>
-            <span>Volume trends and discipline mix ({windowLabel.toLowerCase()})</span>
+            <span>Volume trends and bike mix ({windowLabel.toLowerCase()})</span>
           </SectionHeaderText>
           <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
@@ -549,14 +579,14 @@ const FitnessPage = ({ activities, error }: Props) => {
             <FitnessCharts
               distribution={{ labels: bikeMixLabels, counts: bikeMixValues }}
               distributionTitle="Bike Mix (Hours)"
-              modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
+              modeLabels={{ primary: 'Road', secondary: 'Zwift' }}
               weekly={{
-                labels: totalWeeklySeries.labels,
-                labelTexts: totalWeeklySeries.labelTexts,
-                miles: totalWeeklySeries.miles,
-                hours: totalWeeklySeries.hours,
+                labels: bikeMixSeries.labels,
+                labelTexts: bikeMixSeries.labelTexts,
+                miles: bikeMixSeries.road,
+                hours: bikeMixSeries.zwift,
               }}
-              weeklyTitle={bucketInterval === 'day' ? 'Daily Training' : 'All Training'}
+              weeklyTitle={bucketInterval === 'day' ? 'Daily Bike Mix' : 'Bike Mix Trend'}
             />
           </Grid>
         </SectionCard>
