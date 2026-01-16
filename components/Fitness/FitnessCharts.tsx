@@ -10,9 +10,16 @@ interface WeeklyData {
   miles: number[]
   hours: number[]
 }
+interface DistributionStack {
+  label: string
+  values: number[]
+  color: string
+}
+
 interface DistributionData {
   labels: string[]
   counts: number[]
+  stacks?: DistributionStack[]
 }
 interface Props {
   weekly: WeeklyData
@@ -61,9 +68,13 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
 
   // Pre-compute rolling avg for miles
   const milesMA = useMemo(() => rollingAvg(weekly.miles, 4), [weekly.miles])
+  const hoursMA = useMemo(() => rollingAvg(weekly.hours, 4), [weekly.hours])
 
   // Distribution colors
-  const distColors = useMemo(() => distribution.labels.map((l) => colorFromString(l)), [distribution])
+  const distColors = useMemo(
+    () => distribution.stacks?.map((stack) => stack.color) ?? distribution.labels.map((l) => colorFromString(l)),
+    [distribution]
+  )
 
   useEffect(() => {
     if (!weeklyRef.current) return
@@ -78,9 +89,9 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
     const textDark = rootStyles.getPropertyValue('--text-dark') || '#999'
     const grid = '#2c2c2c'
 
-    // Data shape for uPlot: [x, y1, y2, y3]
+    // Data shape for uPlot: [x, y1, y2, y3, y4]
     const xVals = weekly.labels
-    const data: AlignedData = [xVals, weekly.miles, weekly.hours, milesMA]
+    const data: AlignedData = [xVals, weekly.miles, weekly.hours, milesMA, hoursMA]
 
     tooltipRef.current = document.createElement('div')
     tooltipRef.current.className = 'uplot-tooltip'
@@ -114,10 +125,9 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
           {
             size: 20,
             scale: 'hours',
-            side: 1,
             stroke: textDark,
             values: (u: uPlot, ticks: number[]) => ticks.map((t) => t.toFixed(1)),
-            grid: { show: false },
+            grid: { stroke: grid, width: 1 },
           },
         ],
         series: [
@@ -135,7 +145,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
           {
             label: 'Hours',
             scale: 'hours',
-            stroke: '#4fa3ff',
+            stroke: accent,
             width: 2,
             dash: [4, 4],
             show: modeRef.current === 'hours',
@@ -152,6 +162,16 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
             value: (u, v) => (v == null ? '' : `${v.toFixed(1)} mi`),
             points: { show: false }, // Remove markers
           } as Series,
+          {
+            label: 'Hours 4w Avg',
+            scale: 'hours',
+            stroke: '#4fa3ff',
+            width: 2,
+            dash: [6, 4],
+            show: modeRef.current === 'hours',
+            value: (u, v) => (v == null ? '' : `${v.toFixed(1)} h`),
+            points: { show: false }, // Remove markers
+          } as Series,
         ],
         cursor: {
           points: { size: 6, stroke: text, fill: text },
@@ -165,29 +185,35 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
                 tooltipRef.current.style.opacity = '0'
                 return
               }
-              const left = u.valToPos(xVals[idx], 'x', true)
-              const milesVal = weekly.miles[idx]
-              const hoursVal = weekly.hours[idx]
-              const maVal = milesMA[idx]
-              const label = weekly.labelTexts[idx] ?? `W${xVals[idx] + 1}`
-              tooltipRef.current.innerHTML = `${label}<br/>${milesVal.toFixed(1)} mi · ${hoursVal.toFixed(1)} h${
-                maVal ? `<br/><span style="color:orange">4w avg: ${maVal.toFixed(1)} mi</span>` : ''
-              }`
+              const label = weekly.labelTexts[idx] ?? `W${idx + 1}`
+              const lines: string[] = [label]
+              if (modeRef.current === 'miles') {
+                const milesValue = weekly.miles[idx]
+                const avgValue = milesMA[idx]
+                if (milesValue != null) lines.push(`Miles: ${milesValue.toFixed(1)}`)
+                if (avgValue != null) lines.push(`4w Avg: ${avgValue.toFixed(1)}`)
+              } else {
+                const hoursValue = weekly.hours[idx]
+                const avgValue = hoursMA[idx]
+                if (hoursValue != null) lines.push(`Hours: ${hoursValue.toFixed(1)}`)
+                if (avgValue != null) lines.push(`4w Avg: ${avgValue.toFixed(1)}`)
+              }
+
+              tooltipRef.current.innerHTML = lines.join('<br />')
               tooltipRef.current.style.opacity = '1'
 
               const cursorTop = (u as any).cursor?.top ?? 0
               const chartHeight = weeklyRef.current?.clientHeight || 0
               const clampedTop = Math.max(4, Math.min(cursorTop - 20, chartHeight - 36))
 
-              // Keep tooltip within chart bounds
               const chartWidth = weeklyRef.current?.clientWidth || 0
-              const tooltipWidth = 140 // approximate tooltip width
-              const cursorLeft = (u as any).cursor?.left ?? left
+              const tooltipWidth = 140
+              const cursorLeft = (u as any).cursor?.left ?? u.valToPos(xVals[idx], 'x', true)
               const clampedLeft = Math.max(tooltipWidth / 2, Math.min(cursorLeft, chartWidth - tooltipWidth / 2))
               tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${clampedTop}px)`
             },
           ],
-        },
+        } as any,
       },
       data,
       weeklyRef.current
@@ -198,17 +224,18 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
       weeklyPlotRef.current = null
       tooltipRef.current?.remove()
     }
-  }, [weekly, milesMA])
+  }, [weekly, milesMA, hoursMA])
 
   // Update series visibility on mode change without full re-init
   useEffect(() => {
     modeRef.current = mode
     const wp = weeklyPlotRef.current
     if (!wp) return
-    // Miles series index 1, hours series index 2, MA index 3
+    // Miles series index 1, hours series index 2, MA index 3, hours MA index 4
     wp.setSeries(1, { show: mode === 'miles' })
     wp.setSeries(2, { show: mode === 'hours' })
     wp.setSeries(3, { show: mode === 'miles' })
+    wp.setSeries(4, { show: mode === 'hours' })
   }, [mode])
 
   // Distribution chart
@@ -223,6 +250,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
 
     const idxs = distribution.counts.map((_, i) => i)
     const data: AlignedData = [idxs, distribution.counts]
+    const stackValues = distribution.stacks ?? []
 
     distTooltipRef.current = document.createElement('div')
     distTooltipRef.current.className = 'uplot-tooltip'
@@ -270,12 +298,36 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
               }
               return { fill: path, stroke: path }
             },
-            fill: 'rgba(255,255,255,0.05)',
+            fill: stackValues.length ? 'transparent' : 'rgba(255,255,255,0.05)',
             stroke: 'transparent',
             points: { show: false },
           },
         ],
         hooks: {
+          draw: [
+            (u: uPlot) => {
+              if (!stackValues.length) return
+              const ctx = (u as any).ctx as CanvasRenderingContext2D | undefined
+              if (!ctx) return
+              const count = stackValues[0]?.values.length ?? 0
+              for (let index = 0; index < count; index += 1) {
+                let current = 0
+                stackValues.forEach((stack) => {
+                  const value = stack.values[index] ?? 0
+                  if (!value) return
+                  const x = u.valToPos(index, 'x', true)
+                  const bw = (u.valToPos(index + 0.5, 'x', true) - u.valToPos(index - 0.5, 'x', true)) * 0.6
+                  const yBase = u.valToPos(current, 'y', true)
+                  const yTop = u.valToPos(current + value, 'y', true)
+                  ctx.fillStyle = stack.color
+                  ctx.globalAlpha = 0.6
+                  ctx.fillRect(x - bw / 2, yTop, bw, yBase - yTop)
+                  ctx.globalAlpha = 1
+                  current += value
+                })
+              }
+            },
+          ],
           setCursor: [
             (u: uPlot) => {
               if (!distTooltipRef.current) return
@@ -287,19 +339,28 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
               const left = u.valToPos(idxs[idx], 'x', true)
               const top = 8
               const label = distribution.labels[idx]
-              const count = distribution.counts[idx]
-              const color = distColors[idx]
-              distTooltipRef.current.innerHTML = `<span style="color:${color}">${label}</span><br/>${count} activities`
+              if (stackValues.length) {
+                const stackedLines = stackValues
+                  .filter((stack) => stack.values[idx])
+                  .map(
+                    (stack) => `<span style="color:${stack.color}">${stack.label}</span>: ${stack.values[idx].toFixed(1)}h`
+                  )
+                distTooltipRef.current.innerHTML = `<strong>${label}</strong><br/>${stackedLines.join('<br/>')}`
+              } else {
+                const count = distribution.counts[idx]
+                const color = distColors[idx]
+                distTooltipRef.current.innerHTML = `<span style="color:${color}">${label}</span><br/>${count} activities`
+              }
               distTooltipRef.current.style.opacity = '1'
 
               // Keep tooltip within chart bounds
               const chartWidth = distRef.current?.clientWidth || 0
-              const tooltipWidth = 120 // approximate tooltip width
+              const tooltipWidth = 140 // approximate tooltip width
               const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
               distTooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${top}px)`
             },
           ],
-        },
+        } as any,
       },
       data,
       distRef.current
@@ -314,6 +375,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
 
   // Apply colored overlays to bars post-render (canvas overlay approach)
   useEffect(() => {
+    if (distribution.stacks?.length) return
     const canvas = distRef.current?.querySelector('canvas') as HTMLCanvasElement | undefined
     if (!canvas) return
     const ctx = canvas.getContext('2d')

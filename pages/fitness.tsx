@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { Grid } from '../components/Shared/Section'
+import { ride, run, swim } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
 
@@ -72,7 +73,6 @@ interface LaneStats {
   weeklyLabelTexts: string[]
   weeklyHeartRate: Array<number | null>
   weeklyWatts: Array<number | null>
-  bikeMix?: { roadHours: number; zwiftHours: number }
 }
 
 const DISCIPLINE_CONFIG: Record<Discipline, { label: string; color: string; accent: string }> = {
@@ -204,31 +204,6 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets:
   return { miles, hours, labels, labelTexts, weeklyHeartRate, weeklyWatts }
 }
 
-const buildBikeMixSeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets: number, interval: 'day' | 'week') => {
-  const road = Array.from({ length: buckets }, () => 0)
-  const zwift = Array.from({ length: buckets }, () => 0)
-  const labels = Array.from({ length: buckets }, (_, i) => i)
-  const labelTexts = labels.map((i) => {
-    if (interval === 'day') {
-      const format = buckets <= 8 ? 'ddd' : 'MMM D'
-      return start.add(i, 'day').format(format)
-    }
-    return `W${i + 1}`
-  })
-
-  items.forEach((item) => {
-    const idx = getBucketIndex(item.date, start, interval)
-    if (idx < 0 || idx >= buckets) return
-    if (item.bikeKind === 'road') {
-      road[idx] += item.seconds / 3600
-    } else if (item.bikeKind === 'zwift') {
-      zwift[idx] += item.seconds / 3600
-    }
-  })
-
-  return { road, zwift, labels, labelTexts }
-}
-
 const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
   const zones: ZoneStat[] =
     discipline === 'run'
@@ -347,18 +322,6 @@ const FitnessPage = ({ activities, error }: Props) => {
       const avgHeartRate = heartRateSeconds ? heartRateTotal / heartRateSeconds : null
       const avgWatts = wattsSeconds ? wattsTotal / wattsSeconds : null
 
-      const bikeMix =
-        discipline === 'bike'
-          ? {
-              roadHours: laneItems
-                .filter((item) => item.bikeKind === 'road')
-                .reduce((acc, item) => acc + item.seconds / 3600, 0),
-              zwiftHours: laneItems
-                .filter((item) => item.bikeKind === 'zwift')
-                .reduce((acc, item) => acc + item.seconds / 3600, 0),
-            }
-          : undefined
-
       result.push({
         discipline,
         label: DISCIPLINE_CONFIG[discipline].label,
@@ -377,7 +340,6 @@ const FitnessPage = ({ activities, error }: Props) => {
         weeklyLabelTexts: weekly.labelTexts,
         weeklyHeartRate: weekly.weeklyHeartRate,
         weeklyWatts: weekly.weeklyWatts,
-        bikeMix,
       })
     })
 
@@ -410,11 +372,6 @@ const FitnessPage = ({ activities, error }: Props) => {
     [bucketInterval, bucketsInWindow, windowedActivities, windowStart]
   )
 
-  const bikeMixSeries = useMemo(() => {
-    const bikeActivities = windowedActivities.filter((item) => item.discipline === 'bike')
-    return buildBikeMixSeries(bikeActivities, windowStart, bucketsInWindow, bucketInterval)
-  }, [bucketInterval, bucketsInWindow, windowedActivities, windowStart])
-
   const disciplineMix = useMemo(() => {
     const mix = { swim: 0, bike: 0, run: 0, other: 0 }
     windowedActivities.forEach((item) => {
@@ -423,12 +380,32 @@ const FitnessPage = ({ activities, error }: Props) => {
     return mix
   }, [windowedActivities])
 
+  const bikeKindHours = useMemo(
+    () =>
+      windowedActivities.reduce(
+        (acc, item) => {
+          if (item.discipline !== 'bike') return acc
+          if (item.bikeKind === 'road') {
+            acc.road += item.seconds / 3600
+          } else if (item.bikeKind === 'zwift') {
+            acc.zwift += item.seconds / 3600
+          }
+          return acc
+        },
+        { road: 0, zwift: 0 }
+      ),
+    [windowedActivities]
+  )
+
   const distributionLabels = ['Swim', 'Bike', 'Run', 'Other']
   const distributionCounts = [disciplineMix.swim, disciplineMix.bike, disciplineMix.run, disciplineMix.other]
-
-  const bikeMixCounts = laneStats.find((lane) => lane.discipline === 'bike')?.bikeMix
-  const bikeMixLabels = ['Road', 'Zwift']
-  const bikeMixValues = bikeMixCounts ? [bikeMixCounts.roadHours, bikeMixCounts.zwiftHours] : [0, 0]
+  const distributionStacks = [
+    { label: 'Swim', values: [disciplineMix.swim, 0, 0, 0], color: '#2f7ec4' },
+    { label: 'Road bike', values: [0, bikeKindHours.road, 0, 0], color: '#7bbf3f' },
+    { label: 'Zwift bike', values: [0, bikeKindHours.zwift, 0, 0], color: '#a3d85f' },
+    { label: 'Run', values: [0, 0, disciplineMix.run, 0], color: '#d9634b' },
+    { label: 'Other', values: [0, 0, 0, disciplineMix.other], color: '#8a8a8a' },
+  ]
 
   const hasData = windowedActivities.length > 0
 
@@ -465,7 +442,17 @@ const FitnessPage = ({ activities, error }: Props) => {
           <HeroBadge>{windowLabel}</HeroBadge>
           <HeroTitleRow>
             <HeroTitle>Triathlon Training Dashboard</HeroTitle>
-            <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
+            <HeroSubtitle>
+              <HeroIcon aria-label="Swim" role="img" title="Swim">
+                {swim()}
+              </HeroIcon>
+              <HeroIcon aria-label="Bike" role="img" title="Bike">
+                {ride()}
+              </HeroIcon>
+              <HeroIcon aria-label="Run" role="img" title="Run">
+                {run()}
+              </HeroIcon>
+            </HeroSubtitle>
           </HeroTitleRow>
           <HeroStats>
             <HeroStat>
@@ -561,11 +548,11 @@ const FitnessPage = ({ activities, error }: Props) => {
         <SectionCard variants={fade}>
           <SectionHeaderText>
             <h2>Shared timeline</h2>
-            <span>Volume trends and bike mix ({windowLabel.toLowerCase()})</span>
+            <span>Volume trends and discipline mix ({windowLabel.toLowerCase()})</span>
           </SectionHeaderText>
           <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
-              distribution={{ labels: distributionLabels, counts: distributionCounts }}
+              distribution={{ labels: distributionLabels, counts: distributionCounts, stacks: distributionStacks }}
               distributionTitle="Discipline Mix (Hours)"
               modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
               weekly={{
@@ -575,18 +562,6 @@ const FitnessPage = ({ activities, error }: Props) => {
                 hours: totalWeeklySeries.hours,
               }}
               weeklyTitle={bucketInterval === 'day' ? 'Daily Volume' : 'Weekly Volume'}
-            />
-            <FitnessCharts
-              distribution={{ labels: bikeMixLabels, counts: bikeMixValues }}
-              distributionTitle="Bike Mix (Hours)"
-              modeLabels={{ primary: 'Road', secondary: 'Zwift' }}
-              weekly={{
-                labels: bikeMixSeries.labels,
-                labelTexts: bikeMixSeries.labelTexts,
-                miles: bikeMixSeries.road,
-                hours: bikeMixSeries.zwift,
-              }}
-              weeklyTitle={bucketInterval === 'day' ? 'Daily Bike Mix' : 'Bike Mix Trend'}
             />
           </Grid>
         </SectionCard>
@@ -682,9 +657,25 @@ const HeroTitle = styled.h1`
   color: var(--heading);
 `
 
-const HeroSubtitle = styled.p`
+const HeroSubtitle = styled.div`
   margin: 0;
-  font-size: clamp(1rem, 2vw, 1.4rem);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text-dark);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+
+  svg {
+    display: block;
+  }
+`
+
+const HeroIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
   color: var(--text-dark);
 `
 
