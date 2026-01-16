@@ -6,7 +6,6 @@ import type { GetStaticProps } from 'next/types'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
-import ActivityHeatmap from '../components/Fitness/ActivityHeatmap'
 import { Grid } from '../components/Shared/Section'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
@@ -560,21 +559,6 @@ const FitnessPage = ({ activities, error }: Props) => {
               weeklyTitle={bucketInterval === 'day' ? 'Daily Training' : 'All Training'}
             />
           </Grid>
-        </SectionCard>
-
-        <SectionCard variants={fade}>
-          <SectionHeaderText>
-            <h2>Training heatmap</h2>
-            <span>Daily intensity bands by discipline</span>
-          </SectionHeaderText>
-          <ActivityHeatmap
-            activities={windowedActivities.map((item) => ({
-              date: item.date,
-              discipline: item.discipline,
-              seconds: item.seconds,
-            }))}
-            startDate={windowStart}
-          />
         </SectionCard>
 
         <SectionCard variants={fade}>

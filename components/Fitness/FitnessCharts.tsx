@@ -391,29 +391,6 @@ const ChartCard = styled.div`
     mix-blend-mode: overlay;
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgb(255 255 255 / 10%), transparent 65%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    inset: 0;
-    mask:
-      linear-gradient(#000000, #000000) content-box,
-      linear-gradient(#000000, #000000);
-    mask-composite: exclude;
-  }
-
-  &:hover {
-    border-color: rgb(255 255 255 / 15%);
-    box-shadow: 0 16px 40px -12px rgb(0 0 0 / 40%);
-
-    &::after {
-      opacity: 0.8;
-    }
-  }
 
   .uplot-host {
     position: relative;
