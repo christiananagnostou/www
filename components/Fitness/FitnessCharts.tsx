@@ -5,7 +5,8 @@ import uPlot from 'uplot'
 import 'uplot/dist/uPlot.min.css'
 
 interface WeeklyData {
-  labels: number[] // week numbers
+  labels: number[]
+  labelTexts: string[]
   miles: number[]
   hours: number[]
 }
@@ -97,13 +98,17 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
             size: 16,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
-            values: (u, ticks) => ticks.map((t) => `W${t}`),
+            values: (u: uPlot, ticks: number[]) =>
+              ticks.map((t) => {
+                const index = Math.round(t)
+                return weekly.labelTexts[index] ?? `W${index + 1}`
+              }),
           },
           {
             size: 20,
             scale: 'miles',
             stroke: textDark,
-            values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
+            values: (u: uPlot, ticks: number[]) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
           },
           {
@@ -111,7 +116,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
             scale: 'hours',
             side: 1,
             stroke: textDark,
-            values: (u, ticks) => ticks.map((t) => t.toFixed(1)),
+            values: (u: uPlot, ticks: number[]) => ticks.map((t) => t.toFixed(1)),
             grid: { show: false },
           },
         ],
@@ -153,7 +158,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
         },
         hooks: {
           setCursor: [
-            (u) => {
+            (u: uPlot) => {
               if (!tooltipRef.current) return
               const { idx } = u.cursor
               if (idx == null || idx < 0 || idx >= xVals.length) {
@@ -165,9 +170,10 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
               const milesVal = weekly.miles[idx]
               const hoursVal = weekly.hours[idx]
               const maVal = milesMA[idx]
-              tooltipRef.current.innerHTML = `Week ${xVals[idx]}<br/>${milesVal.toFixed(1)} mi · ${hoursVal.toFixed(
-                1
-              )} h${maVal ? `<br/><span style="color:orange">4w avg: ${maVal.toFixed(1)} mi</span>` : ''}`
+              const label = weekly.labelTexts[idx] ?? `W${xVals[idx] + 1}`
+              tooltipRef.current.innerHTML = `${label}<br/>${milesVal.toFixed(1)} mi · ${hoursVal.toFixed(1)} h${
+                maVal ? `<br/><span style="color:orange">4w avg: ${maVal.toFixed(1)} mi</span>` : ''
+              }`
               tooltipRef.current.style.opacity = '1'
 
               // Keep tooltip within chart bounds
@@ -230,12 +236,12 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
             size: 16,
             stroke: textDark,
             grid: { stroke: grid, width: 1 },
-            values: (u, ticks) => ticks.map((t) => distribution.labels[t] || ''),
+            values: (u: uPlot, ticks: number[]) => ticks.map((t) => distribution.labels[t] || ''),
           },
           {
             size: 20,
             stroke: textDark,
-            values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
+            values: (u: uPlot, ticks: number[]) => ticks.map((t) => t.toFixed(0)),
             grid: { stroke: grid, width: 1 },
           },
         ],
@@ -261,7 +267,7 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
         ],
         hooks: {
           setCursor: [
-            (u) => {
+            (u: uPlot) => {
               if (!distTooltipRef.current) return
               const { idx } = u.cursor
               if (idx == null || idx < 0 || idx >= distribution.labels.length) {

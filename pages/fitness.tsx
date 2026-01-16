@@ -70,6 +70,7 @@ interface LaneStats {
   weeklyMiles: number[]
   weeklyHours: number[]
   weeklyLabels: number[]
+  weeklyLabelTexts: string[]
   weeklyHeartRate: Array<number | null>
   weeklyWatts: Array<number | null>
   bikeMix?: { roadHours: number; zwiftHours: number }
@@ -127,8 +128,6 @@ const classifyActivity = (activity: StravaActivity): { discipline: Discipline; b
   return { discipline: 'other' }
 }
 
-const getWeekIndex = (date: dayjs.Dayjs, start: dayjs.Dayjs) => date.diff(start, 'week')
-
 const fillSparseSeries = (values: Array<number | null>) => {
   if (!values.length) return values
   const result = [...values]
@@ -159,19 +158,28 @@ const fillSparseSeries = (values: Array<number | null>) => {
   return result
 }
 
-const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: number) => {
-  const miles = Array.from({ length: weeks }, () => 0)
-  const hours = Array.from({ length: weeks }, () => 0)
-  const labels = Array.from({ length: weeks }, (_, i) => i + 1)
+const getBucketIndex = (date: dayjs.Dayjs, start: dayjs.Dayjs, interval: 'day' | 'week') => date.diff(start, interval)
 
-  const heartRateTotals = Array.from({ length: weeks }, () => 0)
-  const heartRateSeconds = Array.from({ length: weeks }, () => 0)
-  const wattsTotals = Array.from({ length: weeks }, () => 0)
-  const wattsSeconds = Array.from({ length: weeks }, () => 0)
+const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets: number, interval: 'day' | 'week') => {
+  const miles = Array.from({ length: buckets }, () => 0)
+  const hours = Array.from({ length: buckets }, () => 0)
+  const labels = Array.from({ length: buckets }, (_, i) => i)
+  const labelTexts = labels.map((i) => {
+    if (interval === 'day') {
+      const format = buckets <= 8 ? 'ddd' : 'MMM D'
+      return start.add(i, 'day').format(format)
+    }
+    return `W${i + 1}`
+  })
+
+  const heartRateTotals = Array.from({ length: buckets }, () => 0)
+  const heartRateSeconds = Array.from({ length: buckets }, () => 0)
+  const wattsTotals = Array.from({ length: buckets }, () => 0)
+  const wattsSeconds = Array.from({ length: buckets }, () => 0)
 
   items.forEach((item) => {
-    const idx = getWeekIndex(item.date, start)
-    if (idx < 0 || idx >= weeks) return
+    const idx = getBucketIndex(item.date, start, interval)
+    if (idx < 0 || idx >= buckets) return
     miles[idx] += item.miles
     hours[idx] += item.seconds / 3600
 
@@ -194,7 +202,7 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: n
   const weeklyHeartRate = fillSparseSeries(weeklyHeartRateRaw)
   const weeklyWatts = fillSparseSeries(weeklyWattsRaw)
 
-  return { miles, hours, labels, weeklyHeartRate, weeklyWatts }
+  return { miles, hours, labels, labelTexts, weeklyHeartRate, weeklyWatts }
 }
 
 const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
@@ -276,14 +284,22 @@ const FitnessPage = ({ activities, error }: Props) => {
   )
 
   const windowEnd = dayjs().endOf('day')
-  const windowStart = useMemo(() => windowEnd.subtract(windowMonths, 'month').startOf('day'), [windowEnd, windowMonths])
+  const windowStart = useMemo(() => {
+    if (windowMonths < 1) {
+      return windowEnd.subtract(6, 'day').startOf('day')
+    }
+    return windowEnd.subtract(windowMonths, 'month').startOf('day')
+  }, [windowEnd, windowMonths])
 
   const windowedActivities = useMemo(
     () => parsedActivities.filter((item) => item.date.isAfter(windowStart) && item.date.isBefore(windowEnd)),
     [parsedActivities, windowEnd, windowStart]
   )
 
-  const weeksInWindow = Math.max(windowEnd.diff(windowStart, 'week') + 1, 1)
+  const bucketInterval: 'day' | 'week' = windowMonths <= 1 ? 'day' : 'week'
+  const bucketsInWindow = Math.max(windowEnd.diff(windowStart, bucketInterval) + 1, 1)
+  const windowLabel =
+    windowMonths < 1 ? 'Rolling 1 week' : windowMonths === 1 ? 'Rolling 1 month' : `Rolling ${windowMonths} months`
 
   const laneStats = useMemo(() => {
     const result: LaneStats[] = []
@@ -293,7 +309,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       const miles = laneItems.reduce((acc, item) => acc + item.miles, 0)
       const hours = laneItems.reduce((acc, item) => acc + item.seconds / 3600, 0)
       const elevation = laneItems.reduce((acc, item) => acc + item.elevation, 0)
-      const weekly = buildWeeklySeries(laneItems, windowStart, weeksInWindow)
+      const weekly = buildWeeklySeries(laneItems, windowStart, bucketsInWindow, bucketInterval)
       const zones = buildZones(laneItems, discipline)
       const avgSpeed = hours ? miles / hours : null
       const avgPace = miles ? (hours * 60) / miles : null
@@ -334,6 +350,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         weeklyMiles: weekly.miles,
         weeklyHours: weekly.hours,
         weeklyLabels: weekly.labels,
+        weeklyLabelTexts: weekly.labelTexts,
         weeklyHeartRate: weekly.weeklyHeartRate,
         weeklyWatts: weekly.weeklyWatts,
         bikeMix,
@@ -341,7 +358,7 @@ const FitnessPage = ({ activities, error }: Props) => {
     })
 
     return result
-  }, [weeksInWindow, windowStart, windowedActivities])
+  }, [bucketInterval, bucketsInWindow, windowStart, windowedActivities])
 
   const otherActivities = useMemo(
     () => windowedActivities.filter((item) => item.discipline === 'other'),
@@ -365,8 +382,8 @@ const FitnessPage = ({ activities, error }: Props) => {
   const everestCount = totalElevation / EVEREST_HEIGHT_FT
 
   const totalWeeklySeries = useMemo(
-    () => buildWeeklySeries(windowedActivities, windowStart, weeksInWindow),
-    [windowedActivities, windowStart, weeksInWindow]
+    () => buildWeeklySeries(windowedActivities, windowStart, bucketsInWindow, bucketInterval),
+    [bucketInterval, bucketsInWindow, windowedActivities, windowStart]
   )
 
   const disciplineMix = useMemo(() => {
@@ -416,7 +433,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <HeroPanel variants={fade}>
           <HeroGlow />
-          <HeroBadge>{windowMonths < 1 ? 'Rolling 1 week' : `Rolling ${windowMonths} months`}</HeroBadge>
+          <HeroBadge>{windowLabel}</HeroBadge>
           <HeroTitle>Triathlon Dashboard</HeroTitle>
           <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
           <HeroStats>
@@ -461,20 +478,22 @@ const FitnessPage = ({ activities, error }: Props) => {
               <LaneChart>
                 <FitnessLaneChart
                   labels={lane.weeklyLabels}
+                  labelTexts={lane.weeklyLabelTexts}
                   primaryColor={lane.color}
                   primaryLabel="Miles"
                   primarySeries={lane.weeklyMiles}
-                  title="Weekly volume"
+                  title={bucketInterval === 'day' ? 'Daily volume' : 'Weekly volume'}
                 />
                 <FitnessLaneChart
                   labels={lane.weeklyLabels}
+                  labelTexts={lane.weeklyLabelTexts}
                   primaryColor={lane.color}
                   primaryLabel="HR"
                   primarySeries={lane.weeklyHeartRate}
                   secondaryColor={DISCIPLINE_CONFIG[lane.discipline].accent}
                   secondaryLabel="Watts"
                   secondarySeries={lane.weeklyWatts}
-                  title="Performance trend"
+                  title={bucketInterval === 'day' ? 'Daily performance' : 'Performance trend'}
                 />
               </LaneChart>
               <LaneStats>
@@ -552,7 +571,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         <SectionCard variants={fade}>
           <SectionHeaderText>
             <h2>Shared timeline</h2>
-            <span>Volume trends and discipline mix (rolling {windowMonths} months)</span>
+            <span>Volume trends and discipline mix ({windowLabel.toLowerCase()})</span>
           </SectionHeaderText>
           <Grid $gap="1.5rem" $minWidth="320px">
             <FitnessCharts
@@ -561,10 +580,11 @@ const FitnessPage = ({ activities, error }: Props) => {
               modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
               weekly={{
                 labels: totalWeeklySeries.labels,
+                labelTexts: totalWeeklySeries.labelTexts,
                 miles: totalWeeklySeries.miles,
                 hours: totalWeeklySeries.hours,
               }}
-              weeklyTitle="Weekly Volume"
+              weeklyTitle={bucketInterval === 'day' ? 'Daily Volume' : 'Weekly Volume'}
             />
             <FitnessCharts
               distribution={{ labels: bikeMixLabels, counts: bikeMixValues }}
@@ -572,10 +592,11 @@ const FitnessPage = ({ activities, error }: Props) => {
               modeLabels={{ primary: 'Miles', secondary: 'Hours' }}
               weekly={{
                 labels: totalWeeklySeries.labels,
+                labelTexts: totalWeeklySeries.labelTexts,
                 miles: totalWeeklySeries.miles,
                 hours: totalWeeklySeries.hours,
               }}
-              weeklyTitle="All Training"
+              weeklyTitle={bucketInterval === 'day' ? 'Daily Training' : 'All Training'}
             />
           </Grid>
         </SectionCard>

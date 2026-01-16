@@ -7,6 +7,7 @@ import 'uplot/dist/uPlot.min.css'
 interface Props {
   title: string
   labels: number[]
+  labelTexts?: string[]
   primarySeries: Array<number | null>
   primaryLabel: string
   primaryColor: string
@@ -22,6 +23,7 @@ interface Props {
 const FitnessLaneChart = ({
   title,
   labels,
+  labelTexts,
   primarySeries,
   primaryLabel,
   primaryColor,
@@ -116,12 +118,18 @@ const FitnessLaneChart = ({
           size: 16,
           stroke: textDark,
           grid: { stroke: grid, width: 1 },
-          values: (u, ticks) => ticks.map((t) => `W${t}`),
+          values: (u: uPlot, ticks: number[]) =>
+            ticks.map((t) => {
+              const index = Math.round(t)
+              if (labelTexts?.[index]) return labelTexts[index]
+              return `W${index + 1}`
+            }),
         },
+
         {
           size: 22,
           stroke: textDark,
-          values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
+          values: (u: uPlot, ticks: number[]) => ticks.map((t) => t.toFixed(0)),
           grid: { stroke: grid, width: 1 },
         },
       ],
@@ -131,7 +139,7 @@ const FitnessLaneChart = ({
       },
       hooks: {
         setCursor: [
-          (u) => {
+          (u: uPlot) => {
             if (!tooltipRef.current) return
             const { idx } = u.cursor
             if (idx == null || idx < 0 || idx >= labels.length) {
@@ -140,7 +148,9 @@ const FitnessLaneChart = ({
             }
             const left = u.valToPos(labels[idx], 'x', true)
             const top = 6
-            const lines: string[] = [`Week ${labels[idx]}`]
+            const label = labelTexts?.[idx] ?? `W${labels[idx] + 1}`
+            const lines: string[] = [label]
+
             seriesConfig.slice(1).forEach((series, index) => {
               const value = (data[index + 1][idx] as number | null) ?? null
               if (value == null) return
@@ -166,7 +176,7 @@ const FitnessLaneChart = ({
       plotRef.current = null
       tooltipRef.current?.remove()
     }
-  }, [data, height, labels, seriesConfig])
+  }, [data, height, labelTexts, labels, seriesConfig])
 
   return (
     <ChartCard>
