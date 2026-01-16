@@ -104,63 +104,62 @@ const FitnessLaneChart = ({
     tooltipRef.current.className = 'uplot-tooltip'
     chartRef.current.appendChild(tooltipRef.current)
 
-    plotRef.current = new uPlot(
-      {
-        width: Math.max(chartRef.current.clientWidth - 12, 240),
-        height,
-        pxAlign: 0,
-        padding: [4, 6, 16, 24],
-        scales: { x: { time: false } },
-        axes: [
-          {
-            size: 16,
-            stroke: textDark,
-            grid: { stroke: grid, width: 1 },
-            values: (u, ticks) => ticks.map((t) => `W${t}`),
-          },
-          {
-            size: 22,
-            stroke: textDark,
-            values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
-            grid: { stroke: grid, width: 1 },
+    const options = {
+      width: Math.max(chartRef.current.clientWidth - 12, 240),
+      height,
+      pxAlign: 0,
+      padding: [4, 6, 16, 24],
+      scales: { x: { time: false } },
+      legend: { show: false },
+      axes: [
+        {
+          size: 16,
+          stroke: textDark,
+          grid: { stroke: grid, width: 1 },
+          values: (u, ticks) => ticks.map((t) => `W${t}`),
+        },
+        {
+          size: 22,
+          stroke: textDark,
+          values: (u, ticks) => ticks.map((t) => t.toFixed(0)),
+          grid: { stroke: grid, width: 1 },
+        },
+      ],
+      series: seriesConfig,
+      cursor: {
+        points: { size: 6, stroke: '#fff', fill: '#000' },
+      },
+      hooks: {
+        setCursor: [
+          (u) => {
+            if (!tooltipRef.current) return
+            const { idx } = u.cursor
+            if (idx == null || idx < 0 || idx >= labels.length) {
+              tooltipRef.current.style.opacity = '0'
+              return
+            }
+            const left = u.valToPos(labels[idx], 'x', true)
+            const top = 6
+            const lines: string[] = [`Week ${labels[idx]}`]
+            seriesConfig.slice(1).forEach((series, index) => {
+              const value = (data[index + 1][idx] as number | null) ?? null
+              if (value == null) return
+              const formatted = index === 0 ? value.toFixed(1) : value.toFixed(0)
+              lines.push(`${series.label}: ${formatted}`)
+            })
+            tooltipRef.current.innerHTML = lines.join('<br />')
+            tooltipRef.current.style.opacity = '1'
+
+            const chartWidth = chartRef.current?.clientWidth || 0
+            const tooltipWidth = 120
+            const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
+            tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${top}px)`
           },
         ],
-        series: seriesConfig,
-        cursor: {
-          points: { size: 6, stroke: '#fff', fill: '#000' },
-        },
-        hooks: {
-          setCursor: [
-            (u) => {
-              if (!tooltipRef.current) return
-              const { idx } = u.cursor
-              if (idx == null || idx < 0 || idx >= labels.length) {
-                tooltipRef.current.style.opacity = '0'
-                return
-              }
-              const left = u.valToPos(labels[idx], 'x', true)
-              const top = 6
-              const lines: string[] = [`Week ${labels[idx]}`]
-              seriesConfig.slice(1).forEach((series, index) => {
-                const value = (data[index + 1][idx] as number | null) ?? null
-                if (value == null) return
-                const formatted = index === 0 ? value.toFixed(1) : value.toFixed(0)
-                lines.push(`${series.label}: ${formatted}`)
-              })
-              tooltipRef.current.innerHTML = lines.join('<br />')
-              tooltipRef.current.style.opacity = '1'
-
-              const chartWidth = chartRef.current?.clientWidth || 0
-              const tooltipWidth = 120
-              const clampedLeft = Math.max(tooltipWidth / 2, Math.min(left, chartWidth - tooltipWidth / 2))
-              tooltipRef.current.style.transform = `translate(calc(${clampedLeft}px - 50%), ${top}px)`
-            },
-          ],
-        },
       },
-      data,
-      chartRef.current
-    )
+    } as any
+
+    plotRef.current = new uPlot(options, data, chartRef.current)
 
     return () => {
       plotRef.current?.destroy()
@@ -173,7 +172,7 @@ const FitnessLaneChart = ({
     <ChartCard>
       <ChartHeader>
         <h4>{title}</h4>
-        <ChartLabel>{primaryLabel}</ChartLabel>
+        <ChartLabel $color={primaryColor}>{primaryLabel}</ChartLabel>
       </ChartHeader>
       <div ref={chartRef} className="uplot-host" />
     </ChartCard>
@@ -241,9 +240,20 @@ const ChartHeader = styled.div`
   }
 `
 
-const ChartLabel = styled.span`
+const ChartLabel = styled.span<{ $color: string }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   color: var(--text-dark);
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: ${({ $color }) => $color};
+  }
 `
