@@ -209,6 +209,12 @@ const ChartCard = styled.div`
     fill: var(--text-dark);
   }
 
+  .u-legend,
+  .u-legend .u-label,
+  .u-legend .u-value {
+    font-size: 12px;
+  }
+
   .uplot-tooltip {
     position: absolute;
     top: 0;
