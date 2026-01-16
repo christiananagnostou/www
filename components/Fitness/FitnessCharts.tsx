@@ -415,9 +415,10 @@ const ChartCard = styled.div`
 
   .uplot-host {
     position: relative;
-    z-index: 2;
-    flex: 1;
+    margin-top: 1rem;
+    min-height: 220px;
   }
+
 
   .uplot {
     font-family: inherit;

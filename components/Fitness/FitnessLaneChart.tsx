@@ -221,6 +221,7 @@ const ChartCard = styled.div`
   color: var(--text);
 
   .uplot-host {
+    position: relative;
     min-height: 120px;
   }
 
