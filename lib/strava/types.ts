@@ -12,6 +12,8 @@ export interface StravaActivity {
   MovingTime?: string
   AverageSpeed?: string
   Pace?: string
+  AverageHeartRate?: number | null
+  AverageWatts?: number | null
   MaxSpeed?: string | null
   MapPolyline: string | null
   best: {

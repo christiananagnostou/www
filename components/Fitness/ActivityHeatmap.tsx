@@ -176,6 +176,7 @@ export default ActivityHeatmap
 
 const HeatmapContainer = styled.div`
   position: relative;
+  color: var(--text);
 `
 
 const HeatmapHeader = styled.div`
@@ -221,7 +222,7 @@ const LegendItem = styled.span<{ $color: string }>`
 
 const HeatmapGrid = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 5px;
   padding: 1rem;
   border-radius: var(--border-radius-xl);
   border: 1px solid rgb(255 255 255 / 8%);
@@ -231,6 +232,11 @@ const HeatmapGrid = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (width <= 640px) {
+    padding: 0.75rem;
+    gap: 4px;
   }
 `
 
@@ -244,10 +250,10 @@ const DayCell = styled.button<{ $isOutside: boolean }>`
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   gap: 2px;
-  width: 16px;
-  height: 16px;
-  padding: 2px;
-  border-radius: 6px;
+  width: 18px;
+  height: 18px;
+  padding: 3px;
+  border-radius: 7px;
   border: 1px solid rgb(255 255 255 / 6%);
   background: rgb(255 255 255 / 2%);
   opacity: ${({ $isOutside }) => ($isOutside ? 0.25 : 1)};
@@ -256,6 +262,12 @@ const DayCell = styled.button<{ $isOutside: boolean }>`
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  @media (width <= 640px) {
+    width: 14px;
+    height: 14px;
+    padding: 2px;
   }
 `
 
@@ -273,11 +285,15 @@ const DayLabels = styled.div`
 `
 
 const DayLabel = styled.span`
-  width: 12px;
+  width: 14px;
   font-size: 0.55rem;
   color: var(--text-dark);
   text-transform: uppercase;
   letter-spacing: 0.3px;
+
+  @media (width <= 640px) {
+    width: 10px;
+  }
 `
 
 const Tooltip = styled.div`

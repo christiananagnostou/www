@@ -39,6 +39,8 @@ interface ParsedActivity {
   miles: number
   seconds: number
   elevation: number
+  heartRate: number | null
+  watts: number | null
   discipline: Discipline
   bikeKind?: BikeKind
 }
@@ -57,6 +59,8 @@ interface LaneStats {
   elevation: number
   avgPace: number | null
   avgSpeed: number | null
+  avgHeartRate: number | null
+  avgWatts: number | null
   zones: ZoneStat[]
   weeklyMiles: number[]
   weeklyHours: number[]
@@ -202,6 +206,8 @@ const FitnessPage = ({ activities, error }: Props) => {
           miles: parseMiles(activity.Distance),
           seconds: parseSeconds(activity.MovingTime),
           elevation: parseElevation(activity.ElevationGain),
+          heartRate: activity.AverageHeartRate ?? null,
+          watts: activity.AverageWatts ?? null,
           discipline,
           bikeKind,
         }
@@ -231,6 +237,15 @@ const FitnessPage = ({ activities, error }: Props) => {
       const zones = buildZones(laneItems, discipline)
       const avgSpeed = hours ? miles / hours : null
       const avgPace = miles ? (hours * 60) / miles : null
+      const heartRateSeconds = laneItems.reduce((acc, item) => (item.heartRate ? acc + item.seconds : acc), 0)
+      const heartRateTotal = laneItems.reduce(
+        (acc, item) => (item.heartRate ? acc + item.heartRate * item.seconds : acc),
+        0
+      )
+      const wattsSeconds = laneItems.reduce((acc, item) => (item.watts ? acc + item.seconds : acc), 0)
+      const wattsTotal = laneItems.reduce((acc, item) => (item.watts ? acc + item.watts * item.seconds : acc), 0)
+      const avgHeartRate = heartRateSeconds ? heartRateTotal / heartRateSeconds : null
+      const avgWatts = wattsSeconds ? wattsTotal / wattsSeconds : null
 
       const bikeMix =
         discipline === 'bike'
@@ -253,6 +268,8 @@ const FitnessPage = ({ activities, error }: Props) => {
         elevation,
         avgPace,
         avgSpeed,
+        avgHeartRate,
+        avgWatts,
         zones,
         weeklyMiles: weekly.miles,
         weeklyHours: weekly.hours,
@@ -387,11 +404,15 @@ const FitnessPage = ({ activities, error }: Props) => {
                 </StatBlock>
                 <StatBlock>
                   <span>{lane.avgPace ? lane.avgPace.toFixed(1) : '—'}</span>
-                  <small>{lane.discipline === 'bike' ? 'avg pace (min/mi)' : 'avg pace (min/mi)'}</small>
+                  <small>avg pace (min/mi)</small>
                 </StatBlock>
                 <StatBlock>
-                  <span>{lane.elevation.toFixed(0)} ft</span>
-                  <small>elevation</small>
+                  <span>{lane.avgHeartRate ? lane.avgHeartRate.toFixed(0) : '—'}</span>
+                  <small>avg HR (bpm)</small>
+                </StatBlock>
+                <StatBlock>
+                  <span>{lane.avgWatts ? lane.avgWatts.toFixed(0) : '—'}</span>
+                  <small>avg watts</small>
                 </StatBlock>
               </LaneStats>
               <ZoneRow>
@@ -406,6 +427,13 @@ const FitnessPage = ({ activities, error }: Props) => {
                     />
                   ))}
                 </ZoneBar>
+                <ZoneLegend>
+                  {lane.zones.map((zone) => (
+                    <ZoneLegendItem key={zone.label} $color={lane.color}>
+                      {zone.label}
+                    </ZoneLegendItem>
+                  ))}
+                </ZoneLegend>
               </ZoneRow>
               {lane.discipline === 'bike' && lane.bikeMix ? (
                 <MixRow>
@@ -422,6 +450,10 @@ const FitnessPage = ({ activities, error }: Props) => {
                       title={`Zwift: ${lane.bikeMix.zwiftHours.toFixed(1)}h`}
                     />
                   </ZoneBar>
+                  <ZoneLegend>
+                    <ZoneLegendItem $color={DISCIPLINE_CONFIG.bike.accent}>Road</ZoneLegendItem>
+                    <ZoneLegendItem $color={lane.color}>Zwift</ZoneLegendItem>
+                  </ZoneLegend>
                 </MixRow>
               ) : null}
               <FunStat>
@@ -473,7 +505,14 @@ const FitnessPage = ({ activities, error }: Props) => {
             <h2>Training heatmap</h2>
             <span>Daily intensity bands by discipline</span>
           </SectionHeaderText>
-          <ActivityHeatmap activities={windowedActivities} startDate={windowStart} />
+          <ActivityHeatmap
+            activities={windowedActivities.map((item) => ({
+              date: item.date,
+              discipline: item.discipline,
+              seconds: item.seconds,
+            }))}
+            startDate={windowStart}
+          />
         </SectionCard>
 
         <SectionCard variants={fade}>
@@ -525,6 +564,7 @@ const Container = styled(motion.main)`
   flex-direction: column;
   gap: 2rem;
   padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+  color: var(--text);
 `
 
 const HeroPanel = styled(motion.section)`
@@ -570,6 +610,7 @@ const HeroTitle = styled.h1`
   margin: 0;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   letter-spacing: -0.02em;
+  color: var(--heading);
 `
 
 const HeroSubtitle = styled.p`
@@ -598,6 +639,7 @@ const HeroStat = styled.div`
   span {
     font-size: clamp(1.2rem, 2vw, 1.7rem);
     font-weight: 600;
+    color: var(--heading);
   }
   small {
     font-size: 0.7rem;
@@ -644,6 +686,7 @@ const LaneCard = styled(motion.div)<{ $accent: string }>`
   background: linear-gradient(140deg, rgb(255 255 255 / 3%), transparent);
   box-shadow: 0 20px 40px -30px rgb(0 0 0 / 60%);
   overflow: hidden;
+  color: var(--text);
 
   &::after {
     content: '';
@@ -707,6 +750,7 @@ const StatBlock = styled.div`
   span {
     font-size: 1.1rem;
     font-weight: 600;
+    color: var(--heading);
   }
   small {
     font-size: 0.65rem;
@@ -736,6 +780,33 @@ const ZoneBar = styled.div`
   height: 12px;
 `
 
+const ZoneLegend = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+`
+
+const ZoneLegendItem = styled.span<{ $color: string }>`
+  position: relative;
+  padding-left: 0.75rem;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-dark);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: ${({ $color }) => $color};
+    transform: translateY(-50%);
+  }
+`
+
 const ZoneSegment = styled.span<{ $color: string; $weight: number }>`
   flex: ${({ $weight }) => Math.max($weight, 0.1)};
   border-radius: 999px;
@@ -758,6 +829,7 @@ const SectionCard = styled(motion.section)`
   border-radius: var(--border-radius-xl);
   border: 1px solid rgb(255 255 255 / 10%);
   background: linear-gradient(140deg, rgb(255 255 255 / 2%), transparent);
+  color: var(--text);
 `
 
 const SectionHeaderText = styled.div`
@@ -766,6 +838,7 @@ const SectionHeaderText = styled.div`
   h2 {
     margin: 0;
     font-size: 1.2rem;
+    color: var(--heading);
   }
   span {
     font-size: 0.7rem;
