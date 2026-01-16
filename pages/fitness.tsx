@@ -627,8 +627,8 @@ const HeroGlow = styled.div`
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 20% 20%, rgb(79 163 255 / 20%), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgb(181 255 99 / 15%), transparent 45%),
-    radial-gradient(circle at 50% 80%, rgb(255 123 95 / 20%), transparent 55%);
+    radial-gradient(circle at 80% 20%, rgb(255 123 95 / 20%), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgb(181 255 99 / 15%), transparent 55%);
   opacity: 0.6;
   pointer-events: none;
 `
