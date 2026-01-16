@@ -230,7 +230,13 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
         height: 260,
         pxAlign: 0,
         padding: [4, 6, 16, 20],
-        scales: { x: { time: false }, y: {} },
+        scales: {
+          x: {
+            time: false,
+            range: () => [-0.5, distribution.labels.length - 0.5],
+          },
+          y: {},
+        },
         axes: [
           {
             size: 16,

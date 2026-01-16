@@ -29,6 +29,11 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
   loading: () => <div>Loading chart…</div>,
 })
 
+const FitnessZoneChart = dynamic(async () => import('../components/Fitness/FitnessZoneChart'), {
+  ssr: false,
+  loading: () => <div>Loading chart…</div>,
+})
+
 interface Props {
   activities: StravaActivity[]
   error?: string
@@ -514,47 +519,21 @@ const FitnessPage = ({ activities, error }: Props) => {
                   <small>avg watts</small>
                 </StatBlock>
               </LaneStats>
-              <ZoneRow>
-                <ZoneLabel>{lane.discipline === 'bike' ? 'Speed zones' : 'Pace zones'}</ZoneLabel>
-                <ZoneBar>
-                  {lane.zones.map((zone) => (
-                    <ZoneSegment
-                      key={zone.label}
-                      $color={lane.color}
-                      $weight={zone.seconds}
-                      title={`${zone.label}: ${(zone.seconds / 3600).toFixed(1)}h`}
-                    />
-                  ))}
-                </ZoneBar>
-                <ZoneLegend>
-                  {lane.zones.map((zone) => (
-                    <ZoneLegendItem key={zone.label} $color={lane.color}>
-                      {zone.label}
-                    </ZoneLegendItem>
-                  ))}
-                </ZoneLegend>
-              </ZoneRow>
-              {lane.discipline === 'bike' && lane.bikeMix ? (
-                <MixRow>
-                  <ZoneLabel>Bike mix</ZoneLabel>
-                  <ZoneBar>
-                    <ZoneSegment
-                      $color={DISCIPLINE_CONFIG.bike.accent}
-                      $weight={lane.bikeMix.roadHours}
-                      title={`Road: ${lane.bikeMix.roadHours.toFixed(1)}h`}
-                    />
-                    <ZoneSegment
-                      $color={lane.color}
-                      $weight={lane.bikeMix.zwiftHours}
-                      title={`Zwift: ${lane.bikeMix.zwiftHours.toFixed(1)}h`}
-                    />
-                  </ZoneBar>
-                  <ZoneLegend>
-                    <ZoneLegendItem $color={DISCIPLINE_CONFIG.bike.accent}>Road</ZoneLegendItem>
-                    <ZoneLegendItem $color={lane.color}>Zwift</ZoneLegendItem>
-                  </ZoneLegend>
-                </MixRow>
-              ) : null}
+              <LaneZoneCharts>
+                <FitnessZoneChart
+                  labels={lane.zones.map((zone) => zone.label)}
+                  title={lane.discipline === 'bike' ? 'Speed zones' : 'Pace zones'}
+                  values={lane.zones.map((zone) => zone.seconds / 3600)}
+                />
+                {lane.discipline === 'bike' && lane.bikeMix ? (
+                  <FitnessZoneChart
+                    labels={['Road', 'Zwift']}
+                    title="Bike mix (hours)"
+                    values={[lane.bikeMix.roadHours, lane.bikeMix.zwiftHours]}
+                    colors={[DISCIPLINE_CONFIG.bike.accent, lane.color]}
+                  />
+                ) : null}
+              </LaneZoneCharts>
               <FunStat>
                 {lane.discipline === 'swim'
                   ? `${(lane.miles / OLYMPIC_POOL_MILES).toFixed(0)} Olympic pools`
@@ -837,58 +816,9 @@ const StatBlock = styled.div`
   }
 `
 
-const ZoneRow = styled.div`
+const LaneZoneCharts = styled.div`
   display: grid;
-  gap: 0.5rem;
-`
-
-const MixRow = styled(ZoneRow)``
-
-const ZoneLabel = styled.span`
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--text-dark);
-`
-
-const ZoneBar = styled.div`
-  display: flex;
-  gap: 0.25rem;
-  height: 12px;
-`
-
-const ZoneLegend = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 0.75rem;
-`
-
-const ZoneLegendItem = styled.span<{ $color: string }>`
-  position: relative;
-  padding-left: 0.75rem;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--text-dark);
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: ${({ $color }) => $color};
-    transform: translateY(-50%);
-  }
-`
-
-const ZoneSegment = styled.span<{ $color: string; $weight: number }>`
-  flex: ${({ $weight }) => Math.max($weight, 0.1)};
-  border-radius: 999px;
-  background: ${({ $color }) => $color};
-  opacity: 0.6;
+  gap: 1rem;
 `
 
 const FunStat = styled.div`
