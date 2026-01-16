@@ -235,23 +235,23 @@ const ChartHeader = styled.div`
 `
 
 const Legend = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(64px, auto);
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.4rem 0.75rem;
+  white-space: nowrap;
 `
 
 const LegendItem = styled.span<{ $color: string }>`
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  min-width: 64px;
+  min-width: 72px;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 0.35px;
   color: var(--text-dark);
+  white-space: nowrap;
 
   &::before {
     content: '';
