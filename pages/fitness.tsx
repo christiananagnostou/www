@@ -15,7 +15,7 @@ const PageTitle = 'Fitness | Christian Anagnostou'
 const PageDescription = "Christian Anagnostou's triathlon training dashboard"
 const PageUrl = `${BASE_URL}/fitness`
 
-const WINDOW_OPTIONS = [6, 12, 24]
+const WINDOW_OPTIONS = [1, 3, 6, 12, 24]
 const EVEREST_HEIGHT_FT = 29029
 const OLYMPIC_POOL_MILES = 0.0311
 
@@ -416,7 +416,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <HeroPanel variants={fade}>
           <HeroGlow />
-          <HeroBadge>Rolling {windowMonths} months</HeroBadge>
+          <HeroBadge>{windowMonths < 1 ? 'Rolling 1 week' : `Rolling ${windowMonths} months`}</HeroBadge>
           <HeroTitle>Triathlon Dashboard</HeroTitle>
           <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
           <HeroStats>
@@ -438,6 +438,9 @@ const FitnessPage = ({ activities, error }: Props) => {
             </HeroStat>
           </HeroStats>
           <HeroControls>
+            <ToggleButton $active={windowMonths === 0.25} onClick={() => setWindowMonths(0.25)}>
+              1w
+            </ToggleButton>
             {WINDOW_OPTIONS.map((months) => (
               <ToggleButton key={months} $active={windowMonths === months} onClick={() => setWindowMonths(months)}>
                 {months}m
