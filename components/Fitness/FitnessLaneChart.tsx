@@ -199,6 +199,16 @@ const ChartCard = styled.div`
     min-height: 120px;
   }
 
+  .u-axis .u-val {
+    font-size: 0.45rem;
+    fill: var(--text-dark);
+  }
+
+  .u-axis .u-label {
+    font-size: 0.5rem;
+    fill: var(--text-dark);
+  }
+
   .uplot-tooltip {
     position: absolute;
     top: 0;

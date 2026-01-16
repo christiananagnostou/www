@@ -466,10 +466,10 @@ const FitnessPage = ({ activities, error }: Props) => {
                 <FitnessLaneChart
                   labels={lane.weeklyLabels}
                   primaryColor={lane.color}
-                  primaryLabel="Avg HR"
+                  primaryLabel="HR"
                   primarySeries={lane.weeklyHeartRate}
                   secondaryColor={DISCIPLINE_CONFIG[lane.discipline].accent}
-                  secondaryLabel="Avg Watts"
+                  secondaryLabel="Watts"
                   secondarySeries={lane.weeklyWatts}
                   title="Performance trend"
                 />
