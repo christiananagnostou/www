@@ -434,7 +434,6 @@ const FitnessPage = ({ activities, error }: Props) => {
         <HeroPanel variants={fade}>
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
-          <HeroTitle>Triathlon Dashboard</HeroTitle>
           <HeroSubtitle>Swim · Bike · Run</HeroSubtitle>
           <HeroStats>
             <HeroStat>
@@ -645,15 +644,6 @@ const HeroBadge = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: var(--text-dark);
-`
-
-const HeroTitle = styled.h1`
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  letter-spacing: -0.02em;
-  color: var(--heading);
 `
 
 const HeroSubtitle = styled.p`
