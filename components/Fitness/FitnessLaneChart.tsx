@@ -245,18 +245,18 @@ const Legend = styled.div`
 const LegendItem = styled.span<{ $color: string }>`
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  min-width: 72px;
-  font-size: 0.55rem;
+  gap: 0.25rem;
+  min-width: 60px;
+  font-size: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.35px;
+  letter-spacing: 0.3px;
   color: var(--text-dark);
   white-space: nowrap;
 
   &::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 999px;
     background: ${({ $color }) => $color};
   }
