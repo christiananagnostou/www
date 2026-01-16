@@ -235,14 +235,19 @@ const ChartHeader = styled.div`
 `
 
 const Legend = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(64px, auto);
+  align-items: center;
   gap: 0.4rem 0.75rem;
 `
 
 const LegendItem = styled.span<{ $color: string }>`
   position: relative;
-  padding-left: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 64px;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 0.35px;
@@ -250,13 +255,9 @@ const LegendItem = styled.span<{ $color: string }>`
 
   &::before {
     content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
     width: 6px;
     height: 6px;
     border-radius: 999px;
     background: ${({ $color }) => $color};
-    transform: translateY(-50%);
   }
 `

@@ -129,6 +129,36 @@ const classifyActivity = (activity: StravaActivity): { discipline: Discipline; b
 
 const getWeekIndex = (date: dayjs.Dayjs, start: dayjs.Dayjs) => date.diff(start, 'week')
 
+const fillSparseSeries = (values: Array<number | null>) => {
+  if (!values.length) return values
+  const result = [...values]
+  let lastIndex = -1
+
+  values.forEach((value, index) => {
+    if (value == null) return
+    if (lastIndex === -1) {
+      for (let i = 0; i < index; i += 1) {
+        result[i] = value
+      }
+    } else {
+      const previous = values[lastIndex] as number
+      const gap = index - lastIndex
+      for (let i = 1; i < gap; i += 1) {
+        const t = i / gap
+        result[lastIndex + i] = previous + (value - previous) * t
+      }
+    }
+    lastIndex = index
+  })
+
+  if (lastIndex === -1) return values
+  for (let i = lastIndex + 1; i < values.length; i += 1) {
+    result[i] = values[lastIndex]
+  }
+
+  return result
+}
+
 const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: number) => {
   const miles = Array.from({ length: weeks }, () => 0)
   const hours = Array.from({ length: weeks }, () => 0)
@@ -156,10 +186,13 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: n
     }
   })
 
-  const weeklyHeartRate = heartRateTotals.map((total, idx) =>
+  const weeklyHeartRateRaw = heartRateTotals.map((total, idx) =>
     heartRateSeconds[idx] ? total / heartRateSeconds[idx] : null
   )
-  const weeklyWatts = wattsTotals.map((total, idx) => (wattsSeconds[idx] ? total / wattsSeconds[idx] : null))
+  const weeklyWattsRaw = wattsTotals.map((total, idx) => (wattsSeconds[idx] ? total / wattsSeconds[idx] : null))
+
+  const weeklyHeartRate = fillSparseSeries(weeklyHeartRateRaw)
+  const weeklyWatts = fillSparseSeries(weeklyWattsRaw)
 
   return { miles, hours, labels, weeklyHeartRate, weeklyWatts }
 }
