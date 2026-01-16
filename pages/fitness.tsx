@@ -24,6 +24,11 @@ const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessC
   loading: () => <div>Loading charts…</div>,
 })
 
+const FitnessLaneChart = dynamic(async () => import('../components/Fitness/FitnessLaneChart'), {
+  ssr: false,
+  loading: () => <div>Loading chart…</div>,
+})
+
 interface Props {
   activities: StravaActivity[]
   error?: string
@@ -65,6 +70,8 @@ interface LaneStats {
   weeklyMiles: number[]
   weeklyHours: number[]
   weeklyLabels: number[]
+  weeklyHeartRate: Array<number | null>
+  weeklyWatts: Array<number | null>
   bikeMix?: { roadHours: number; zwiftHours: number }
 }
 
@@ -127,14 +134,34 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, weeks: n
   const hours = Array.from({ length: weeks }, () => 0)
   const labels = Array.from({ length: weeks }, (_, i) => i + 1)
 
+  const heartRateTotals = Array.from({ length: weeks }, () => 0)
+  const heartRateSeconds = Array.from({ length: weeks }, () => 0)
+  const wattsTotals = Array.from({ length: weeks }, () => 0)
+  const wattsSeconds = Array.from({ length: weeks }, () => 0)
+
   items.forEach((item) => {
     const idx = getWeekIndex(item.date, start)
     if (idx < 0 || idx >= weeks) return
     miles[idx] += item.miles
     hours[idx] += item.seconds / 3600
+
+    if (item.heartRate) {
+      heartRateTotals[idx] += item.heartRate * item.seconds
+      heartRateSeconds[idx] += item.seconds
+    }
+
+    if (item.watts) {
+      wattsTotals[idx] += item.watts * item.seconds
+      wattsSeconds[idx] += item.seconds
+    }
   })
 
-  return { miles, hours, labels }
+  const weeklyHeartRate = heartRateTotals.map((total, idx) =>
+    heartRateSeconds[idx] ? total / heartRateSeconds[idx] : null
+  )
+  const weeklyWatts = wattsTotals.map((total, idx) => (wattsSeconds[idx] ? total / wattsSeconds[idx] : null))
+
+  return { miles, hours, labels, weeklyHeartRate, weeklyWatts }
 }
 
 const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
@@ -274,6 +301,8 @@ const FitnessPage = ({ activities, error }: Props) => {
         weeklyMiles: weekly.miles,
         weeklyHours: weekly.hours,
         weeklyLabels: weekly.labels,
+        weeklyHeartRate: weekly.weeklyHeartRate,
+        weeklyWatts: weekly.weeklyWatts,
         bikeMix,
       })
     })
@@ -394,8 +423,23 @@ const FitnessPage = ({ activities, error }: Props) => {
                 </LaneMeta>
               </LaneHeader>
               <LaneChart>
-                <Sparkline values={lane.weeklyMiles} color={lane.color} />
-                <ChartLabel>Weekly mileage</ChartLabel>
+                <FitnessLaneChart
+                  labels={lane.weeklyLabels}
+                  primaryColor={lane.color}
+                  primaryLabel="Miles"
+                  primarySeries={lane.weeklyMiles}
+                  title="Weekly volume"
+                />
+                <FitnessLaneChart
+                  labels={lane.weeklyLabels}
+                  primaryColor={lane.color}
+                  primaryLabel="Avg HR"
+                  primarySeries={lane.weeklyHeartRate}
+                  secondaryColor={DISCIPLINE_CONFIG[lane.discipline].accent}
+                  secondaryLabel="Avg Watts"
+                  secondarySeries={lane.weeklyWatts}
+                  title="Performance trend"
+                />
               </LaneChart>
               <LaneStats>
                 <StatBlock>
@@ -537,23 +581,6 @@ const FitnessPage = ({ activities, error }: Props) => {
         </SectionCard>
       </Container>
     </>
-  )
-}
-
-const Sparkline = ({ values, color }: { values: number[]; color: string }) => {
-  const max = Math.max(...values, 1)
-  const points = values.map((val, idx) => {
-    const x = (idx / Math.max(values.length - 1, 1)) * 100
-    const y = 40 - (val / max) * 36
-    return `${x},${y}`
-  })
-  const path = `M${points.join(' L ')}`
-
-  return (
-    <svg aria-hidden="true" className="sparkline" viewBox="0 0 100 40">
-      <path d={path} fill="none" stroke={color} strokeWidth="2" />
-      <path d={`${path} L 100 40 L 0 40 Z`} fill={`${color}30`} />
-    </svg>
   )
 }
 
@@ -729,13 +756,6 @@ const LaneChart = styled.div`
     width: 100%;
     height: 80px;
   }
-`
-
-const ChartLabel = styled.span`
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--text-dark);
 `
 
 const LaneStats = styled.div`
