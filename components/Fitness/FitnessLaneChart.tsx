@@ -173,11 +173,7 @@ const FitnessLaneChart = ({
     <ChartCard>
       <ChartHeader>
         <h4>{title}</h4>
-        <Legend>
-          <LegendItem $color={primaryColor}>{primaryLabel}</LegendItem>
-          {secondarySeries ? <LegendItem $color={secondaryColor ?? '#4fa3ff'}>{secondaryLabel}</LegendItem> : null}
-          {tertiarySeries ? <LegendItem $color={tertiaryColor ?? '#f4ff7a'}>{tertiaryLabel}</LegendItem> : null}
-        </Legend>
+        <ChartLabel>{primaryLabel}</ChartLabel>
       </ChartHeader>
       <div ref={chartRef} className="uplot-host" />
     </ChartCard>
@@ -209,11 +205,6 @@ const ChartCard = styled.div`
     fill: var(--text-dark);
   }
 
-  .u-legend,
-  .u-legend .u-label,
-  .u-legend .u-value {
-    font-size: 12px;
-  }
 
   .uplot-tooltip {
     position: absolute;
@@ -250,30 +241,9 @@ const ChartHeader = styled.div`
   }
 `
 
-const Legend = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 0.3rem 0.6rem;
-  white-space: nowrap;
-`
-
-const LegendItem = styled.span<{ $color: string }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  min-width: 44px;
-  font-size: 0.45rem;
+const ChartLabel = styled.span`
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.25px;
+  letter-spacing: 0.4px;
   color: var(--text-dark);
-  white-space: nowrap;
-
-  &::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: 999px;
-    background: ${({ $color }) => $color};
-  }
 `
