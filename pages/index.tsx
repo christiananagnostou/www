@@ -25,9 +25,9 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
   await refreshAccessToken()
   const allStravaActivities = await getStravaActivities()
-  const filteredActivities = allStravaActivities
-    .filter((activity) => ['Run', 'Ride', 'VirtualRide', 'Swim'].includes(activity.type))
-    .slice(0, 5)
+  const filteredActivities = allStravaActivities.filter((activity) =>
+    ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
+  )
 
   return {
     props: { posts, stravaActivities: filteredActivities },
