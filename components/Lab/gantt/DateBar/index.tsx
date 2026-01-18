@@ -22,7 +22,7 @@ const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: Date
 
     const currentDate = dayjs().date()
 
-    if ((parseInt(day) + (interval - (currentDate % interval))) % interval !== 0) return 0
+    if ((parseInt(day, 10) + (interval - (currentDate % interval))) % interval !== 0) return 0
     return 1
   }
 

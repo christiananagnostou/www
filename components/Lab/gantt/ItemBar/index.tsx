@@ -7,7 +7,6 @@ import { Bar, BarLabel, BarWrap, EndLabel, ItemBarContainer, StartLabel } from '
 interface RenderItemBarProps {
   item: ItemProps
   dateWidth: number
-  numDaysShown: number
   itemsDateRange: { firstDate: dayjs.Dayjs }
   itemsChildrenMap: Map<ItemProps['id'], ItemProps[]>
   handleRowMouseOver: (id: string | number) => void

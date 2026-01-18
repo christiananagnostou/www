@@ -156,11 +156,11 @@ const DetailStyle = styled.div`
   background: var(--dark-bg);
 
   &:first-child {
-    border-radius: 5px 5px 0 0;
+    border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
   }
   &:last-child {
     margin-bottom: 2rem;
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
   }
 
   h3 {
@@ -180,7 +180,7 @@ const DesktopImage = styled.div`
     margin-bottom: 2rem;
     display: block;
     height: auto;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
   }
 `
 
@@ -195,6 +195,6 @@ const MobileImage = styled.div`
     width: auto;
     max-height: 500px;
     max-width: 100%;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
   }
 `

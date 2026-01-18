@@ -5,9 +5,9 @@ import styles from './styles.module.css'
 const SCROLL_END_DEBOUNCE = 300
 const LEFT_BUTTON = 0
 
-const debounce = (callback: (...rest: any) => any, wait: number) => {
+const debounce = <T extends (...args: unknown[]) => unknown>(callback: T, wait: number) => {
   let timeoutId: number
-  return (...args: any) => {
+  return (...args: Parameters<T>) => {
     window.clearTimeout(timeoutId)
     timeoutId = window.setTimeout(() => {
       callback(...args)
