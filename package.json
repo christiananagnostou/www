@@ -4,17 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run ci:lint && next build",
+    "build": "npm run lint && next build",
     "start": "next start",
-    "ci:lint": "npx --yes oxlint .",
-    "ci:lint:css": "stylelint './**/*.{tsx,js,ts}'",
-    "ci:test": "vitest",
-    "ci:tsc": "tsc --noEmit",
     "lint": "oxlint .",
     "lint:css": "stylelint './**/*.{tsx,js,ts}'",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "vitest"
+    "test": "vitest",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@jsdevtools/rehype-toc": "^3.0.2",

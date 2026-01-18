@@ -27,7 +27,6 @@ const NAV_LINKS: NavLinks = [
       { href: '/fitness', title: 'Fitness' },
       { href: '/articles', title: 'Articles' },
       { href: '/projects', title: 'Projects' },
-      { href: '/fitness', title: 'Fitness' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
       { href: '/lab', title: 'Lab' },
