@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
+
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
@@ -23,10 +24,13 @@ interface Props {
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
   await refreshAccessToken()
-  const stravaActivities = await getStravaActivities()
+  const allStravaActivities = await getStravaActivities()
+  const filteredActivities = allStravaActivities.filter((activity) =>
+    ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
+  )
 
   return {
-    props: { posts, stravaActivities },
+    props: { posts, stravaActivities: filteredActivities },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }

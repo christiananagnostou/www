@@ -13,6 +13,14 @@ const GlobalStyle = createGlobalStyle`
     --font-fallback: -apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
     --font-serif: "Newsreader","Signifier","Times",serif;
     --font-display: "Inter",var(--font-fallback);
+    
+    /* Border Radius Variables */
+    --border-radius-xs: 2px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 7px;
+    --border-radius-lg: 10px;
+    --border-radius-xl: 12px;
+    --border-radius-2xl: 14px;
   }
 
   .max-w-screen {
@@ -21,13 +29,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   *{
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-feature-settings: "kern", "ss02", "ss03", "ss04";
+    scrollbar-color: rgb(155 155 155 / 50%) transparent;
 
     scrollbar-width: thin;
-    scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 
     &::-webkit-scrollbar {
       width: 5px;
@@ -37,30 +45,31 @@ const GlobalStyle = createGlobalStyle`
       background: transparent;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(155, 155, 155, 0.5);
-      border-radius: 20px;
       border: transparent;
+      border-radius: 20px;
+      background-color: rgb(155 155 155 / 50%);
     }
 
     ::selection {
-      background: rgba(60, 60, 60, 0.5); /* WebKit/Blink Browsers */
+      background: rgb(60 60 60 / 50%); /* WebKit/Blink Browsers */
     }
     ::-moz-selection {
-      background: rgba(60, 60, 60, 0.5); /* Gecko Browsers */
+      background: rgb(60 60 60 / 50%); /* Gecko Browsers */
     }
   }
 
   html{
-    text-rendering: optimizeLegibility;
+    font-family: 'Inter', sans-serif;
+    overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    touch-action: manipulation;
+    overscroll-behavior-y: none;
     scroll-behavior: smooth;
     scroll-padding-top: 90px;
-    overscroll-behavior-y: none;
-    overflow-y: scroll;
-    font-family: 'Inter', sans-serif;
-    @media (max-width: 1200px){
+    text-rendering: optimizeLegibility;
+    touch-action: manipulation;
+
+    @media (width <= 1200px){
       font-size: 95%;
     }
   }
@@ -89,8 +98,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: inherit;
     color: inherit;
     text-decoration: underline solid var(--accent);
-    text-underline-offset: 3px;
     transition: all .2s ease;
+    text-underline-offset: 3px;
 
     &:hover,
     &:active {
@@ -100,28 +109,21 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .blur {
-    margin-bottom: -96px;
-    top: 0;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
     position: fixed;
+    top: 0;
+    z-index: 1;
     width: 100%;
     height: 96px;
-    z-index: 1;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
+    margin-bottom: -96px;
     opacity: .95;
-    -webkit-mask-image: linear-gradient(to bottom ,#000000 25%,transparent);
+    pointer-events: none;
+    user-select: none;
+    backdrop-filter: blur(5px);
     mask-image: linear-gradient(to bottom ,#000000 25%,transparent);
   }
   .custom-focus:focus {
-    outline-color: var(--accent);
-    outline-style: solid;
+    outline: var(--accent) solid 1.5px;
     outline-offset: 2px;
-    outline-width: 1.5px;
   }
 `
 

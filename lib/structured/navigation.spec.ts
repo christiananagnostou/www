@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { NavLinks } from '../../components/Nav'
 import { BASE_URL } from '../constants'
 import { getSiteNavigationStructuredData } from './navigation'
 

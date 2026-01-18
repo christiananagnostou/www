@@ -1,17 +1,35 @@
 import strava from 'strava-v3'
-import { calculateBestValuesByType } from './calculateBest'
-import type { StravaActivity } from './types'
+import { type RawActivityMetrics, calculateBestValuesByType } from './calculateBest'
+import type { StravaActivity, StravaActivityType } from './types'
 import { M_TO_MI, computePace, convertDistance, convertElevation, convertSpeed, formatTime } from './utils'
+
+interface RawActivity {
+  id: number
+  name: string
+  description?: string
+  start_date: string
+  type: string
+  distance?: number
+  total_elevation_gain?: number
+  moving_time?: number
+  average_speed?: number
+  average_heartrate?: number
+  average_watts?: number
+  device_watts?: boolean
+  has_heartrate?: boolean
+  max_speed?: number
+  map?: { summary_polyline?: string }
+}
 
 /**
  * Fetches all pages of activities from the Strava API.
  */
-const fetchAllActivities = async (per_page = 200): Promise<any[]> => {
-  let allActivities: any[] = []
+const fetchAllActivities = async (per_page = 200): Promise<RawActivity[]> => {
+  let allActivities: RawActivity[] = []
   let page = 1
 
   while (true) {
-    const activities: any[] = await strava.athlete.listActivities({ page, per_page })
+    const activities: RawActivity[] = await strava.athlete.listActivities({ page, per_page })
 
     if (activities.length === 0) break
     allActivities = allActivities.concat(activities)
@@ -25,18 +43,21 @@ const fetchAllActivities = async (per_page = 200): Promise<any[]> => {
 /**
  * Maps a raw Strava activity
  */
-const mapActivity = (activity: any): StravaActivity & { raw: any } => {
-  const rawDistance: number | null = activity.distance ?? null
-  const rawElevation: number | null = activity.total_elevation_gain ?? null
-  const rawMovingTime: number | null = activity.moving_time ?? null
-  const rawAverageSpeed: number | null = activity.average_speed ?? null
+const mapActivity = (activity: RawActivity): StravaActivity & { raw: RawActivityMetrics } => {
+  const rawDistance = activity.distance ?? 0
+  const rawElevation = activity.total_elevation_gain ?? 0
+  const rawMovingTime = activity.moving_time ?? 0
+  const rawAverageSpeed = activity.average_speed ?? 0
+  const rawAverageHeartRate = activity.has_heartrate === false ? null : (activity.average_heartrate ?? null)
+  const rawAverageWatts = activity.device_watts === false ? null : (activity.average_watts ?? null)
 
   const computedPaceSeconds: number | null =
     rawDistance != null && rawDistance > 0 && rawMovingTime != null ? rawMovingTime / (rawDistance * M_TO_MI) : null
 
-  const normalizedType: string = activity.type === 'VirtualRide' ? 'Zwift' : activity.type
+  const normalizedType: StravaActivityType =
+    activity.type === 'VirtualRide' ? 'Zwift' : (activity.type as StravaActivityType)
 
-  const base: any = {
+  const base: StravaActivity & { raw: RawActivityMetrics } = {
     title: activity.name,
     link: `https://www.strava.com/activities/${activity.id}`,
     description: activity.description ?? '',
@@ -45,13 +66,17 @@ const mapActivity = (activity: any): StravaActivity & { raw: any } => {
     type: normalizedType,
     Distance: rawDistance != null ? convertDistance(rawDistance) : '',
     MovingTime: rawMovingTime != null ? formatTime(rawMovingTime) : '',
+    AverageHeartRate: rawAverageHeartRate ?? null,
+    AverageWatts: rawAverageWatts ?? null,
+    HasHeartRate: activity.has_heartrate ?? false,
+    DeviceWatts: activity.device_watts ?? false,
     MapPolyline: activity.map?.summary_polyline ?? '',
     raw: {
       Distance: rawDistance,
       ElevationGain: rawElevation,
       MovingTime: rawMovingTime,
       AverageSpeed: rawAverageSpeed,
-      Pace: computedPaceSeconds,
+      Pace: computedPaceSeconds ?? 0,
     },
     best: { Distance: 0, ElevationGain: 0, MovingTime: 0, AverageSpeed: 0, Pace: 0 },
   }
@@ -77,8 +102,8 @@ const mapActivity = (activity: any): StravaActivity & { raw: any } => {
  * Assigns "best" flags for an activity, based on best values by type.
  */
 const assignBestFlags = (
-  activity: StravaActivity & { raw: any },
-  bestValuesByType: { [type: string]: any }
+  activity: StravaActivity & { raw: RawActivityMetrics },
+  bestValuesByType: Record<string, RawActivityMetrics>
 ): StravaActivity => {
   const { raw, ...activityWithoutRaw } = activity
   const { Distance, ElevationGain, MovingTime, AverageSpeed, Pace } = raw
@@ -101,14 +126,14 @@ const assignBestFlags = (
 export const getStravaActivities = async (): Promise<StravaActivity[]> => {
   try {
     const rawActivities = await fetchAllActivities()
-    const filteredActivities = rawActivities.filter(
-      (activity) =>
-        activity.type === 'Run' ||
-        activity.type === 'Ride' ||
-        activity.type === 'VirtualRide' ||
-        activity.type === 'Swim'
-    )
-    const mappedActivities = filteredActivities.map(mapActivity)
+    // const filteredActivities = rawActivities.filter(
+    //   (activity) =>
+    //     activity.type === 'Run' ||
+    //     activity.type === 'Ride' ||
+    //     activity.type === 'VirtualRide' ||
+    //     activity.type === 'Swim'
+    // )
+    const mappedActivities = rawActivities.map(mapActivity)
     const bestValuesByType = calculateBestValuesByType(mappedActivities)
     const finalActivities = mappedActivities.map((activity) => assignBestFlags(activity, bestValuesByType))
     return finalActivities
