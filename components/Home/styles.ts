@@ -14,11 +14,4 @@ export const HomepageBox = styled(motion.div)`
     font-size: 0.95rem;
   }
 
-  .homepage-box__title {
-    display: block;
-    margin-bottom: 1rem;
-    width: fit-content;
-    position: relative;
-    z-index: 1;
-  }
 `

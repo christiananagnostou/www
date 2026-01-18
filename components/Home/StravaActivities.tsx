@@ -62,16 +62,24 @@ const StravaActivities = ({ activities }: Props) => {
     return filter ? matching : matching.slice(0, 5)
   }, [activities, filter])
 
-  const renderFilterButton = (type: keyof typeof ActivityIcons) => (
-    <ActivityFilter
-      className={filter === type ? 'active' : ''}
-      title={`${type} (${getFilterCount(type)})`}
-      variants={fade}
-      onClick={() => setFilter((current) => (current === type ? '' : type))}
-    >
-      {ActivityIcons[type]}
-    </ActivityFilter>
-  )
+  const renderFilterButton = (type: keyof typeof ActivityIcons) => {
+    const isActive = filter === type
+    const count = getFilterCount(type)
+    const label = `${type} (${count})`
+
+    return (
+      <ActivityFilter
+        aria-label={label}
+        aria-pressed={isActive}
+        className={isActive ? 'active' : ''}
+        title={label}
+        variants={fade}
+        onClick={() => setFilter((current) => (current === type ? '' : type))}
+      >
+        {ActivityIcons[type]}
+      </ActivityFilter>
+    )
+  }
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
     <ActivityDetail $best={activity.best[type] === 1}>
@@ -127,9 +135,9 @@ const StravaActivities = ({ activities }: Props) => {
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
-        <LinkTitle className="homepage-box__title" href="/fitness" variants={fade}>
-          Fitness
-        </LinkTitle>
+        <Title variants={fade}>
+          <Link href="/fitness">Fitness</Link>
+        </Title>
 
         <ActivityFilters>
           {renderFilterButton('Swim')}
@@ -149,23 +157,22 @@ const StravaActivities = ({ activities }: Props) => {
             <ActivityItem key={index}>
               <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
+              {activity.MapPolyline ? (
+                <MapContainer>
+                  <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
+                </MapContainer>
+              ) : null}
 
-                {activity.MapPolyline ? (
-                  <MapContainer>
-                    <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
-                  </MapContainer>
-                ) : null}
+              {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
+              {activity.Distance ? renderActivityDetail('Distance', activity) : null}
+              {activity.Pace ? renderActivityDetail('Pace', activity) : null}
+              {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
+              {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
 
-                {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
-                {activity.Distance ? renderActivityDetail('Distance', activity) : null}
-                {activity.Pace ? renderActivityDetail('Pace', activity) : null}
-                {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
-                {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
-
-                {isToday ? <ActivityDate>Today</ActivityDate> : null}
-                {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
-                {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
-              </ActivityItem>
+              {isToday ? <ActivityDate>Today</ActivityDate> : null}
+              {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
+              {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
+            </ActivityItem>
             )
           })}
 
@@ -216,7 +223,14 @@ const SectionHeader = styled.div`
   padding: 0 1rem 1rem;
 `
 
-const LinkTitle = styled(motion.create(Link))``
+const Title = styled(motion.h2)`
+  margin: 0;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+`
 
 const ActivityFilters = styled.div`
   display: flex;
@@ -320,7 +334,6 @@ const SeeAllContent = styled(Link)`
   height: 100%;
   border-radius: var(--border-radius-xl);
   color: inherit;
-  text-decoration: none !important;
   overflow: hidden;
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);

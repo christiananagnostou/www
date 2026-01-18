@@ -9,11 +9,11 @@ import { HomepageBox } from './styles'
 export default function RecentArt() {
   return (
     <ArtContainer variants={staggerFade}>
-      <Link href="/art">
-        <motion.p className="homepage-box__title" variants={fade}>
-          Photos
-        </motion.p>
+      <Title variants={fade}>
+        <Link href="/art">Photos</Link>
+      </Title>
 
+      <Link href="/art">
         <div className="recent-art__hover-box">
           <p>
             Through the lens,
@@ -40,9 +40,6 @@ export default function RecentArt() {
 const ArtContainer = styled(HomepageBox)`
   overflow: hidden;
 
-  * {
-    text-decoration: none !important;
-  }
 
   .recent-art__hover-box {
     position: absolute;
@@ -91,6 +88,17 @@ const ArtContainer = styled(HomepageBox)`
         scale: 1;
       }
     }
+  }
+`
+
+const Title = styled(motion.h2)`
+  position: relative;
+  z-index: 1;
+  margin: 0 0 1rem;
+
+  a {
+    display: block;
+    color: inherit;
   }
 `
 
