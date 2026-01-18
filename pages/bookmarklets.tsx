@@ -388,17 +388,17 @@ const InstallButton = styled.button<{ disabled?: boolean }>`
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover:not(:disabled) {
-    background: var(--accent);
-    color: var(--text);
-  }
-
   &:disabled,
   &.installed {
     background: var(--accent);
     opacity: 0.8;
     color: var(--text);
     cursor: default;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--text);
   }
 
   span {

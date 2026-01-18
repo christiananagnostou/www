@@ -21,7 +21,7 @@ export const DateButton = styled.button<{ dateWidth: number }>`
 export const DateLabel = styled.div<{ dateWidth: number }>`
   position: absolute;
   bottom: 0;
-  left: ${({ dateWidth }) => `${dateWidth / 2}px`};
+  left: 50%;
   padding-bottom: 0.5rem;
   transform: translateX(-50%);
 `
