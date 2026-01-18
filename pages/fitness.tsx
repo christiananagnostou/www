@@ -441,7 +441,7 @@ const FitnessPage = ({ activities, error }: Props) => {
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
           <HeroTitleRow>
-            <HeroTitle>Triathlon Training Dashboard</HeroTitle>
+            <HeroTitle>Triathlon Training</HeroTitle>
             <HeroSubtitle>
               <HeroIcon aria-label="Swim" role="img" title="Swim">
                 {swim()}
@@ -609,7 +609,8 @@ const HeroPanel = styled(motion.section)`
   padding: clamp(2rem, 6vw, 3.5rem);
   border: 1px solid rgb(255 255 255 / 10%);
   border-radius: var(--border-radius-xl);
-  background: radial-gradient(circle at top left, rgb(255 255 255 / 6%), transparent 60%),
+  background:
+    radial-gradient(circle at top left, rgb(255 255 255 / 6%), transparent 60%),
     linear-gradient(140deg, #151515, #1f1f1f);
   overflow: hidden;
 `
@@ -617,7 +618,8 @@ const HeroPanel = styled(motion.section)`
 const HeroGlow = styled.div`
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgb(79 163 255 / 20%), transparent 45%),
+  background:
+    radial-gradient(circle at 20% 20%, rgb(79 163 255 / 20%), transparent 45%),
     radial-gradient(circle at 80% 20%, rgb(255 123 95 / 20%), transparent 45%),
     radial-gradient(circle at 50% 80%, rgb(181 255 99 / 15%), transparent 55%);
   opacity: 0.6;

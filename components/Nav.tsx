@@ -23,14 +23,15 @@ const NAV_LINKS: NavLinks = [
   { href: '/', title: 'Home' },
   {
     title: 'Works',
-    subLinks: [
-      { href: '/projects', title: 'Projects' },
-      { href: '/fitness', title: 'Fitness' },
-      { href: '/art', title: 'Photography' },
-      { href: '/bookmarklets', title: 'Bookmarklets' },
-      { href: '/articles', title: 'Articles' },
-      { href: '/lab', title: 'Lab' },
-    ],
+      subLinks: [
+        { href: '/fitness', title: 'Fitness' },
+        { href: '/articles', title: 'Articles' },
+        { href: '/projects', title: 'Projects' },
+        { href: '/art', title: 'Photography' },
+        { href: '/bookmarklets', title: 'Bookmarklets' },
+        { href: '/lab', title: 'Lab' },
+      ],
+
   },
   { href: '/contact', title: 'Contact' },
 ]
