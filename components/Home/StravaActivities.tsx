@@ -173,8 +173,8 @@ const StravaActivities = ({ activities }: Props) => {
               {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
               {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
             </ActivityItem>
-            )
-          })}
+          )
+        })}
 
         {/* See All Link */}
         <SeeAllItem ref={seeAllRef} $compact={filteredActivities.length === 0}>

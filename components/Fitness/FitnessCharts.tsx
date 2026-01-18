@@ -343,7 +343,8 @@ const FitnessCharts: React.FC<Props> = ({ weekly, distribution, weeklyTitle, dis
                 const stackedLines = stackValues
                   .filter((stack) => stack.values[idx])
                   .map(
-                    (stack) => `<span style="color:${stack.color}">${stack.label}</span>: ${stack.values[idx].toFixed(1)}h`
+                    (stack) =>
+                      `<span style="color:${stack.color}">${stack.label}</span>: ${stack.values[idx].toFixed(1)}h`
                   )
                 distTooltipRef.current.innerHTML = `<strong>${label}</strong><br/>${stackedLines.join('<br/>')}`
               } else {
