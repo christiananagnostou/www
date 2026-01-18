@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
+import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
@@ -148,13 +148,13 @@ const StravaActivities = ({ activities }: Props) => {
       </SectionHeader>
 
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
-        {filteredActivities.map((activity, index) => {
+        {filteredActivities.map((activity) => {
           const pubDate = dayjs(activity.pubDate)
           const isToday = pubDate.isSame(dayjs(), 'day')
           const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
 
           return (
-            <ActivityItem key={index}>
+            <ActivityItem key={activity.guid}>
               <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
               {activity.MapPolyline ? (
