@@ -60,8 +60,8 @@ const GiantsSlotContainer = styled(motion.em)`
 const Slot = styled.span`
   position: relative;
   display: inline-block;
-  vertical-align: bottom;
   overflow: hidden;
+  vertical-align: bottom;
 `
 
 // The "SF" text which animates upward on hover.
@@ -73,13 +73,13 @@ const TextSlot = styled(motion.span)`
 // The SVG starts below and slides upward into view.
 const SVGSlot = styled(motion.span)`
   position: absolute;
+  inset: 0;
+  margin: auto;
   display: block;
   height: 70%;
-  margin: auto;
-  inset: 0;
   svg {
-    width: 100%;
     height: 100%;
+    width: 100%;
     color: #fd5a1e;
   }
 `

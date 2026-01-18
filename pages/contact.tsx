@@ -144,14 +144,14 @@ const ContactStyle = styled(motion.div)`
   justify-content: flex-end;
   align-items: center;
   max-width: 500px;
-  margin: 2rem auto;
   padding: 0 1rem;
+  margin: 2rem auto;
 
   .success-message {
+    transition: opacity 0.3s ease;
+    text-align: center;
     width: 100%;
     margin-bottom: 2rem;
-    text-align: center;
-    transition: opacity 0.3s ease;
   }
 `
 
@@ -162,39 +162,39 @@ const StyledForm = styled(motion.form)`
 `
 
 const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
+  margin: auto;
   width: 100%;
   max-width: var(--max-w-screen);
-  margin: auto;
+  display: flex;
+  flex-direction: column;
 
   label {
-    margin: 1rem 0 0.2rem;
     color: var(--text);
+    margin: 1rem 0 0.2rem;
   }
   .form-input {
-    padding: 0.5rem;
+    background: var(--dark-bg);
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
-    background: var(--dark-bg);
-    font-weight: 300;
+    padding: 0.5rem;
     font-size: 1.1rem;
-    font-family: inherit;
+    font-weight: 300;
     color: var(--heading);
+    font-family: inherit;
     letter-spacing: 0.5px;
   }
   textarea {
-    border-radius: var(--border-radius-sm);
-    overflow: auto;
     resize: vertical;
+    overflow: auto;
+    border-radius: var(--border-radius-sm);
   }
   .form-btn {
-    margin-top: 1rem;
     padding: 1rem;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    background: var(--accent);
     color: var(--heading);
+    background: var(--accent);
+    border-radius: var(--border-radius-sm);
+    border: none;
+    margin-top: 1rem;
     cursor: pointer;
   }
 `
