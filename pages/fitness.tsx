@@ -6,7 +6,6 @@ import type { GetStaticProps } from 'next/types'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
-import { Grid } from '../components/Shared/Section'
 import { ride, run, swim } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
@@ -845,6 +844,16 @@ const SectionHeaderText = styled.div`
     text-transform: uppercase;
     letter-spacing: 0.4px;
   }
+`
+
+const Grid = styled.div<{
+  $cols?: string
+  $gap?: string
+  $minWidth?: string
+}>`
+  display: grid;
+  gap: ${({ $gap = '1rem' }) => $gap};
+  grid-template-columns: ${({ $cols, $minWidth = '140px' }) => $cols || `repeat(auto-fit, minmax(${$minWidth}, 1fr))`};
 `
 
 const OtherGrid = styled.div`

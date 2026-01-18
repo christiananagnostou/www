@@ -69,7 +69,6 @@ const Container = styled(motion.div)`
   }
 `
 
-
 const LabItems = styled(motion.div)`
   display: flex;
   flex-direction: column;
