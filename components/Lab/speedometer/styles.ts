@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 
-/* 
+/*
 DIAL 
 */
 export const DialShell = styled.div<{ $size: number }>`
@@ -126,7 +126,7 @@ export const Needle = styled(motion.div)`
   }
 `
 
-/* 
+/*
 READOUT
 */
 export const Readout = styled.div`
@@ -145,7 +145,7 @@ export const ThrottleText = styled.span`
   color: var(--text-dark);
 `
 
-/* 
+/*
 PEDAL 
 */
 export const PedalBtn = styled(motion.button)`
@@ -216,7 +216,7 @@ export const ThrottleBar = styled.div<{ throttle: number }>`
   }
 `
 
-/* 
+/*
 LAYOUT 
 */
 export const DashboardPanel = styled.div<{ $size: number }>`

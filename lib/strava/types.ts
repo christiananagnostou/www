@@ -1,12 +1,4 @@
-export type StravaActivityType =
-  | 'Swim'
-  | 'Ride'
-  | 'Run'
-  | 'WeightTraining'
-  | 'Hike'
-  | 'Zwift'
-  | 'VirtualRide'
-  | 'Walk'
+export type StravaActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'VirtualRide' | 'Walk'
 
 export interface StravaActivity {
   title: string
@@ -20,6 +12,10 @@ export interface StravaActivity {
   MovingTime?: string
   AverageSpeed?: string
   Pace?: string
+  AverageHeartRate?: number | null
+  AverageWatts?: number | null
+  HasHeartRate?: boolean
+  DeviceWatts?: boolean
   MaxSpeed?: string | null
   MapPolyline: string | null
   best: {

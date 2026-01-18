@@ -12,9 +12,9 @@ interface ArticlesProps {
 export default function RecentArticles({ posts }: ArticlesProps) {
   return (
     <ArticlesContainer variants={staggerFade}>
-      <LinkTitle className="homepage-box__title" href="/articles" variants={fade}>
-        Articles
-      </LinkTitle>
+      <Title variants={fade}>
+        <Link href="/articles">Articles</Link>
+      </Title>
 
       <ul>
         {posts.slice(0, 3).map((article) => (
@@ -30,7 +30,14 @@ export default function RecentArticles({ posts }: ArticlesProps) {
   )
 }
 
-const LinkTitle = styled(motion.create(Link))``
+const Title = styled(motion.h2)`
+  margin: 0 0 1rem;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+`
 
 const ArticlesContainer = styled(HomepageBox)`
   flex: 1;
@@ -46,7 +53,6 @@ const ArticlesContainer = styled(HomepageBox)`
 
       a {
         display: block;
-        text-decoration: none;
       }
 
       .recent-article__title {

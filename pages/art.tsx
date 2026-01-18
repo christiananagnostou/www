@@ -22,7 +22,9 @@ const PageUrl = `${BASE_URL}/art`
 // OG image: first image of the sorted list
 const ogImage = SortedArtImages[0]?.image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
 
-const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).sort((a, b) => a.localeCompare(b))
+const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).toSorted((a, b) =>
+  a.localeCompare(b)
+)
 
 const Art = () => {
   const router = useRouter()

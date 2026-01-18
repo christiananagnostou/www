@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
+
 import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
@@ -24,11 +25,9 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
   await refreshAccessToken()
   const allStravaActivities = await getStravaActivities()
-
-  // Filter to only show specific activity types on homepage and limit to 5 most recent
-  const filteredActivities = allStravaActivities
-    .filter((activity) => ['Run', 'Ride', 'VirtualRide', 'Swim'].includes(activity.type))
-    .slice(0, 5)
+  const filteredActivities = allStravaActivities.filter((activity) =>
+    ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
+  )
 
   return {
     props: { posts, stravaActivities: filteredActivities },
@@ -105,36 +104,33 @@ const Container = styled(motion.div)`
   padding: 2rem 1rem 1rem;
 
   .page-inner-container {
-    position: relative;
-
     /* border: 1px solid var(--accent); */
-
     /* background: var(--body-bg); */
-
     /* padding: 1rem 1rem 1.5rem; */
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 1rem;
-    border-radius: var(--border-radius-2xl);
+    border-radius: 14px;
+    position: relative;
   }
 `
 
 const FlexWrap = styled(motion.section)`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   align-items: stretch;
+  justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
   width: 100%;
 `
 
 const MiddleSection = styled.section`
   display: flex;
-  gap: 1rem;
   width: 100%;
+  gap: 1rem;
 
-  @media screen and (width <= 768px) {
+  @media screen and (max-width: 768px) {
     flex-direction: column;
   }
 `

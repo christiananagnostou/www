@@ -80,8 +80,11 @@ const DragScrollContainer = ({
     if (!container || (container.scrollLeft === scrollLeft && container.scrollTop === scrollTop)) return
 
     setScrolling(true)
-    if (started) onScroll?.({ external: !internal })
-    else processStart(false)
+    if (started) {
+      onScroll?.({ external: !internal })
+    } else {
+      processStart(false)
+    }
     realScroll()
   }
 

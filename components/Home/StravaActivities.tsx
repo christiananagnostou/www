@@ -1,7 +1,7 @@
-import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
+import dayjs from 'dayjs'
 import Link from 'next/link'
-import { useRef, useState, type ReactElement } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
 import { type StravaActivity, type StravaActivityType } from '../../lib/strava'
 import { fade, staggerFade } from '../animation'
@@ -32,8 +32,10 @@ const AlternateMetricTitles = {
 } as const
 
 const StravaActivities = ({ activities }: Props) => {
-  const [filter, setFilter] = useState('')
+  const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
+  const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
+  const seeAllRef = useRef<HTMLLIElement>(null)
   const startX = useRef(0)
   const scrollLeft = useRef(0)
 
@@ -44,22 +46,64 @@ const StravaActivities = ({ activities }: Props) => {
     return acc
   }, {})
 
-  const renderFilterButton = (type: keyof typeof ActivityIcons) => (
-    <ActivityFilter
-      className={filter === type ? 'active' : ''}
-      title={`${type} (${activityCounts[type] ?? 0})`}
-      variants={fade}
-      onClick={() => setFilter(filter === type ? '' : type)}
-    >
-      {ActivityIcons[type]}
-    </ActivityFilter>
-  )
+  const getFilterCount = (type: keyof typeof ActivityIcons) => {
+    if (type === 'Zwift') return (activityCounts.Zwift ?? 0) + (activityCounts.VirtualRide ?? 0)
+    return activityCounts[type] ?? 0
+  }
+
+  const matchesFilter = (activity: StravaActivity) => {
+    if (!filter) return true
+    if (filter === 'Zwift') return activity.type === 'Zwift' || activity.type === 'VirtualRide'
+    return activity.type === filter
+  }
+
+  const filteredActivities = useMemo(() => {
+    const matching = activities.filter(matchesFilter)
+    return filter ? matching : matching.slice(0, 5)
+  }, [activities, filter])
+
+  const renderFilterButton = (type: keyof typeof ActivityIcons) => {
+    const isActive = filter === type
+    const count = getFilterCount(type)
+    const label = `${type} (${count})`
+
+    return (
+      <ActivityFilter
+        aria-label={label}
+        aria-pressed={isActive}
+        className={isActive ? 'active' : ''}
+        title={label}
+        variants={fade}
+        onClick={() => setFilter((current) => (current === type ? '' : type))}
+      >
+        {ActivityIcons[type]}
+      </ActivityFilter>
+    )
+  }
 
   const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
     <ActivityDetail $best={activity.best[type] === 1}>
       {AlternateMetricTitles[type]}: <strong>{activity[type]}</strong>
     </ActivityDetail>
   )
+
+  useEffect(() => {
+    if (!seeAllRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.8
+        setSeeAllInView(isVisible)
+      },
+      { root: activityListRef.current, threshold: [0, 0.8, 1] }
+    )
+
+    observer.observe(seeAllRef.current)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   const handleMouseDown = (e: React.MouseEvent) => {
     activityListRef.current?.classList.add('grabbing')
@@ -91,53 +135,50 @@ const StravaActivities = ({ activities }: Props) => {
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
-        <LinkTitle className="homepage-box__title" href="/fitness" variants={fade}>
-          Fitness
-        </LinkTitle>
+        <Title variants={fade}>
+          <Link href="/fitness">Fitness</Link>
+        </Title>
 
         <ActivityFilters>
           {renderFilterButton('Swim')}
           {renderFilterButton('Ride')}
           {renderFilterButton('Run')}
           {renderFilterButton('Zwift')}
-          {renderFilterButton('VirtualRide')}
         </ActivityFilters>
       </SectionHeader>
 
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
-        {activities
-          .filter((activity) => (filter ? activity.type === filter : true))
-          .map((activity, index) => {
-            const pubDate = dayjs(activity.pubDate)
-            const isToday = pubDate.isSame(dayjs(), 'day')
-            const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
+        {filteredActivities.map((activity) => {
+          const pubDate = dayjs(activity.pubDate)
+          const isToday = pubDate.isSame(dayjs(), 'day')
+          const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
 
-            return (
-              <ActivityItem key={index} variants={fade}>
-                <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
+          return (
+            <ActivityItem key={activity.guid}>
+              <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
-                {activity.MapPolyline ? (
-                  <MapContainer>
-                    <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
-                  </MapContainer>
-                ) : null}
+              {activity.MapPolyline ? (
+                <MapContainer>
+                  <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
+                </MapContainer>
+              ) : null}
 
-                {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
-                {activity.Distance ? renderActivityDetail('Distance', activity) : null}
-                {activity.Pace ? renderActivityDetail('Pace', activity) : null}
-                {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
-                {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
+              {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
+              {activity.Distance ? renderActivityDetail('Distance', activity) : null}
+              {activity.Pace ? renderActivityDetail('Pace', activity) : null}
+              {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
+              {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
 
-                {isToday ? <ActivityDate>Today</ActivityDate> : null}
-                {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
-                {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
-              </ActivityItem>
-            )
-          })}
+              {isToday ? <ActivityDate>Today</ActivityDate> : null}
+              {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
+              {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
+            </ActivityItem>
+          )
+        })}
 
         {/* See All Link */}
-        <SeeAllItem variants={fade}>
-          <SeeAllContent href="/fitness">
+        <SeeAllItem ref={seeAllRef} $compact={filteredActivities.length === 0}>
+          <SeeAllContent data-in-view={seeAllInView} href="/fitness">
             <FloatingIcon $delay={0} $position="top-left" $rotation={-15}>
               {ActivityIcons.Run}
             </FloatingIcon>
@@ -182,7 +223,14 @@ const SectionHeader = styled.div`
   padding: 0 1rem 1rem;
 `
 
-const LinkTitle = styled(motion.create(Link))``
+const Title = styled(motion.h2)`
+  margin: 0;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+`
 
 const ActivityFilters = styled.div`
   display: flex;
@@ -268,13 +316,13 @@ const ActivityDate = styled.p`
   color: var(--text-dark);
 `
 
-const SeeAllItem = styled(motion.li)`
+const SeeAllItem = styled(motion.li)<{ $compact?: boolean }>`
   position: relative;
   display: flex;
-  flex: 1;
+  flex: ${({ $compact }) => ($compact ? '0 0 200px' : '1')};
   justify-content: center;
   align-items: center;
-  min-width: 180px;
+  min-width: 200px;
 `
 
 const SeeAllContent = styled(Link)`
@@ -286,7 +334,6 @@ const SeeAllContent = styled(Link)`
   height: 100%;
   border-radius: var(--border-radius-xl);
   color: inherit;
-  text-decoration: none !important;
   overflow: hidden;
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
@@ -309,7 +356,8 @@ const SeeAllContent = styled(Link)`
     rotate: 0deg;
   }
 
-  &:hover {
+  &:hover,
+  &[data-in-view='true'] {
     border-color: rgb(255 255 255 / 15%);
     box-shadow: 0 8px 32px -12px rgb(0 0 0 / 40%);
 
@@ -354,7 +402,8 @@ const FloatingIcon = styled.div<{
     color: rgb(255 255 255 / 15%);
   }
 
-  ${SeeAllContent}:hover & {
+  ${SeeAllContent}:hover &,
+  ${SeeAllContent}[data-in-view='true'] & {
     opacity: 1;
     transform: scale(1) rotate(${(props) => props.$rotation}deg);
   }
@@ -372,7 +421,8 @@ const SeeAllText = styled.span`
   letter-spacing: 0.3px;
   transition: all 0.3s ease;
 
-  ${SeeAllContent}:hover & {
+  ${SeeAllContent}:hover &,
+  ${SeeAllContent}[data-in-view='true'] & {
     color: var(--heading);
   }
 `

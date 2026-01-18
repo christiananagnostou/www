@@ -24,11 +24,12 @@ const NAV_LINKS: NavLinks = [
   {
     title: 'Works',
     subLinks: [
+      { href: '/fitness', title: 'Fitness' },
+      { href: '/articles', title: 'Articles' },
       { href: '/projects', title: 'Projects' },
       { href: '/fitness', title: 'Fitness' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
-      { href: '/articles', title: 'Articles' },
       { href: '/lab', title: 'Lab' },
     ],
   },

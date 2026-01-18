@@ -55,7 +55,7 @@ export function addMinutes(date: Dayjs, minutes: number) {
 // This implementation first groups events into clusters where events overlap directly,
 // then assigns columns within each cluster using a greedy algorithm.
 export const computeLayoutStyles = (events: DailyEventT[]) => {
-  const sorted = [...events].sort((a, b) => a.start.valueOf() - b.start.valueOf())
+  const sorted = events.toSorted((a, b) => a.start.valueOf() - b.start.valueOf())
 
   // Group events into clusters (only events that directly overlap belong to the same cluster)
   const clusters: DailyEventT[][] = []
@@ -79,7 +79,7 @@ export const computeLayoutStyles = (events: DailyEventT[]) => {
   // For each cluster, assign columns using a greedy algorithm.
   clusters.forEach((cluster) => {
     // Sort events in the cluster by start time.
-    const clusterSorted = cluster.sort((a, b) => a.start.valueOf() - b.start.valueOf())
+    const clusterSorted = cluster.toSorted((a, b) => a.start.valueOf() - b.start.valueOf())
     const columns: number[] = [] // will hold the latest end time for each column
     for (const event of clusterSorted) {
       let placed = false
