@@ -32,12 +32,16 @@ const Contact = () => {
     if (!data.from_name) return // Ensuring name is not empty
 
     try {
-      const res = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        data,
-        process.env.NEXT_PUBLIC_EMAILJS_USER_ID
-      )
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+      const userId = process.env.NEXT_PUBLIC_EMAILJS_USER_ID
+
+      if (!serviceId || !templateId) {
+        console.error('Missing EmailJS configuration')
+        return
+      }
+
+      const res = await emailjs.send(serviceId, templateId, data, userId)
       if (res.status === 200) {
         form.reset() // Resetting the form fields
         setSentSuccessful(true)
@@ -153,8 +157,8 @@ const ContactStyle = styled(motion.div)`
 
 const StyledForm = styled(motion.form)`
   width: 100%;
-  margin-bottom: 2rem;
   margin-top: -1rem;
+  margin-bottom: 2rem;
 `
 
 const FormGroup = styled.div`
@@ -171,7 +175,7 @@ const FormGroup = styled.div`
   .form-input {
     background: var(--dark-bg);
     border: 1px solid var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     padding: 0.5rem;
     font-size: 1.1rem;
     font-weight: 300;
@@ -182,13 +186,13 @@ const FormGroup = styled.div`
   textarea {
     resize: vertical;
     overflow: auto;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
   }
   .form-btn {
     padding: 1rem;
     color: var(--heading);
     background: var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     border: none;
     margin-top: 1rem;
     cursor: pointer;

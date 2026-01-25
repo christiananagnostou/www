@@ -127,38 +127,30 @@ export default TVBar
 const Knob = styled(motion.div)`
   --knob-border-width: 1px;
   --knob-size: 24px;
-
-  --s: rgb(58, 59, 65);
-  --s1: rgb(42, 44, 50);
-  --s2: rgb(54, 56, 60);
-  --s3: rgb(30, 31, 34);
-  --s4: rgb(24, 26, 32);
-
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
-
-  cursor: ew-resize;
-  rotate: 0deg;
-
-  margin-right: var(--item-spacing);
+  --s: rgb(58 59 65);
+  --s1: rgb(42 44 50);
+  --s2: rgb(54 56 60);
+  --s3: rgb(30 31 34);
+  --s4: rgb(24 26 32);
   position: relative;
-  border-radius: 50%;
   width: var(--knob-size);
   height: var(--knob-size);
-  background: linear-gradient(to top, var(--s3), var(--s2));
-  box-shadow: 0 1px 3px rgb(0, 0, 0);
+
+  margin-right: var(--item-spacing);
   padding: var(--knob-border-width);
+  border-radius: 50%;
+  background: linear-gradient(to top, var(--s3), var(--s2));
+  box-shadow: 0 1px 3px rgb(0 0 0);
+
+  cursor: ew-resize;
+  -webkit-overflow-scrolling: touch;
+  rotate: 0deg;
+
+  touch-action: pan-y;
 
   .knob {
-    height: 100%;
     width: 100%;
-    /* Prevent 1px shift */
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    -webkit-transform: translateZ(0) scale(1, 1);
-    transform: translateZ(0) scale(1, 1);
-
-    transition: filter 2s ease;
+    height: 100%;
 
     border-radius: 50%;
     background: linear-gradient(
@@ -170,9 +162,19 @@ const Knob = styled(motion.div)`
       var(--s1) 59.2%,
       var(--s2) 90%
     );
-    box-shadow: 0 0.1em 0.2em 0 rgba(var(--s1), 0.9) inset, 0 -0.1em 0.3em 0 rgba(var(--s1), 0.3) inset,
-      0 0.08em 0.3em 0 rgba(#000011, 0.3), 0.5em 0 1em 0 rgba(var(--s1), 0.5) inset,
-      -0.5em 0 1em 0 rgba(var(--s4), 0.3) inset, 0 4em 1em -3.5em rgba(#000022, 0.3);
+    box-shadow:
+      0 0.1em 0.2em 0 rgb(var(--s1), 0.9) inset,
+      0 -0.1em 0.3em 0 rgb(var(--s1), 0.3) inset,
+      0 0.08em 0.3em 0 rgba(#000011, 0.3),
+      0.5em 0 1em 0 rgb(var(--s1), 0.5) inset,
+      -0.5em 0 1em 0 rgb(var(--s4), 0.3) inset,
+      0 4em 1em -3.5em rgba(#000022, 0.3);
+    transform: translateZ(0) scale(1, 1);
+
+    /* Prevent 1px shift */
+    backface-visibility: hidden;
+
+    transition: filter 2s ease;
   }
 
   .knob::before {
@@ -182,82 +184,79 @@ const Knob = styled(motion.div)`
     width: 2px;
     height: 30%;
     border-radius: 0 0 1px 1px;
-    background: rgba(187, 68, 68, 0.75);
+    background: rgb(187 68 68 / 75%);
   }
 `
 
 const TVControls = styled(motion.div)`
-  width: calc(100% - 2rem);
-  display: flex;
-  align-items: stretch;
   position: relative;
   position: absolute;
   bottom: 0;
-  transform: translateY(calc(50% + 0.5px));
   left: 1rem;
+  display: flex;
+  align-items: stretch;
+  width: calc(100% - 2rem);
 
   user-select: none;
+  transform: translateY(calc(50% + 0.5px));
   * {
     user-select: none;
   }
 
   .bar-wrap {
     display: flex;
-    align-items: center;
     flex: 1;
+    align-items: center;
 
     .bar {
-      width: 100%;
-      background: var(--accent);
       position: relative;
-      overflow: hidden;
+      width: 100%;
       height: 0.5px;
+      background: var(--accent);
+      overflow: hidden;
 
       .bar-inner {
         position: absolute;
         left: -100%;
-        height: 100%;
         width: 100%;
+        height: 100%;
       }
     }
   }
 
   .button {
-    display: block;
-    height: 100%;
-    background: var(--body-bg);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    padding: 0 1rem;
-    min-width: 60px;
-    text-align: center;
     position: relative;
+    display: block;
+    min-width: 60px;
+    height: 100%;
+    padding: 0 1rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    background: var(--body-bg);
+    text-align: center;
+    cursor: not-allowed;
     overflow: hidden;
     transition: all 0.5s ease;
-    cursor: not-allowed;
 
     .inner {
-      color: #888888;
+      position: absolute;
+      display: grid;
+      opacity: 0 !important;
       font-weight: 200;
       font-size: 0.9rem;
       line-height: 1rem;
-      display: grid;
-      place-items: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      color: #888888;
       transition: all 0.5s ease;
-      opacity: 0 !important;
+      inset: 0;
+      place-items: center;
     }
 
     &.highlight {
       cursor: pointer;
 
       .inner {
-        color: rgba(255, 255, 255, 0.9);
         opacity: 1 !important;
+        color: rgb(255 255 255 / 90%);
       }
     }
   }

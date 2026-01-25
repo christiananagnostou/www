@@ -20,8 +20,7 @@ const PageDescription = 'A gallery of photography capturing moments by Christian
 const PageUrl = `${BASE_URL}/art`
 
 // OG image: first image of the sorted list
-const ogImage =
-  SortedArtImages[0] && SortedArtImages[0].image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
+const ogImage = SortedArtImages[0]?.image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
 
 const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).toSorted((a, b) =>
   a.localeCompare(b)
@@ -183,7 +182,7 @@ const HoverBox = styled.div`
   width: 100%;
   transform: translateY(100%);
   transition: transform 0.25s ease-in-out;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 90%));
   padding: 50px 10px 10px;
   display: flex;
   flex-direction: column;
@@ -192,7 +191,7 @@ const HoverBox = styled.div`
 
   p,
   button {
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for readability */
+    text-shadow: 0 0 5px rgb(0 0 0 / 50%); /* Subtle shadow for readability */
   }
 
   .title-date {
@@ -224,7 +223,7 @@ const HoverBox = styled.div`
     font-size: 0.7rem;
     background: var(--border);
     border: 1px solid var(--accent);
-    border-radius: 3px;
+    border-radius: var(--border-radius-sm);
     color: var(--text);
     cursor: pointer;
     transition: all 0.25s ease;
@@ -232,15 +231,15 @@ const HoverBox = styled.div`
     min-width: max-content;
 
     &.selected {
-      color: #ffffff;
       background: var(--accent);
+      color: #ffffff;
     }
   }
 `
 const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
 
   img {

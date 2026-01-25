@@ -1,57 +1,148 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
+import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
+import { FilledBookmark } from '../components/SVG/bookmarklets/FilledBookmark'
 import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
 import UpArrow from '../components/SVG/UpArrow'
 import { bookmarkletsData } from '../lib/bookmarklets'
+import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
+import { getMetrics } from '../lib/bookmarklets/metrics'
 import { BASE_URL } from '../lib/constants'
 import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
-import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
 
 const PageTitle = 'Bookmarklets | Christian Anagnostou'
 const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
 const PageUrl = `${BASE_URL}/bookmarklets`
 
-export default function Bookmarklets() {
+interface BookmarkletWithMetrics {
+  id: string
+  title: string
+  description: string
+  code: string
+  githubUrl?: string
+  instructions: string
+  installs: number
+}
+
+interface Props {
+  bookmarkletsWithMetrics: BookmarkletWithMetrics[]
+}
+
+export async function getStaticProps() {
+  const bookmarkletsWithMetrics = await Promise.all(
+    bookmarkletsData.map(async (bookmarklet) => {
+      const metrics = await getMetrics(bookmarklet.id)
+      // Exclude the icon from serialization
+      const { icon: _icon, ...serializableBookmarklet } = bookmarklet
+      return { ...serializableBookmarklet, installs: metrics.installs }
+    })
+  )
+
+  return {
+    props: {
+      bookmarkletsWithMetrics,
+    },
+    revalidate: 60 * 5, // Revalidate every 5 minutes
+  }
+}
+
+export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
+  const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
+  const [localInstallCounts, setLocalInstallCounts] = useState<{ [key: string]: number }>({})
+  const initialCounts = useMemo(() => {
+    const counts: { [key: string]: number } = {}
+    bookmarkletsWithMetrics.forEach((bookmarklet) => {
+      counts[bookmarklet.id] = bookmarklet.installs
+    })
+    return counts
+  }, [bookmarkletsWithMetrics])
+  const [installCounts, setInstallCounts] = useState<{ [key: string]: number }>(initialCounts)
+
+  useEffect(() => {
+    setInstallCounts((prev) => (Object.keys(prev).length ? prev : initialCounts))
+
+    const storedCounts = JSON.parse(localStorage.getItem('installedBookmarkletCounts') || '{}')
+    setLocalInstallCounts(storedCounts)
+
+    // Load installed states from localStorage (supports legacy title keys)
+    const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
+    const installedById: { [key: string]: boolean } = {}
+    bookmarkletsWithMetrics.forEach((bookmarklet) => {
+      installedById[bookmarklet.id] =
+        installedBookmarklets[bookmarklet.id] ?? installedBookmarklets[bookmarklet.title] ?? false
+    })
+    setInstalledStates(installedById)
+  }, [bookmarkletsWithMetrics, initialCounts])
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
+  }
+
+  const handleInstallClick = async (bookmarkletId: string) => {
+    if (!installedStates[bookmarkletId]) {
+      try {
+        const res = await fetch(`/api/bookmarklets/metrics/${encodeURIComponent(bookmarkletId)}?type=installs`, {
+          method: 'POST',
+        })
+        if (!res.ok) {
+          throw new Error(`Failed to track install (${res.status})`)
+        }
+        const data = await res.json()
+        if (typeof data.installs !== 'number') {
+          throw new Error('Invalid metrics response')
+        }
+        setInstallCounts((prev) => ({ ...prev, [bookmarkletId]: data.installs }))
+        setInstalledStates((prev) => ({ ...prev, [bookmarkletId]: true }))
+
+        const updatedLocalCounts = { ...localInstallCounts, [bookmarkletId]: data.installs }
+        setLocalInstallCounts(updatedLocalCounts)
+
+        // Save to localStorage
+        const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
+        installedBookmarklets[bookmarkletId] = true
+        localStorage.setItem('installedBookmarklets', JSON.stringify(installedBookmarklets))
+        localStorage.setItem('installedBookmarkletCounts', JSON.stringify(updatedLocalCounts))
+      } catch (error) {
+        console.error('Failed to track install:', error)
+      }
+    }
   }
 
   return (
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={PageUrl} />
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="bookmarklets, javascript, web tools, Christian Anagnostou" />
+        <meta content={PageDescription} name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href={PageUrl} rel="canonical" />
+        <meta content="index, follow" name="robots" />
+        <meta content="bookmarklets, javascript, web tools, Christian Anagnostou" name="keywords" />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={PageTitle} />
-        <meta property="og:description" content={PageDescription} />
-        <meta property="og:url" content={PageUrl} />
+        <meta content="website" property="og:type" />
+        <meta content={PageTitle} property="og:title" />
+        <meta content={PageDescription} property="og:description" />
+        <meta content={PageUrl} property="og:url" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={PageTitle} />
-        <meta name="twitter:description" content={PageDescription} />
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content={PageTitle} name="twitter:title" />
+        <meta content={PageDescription} name="twitter:description" />
 
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getBookmarkletsStructuredData()) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -61,48 +152,68 @@ export default function Bookmarklets() {
         </Heading>
 
         <BookmarkletsContainer variants={staggerFade}>
-          {bookmarkletsData.map(({ title, description, code, icon, githubUrl, instructions }, index) => {
+          {bookmarkletsWithMetrics.map((bookmarklet, index) => {
+            const { id, title, description, code, githubUrl, instructions } = bookmarklet
+            const originalBookmarklet = bookmarkletsData.find((b) => b.id === id)
+            const icon = originalBookmarklet?.icon
             const isOpen = openIndexes.includes(index)
+            const isInstalled = installedStates[id]
+            const serverCount = installCounts[id] || 0
+            const localCount = localInstallCounts[id] || 0
+            const installCount = isInstalled ? Math.max(serverCount, localCount) : serverCount
 
             return (
-              <BookmarkletItem key={title} variants={fade}>
+              <BookmarkletItem key={id} variants={fade}>
                 <div className="main-content">
                   {/* Top row: icon + "title link" */}
                   <div className="top-row">
-                    <div className="icon" aria-hidden="true">
+                    <div aria-hidden="true" className="icon">
                       {icon}
                     </div>
                     <h2 className="title">
                       <BookmarkletLink
+                        aria-label={`Drag or click to use the ${title} bookmarklet.`}
                         code={code}
                         draggable="true"
-                        aria-label={`Drag or click to use the ${title} bookmarklet.`}
                       >
                         {title}
                       </BookmarkletLink>
                     </h2>
 
-                    {/* GitHub link */}
-                    {githubUrl && (
-                      <a
-                        href={githubUrl}
-                        aria-label={`View the ${title} bookmarklet on GitHub.`}
-                        className="github-url"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <div className="right-side">
+                      {/* GitHub link */}
+                      {githubUrl ? (
+                        <a
+                          aria-label={`View the ${title} bookmarklet on GitHub.`}
+                          className="github-url"
+                          href={githubUrl}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <Github />
+                          Source
+                        </a>
+                      ) : null}
+
+                      {/* Install tracking button */}
+                      <InstallButton
+                        className={isInstalled ? 'installed' : ''}
+                        disabled={isInstalled}
+                        title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
+                        onClick={() => handleInstallClick(id)}
                       >
-                        <Github />
-                        Source
-                      </a>
-                    )}
+                        {isInstalled ? <FilledBookmark /> : <BookWithBookmark />}
+                        <span>{installCount}</span>
+                      </InstallButton>
+                    </div>
                   </div>
 
                   {/* Toggleable description (button) */}
                   <button
+                    aria-controls={`instructions-${index}`}
+                    aria-expanded={isOpen}
                     className="toggle-area"
                     onClick={() => toggleOpen(index)}
-                    aria-expanded={isOpen}
-                    aria-controls={`instructions-${index}`}
                   >
                     <p className="summary">{description}</p>
                     <span className="toggle-arrow">{isOpen ? <UpArrow /> : <DownArrow />}</span>
@@ -110,16 +221,16 @@ export default function Bookmarklets() {
 
                   {/* Instructions panel, if open */}
                   <AnimatePresence>
-                    {isOpen && (
+                    {isOpen ? (
                       <motion.div
-                        id={`instructions-${index}`}
-                        aria-label={`${title} instructions`}
-                        role="region"
-                        initial="hidden"
-                        animate="show"
-                        exit="exit"
-                        variants={dropdown}
                         key={title}
+                        animate="show"
+                        aria-label={`${title} instructions`}
+                        exit="exit"
+                        id={`instructions-${index}`}
+                        initial="hidden"
+                        role="region"
+                        variants={dropdown}
                       >
                         <div className="instructions">
                           {instructions.split('\n').map((line, i) => (
@@ -127,7 +238,7 @@ export default function Bookmarklets() {
                           ))}
                         </div>
                       </motion.div>
-                    )}
+                    ) : null}
                   </AnimatePresence>
                 </div>
               </BookmarkletItem>
@@ -140,29 +251,28 @@ export default function Bookmarklets() {
 }
 
 const Container = styled(motion.section)`
-  overflow: hidden;
-  color: var(--text);
   max-width: var(--max-w-screen);
-  padding: 0 1rem;
   margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text);
+  overflow: hidden;
 `
 
 const BookmarkletsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: auto;
   gap: 2rem;
+  margin: auto;
+  place-content: center center;
 `
 
 const BookmarkletItem = styled(motion.div)`
-  width: 100%;
   display: flex;
+  width: 100%;
 
   .main-content {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -173,17 +283,17 @@ const BookmarkletItem = styled(motion.div)`
     gap: 0.5rem;
 
     .icon {
-      font-size: 1.25rem;
-      min-width: 25px;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      min-width: 25px;
+      font-size: 1.25rem;
     }
 
     .title {
       margin: 0;
-      font-size: 1rem;
       font-weight: normal;
+      font-size: 1rem;
 
       & * {
         cursor: grab;
@@ -194,20 +304,27 @@ const BookmarkletItem = styled(motion.div)`
     }
 
     .github-url {
-      margin-left: auto;
       display: flex;
       align-items: center;
-      color: var(--text-dark);
       gap: 0.25rem;
+      margin-left: auto;
       font-size: 0.85rem;
+      color: var(--text-dark);
       text-decoration: none;
-      transition: color 0.2s ease;
       cursor: alias;
+      transition: color 0.2s ease;
 
       &:hover,
       &:focus {
         color: var(--text);
       }
+    }
+
+    .right-side {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: auto;
     }
   }
 
@@ -215,19 +332,19 @@ const BookmarkletItem = styled(motion.div)`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     padding: 0.5rem 0.75rem;
     border: none;
-    border-radius: 5px;
-    width: 100%;
-    text-align: left;
+    border-radius: var(--border-radius-sm);
     background: transparent;
+    text-align: left;
     cursor: pointer;
     transition: background 0.2s ease;
 
     .summary {
-      font-size: 0.9rem;
       margin: 0;
       font-weight: 300;
+      font-size: 0.9rem;
       color: var(--text);
     }
 
@@ -237,8 +354,8 @@ const BookmarkletItem = styled(motion.div)`
       transition: color 0.2s ease;
 
       svg {
-        height: 1.2em;
         width: 1.2em;
+        height: 1.2em;
       }
     }
 
@@ -255,19 +372,19 @@ const BookmarkletItem = styled(motion.div)`
 
   .instructions {
     padding: 0.75rem;
-    background: var(--dark-bg);
     border: 1px solid var(--accent);
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
+    background: var(--dark-bg);
 
     p {
       margin: 0.25rem 0;
+      font-weight: 300;
       font-size: 0.8rem;
       line-height: 1.3;
-      font-weight: 300;
     }
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (width <= 500px) {
     flex-direction: column;
 
     .top-row {
@@ -279,5 +396,42 @@ const BookmarkletItem = styled(motion.div)`
     .toggle-area {
       padding: 0.4rem 0.6rem;
     }
+  }
+`
+
+const InstallButton = styled.button<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:disabled,
+  &.installed {
+    background: var(--accent);
+    opacity: 0.8;
+    color: var(--text);
+    cursor: default;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--text);
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 0.75rem;
+  }
+
+  svg {
+    max-width: 0.875rem;
+    max-height: 0.875rem;
   }
 `

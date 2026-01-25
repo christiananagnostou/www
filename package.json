@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "oxlint .",
     "lint:css": "stylelint './**/*.{tsx,js,ts}'",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "vitest"
+    "test": "vitest",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@jsdevtools/rehype-toc": "^3.0.2",
