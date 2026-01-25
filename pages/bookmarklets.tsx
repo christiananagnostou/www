@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
 import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
-import Checkmark from '../components/SVG/Checkmark'
+import { FilledBookmark } from '../components/SVG/bookmarklets/FilledBookmark'
 import DownArrow from '../components/SVG/DownArrow'
 import Github from '../components/SVG/GitHub'
 import UpArrow from '../components/SVG/UpArrow'
@@ -184,7 +184,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                         title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
                         onClick={() => handleInstallClick(id)}
                       >
-                        {isInstalled ? <Checkmark /> : <BookWithBookmark />}
+                        {isInstalled ? <FilledBookmark /> : <BookWithBookmark />}
                         <span>{installCount}</span>
                       </InstallButton>
                     </div>
