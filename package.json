@@ -53,7 +53,7 @@
     "oxfmt": "^0.24.0",
     "oxlint": "^1.39.0",
     "postcss-styled-syntax": "^0.7.1",
-    "stylelint": "^16.26.1",
+    "stylelint": "^17.0.0",
     "stylelint-config-recommended": "^17.0.0",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-config-styled-components": "^0.1.1",
