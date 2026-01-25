@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import type { AlignedData, Series } from 'uplot'
 import uPlot from 'uplot'
-import 'uplot/dist/uPlot.min.css'
 
 interface Props {
   title: string

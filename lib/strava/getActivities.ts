@@ -114,7 +114,7 @@ const assignBestFlags = (
     ElevationGain: ElevationGain != null && ElevationGain === bestValues.ElevationGain ? 1 : 0,
     MovingTime: MovingTime != null && MovingTime === bestValues.MovingTime ? 1 : 0,
     AverageSpeed: AverageSpeed != null && AverageSpeed === bestValues.AverageSpeed ? 1 : 0,
-    Pace: Pace != null && Pace === bestValues.Pace ? 1 : 0,
+    Pace: Pace > 0 && Pace === bestValues.Pace ? 1 : 0,
   }
 
   return { ...activityWithoutRaw, best: isBest }

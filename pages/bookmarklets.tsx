@@ -20,6 +20,7 @@ const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
 const PageUrl = `${BASE_URL}/bookmarklets`
 
 interface BookmarkletWithMetrics {
+  id: string
   title: string
   description: string
   code: string
@@ -35,7 +36,7 @@ interface Props {
 export async function getStaticProps() {
   const bookmarkletsWithMetrics = await Promise.all(
     bookmarkletsData.map(async (bookmarklet) => {
-      const metrics = await getMetrics(bookmarklet.title)
+      const metrics = await getMetrics(bookmarklet.id)
       // Exclude the icon from serialization
       const { icon: _icon, ...serializableBookmarklet } = bookmarklet
       return { ...serializableBookmarklet, installs: metrics.installs }
@@ -59,32 +60,37 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
     // Initialize install counts from props
     const initialCounts: { [key: string]: number } = {}
     bookmarkletsWithMetrics.forEach((bookmarklet) => {
-      initialCounts[bookmarklet.title] = bookmarklet.installs
+      initialCounts[bookmarklet.id] = bookmarklet.installs
     })
     setInstallCounts(initialCounts)
 
-    // Load installed states from localStorage
+    // Load installed states from localStorage (supports legacy title keys)
     const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
-    setInstalledStates(installedBookmarklets)
+    const installedById: { [key: string]: boolean } = {}
+    bookmarkletsWithMetrics.forEach((bookmarklet) => {
+      installedById[bookmarklet.id] =
+        installedBookmarklets[bookmarklet.id] ?? installedBookmarklets[bookmarklet.title] ?? false
+    })
+    setInstalledStates(installedById)
   }, [bookmarkletsWithMetrics])
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
   }
 
-  const handleInstallClick = async (title: string) => {
-    if (!installedStates[title]) {
+  const handleInstallClick = async (bookmarkletId: string) => {
+    if (!installedStates[bookmarkletId]) {
       try {
-        const res = await fetch(`/api/bookmarklets/metrics/${encodeURIComponent(title)}?type=installs`, {
+        const res = await fetch(`/api/bookmarklets/metrics/${encodeURIComponent(bookmarkletId)}?type=installs`, {
           method: 'POST',
         })
         const data = await res.json()
-        setInstallCounts((prev) => ({ ...prev, [title]: data.installs }))
-        setInstalledStates((prev) => ({ ...prev, [title]: true }))
+        setInstallCounts((prev) => ({ ...prev, [bookmarkletId]: data.installs }))
+        setInstalledStates((prev) => ({ ...prev, [bookmarkletId]: true }))
 
         // Save to localStorage
         const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
-        installedBookmarklets[title] = true
+        installedBookmarklets[bookmarkletId] = true
         localStorage.setItem('installedBookmarklets', JSON.stringify(installedBookmarklets))
       } catch (error) {
         console.error('Failed to track install:', error)
@@ -131,15 +137,15 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 
         <BookmarkletsContainer variants={staggerFade}>
           {bookmarkletsWithMetrics.map((bookmarklet, index) => {
-            const { title, description, code, githubUrl, instructions } = bookmarklet
-            const originalBookmarklet = bookmarkletsData.find((b) => b.title === title)
+            const { id, title, description, code, githubUrl, instructions } = bookmarklet
+            const originalBookmarklet = bookmarkletsData.find((b) => b.id === id)
             const icon = originalBookmarklet?.icon
             const isOpen = openIndexes.includes(index)
-            const isInstalled = installedStates[title]
-            const installCount = installCounts[title] || 0
+            const isInstalled = installedStates[id]
+            const installCount = installCounts[id] || 0
 
             return (
-              <BookmarkletItem key={title} variants={fade}>
+              <BookmarkletItem key={id} variants={fade}>
                 <div className="main-content">
                   {/* Top row: icon + "title link" */}
                   <div className="top-row">
@@ -176,7 +182,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                         className={isInstalled ? 'installed' : ''}
                         disabled={isInstalled}
                         title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
-                        onClick={() => handleInstallClick(title)}
+                        onClick={() => handleInstallClick(id)}
                       >
                         {isInstalled ? <Checkmark /> : <BookWithBookmark />}
                         <span>{installCount}</span>

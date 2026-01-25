@@ -1,9 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { bookmarkletsData } from '../../../../lib/bookmarklets'
 import { type BookmarkletMetrics, getMetrics, incrementInstalls } from '../../../../lib/bookmarklets/metrics'
 
 type MetricsResponse = BookmarkletMetrics
 interface ErrorResponse {
   error: string
+}
+
+const allowedBookmarkletIds = new Set(bookmarkletsData.map((bookmarklet) => bookmarklet.id))
+
+const getClientToken = (req: NextApiRequest) => {
+  const forwardedFor = req.headers['x-forwarded-for']
+  const raw = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor
+  return (raw || req.socket.remoteAddress || '').split(',')[0].trim()
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<MetricsResponse | ErrorResponse>) {
@@ -17,15 +26,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(200).end()
   }
 
-  const { bookmarkletId, type } = req.query as { bookmarkletId: string; type?: string }
+  const { bookmarkletId, type } = req.query as { bookmarkletId?: string | string[]; type?: string }
+  const resolvedId = Array.isArray(bookmarkletId) ? bookmarkletId[0] : bookmarkletId
+  const normalizedId = resolvedId?.trim()
 
-  if (!bookmarkletId) {
+  if (!normalizedId) {
     return res.status(400).json({ error: 'Bookmarklet ID is required' })
+  }
+
+  if (!allowedBookmarkletIds.has(normalizedId)) {
+    return res.status(404).json({ error: 'Bookmarklet ID is not recognized' })
   }
 
   try {
     if (req.method === 'GET') {
-      const metrics = await getMetrics(bookmarkletId)
+      const metrics = await getMetrics(normalizedId)
       return res.status(200).json(metrics)
     }
 
@@ -35,8 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
 
       if (type === 'installs') {
-        await incrementInstalls(bookmarkletId)
-        const updatedMetrics = await getMetrics(bookmarkletId)
+        const clientToken = getClientToken(req)
+        await incrementInstalls(normalizedId, clientToken || undefined)
+        const updatedMetrics = await getMetrics(normalizedId)
         return res.status(200).json(updatedMetrics)
       } else {
         return res.status(400).json({ error: 'Type must be "installs"' })

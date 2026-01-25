@@ -3,6 +3,7 @@ import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
   {
+    id: 'hotbids',
     title: 'HotBids',
     description: 'Highlights eBay bids and provides a toolbar to quickly navigate through them.',
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js',
@@ -22,6 +23,7 @@ export const bookmarkletsData = [
       3. Enjoy!`,
   },
   {
+    id: 'tcdb-scout',
     title: 'TCDB Scout',
     description: 'Scans TCDB collection pages and prepares quick eBay searches for each card.',
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/tcdb-scout.js',
@@ -85,6 +87,7 @@ export const bookmarkletsData = [
   //     3. The interface will be simplified, hiding unnecessary elements and enlarging buttons for easier clicking.`,
   // },
   {
+    id: 'glassbreaker',
     title: 'GlassBreaker',
     description:
       'Bypasses the content wall popup and fixes scrolling issues on Glassdoor, allowing uninterrupted access to reviews.',
