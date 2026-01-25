@@ -54,6 +54,7 @@ export async function getStaticProps() {
 export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
   const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
+  const [localInstallCounts, setLocalInstallCounts] = useState<{ [key: string]: number }>({})
   const initialCounts = useMemo(() => {
     const counts: { [key: string]: number } = {}
     bookmarkletsWithMetrics.forEach((bookmarklet) => {
@@ -65,6 +66,9 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
 
   useEffect(() => {
     setInstallCounts((prev) => (Object.keys(prev).length ? prev : initialCounts))
+
+    const storedCounts = JSON.parse(localStorage.getItem('installedBookmarkletCounts') || '{}')
+    setLocalInstallCounts(storedCounts)
 
     // Load installed states from localStorage (supports legacy title keys)
     const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
@@ -96,10 +100,14 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         setInstallCounts((prev) => ({ ...prev, [bookmarkletId]: data.installs }))
         setInstalledStates((prev) => ({ ...prev, [bookmarkletId]: true }))
 
+        const updatedLocalCounts = { ...localInstallCounts, [bookmarkletId]: data.installs }
+        setLocalInstallCounts(updatedLocalCounts)
+
         // Save to localStorage
         const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
         installedBookmarklets[bookmarkletId] = true
         localStorage.setItem('installedBookmarklets', JSON.stringify(installedBookmarklets))
+        localStorage.setItem('installedBookmarkletCounts', JSON.stringify(updatedLocalCounts))
       } catch (error) {
         console.error('Failed to track install:', error)
       }
@@ -150,7 +158,9 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
             const icon = originalBookmarklet?.icon
             const isOpen = openIndexes.includes(index)
             const isInstalled = installedStates[id]
-            const installCount = installCounts[id] || 0
+            const serverCount = installCounts[id] || 0
+            const localCount = localInstallCounts[id] || 0
+            const installCount = isInstalled ? Math.max(serverCount, localCount) : serverCount
 
             return (
               <BookmarkletItem key={id} variants={fade}>
