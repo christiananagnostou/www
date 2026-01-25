@@ -7,9 +7,9 @@ export const TodayCursorStyle = styled.div<{
 }>`
   position: absolute;
   bottom: 0;
-  left: ${({ offsetDays, dateWidth, width }) => offsetDays * dateWidth + dateWidth / 2 - width / 2}px;
+  left: ${({ $offsetDays, $dateWidth, $width }) => $offsetDays * $dateWidth + $dateWidth / 2 - $width / 2}px;
   z-index: 20;
-  width: ${({ width }) => width}px;
+  width: ${({ $width }) => $width}px;
   height: calc(100% - var(--date-bar-height) + 0.5rem);
   background-color: var(--accent-color);
 `

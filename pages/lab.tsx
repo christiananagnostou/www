@@ -5,6 +5,8 @@ import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
+import MLBScoreboard from '../components/Lab/scoreboard/MLBScoreboard'
+import type { ScheduleGame } from '../components/Lab/scoreboard/types'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
 

@@ -70,12 +70,12 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
     const liveGame = games.find((g) => g.status.abstractGameState === 'Live')
     const pastGames = games
       .filter((g) => g.status.abstractGameState === 'Final')
-      .sort((a, b) => dayjs(b.gameDate).valueOf() - dayjs(a.gameDate).valueOf())
+      .toSorted((a, b) => dayjs(b.gameDate).valueOf() - dayjs(a.gameDate).valueOf())
       .slice(0, 3)
       .toReversed()
     const upcomingGames = games
       .filter((g) => g.status.abstractGameState === 'Preview')
-      .sort((a, b) => dayjs(a.gameDate).valueOf() - dayjs(b.gameDate).valueOf())
+      .toSorted((a, b) => dayjs(a.gameDate).valueOf() - dayjs(b.gameDate).valueOf())
       .slice(0, 3)
 
     return { liveGame, pastGames, upcomingGames }
@@ -138,7 +138,7 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
     }
 
     return () => {
-      pollRef.current && clearInterval(pollRef.current)
+      if (pollRef.current) clearInterval(pollRef.current)
     }
   }, [selectedGame, controls])
 
@@ -233,7 +233,7 @@ const Wrapper = styled.div`
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }

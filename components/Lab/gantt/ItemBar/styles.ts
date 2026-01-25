@@ -4,7 +4,7 @@ export const ItemBarContainer = styled.div<{ $height: number }>`
   display: inline-flex;
   align-items: center;
   width: 100%;
-  height: ${({ height }) => `${height}px`};
+  height: ${({ $height }) => `${$height}px`};
   user-select: none;
 
   &.hovered {
@@ -21,11 +21,11 @@ export const Bar = styled.div<{ $width: number; $height: number; $marginLeft: nu
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: ${({ width }) => `${width}px`};
-  height: ${({ height }) => `${height}px`};
-  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
+  width: ${({ $width }) => `${$width}px`};
+  height: ${({ $height }) => `${$height}px`};
+  margin-left: ${({ $marginLeft }) => `${$marginLeft}px`};
   border-radius: 4px;
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  background-color: ${({ $backgroundColor }) => $backgroundColor};
   font-size: 0.65rem;
 `
 

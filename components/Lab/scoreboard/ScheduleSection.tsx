@@ -182,7 +182,7 @@ const GameContent = styled.div`
 
 const GameScore = styled.div`
   font-size: 1.1em;
-  font-weight: 700;
+  font-weight: bold;
   color: var(--heading);
   min-width: 2.5em;
   text-align: right;

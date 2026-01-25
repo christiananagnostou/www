@@ -125,7 +125,7 @@ const SparkleSVG = styled.span`
   }
 `
 
-const Container = styled.div<{ show: boolean }>`
+const Container = styled.div<{ $show: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -133,7 +133,7 @@ const Container = styled.div<{ show: boolean }>`
   width: 100vw;
   height: 100vh;
   background: linear-gradient(var(--body-bg) 50%, rgb(10 10 10));
-  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
+  background-position: ${({ $show }) => ($show ? 'bottom' : 'top')};
   background-size: 100% 200%;
   pointer-events: none;
   transition: background-position 1.5s ease;

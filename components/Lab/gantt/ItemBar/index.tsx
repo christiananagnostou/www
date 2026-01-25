@@ -23,7 +23,7 @@ const ItemBar = (props: RenderItemBarProps) => {
   const minWidth = dateWidth / 3
   const barWidth = daysBetween * dateWidth
   const startsAndEndsToday = dayjs(startDate).isSame(endDate, 'day') && dayjs(endDate).isSame(dayjs(), 'day')
-  const showTooltip = item.barLabel && barWidth <= 100
+  const showTooltip = Boolean(item.barLabel) && barWidth <= 100
 
   return (
     <>
@@ -35,12 +35,20 @@ const ItemBar = (props: RenderItemBarProps) => {
       >
         <BarWrap $rightMargin={dateWidth * 7}>
           <Bar
-            backgroundColor={item.barColor || '#3350E8'}
-            height={RowHeight / 2}
-            marginLeft={offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2}
-            width={barWidth || minWidth}
+            $backgroundColor={item.barColor || '#3350E8'}
+            $height={RowHeight / 2}
+            $marginLeft={
+              offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2
+            }
+            $width={barWidth || minWidth}
           >
-            {item.barLabel && barWidth > 100 ? <BarLabel>{item.barLabel}</BarLabel> : null}
+            {item.barLabel ? (
+              showTooltip ? (
+                <Tooltip $height={RowHeight}>{item.barLabel}</Tooltip>
+              ) : (
+                <BarLabel>{item.barLabel}</BarLabel>
+              )
+            ) : null}
             <StartLabel>{dayjs(item.startDate).format('MMM D')}</StartLabel>
             <EndLabel>{dayjs(item.endDate).format('MMM D')}</EndLabel>
           </Bar>

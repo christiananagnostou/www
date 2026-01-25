@@ -4,8 +4,7 @@ import { ScheduleGame, LineScore } from './types'
 
 const LINESCORE_INNINGS = 9
 
-const getInningArrow = (half: string) =>
-  half === 'Top' ? '↑' : half === 'Bottom' ? '↓' : half === 'Middle' ? '↕' : ''
+const getInningArrow = (half: string) => (half === 'Top' ? '↑' : half === 'Bottom' ? '↓' : half === 'Middle' ? '↕' : '')
 
 interface GameCardProps {
   game: ScheduleGame
@@ -203,17 +202,16 @@ const LinescoreTable = styled.table`
     padding: 0.25rem 0.5rem;
     text-align: center;
     border: none;
-    width: 1fr;
-  }
-  /* Team Names */
-  th:first-child {
-    text-align: left;
-    width: 5rem;
   }
   th {
     font-weight: 500;
     color: var(--heading);
     background: rgba(255, 255, 255, 0.04);
+  }
+  /* Team Names */
+  th:first-child {
+    text-align: left;
+    width: 5rem;
   }
   td {
     color: var(--text);
