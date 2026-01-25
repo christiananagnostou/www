@@ -5,8 +5,7 @@ export interface BookmarkletMetrics {
 }
 
 const getInstallsKey = (bookmarkletId: string) => `bookmarklet:${bookmarkletId}:installs`
-const getDedupeKey = (bookmarkletId: string, token: string) =>
-  `bookmarklet:${bookmarkletId}:installs:dedupe:${token}`
+const getDedupeKey = (bookmarkletId: string, token: string) => `bookmarklet:${bookmarkletId}:installs:dedupe:${token}`
 
 export async function getMetrics(bookmarkletId: string): Promise<BookmarkletMetrics> {
   await connectRedis()
