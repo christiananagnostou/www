@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
@@ -54,15 +54,17 @@ export async function getStaticProps() {
 export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
   const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
-  const [installCounts, setInstallCounts] = useState<{ [key: string]: number }>({})
+  const initialCounts = useMemo(() => {
+    const counts: { [key: string]: number } = {}
+    bookmarkletsWithMetrics.forEach((bookmarklet) => {
+      counts[bookmarklet.id] = bookmarklet.installs
+    })
+    return counts
+  }, [bookmarkletsWithMetrics])
+  const [installCounts, setInstallCounts] = useState<{ [key: string]: number }>(initialCounts)
 
   useEffect(() => {
-    // Initialize install counts from props
-    const initialCounts: { [key: string]: number } = {}
-    bookmarkletsWithMetrics.forEach((bookmarklet) => {
-      initialCounts[bookmarklet.id] = bookmarklet.installs
-    })
-    setInstallCounts(initialCounts)
+    setInstallCounts((prev) => (Object.keys(prev).length ? prev : initialCounts))
 
     // Load installed states from localStorage (supports legacy title keys)
     const installedBookmarklets = JSON.parse(localStorage.getItem('installedBookmarklets') || '{}')
@@ -72,7 +74,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         installedBookmarklets[bookmarklet.id] ?? installedBookmarklets[bookmarklet.title] ?? false
     })
     setInstalledStates(installedById)
-  }, [bookmarkletsWithMetrics])
+  }, [bookmarkletsWithMetrics, initialCounts])
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]))
