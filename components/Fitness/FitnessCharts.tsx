@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import type { AlignedData, Series } from 'uplot'
 import uPlot from 'uplot'
-import 'uplot/dist/uPlot.min.css'
 
 interface WeeklyData {
   labels: number[]

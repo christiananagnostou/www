@@ -1,5 +1,5 @@
 import { useAnimation, useInView } from 'framer-motion'
-import { RefObject, useRef } from 'react'
+import { type RefObject, useRef } from 'react'
 
 export const useScroll = (): [RefObject<HTMLElement | null>, ReturnType<typeof useAnimation>] => {
   const controls = useAnimation()

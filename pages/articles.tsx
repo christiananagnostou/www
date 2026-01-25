@@ -123,15 +123,14 @@ const Container = styled(motion.section)`
 const PostsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  align-content: center;
-  justify-content: center;
+  place-content: center center;
   margin: auto;
   gap: 2.5rem;
 `
 
 const PostItem = styled(motion.div)`
-  width: 100%;
   display: flex;
+  width: 100%;
 
   .date {
     font-size: 0.7rem;
@@ -144,7 +143,7 @@ const PostItem = styled(motion.div)`
     display: block;
     text-decoration: none;
     transition: all 0.25s ease;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     padding: 0.5rem 1rem;
     flex: 1;
 
@@ -171,7 +170,7 @@ const PostItem = styled(motion.div)`
     }
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (width <= 500px) {
     flex-direction: column-reverse;
 
     .date {

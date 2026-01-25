@@ -64,7 +64,7 @@ const Container = styled(motion.div)`
   padding: 0 1rem;
   margin: 2rem auto;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 2rem 1rem 4rem;
   }
 `
@@ -74,7 +74,7 @@ const LabItems = styled(motion.div)`
   flex-direction: column;
   gap: 4rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     gap: 2rem;
   }
 `
@@ -91,7 +91,7 @@ const DateStyle = styled.div`
   font-size: 0.9rem;
   margin-bottom: 1rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding-right: 1rem;
   }
 `
@@ -99,9 +99,9 @@ const DateStyle = styled.div`
 const Inner = styled.div`
   padding: 4rem;
   background: var(--dark-bg);
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 1rem;
   }
 `
