@@ -84,7 +84,13 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         const res = await fetch(`/api/bookmarklets/metrics/${encodeURIComponent(bookmarkletId)}?type=installs`, {
           method: 'POST',
         })
+        if (!res.ok) {
+          throw new Error(`Failed to track install (${res.status})`)
+        }
         const data = await res.json()
+        if (typeof data.installs !== 'number') {
+          throw new Error('Invalid metrics response')
+        }
         setInstallCounts((prev) => ({ ...prev, [bookmarkletId]: data.installs }))
         setInstalledStates((prev) => ({ ...prev, [bookmarkletId]: true }))
 
