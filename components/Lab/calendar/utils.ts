@@ -1,5 +1,5 @@
-import { Dayjs } from 'dayjs'
-import { DailyEventT } from './DailyCalendar'
+import type { Dayjs } from 'dayjs'
+import type { DailyEventT } from './DailyCalendar'
 import { HOUR_BAR_HEIGHT } from './styles'
 
 /**
@@ -13,7 +13,7 @@ export const dateToTime = (date: Dayjs, format: 12 | 24 = 24) => {
     const suffix = hours >= 12 ? ' PM' : ' AM'
     hours = hours > 12 ? hours - 12 : hours
     hours = hours || 12
-    return `${hours}${mins > 0 ? `:${mins.toString().padStart(2, '0')}` : ''}` + suffix
+    return `${hours}${mins > 0 ? `:${mins.toString().padStart(2, '0')}` : ''}${suffix}`
   } else {
     return `${hours}${mins > 0 ? `:${mins.toString().padStart(2, '0')}` : ''}`
   }
@@ -55,7 +55,7 @@ export function addMinutes(date: Dayjs, minutes: number) {
 // This implementation first groups events into clusters where events overlap directly,
 // then assigns columns within each cluster using a greedy algorithm.
 export const computeLayoutStyles = (events: DailyEventT[]) => {
-  const sorted = [...events].sort((a, b) => a.start.valueOf() - b.start.valueOf())
+  const sorted = events.toSorted((a, b) => a.start.valueOf() - b.start.valueOf())
 
   // Group events into clusters (only events that directly overlap belong to the same cluster)
   const clusters: DailyEventT[][] = []
@@ -79,7 +79,7 @@ export const computeLayoutStyles = (events: DailyEventT[]) => {
   // For each cluster, assign columns using a greedy algorithm.
   clusters.forEach((cluster) => {
     // Sort events in the cluster by start time.
-    const clusterSorted = cluster.sort((a, b) => a.start.valueOf() - b.start.valueOf())
+    const clusterSorted = cluster.toSorted((a, b) => a.start.valueOf() - b.start.valueOf())
     const columns: number[] = [] // will hold the latest end time for each column
     for (const event of clusterSorted) {
       let placed = false
@@ -98,10 +98,10 @@ export const computeLayoutStyles = (events: DailyEventT[]) => {
     }
     const total = columns.length
     for (const event of clusterSorted) {
-      const col = layoutMapping[event.id].col
+      const { col } = layoutMapping[event.id]
       layoutMapping[event.id].total = total
-      layoutMapping[event.id].left = (col / total) * 100 + '%'
-      layoutMapping[event.id].width = 100 / total + '%'
+      layoutMapping[event.id].left = `${(col / total) * 100}%`
+      layoutMapping[event.id].width = `${100 / total}%`
     }
   })
 

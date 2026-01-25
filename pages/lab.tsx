@@ -5,21 +5,19 @@ import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
-import { Heading } from '../components/Shared/Heading'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
-import MLBScoreboard from '../components/Lab/scoreboard/MLBScoreboard'
-import { ScheduleGame } from '../components/Lab/scoreboard/types'
+import { Heading } from '../components/Shared/Heading'
 
 export default function lab({ initialGames }: { initialGames: ScheduleGame[] }) {
   return (
     <>
       <Head>
         <title>Lab</title>
-        <meta name="description" content="Christian Anagnostou's Laboratory" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta content="Christian Anagnostou's Laboratory" name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -56,7 +54,7 @@ export default function lab({ initialGames }: { initialGames: ScheduleGame[] }) 
               <HeaderText>May 2024</HeaderText>
             </ItemHeader>
             <Inner>
-              <Gantt items={ganttProps.items} defaultZoom={ganttProps.defaultZoom} chartTitle={ganttProps.chartTitle} />
+              <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
             </Inner>
           </Item>
 
@@ -93,7 +91,7 @@ const Container = styled(motion.div)`
   padding: 0 1rem;
   margin: 2rem auto;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 2rem 1rem 4rem;
   }
 `
@@ -103,7 +101,7 @@ const LabItems = styled(motion.div)`
   flex-direction: column;
   gap: 4rem;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     gap: 2rem;
   }
 `
@@ -124,14 +122,19 @@ const ItemHeader = styled.div`
 const HeaderText = styled.div`
   color: var(--text-dark);
   font-size: 0.9rem;
+  margin-bottom: 1rem;
+
+  @media (width <= 768px) {
+    padding-right: 1rem;
+  }
 `
 
 const Inner = styled.div`
   padding: 4rem;
   background: var(--dark-bg);
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 1rem;
   }
 `

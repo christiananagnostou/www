@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import path from 'path'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse): void {
@@ -11,7 +11,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse): void
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
 
     res.status(200).send(fileContents)
-  } catch (error) {
+  } catch (_error) {
+    console.error(_error)
     res.status(500).send('Failed to load script')
   }
 }

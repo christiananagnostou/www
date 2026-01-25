@@ -32,7 +32,7 @@ export function getPostBySlug(slug: string) {
     ...data,
     categories: data.categories?.split(',') || [],
     slug: realSlug,
-    content: content,
+    content,
   } as ArticleType
 
   return items
@@ -45,6 +45,6 @@ export function getAllPosts({ allowNoList = false } = {}): ArticleType[] {
     .filter((post) => !post.hidden)
     .filter((post) => allowNoList || !post.nolist)
     // sort posts newest to oldest
-    .sort((post1, post2) => (dayjs(post1.dateCreated).isBefore(dayjs(post2.dateCreated)) ? 1 : -1))
+    .toSorted((post1, post2) => (dayjs(post1.dateCreated).isBefore(dayjs(post2.dateCreated)) ? 1 : -1))
   return posts
 }

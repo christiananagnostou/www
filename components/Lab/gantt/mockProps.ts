@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { ItemProps } from '.'
+import type { ItemProps } from '.'
 
 // Sample items for the Gantt chart
 const items: ItemProps[] = [
@@ -104,10 +104,10 @@ const legend = [
 
 // GanttProps data
 const ganttProps = {
-  items: items,
+  items,
   defaultZoom: 25,
   chartTitle: 'Project Timeline',
-  legend: legend,
+  legend,
 }
 
 export default ganttProps

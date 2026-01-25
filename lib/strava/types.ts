@@ -1,16 +1,22 @@
-export type StravaActivity = {
+export type StravaActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'VirtualRide' | 'Walk'
+
+export interface StravaActivity {
   title: string
   link: string
   description: string
   pubDate: string
   guid: string
-  type: 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift'
+  type: StravaActivityType
   Distance?: string
   ElevationGain?: string
   MovingTime?: string
   AverageSpeed?: string
   Pace?: string
-  MaxSpeed: string | null
+  AverageHeartRate?: number | null
+  AverageWatts?: number | null
+  HasHeartRate?: boolean
+  DeviceWatts?: boolean
+  MaxSpeed?: string | null
   MapPolyline: string | null
   best: {
     MovingTime: number

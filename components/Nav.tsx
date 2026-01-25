@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -7,28 +6,29 @@ import styled from 'styled-components'
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
 import { dropdown, fade, staggerFade } from './animation'
-import DownArrow from './SVG/DownArrow'
 import A from './SVG/A'
+import DownArrow from './SVG/DownArrow'
 
 interface SubLink {
   href: string
   title: string
 }
-export type NavLinks = {
+export type NavLinks = Array<{
   href?: string
   title: string
   subLinks?: SubLink[]
-}[]
+}>
 
 const NAV_LINKS: NavLinks = [
   { href: '/', title: 'Home' },
   {
     title: 'Works',
     subLinks: [
+      { href: '/fitness', title: 'Fitness' },
+      { href: '/articles', title: 'Articles' },
       { href: '/projects', title: 'Projects' },
       { href: '/art', title: 'Photography' },
       { href: '/bookmarklets', title: 'Bookmarklets' },
-      { href: '/articles', title: 'Articles' },
       { href: '/lab', title: 'Lab' },
     ],
   },
@@ -126,9 +126,9 @@ const Nav: React.FC = () => {
       <SkipLink href="#main-content">Skip to main content</SkipLink>
 
       {/* Structured Data for Navigation */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} />
+      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} type="application/ld+json" />
       {/* Breadcrumb structured data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
+      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} type="application/ld+json" />
 
       <StyledNav
         aria-label="Main Navigation"
@@ -137,28 +137,28 @@ const Nav: React.FC = () => {
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
         <motion.div
-          className="nav-inner max-w-screen"
-          variants={staggerFade}
-          initial="hidden"
           animate="show"
+          className="nav-inner max-w-screen"
           exit="exit"
+          initial="hidden"
+          variants={staggerFade}
         >
-          <LogoWrapper href="/" aria-label="Home" variants={fade}>
-            <A width="30px" height="30px" />
+          <LogoWrapper aria-label="Home" href="/" variants={fade}>
+            <A height="30px" width="30px" />
           </LogoWrapper>
 
           <AnimatePresence>
-            {(menuOpen || isDesktop) && (
+            {menuOpen || isDesktop ? (
               <Menu
                 key="main-menu"
-                variants={menuAnimation}
-                initial="hidden"
                 animate="show"
                 exit="exit"
+                initial="hidden"
                 style={{
                   height: isDesktop ? 'auto' : undefined,
                   opacity: isDesktop ? 1 : undefined,
                 }}
+                variants={menuAnimation}
               >
                 {NAV_LINKS.map(({ href, title, subLinks }, index) => {
                   const active = href === pathname
@@ -170,21 +170,21 @@ const Nav: React.FC = () => {
                   return (
                     <MenuItem
                       key={title}
+                      variants={fade}
                       onMouseEnter={() => handleMouseEnter(index)}
                       onMouseLeave={() => handleMouseLeave(index)}
-                      variants={fade}
                     >
                       {!hasSub ? (
-                        <Link href={href!} aria-current={active ? 'page' : undefined}>
+                        <Link aria-current={active ? 'page' : undefined} href={href!}>
                           {title}
                         </Link>
                       ) : (
                         <>
                           <DropdownToggle
+                            aria-expanded={isSubmenuOpen}
+                            aria-haspopup="true"
                             type="button"
                             onClick={() => toggleSubmenu(title)}
-                            aria-haspopup="true"
-                            aria-expanded={isSubmenuOpen}
                           >
                             {title}
                             <DownArrow />
@@ -192,27 +192,27 @@ const Nav: React.FC = () => {
 
                           {/* Animate submenu in/out */}
                           <AnimatePresence>
-                            {isSubmenuOpen && (
+                            {isSubmenuOpen ? (
                               <Submenu
                                 key={`${title}-submenu`}
-                                variants={isDesktop ? desktopSubmenuAnimation : dropdown}
-                                initial="hidden"
                                 animate="show"
-                                exit="exit"
                                 aria-label={`${title} Submenu`}
+                                exit="exit"
+                                initial="hidden"
+                                variants={isDesktop ? desktopSubmenuAnimation : dropdown}
                               >
-                                {subLinks!.map((sub) => {
+                                {subLinks.map((sub) => {
                                   const subActive = sub.href === pathname
                                   return (
                                     <li key={sub.href}>
-                                      <Link href={sub.href} aria-current={subActive ? 'page' : undefined}>
+                                      <Link aria-current={subActive ? 'page' : undefined} href={sub.href}>
                                         {sub.title}
                                       </Link>
                                     </li>
                                   )
                                 })}
                               </Submenu>
-                            )}
+                            ) : null}
                           </AnimatePresence>
                         </>
                       )}
@@ -220,16 +220,16 @@ const Nav: React.FC = () => {
                   )
                 })}
               </Menu>
-            )}
+            ) : null}
           </AnimatePresence>
 
           {/* Hamburger (mobile) */}
           {!isDesktop && (
             <Hamburger
-              onClick={toggleMenu}
-              aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
+              aria-label="Toggle navigation menu"
               variants={fade}
+              onClick={toggleMenu}
             >
               <span />
               <span />
@@ -248,10 +248,11 @@ const SkipLink = styled.a`
   position: absolute;
   top: -40px;
   left: 0;
+  z-index: 10000;
+  padding: 8px 16px;
+  border-radius: var(--border-radius-sm);
   background: var(--accent);
   color: var(--text);
-  padding: 8px 16px;
-  z-index: 10000;
   transition: top 0.3s;
   &:focus {
     top: 0;
@@ -274,51 +275,51 @@ const StyledNav = styled.nav`
   position: sticky;
   top: 0;
   z-index: 9999;
-  transition: top 0.4s ease;
   border-bottom: 1px solid var(--accent);
   background: var(--dark-bg);
+  transition: top 0.4s ease;
 
   .nav-inner {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0;
-    margin: auto;
+    align-items: center;
     height: var(--nav-height);
+    margin: auto;
+    padding: 0;
   }
 `
 
-const LogoWrapper = styled(motion(Link))`
+const LogoWrapper = styled(motion.create(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
   fill: var(--text);
 
   svg {
-    user-select: none;
     pointer-events: none;
+    user-select: none;
   }
 `
 
 const Hamburger = styled(motion.button)`
-  background: none;
-  border: none;
-  cursor: pointer;
   display: flex;
-  align-items: end;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
+  align-items: end;
   gap: 0.4rem;
-  flex: 1;
   height: 100%;
   padding: 0 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
 
   span {
     display: block;
     width: 22px;
     height: 1px;
-    background: var(--text-dark);
     border-radius: 1px;
+    background: var(--text-dark);
     transition: all 0.3s ease;
   }
 
@@ -338,31 +339,31 @@ const Hamburger = styled(motion.button)`
 `
 
 const Menu = styled(motion.ul)`
-  list-style: none;
+  position: relative;
   margin: 0;
   padding: 0;
-  position: relative;
+  list-style: none;
 
   /* Desktop */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     display: flex;
     align-items: center;
-    gap: 0rem;
+    gap: 0;
     height: auto !important;
     opacity: 1 !important;
   }
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     position: absolute;
     top: var(--nav-height);
-    left: 0;
     right: 0;
-    background: var(--dark-bg);
-    overflow: hidden;
-    border-bottom: 1px solid var(--accent);
+    left: 0;
     border-top: 1px solid var(--accent);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--accent);
+    background: var(--dark-bg);
+    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+    overflow: hidden;
   }
 `
 
@@ -370,7 +371,7 @@ const MenuItem = styled(motion.li)`
   position: relative;
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     &:last-child {
       margin-bottom: 0.5rem;
     }
@@ -381,19 +382,19 @@ const MenuItem = styled(motion.li)`
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    text-decoration: none;
-    color: var(--heading);
-    font-size: 1rem;
     padding: 0.5rem 1rem;
-    background: none;
     border: none;
+    background: none;
+    font-size: 1rem;
+    color: var(--heading);
+    text-decoration: none;
     cursor: pointer;
     transition: color 0.3s;
 
-    @media (max-width: 767px) {
-      width: 100%;
-      justify-content: end;
+    @media (width <= 767px) {
       flex-direction: row-reverse;
+      justify-content: end;
+      width: 100%;
       padding: 0.75rem 1rem;
     }
   }
@@ -405,7 +406,7 @@ const DropdownToggle = styled.button`
   cursor: s-resize !important;
 
   /* Mobile */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     &[aria-expanded='true'] {
       svg {
         transform: rotate(180deg);
@@ -415,15 +416,16 @@ const DropdownToggle = styled.button`
 `
 
 const Submenu = styled(motion.ul)`
-  /* Shared */
-  list-style: none;
   margin: 0;
   padding: 0;
+
+  /* Shared */
+  list-style: none;
   overflow: hidden;
 
   li a {
-    text-decoration: none;
     color: var(--heading);
+    text-decoration: none;
 
     @media (hover: hover) {
       &:hover,
@@ -434,15 +436,15 @@ const Submenu = styled(motion.ul)`
   }
 
   /* Desktop dropdown */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     position: absolute;
     top: 100%;
-    left: -0rem;
-    background: var(--dark-bg);
-    border: 1px solid var(--accent);
-    border-radius: 5px;
+    left: -0;
     min-width: 120px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    background: var(--dark-bg);
+    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
 
     li a {
       font-size: 0.95rem;
@@ -450,12 +452,12 @@ const Submenu = styled(motion.ul)`
   }
 
   /* Mobile dropdown */
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     li a {
-      padding: 0.5rem 3rem;
       position: relative;
+      padding: 0.5rem 3rem;
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         top: 0;

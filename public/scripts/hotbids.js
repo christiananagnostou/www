@@ -35,10 +35,13 @@
   const LS_MIN_BIDS = 'hotbids-min-bids'
   const LS_SORT_BY_BIDS = 'hotbids-sort-by-bids'
   const LS_POSITION = 'hotbids-position'
+  const LS_HIDE_NON_RESULTS = 'hotbids-hide-non-results'
   // eBay selectors
   const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
   const SEL_ITEM_CONTAINER = '.s-item'
   const SEL_ITEM_TITLE = '.s-item__title'
+  // Invalid containers (items within these containers will be ignored)
+  const INVALID_CONTAINERS = ['srp-items-carousel__container']
   // URL constants
   const URL_EBAY_SEARCH = 'https://www.ebay.com/sch/i.html?'
   const PARAM_SOLD = 'LH_Sold=1'
@@ -52,8 +55,9 @@
       this.regexPattern = REGEX_BID_COUNT
       this.matches = []
       this.currentMatchIndex = -1
-      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS)) || 1
+      this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS) || '1') || 1
       this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
+      this.hideNonResults = localStorage.getItem(LS_HIDE_NON_RESULTS) === 'true'
 
       this.injectStyles()
       this.collectMatches()
@@ -81,6 +85,10 @@
       const els = document.querySelectorAll(SEL_BID_COUNT)
       this.matches = []
       els.forEach((el) => {
+        // Check if element is within any invalid container
+        const isInInvalidContainer = INVALID_CONTAINERS.some((className) => el.closest(`.${className}`))
+        if (isInInvalidContainer) return // Skip this element
+
         const txt = el.innerText || el.textContent
         const match = txt.match(this.regexPattern)
         if (match) {
@@ -127,6 +135,9 @@
           }
         }
       })
+
+      // Apply hide non-results functionality
+      this.applyHideNonResults()
     }
 
     createToolbar() {
@@ -173,6 +184,13 @@
                   <input type="checkbox" id="sortByBidsCheckbox" ${this.sortByBids ? 'checked' : ''}>
                   <span class="checkmark"></span>
                   Sort by bids descending
+                </label>
+              </div>
+              <div class="hotbids-option">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="hideNonResultsCheckbox" ${this.hideNonResults ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                  Hide items without bids
                 </label>
               </div>
               <div class="hotbids-option">
@@ -235,26 +253,27 @@
       this.helpPanelCloseBtn = document.getElementById(ID_HELP_CLOSE)
       this.minBidsInput = document.getElementById('minBidsInput')
       this.sortByBidsCheckbox = document.getElementById('sortByBidsCheckbox')
+      this.hideNonResultsCheckbox = document.getElementById('hideNonResultsCheckbox')
 
       // Load saved position
       const savedPosition = localStorage.getItem(LS_POSITION) || CN_POP_BOTTOM_POS
       this.setLocationClass(savedPosition)
 
       // Toolbar event listeners
-      this.menuBtn.onclick = () => this.toggleModal(this.menuPanel)
-      this.prevBtn.onclick = () => this.scrollToPreviousMatch()
-      this.nextBtn.onclick = () => this.scrollToNextMatch()
-      this.retryBtn.onclick = () => this.retryMatches()
-      this.helpBtn.onclick = () => this.toggleModal(this.helpPanel)
+      this.menuBtn.addEventListener('click', () => this.toggleModal(this.menuPanel))
+      this.prevBtn.addEventListener('click', () => this.scrollToPreviousMatch())
+      this.nextBtn.addEventListener('click', () => this.scrollToNextMatch())
+      this.retryBtn.addEventListener('click', () => this.retryMatches())
+      this.helpBtn.addEventListener('click', () => this.toggleModal(this.helpPanel))
       // Menu panel event listeners
-      this.popLeftBtn.onclick = () => this.setLocationClass(CN_POP_LEFT_POS)
-      this.popRightBtn.onclick = () => this.setLocationClass(CN_POP_RIGHT_POS)
-      this.popTopBtn.onclick = () => this.setLocationClass(CN_POP_TOP_POS)
-      this.popBottomBtn.onclick = () => this.setLocationClass(CN_POP_BOTTOM_POS)
+      this.popLeftBtn.addEventListener('click', () => this.setLocationClass(CN_POP_LEFT_POS))
+      this.popRightBtn.addEventListener('click', () => this.setLocationClass(CN_POP_RIGHT_POS))
+      this.popTopBtn.addEventListener('click', () => this.setLocationClass(CN_POP_TOP_POS))
+      this.popBottomBtn.addEventListener('click', () => this.setLocationClass(CN_POP_BOTTOM_POS))
       this.toggleSoldBtn.addEventListener('change', () => this.toggleSold())
-      this.menuPanelCloseBtn.onclick = () => this.toggleModal(this.menuPanel)
+      this.menuPanelCloseBtn.addEventListener('click', () => this.toggleModal(this.menuPanel))
       // Help panel event listeners
-      this.helpPanelCloseBtn.onclick = () => this.toggleModal(this.helpPanel)
+      this.helpPanelCloseBtn.addEventListener('click', () => this.toggleModal(this.helpPanel))
       this.minBidsInput.addEventListener('change', (e) => {
         this.minBids = parseInt(e.target.value) || 1
         localStorage.setItem(LS_MIN_BIDS, this.minBids)
@@ -264,6 +283,11 @@
         this.sortByBids = e.target.checked
         localStorage.setItem(LS_SORT_BY_BIDS, this.sortByBids)
         this.retryMatches()
+      })
+      this.hideNonResultsCheckbox.addEventListener('change', (e) => {
+        this.hideNonResults = e.target.checked
+        localStorage.setItem(LS_HIDE_NON_RESULTS, this.hideNonResults)
+        this.applyHideNonResults()
       })
 
       if (!this.checkSoldCheckbox()) {
@@ -296,6 +320,20 @@
     toggleSold() {
       const soldCheckbox = this.checkSoldCheckbox()
       if (soldCheckbox) soldCheckbox.click()
+    }
+
+    applyHideNonResults() {
+      const allItems = document.querySelectorAll(SEL_ITEM_CONTAINER)
+      allItems.forEach((item) => {
+        const bidElement = item.querySelector(SEL_BID_COUNT)
+        const hasBids = bidElement && this.matches.some((match) => match.element === bidElement)
+
+        if (this.hideNonResults && !hasBids) {
+          item.style.display = 'none'
+        } else {
+          item.style.display = ''
+        }
+      })
     }
 
     scrollToNextMatch() {
@@ -335,7 +373,7 @@
     }
 
     handleKeyPress(e) {
-      const target = e.target
+      const { target } = e
       const tagName = target.tagName.toLowerCase()
       if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
         return // Don't trigger shortcuts while typing
@@ -581,6 +619,7 @@
       display: flex;
       align-items: center;
       cursor: pointer;
+      user-select: none;
     }
 
     .custom-checkbox input {
@@ -588,16 +627,25 @@
     }
 
     .custom-checkbox .checkmark {
-      width: 16px;
-      height: 16px;
-      border: 1px solid var(--toolbar-fg);
-      border-radius: 3px;
-      margin-right: 0.5rem;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--toolbar-border);
+      border-radius: 4px;
+      margin-right: 0.75rem;
       position: relative;
+      background: var(--button-bg);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      border-color: var(--toolbar-fg);
+      background: var(--button-bg-hover);
     }
 
     .custom-checkbox input:checked + .checkmark {
-      background-color: var(--toolbar-fg);
+      background-color: #4CAF50;
+      border-color: #4CAF50;
     }
 
     .custom-checkbox input:checked + .checkmark::after {
@@ -605,11 +653,18 @@
       position: absolute;
       left: 5px;
       top: 2px;
-      width: 5px;
-      height: 10px;
-      border: solid var(--toolbar-bg);
+      width: 4px;
+      height: 8px;
+      border: solid white;
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:disabled + .checkmark {
+      background: var(--toolbar-bg);
+      border-color: var(--toolbar-border);
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     .hotbids-option input[type="number"] {
@@ -638,5 +693,5 @@
   const RETRY_ARROW_SVG = /*svg*/ `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 32 32"><path d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13 13-5.832 13-13h-2c0 6.086-4.914 11-11 11S5 22.086 5 16 9.914 5 16 5c3.875 0 7.262 1.984 9.219 5H20v2h8V4h-2v3.719C23.617 4.844 20.02 3 16 3" stroke="none"/></svg>`
   const QUESTION_SVG = /*svg*/ `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14"></path></svg>`
 
-  new HotBids()
+  window.hotBids = new HotBids()
 })()

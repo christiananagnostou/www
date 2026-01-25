@@ -1,12 +1,13 @@
-import React, { CSSProperties, ElementType, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import type { CSSProperties, ElementType, ReactNode } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
 const SCROLL_END_DEBOUNCE = 300
 const LEFT_BUTTON = 0
 
-const debounce = (callback: (...rest: any) => any, wait: number) => {
+const debounce = <T extends (...args: unknown[]) => unknown>(callback: T, wait: number) => {
   let timeoutId: number
-  return (...args: any) => {
+  return (...args: Parameters<T>) => {
     window.clearTimeout(timeoutId)
     timeoutId = window.setTimeout(() => {
       callback(...args)
@@ -79,7 +80,11 @@ const DragScrollContainer = ({
     if (!container || (container.scrollLeft === scrollLeft && container.scrollTop === scrollTop)) return
 
     setScrolling(true)
-    started ? onScroll?.({ external: !internal }) : processStart(false)
+    if (started) {
+      onScroll?.({ external: !internal })
+    } else {
+      processStart(false)
+    }
     realScroll()
   }
 
@@ -152,7 +157,7 @@ const DragScrollContainer = ({
     if (typeof innerRef === 'function') {
       innerRef(containerRef.current)
     } else if (innerRef) {
-      ;(innerRef as React.MutableRefObject<HTMLElement | null>).current = containerRef.current
+      innerRef.current = containerRef.current
     }
   }, [innerRef])
 
@@ -186,7 +191,7 @@ const DragScrollContainer = ({
       }
     }
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       if (pressed) {
         if (started && (!scrolling || !nativeMobileScroll)) {
           processEnd()
@@ -284,8 +289,6 @@ const DragScrollContainer = ({
   return (
     <Component
       ref={containerRef}
-      style={style}
-      onScroll={handleScroll}
       className={`
         ${className} 
         ${styles.container} 
@@ -293,6 +296,8 @@ const DragScrollContainer = ({
         ${isMobile ? styles.nativeScroll : ''} 
         ${hideScrollbars ? styles.hideScrollbars : ''}
       `}
+      style={style}
+      onScroll={handleScroll}
     >
       {children}
       <style>{'.body-dragging { cursor: grab; }'}</style>

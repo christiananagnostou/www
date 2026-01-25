@@ -2,18 +2,18 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
+import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
 import { fade, photoAnim, staggerFade } from '../animation'
-import StairShadow from '/public/img/art/photography/stair_shadow.jpg'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
   return (
     <ArtContainer variants={staggerFade}>
-      <Link href="/art">
-        <motion.p variants={fade} className="homepage-box__title">
-          Photos
-        </motion.p>
+      <Title variants={fade}>
+        <Link href="/art">Photos</Link>
+      </Title>
 
+      <Link href="/art">
         <div className="recent-art__hover-box">
           <p>
             Through the lens,
@@ -24,12 +24,12 @@ export default function RecentArt() {
 
         <RecentImage key={StairShadow.src} variants={photoAnim}>
           <Image
-            src={StairShadow}
             alt=""
             blurDataURL={StairShadow.blurDataURL}
-            placeholder="blur"
-            width={300}
             loading="eager"
+            placeholder="blur"
+            src={StairShadow}
+            width={300}
           />
         </RecentImage>
       </Link>
@@ -40,29 +40,26 @@ export default function RecentArt() {
 const ArtContainer = styled(HomepageBox)`
   overflow: hidden;
 
-  * {
-    text-decoration: none !important;
-  }
 
   .recent-art__hover-box {
     position: absolute;
-    left: 0;
     bottom: -50px;
-    height: 50px;
-    width: 100%;
-    transition: bottom 0.25s ease-in-out;
-    display: flex;
-    align-items: end;
-    justify-content: center;
+    left: 0;
     z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+    height: 50px;
     text-align: center;
+    transition: bottom 0.25s ease-in-out;
 
     p {
-      font-size: 0.8rem;
       padding-bottom: 3px;
-      scale: 0.8;
-      transition: scale 0.25s ease-in-out;
+      font-size: 0.8rem;
       color: var(--text-dark);
+      transition: scale 0.25s ease-in-out;
+      scale: 0.8;
     }
   }
 
@@ -71,12 +68,12 @@ const ArtContainer = styled(HomepageBox)`
     position: absolute;
     top: 100%;
     left: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
-    z-index: 1;
     background: linear-gradient(to bottom, transparent 20%, #171717);
-    transition: top 0.28s ease-in-out;
     pointer-events: none;
+    transition: top 0.28s ease-in-out;
   }
 
   &:hover {
@@ -94,20 +91,31 @@ const ArtContainer = styled(HomepageBox)`
   }
 `
 
+const Title = styled(motion.h2)`
+  position: relative;
+  z-index: 1;
+  margin: 0 0 1rem;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+`
+
 const RecentImage = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
-  filter: brightness(0.25);
   width: 100%;
   height: 100%;
+  filter: brightness(0.25);
 
   img {
-    min-height: 100%;
     min-width: 100%;
-    max-height: 100%;
     max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
     object-fit: cover;
   }
 `

@@ -20,10 +20,11 @@ const PageDescription = 'A gallery of photography capturing moments by Christian
 const PageUrl = `${BASE_URL}/art`
 
 // OG image: first image of the sorted list
-const ogImage =
-  SortedArtImages[0] && SortedArtImages[0].image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
+const ogImage = SortedArtImages[0]?.image ? `${BASE_URL}${SortedArtImages[0].image.src}` : undefined
 
-const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).sort((a, b) => a.localeCompare(b))
+const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags))).toSorted((a, b) =>
+  a.localeCompare(b)
+)
 
 const Art = () => {
   const router = useRouter()
@@ -34,7 +35,7 @@ const Art = () => {
 
   const filteredImagesWithIndex = filteredImages.map((item, index) => ({ ...item, index }))
 
-  const columns: (typeof filteredImagesWithIndex)[] = Array.from({ length: NUM_COLUMNS }, () => [])
+  const columns: Array<typeof filteredImagesWithIndex> = Array.from({ length: NUM_COLUMNS }, () => [])
   filteredImagesWithIndex.forEach((item) => {
     columns[item.index % NUM_COLUMNS].push(item)
   })
@@ -45,30 +46,30 @@ const Art = () => {
     <>
       <Head>
         <title>{PageTitle}</title>
-        <meta name="description" content={PageDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={PageUrl} />
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="art, photography, gallery, Christian Anagnostou" />
+        <meta content={PageDescription} name="description" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href={PageUrl} rel="canonical" />
+        <meta content="index, follow" name="robots" />
+        <meta content="art, photography, gallery, Christian Anagnostou" name="keywords" />
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={PageTitle} />
-        <meta property="og:description" content={PageDescription} />
-        <meta property="og:url" content={PageUrl} />
-        {ogImage && <meta property="og:image" content={ogImage} />}
+        <meta content="website" property="og:type" />
+        <meta content={PageTitle} property="og:title" />
+        <meta content={PageDescription} property="og:description" />
+        <meta content={PageUrl} property="og:url" />
+        {ogImage ? <meta content={ogImage} property="og:image" /> : null}
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={PageTitle} />
-        <meta name="twitter:description" content={PageDescription} />
-        {ogImage && <meta name="twitter:image" content={ogImage} />}
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content={PageTitle} name="twitter:title" />
+        <meta content={PageDescription} name="twitter:description" />
+        {ogImage ? <meta content={ogImage} name="twitter:image" /> : null}
         {/* Structured Data */}
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getArtStructuredData()) }}
+          type="application/ld+json"
         />
       </Head>
 
-      <Container variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Photography</h1>
           <p>
@@ -102,16 +103,16 @@ const Art = () => {
               {colImages.map((item) => (
                 <ImageWrapper key={item.image.src}>
                   <Image
-                    src={item.image}
                     alt={`${item.title} - ${item.date}`}
+                    aria-label={`Open full screen image: ${item.title}`}
                     blurDataURL={item.image.blurDataURL}
-                    placeholder="blur"
                     layout="responsive"
+                    placeholder="blur"
+                    role="button"
+                    src={item.image}
+                    tabIndex={0}
                     onClick={() => setModalIndex(item.index)}
                     onKeyDown={(e) => e.key === 'Enter' && setModalIndex(item.index)}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`Open full screen image: ${item.title}`}
                   />
 
                   <HoverBox>
@@ -124,7 +125,7 @@ const Art = () => {
                         <button
                           key={tag}
                           className={queriedTag === tag ? 'selected' : ''}
-                          onClick={(e) => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
+                          onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
                         >
                           {tag}
                         </button>
@@ -141,8 +142,8 @@ const Art = () => {
       <AnimatePresence>
         {modalIndex !== null && (
           <FullscreenModal
-            images={filteredImages}
             currentIndex={modalIndex}
+            images={filteredImages}
             onClose={() => setModalIndex(null)}
             onNavigate={(newIndex) => setModalIndex(newIndex)}
           />
@@ -181,7 +182,7 @@ const HoverBox = styled.div`
   width: 100%;
   transform: translateY(100%);
   transition: transform 0.25s ease-in-out;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 90%));
   padding: 50px 10px 10px;
   display: flex;
   flex-direction: column;
@@ -190,7 +191,7 @@ const HoverBox = styled.div`
 
   p,
   button {
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for readability */
+    text-shadow: 0 0 5px rgb(0 0 0 / 50%); /* Subtle shadow for readability */
   }
 
   .title-date {
@@ -222,7 +223,7 @@ const HoverBox = styled.div`
     font-size: 0.7rem;
     background: var(--border);
     border: 1px solid var(--accent);
-    border-radius: 3px;
+    border-radius: var(--border-radius-sm);
     color: var(--text);
     cursor: pointer;
     transition: all 0.25s ease;
@@ -230,15 +231,15 @@ const HoverBox = styled.div`
     min-width: max-content;
 
     &.selected {
-      color: #ffffff;
       background: var(--accent);
+      color: #ffffff;
     }
   }
 `
 const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
 
   img {

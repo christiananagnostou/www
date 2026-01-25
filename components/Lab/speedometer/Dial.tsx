@@ -1,6 +1,6 @@
-import { useMotionValue, animate } from 'framer-motion'
-import { Fragment, useEffect, useMemo } from 'react'
-import { DialShell, Tick, Needle, Label, Marker, RedlineArc } from './styles'
+import { animate, useMotionValue } from 'framer-motion'
+import { useEffect, useMemo } from 'react'
+import { DialShell, Label, Marker, Needle, RedlineArc, Tick } from './styles'
 
 interface DialProps {
   speed: number
@@ -34,7 +34,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
 
   // Ticks + labels every 10 mph, minor ticks every 1 mph
   const ticks = useMemo(() => {
-    const res: { angle: number; major: boolean; med: boolean; label?: string }[] = []
+    const res: Array<{ angle: number; major: boolean; med: boolean; label?: string }> = []
     for (let mph = 0; mph <= maxSpeed; mph += 1) {
       const fraction = mph / maxSpeed
       const angle = startAngle + fraction * angleRange
@@ -55,15 +55,20 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
 
   return (
     <DialShell $size={diameter}>
-      <RedlineArc $size={diameter} $start={redStart} $end={redEnd} />
+      <RedlineArc $end={redEnd} $size={diameter} $start={redStart} />
 
       {ticks.map(({ angle, major, med, label }, i) => {
         const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
         const rotate = `rotate(${angle}deg)`
         return (
-          <Fragment key={`t${i}`}>
-            <Tick $major={major} $len={len} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
-            {label && (
+          <>
+            <Tick
+              key={`t${i}`}
+              $len={len}
+              $major={major}
+              style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }}
+            />
+            {label ? (
               <Label
                 key={`l${i}`}
                 style={{
@@ -72,8 +77,8 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
               >
                 {label}
               </Label>
-            )}
-          </Fragment>
+            ) : null}
+          </>
         )
       })}
 

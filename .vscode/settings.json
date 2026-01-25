@@ -1,0 +1,22 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "always",
+    "source.organizeImports": "never"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "stylelint.enable": true,
+  "stylelint.configFile": "stylelint.config.mjs",
+  "stylelint.validate": ["css", "less", "postcss", "typescript", "typescriptreact"],
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
+}

@@ -28,7 +28,7 @@ import {
 dayjs.extend(relativeTime)
 dayjs.extend(minMax)
 
-export type ItemProps = {
+export interface ItemProps {
   id: string | number
   startDate: string | dayjs.Dayjs
   endDate: string | dayjs.Dayjs
@@ -38,11 +38,11 @@ export type ItemProps = {
   parentId?: string | number
 }
 
-type GanttProps = {
+interface GanttProps {
   items: ItemProps[]
   defaultZoom: number
   chartTitle: string
-  legend?: { label: string; color: string }[]
+  legend?: Array<{ label: string; color: string }>
 }
 
 export const RowHeight = 35
@@ -63,12 +63,13 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   const handleRowMouseOver = (id: ItemProps['id']) => {
     if (!rightSide.current || !leftSide.current) return
 
-    const bars = rightSide.current.querySelectorAll('.gantt-bar') as NodeListOf<HTMLDivElement>
-    const titles = leftSide.current.querySelectorAll('.gantt-title') as NodeListOf<HTMLButtonElement>
+    const bars = rightSide.current.querySelectorAll<HTMLElement>('.gantt-bar')
+    const titles = leftSide.current.querySelectorAll<HTMLElement>('.gantt-title')
+    const targetId = String(id)
 
     bars.forEach((bar, i) => {
-      bar.dataset.itemId == id ? bar.classList.add('hovered') : bar.classList.remove('hovered')
-      titles[i].dataset.itemId == id ? titles[i].classList.add('hovered') : titles[i].classList.remove('hovered')
+      bar.classList.toggle('hovered', bar.dataset.itemId === targetId)
+      titles[i]?.classList.toggle('hovered', titles[i]?.dataset.itemId === targetId)
     })
   }
 
@@ -79,7 +80,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
     const clientY = isTouch ? (e as React.TouchEvent).touches[0].clientY : (e as React.MouseEvent).clientY
 
     mousePos.current = { x: clientX, y: clientY }
-    rightSideStartingWidth.current = rightSide.current?.getBoundingClientRect().width || 0
+    rightSideStartingWidth.current = rightSide.current?.getBoundingClientRect().width ?? 0
 
     if (isTouch) {
       document.addEventListener('touchend', handleResizeEnd)
@@ -133,12 +134,12 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
         <Label>
           <ZoomTitle>Zoom:</ZoomTitle>
           <ZoomInput
-            type="range"
-            min="10"
             max="40"
+            min="10"
+            step="1"
+            type="range"
             value={dateWidth}
             onChange={(e) => setDateWidth(parseInt(e.target.value))}
-            step="1"
           />
         </Label>
       </TopBar>
@@ -149,52 +150,47 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
             {dayjs().format('ddd, MMM D')}
           </ScrollToTodayBtn>
 
-          {itemsChildrenMap
-            .get('root')
-            ?.map((item, i) => (
-              <ItemTitle
-                key={item.id + '_title'}
-                item={item}
-                idx={i}
-                level={0}
-                itemsChildrenMap={itemsChildrenMap}
-                handleRowMouseOver={handleRowMouseOver}
-                scrollToDate={scrollToDate}
-              />
-            ))}
+          {itemsChildrenMap.get('root')?.map((item, i) => (
+            <ItemTitle
+              key={`${item.id}_title`}
+              handleRowMouseOver={handleRowMouseOver}
+              idx={i}
+              item={item}
+              itemsChildrenMap={itemsChildrenMap}
+              level={0}
+              scrollToDate={scrollToDate}
+            />
+          ))}
         </LeftSide>
 
         <Resizer ref={resizer} onMouseDown={handleResizeStart} onTouchStart={handleResizeStart} />
 
-        <DragScrollContainer component={RightSide} innerRef={rightSide} hideScrollbars={true}>
+        <DragScrollContainer component={RightSide} hideScrollbars innerRef={rightSide}>
           <div style={{ width: dateWidth * numDaysShown, position: 'relative' }}>
             <TodayCursor dateWidth={dateWidth} itemsDateRange={itemsDateRange} />
 
             <DateBar
+              dateWidth={dateWidth}
               itemsDateRange={itemsDateRange}
               numDaysShown={numDaysShown}
-              dateWidth={dateWidth}
               scrollToDate={scrollToDate}
             />
 
-            {itemsChildrenMap
-              .get('root')
-              ?.map((item) => (
-                <ItemBar
-                  key={item.id + '_bar'}
-                  item={item}
-                  dateWidth={dateWidth}
-                  numDaysShown={numDaysShown}
-                  itemsDateRange={itemsDateRange}
-                  itemsChildrenMap={itemsChildrenMap}
-                  handleRowMouseOver={handleRowMouseOver}
-                />
-              ))}
+            {itemsChildrenMap.get('root')?.map((item) => (
+              <ItemBar
+                key={`${item.id}_bar`}
+                dateWidth={dateWidth}
+                handleRowMouseOver={handleRowMouseOver}
+                item={item}
+                itemsChildrenMap={itemsChildrenMap}
+                itemsDateRange={itemsDateRange}
+              />
+            ))}
           </div>
         </DragScrollContainer>
       </Chart>
 
-      {legend && (
+      {legend ? (
         <Legend>
           {legend.map((symbol) => (
             <LegendItem key={symbol.color}>
@@ -203,7 +199,7 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
             </LegendItem>
           ))}
         </Legend>
-      )}
+      ) : null}
     </GanttContainer>
   )
 }

@@ -1,4 +1,5 @@
-import dayjs, { Dayjs } from 'dayjs'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -11,11 +12,11 @@ import {
   DailyCalendarStyle,
   DateWrap,
   EventWrap,
+  HOUR_BAR_HEIGHT,
   HourBar,
   HourBarTime,
   HourBarWrap,
   HourListWrap,
-  HOUR_BAR_HEIGHT,
   StickyHeader,
   Timezone,
 } from './styles'
@@ -26,7 +27,7 @@ dayjs.extend(timezone)
 dayjs.extend(advancedFormat)
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-const HOURS = [...new Array(24)].map((_, i) => i)
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 const TOUCH_HOLD_DELAY = 500
 const BAR_INTERVAL_MINS = 15
@@ -97,7 +98,7 @@ const DailyCalendar = () => {
       setNewEvent({ ...eventItem })
     }
 
-    const onEnd = (e: MouseEvent | TouchEvent) => {
+    const onEnd = () => {
       document.body.removeEventListener(moveEventType, onMove)
       document.body.removeEventListener(endEventType, onEnd)
 
@@ -139,7 +140,7 @@ const DailyCalendar = () => {
     }, TOUCH_HOLD_DELAY)
 
     // If touch ends before the hold timer, cancel the event creation
-    const onTouchEndEarly = (e: TouchEvent) => {
+    const onTouchEndEarly = () => {
       clearTimeout(touchHoldTimer)
       isTouchActiveRef.current = false
       document.body.removeEventListener('touchmove', onTouchEndEarly)
@@ -174,23 +175,23 @@ const DailyCalendar = () => {
           {/* Existing Events */}
           {dailyEvents.map((dailyEvent) => (
             <DailyEvent
-              dailyEvent={dailyEvent}
-              setSelectedEventId={setSelectedEventId}
-              selectedEventId={selectedEventId}
-              pointerEventToDate={pointerEventToDate}
-              updateDailyEvent={updateDailyEvent}
-              deleteDailyEvent={deleteDailyEvent}
               key={dailyEvent.id}
+              dailyEvent={dailyEvent}
+              deleteDailyEvent={deleteDailyEvent}
               layoutStyle={layoutMapping[dailyEvent.id]}
+              pointerEventToDate={pointerEventToDate}
+              selectedEventId={selectedEventId}
+              setSelectedEventId={setSelectedEventId}
+              updateDailyEvent={updateDailyEvent}
             />
           ))}
 
           {/* New Event */}
-          {newEvent && <DailyEvent dailyEvent={newEvent} layoutStyle={layoutMapping[newEvent.id]} />}
+          {newEvent ? <DailyEvent dailyEvent={newEvent} layoutStyle={layoutMapping[newEvent.id]} /> : null}
         </EventWrap>
 
         {/* Current Time */}
-        <CurrentTimeBar style={{ top: timeToPx(dateToTime(dayjs())) }} id="CurrentTime" />
+        <CurrentTimeBar id="CurrentTime" style={{ top: timeToPx(dateToTime(dayjs())) }} />
 
         {/* Hours */}
         <HourBarWrap>

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { ItemProps } from '.'
+import type { ItemProps } from '.'
 
 /**
  *

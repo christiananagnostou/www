@@ -7,9 +7,13 @@ export const refreshAccessToken = async (): Promise<AuthenticationConfig> => {
   try {
     const tokenPayload = await strava.oauth.refreshToken(refreshToken)
 
-    const client_id = process.env.STRAVA_CLIENT_ID!
-    const client_secret = process.env.STRAVA_CLIENT_SECRET!
-    const redirect_uri = process.env.STRAVA_REDIRECT_URI!
+    const client_id = process.env.STRAVA_CLIENT_ID
+    const client_secret = process.env.STRAVA_CLIENT_SECRET
+    const redirect_uri = process.env.STRAVA_REDIRECT_URI
+
+    if (!client_id || !client_secret || !redirect_uri) {
+      throw new Error('Missing Strava client configuration')
+    }
 
     const config = {
       access_token: tokenPayload.access_token,
@@ -21,7 +25,6 @@ export const refreshAccessToken = async (): Promise<AuthenticationConfig> => {
     strava.config(config)
     strava.client(config.access_token) // Set the active client token
 
-    console.log('Access token refreshed')
     return config
   } catch (error) {
     console.error('Error refreshing token', error)

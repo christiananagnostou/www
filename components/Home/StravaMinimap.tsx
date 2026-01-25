@@ -1,10 +1,10 @@
 // Based on the encoded polyline algorithm from Google Maps
 // Decode a polyline string into an array of [lat, lng]
-function decodePolyline(str: string): [number, number][] {
+function decodePolyline(str: string): Array<[number, number]> {
   let index = 0,
     lat = 0,
     lng = 0
-  const coordinates: [number, number][] = []
+  const coordinates: Array<[number, number]> = []
   while (index < str.length) {
     let result = 0,
       shift = 0,
@@ -32,7 +32,7 @@ function decodePolyline(str: string): [number, number][] {
   return coordinates
 }
 
-type MiniMapProps = {
+interface MiniMapProps {
   polyline: string
   width?: number
   height?: number
@@ -76,8 +76,8 @@ export default function MiniMap({ polyline, width = 100, height = 100 }: MiniMap
 
   return (
     <div aria-label="Activity route map" role="img">
-      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-        <path d={pathData} stroke="var(--accent)" strokeWidth="1" fill="none" />
+      <svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
+        <path d={pathData} fill="none" stroke="var(--accent)" strokeWidth="1" />
       </svg>
     </div>
   )

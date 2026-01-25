@@ -1,8 +1,9 @@
-import { BrokenGlass, MoneyMagnify, Pokeball } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
   {
+    id: 'hotbids',
     title: 'HotBids',
     description: 'Highlights eBay bids and provides a toolbar to quickly navigate through them.',
     githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/hotbids.js',
@@ -20,6 +21,35 @@ export const bookmarkletsData = [
       1. Search for an item on eBay.
       2. Click the HotBids bookmarklet.
       3. Enjoy!`,
+  },
+  {
+    id: 'tcdb-scout',
+    title: 'TCDB Scout',
+    description: 'Scans TCDB collection pages and prepares quick eBay searches for each card.',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/tcdb-scout.js',
+    icon: TCDBScout,
+    code: /*js*/ `
+      javascript:(function(){
+        var s = document.getElementById('tcdb-scout-script');
+        if (!s) {
+          s = document.createElement('script');
+          s.id = 'tcdb-scout-script';
+          s.src = '${BASE_URL}/scripts/tcdb-scout.js';
+          s.onload = function(){
+            if (window.TCDBScout) window.TCDBScout();
+          };
+          document.body.appendChild(s);
+        } else if (window.TCDBScout) {
+          window.TCDBScout();
+        }
+      })();`,
+    instructions: `
+      TCDB Scout pulls card titles from your TCDB collection page and gives you one-click eBay searches for active and sold listings.
+      -
+      Instructions:
+      1. Open your TCDB collection page.
+      2. Click the TCDB Scout bookmarklet.
+      3. Use the Active or Sold buttons, or Open all with a limit.`,
   },
   // {
   //   title: 'PokeBattle',
@@ -57,6 +87,7 @@ export const bookmarkletsData = [
   //     3. The interface will be simplified, hiding unnecessary elements and enlarging buttons for easier clicking.`,
   // },
   {
+    id: 'glassbreaker',
     title: 'GlassBreaker',
     description:
       'Bypasses the content wall popup and fixes scrolling issues on Glassdoor, allowing uninterrupted access to reviews.',
