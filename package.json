@@ -21,7 +21,7 @@
     "emailjs-com": "^3.2.0",
     "framer-motion": "^12.26.2",
     "gray-matter": "^4.0.3",
-    "next": "^16.0.10",
+    "next": "^16.1.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "redis": "^5.10.0",
