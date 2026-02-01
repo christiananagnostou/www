@@ -246,6 +246,13 @@
                   Show sold items
                 </label>
               </div>
+              <div class="hotbids-option">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="hideNonResultsCheckbox" ${this.hideNonResults ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                  Hide items without bids
+                </label>
+              </div>
               <div class="hotbids-option hotbids-option--stack">
                 <span class="hotbids-option__label">Sort by</span>
                 <div class="hotbids-segmented" role="group" aria-label="Sort by">
@@ -259,13 +266,6 @@
                   <button class="hotbids-segment" data-sort-order="desc">Desc</button>
                   <button class="hotbids-segment" data-sort-order="asc">Asc</button>
                 </div>
-              </div>
-              <div class="hotbids-option">
-                <label class="custom-checkbox">
-                  <input type="checkbox" id="hideNonResultsCheckbox" ${this.hideNonResults ? 'checked' : ''}>
-                  <span class="checkmark"></span>
-                  Hide items without bids
-                </label>
               </div>
               <div class="hotbids-option">
                 <label for="minBidsInput">Min bids:</label>
@@ -725,6 +725,7 @@
       border: none;
       background: transparent;
       color: inherit;
+      font-size: inherit;
       padding: 0.35rem 0.75rem;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease;
