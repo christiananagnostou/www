@@ -161,9 +161,7 @@
       const sortField = this.getSortField()
       const sortOrder = this.getSortOrder()
       if (sortField === 'bids') {
-        this.matches.sort((a, b) =>
-          sortOrder === 'asc' ? a.bidCount - b.bidCount : b.bidCount - a.bidCount
-        )
+        this.matches.sort((a, b) => (sortOrder === 'asc' ? a.bidCount - b.bidCount : b.bidCount - a.bidCount))
       } else if (sortField === 'price') {
         this.matches.sort((a, b) => {
           const aValue = this.getSortableValue(a.price, sortOrder)
