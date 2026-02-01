@@ -37,9 +37,10 @@
   const LS_POSITION = 'hotbids-position'
   const LS_HIDE_NON_RESULTS = 'hotbids-hide-non-results'
   // eBay selectors
-  const SEL_BID_COUNT = '.s-item__bidCount, .str-item-card__property-bidCount'
-  const SEL_ITEM_CONTAINER = '.s-item'
-  const SEL_ITEM_TITLE = '.s-item__title'
+  const SEL_BID_COUNT =
+    '.s-item__bidCount, .str-item-card__property-bidCount, .s-card__attribute-row .su-styled-text.secondary.large'
+  const SEL_ITEM_CONTAINER = '.s-item, .s-card'
+  const SEL_ITEM_TITLE = '.s-item__title, .s-card__title .su-styled-text.primary'
   // Invalid containers (items within these containers will be ignored)
   const INVALID_CONTAINERS = ['srp-items-carousel__container']
   // URL constants
