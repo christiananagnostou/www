@@ -648,17 +648,15 @@ const STYLESHEET = /*css*/ `
       if (!list) return
       if (!entries.length) {
         const trimmed = query.trim()
-        const statusLabel =
-          status && status !== 'all'
-            ? STATUS_CONFIG[status]?.label || STATUS_CONFIG.none.label
-            : ''
-        const message = trimmed && statusLabel
-          ? `No matches for "${trimmed}" with ${statusLabel}.`
-          : trimmed
-            ? `No matches for "${trimmed}".`
-            : statusLabel
-              ? `No matches for ${statusLabel}.`
-              : 'No matches found.'
+        const statusLabel = status && status !== 'all' ? STATUS_CONFIG[status]?.label || STATUS_CONFIG.none.label : ''
+        const message =
+          trimmed && statusLabel
+            ? `No matches for "${trimmed}" with ${statusLabel}.`
+            : trimmed
+              ? `No matches for "${trimmed}".`
+              : statusLabel
+                ? `No matches for ${statusLabel}.`
+                : 'No matches found.'
         list.innerHTML = `<div class="tcdb-scout-empty">${message}</div>`
       } else {
         list.innerHTML = renderItems(entries)
@@ -683,9 +681,7 @@ const STYLESHEET = /*css*/ `
 
       if (!trimmed) {
         updateList(
-          items
-            .map((item, index) => ({ item, index }))
-            .filter(({ item }) => matchesStatus(item)),
+          items.map((item, index) => ({ item, index })).filter(({ item }) => matchesStatus(item)),
           '',
           status
         )
@@ -699,9 +695,7 @@ const STYLESHEET = /*css*/ `
           threshold: matchSorter.rankings ? matchSorter.rankings.CONTAINS : undefined,
         })
         updateList(
-          ranked
-            .filter(matchesStatus)
-            .map((item) => ({ item, index: itemIndexMap.get(item) })),
+          ranked.filter(matchesStatus).map((item) => ({ item, index: itemIndexMap.get(item) })),
           trimmed,
           status
         )
