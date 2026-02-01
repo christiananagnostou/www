@@ -16,8 +16,8 @@ const STYLESHEET = /*css*/ `
     border: 1px solid #2b2b2b;
     border-radius: 12px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-    max-width: 720px;
-    width: min(720px, 92vw);
+    max-width: 920px;
+    width: min(920px, 94vw);
     max-height: 80vh;
     overflow: hidden;
     display: flex;
@@ -59,18 +59,20 @@ const STYLESHEET = /*css*/ `
     gap: 0.6rem;
     padding: 0.6rem 1.25rem;
     border-bottom: 1px solid #222;
+    --tcdb-control-height: 32px;
   }
 
   .tcdb-scout-meta-left,
   .tcdb-scout-meta-right {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 0.6rem;
     flex-wrap: wrap;
   }
 
   .tcdb-scout-limit,
-  .tcdb-scout-search {
+  .tcdb-scout-search,
+  .tcdb-scout-filter {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -80,6 +82,7 @@ const STYLESHEET = /*css*/ `
     border: 1px solid #2a2a2a;
     border-radius: 999px;
     padding: 0.2rem 0.5rem;
+    height: var(--tcdb-control-height);
   }
 
   .tcdb-scout-label {
@@ -96,6 +99,20 @@ const STYLESHEET = /*css*/ `
     color: #f5f5f5;
     padding: 0.1rem 0.25rem;
     font-size: 0.8rem;
+    height: 100%;
+  }
+
+  .tcdb-scout-filter select {
+    background: transparent;
+    border: none;
+    color: #f5f5f5;
+    padding: 0.1rem 0.25rem;
+    font-size: 0.8rem;
+    height: 100%;
+  }
+
+  .tcdb-scout-filter option {
+    color: #111;
   }
 
   .tcdb-scout-search input {
@@ -137,6 +154,7 @@ const STYLESHEET = /*css*/ `
     align-items: center;
     gap: 0.35rem;
     transition: background 0.2s ease, border-color 0.2s ease;
+    height: var(--tcdb-control-height);
   }
 
   .tcdb-scout-btn--compact {
@@ -198,6 +216,21 @@ const STYLESHEET = /*css*/ `
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+  }
+
+  .tcdb-scout-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+
+  .tcdb-scout-status-text {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #cfcfcf;
+    line-height: 1.2;
   }
 
   .tcdb-scout-info {
@@ -262,11 +295,14 @@ const STYLESHEET = /*css*/ `
   const ID_RESET = 'tcdb-scout-reset'
   const ID_OPEN_ALL_ACTIVE = 'tcdb-scout-open-all-active'
   const ID_OPEN_ALL_SOLD = 'tcdb-scout-open-all-sold'
+  const ID_STATUS_FILTER = 'tcdb-scout-status-filter'
   const ID_HOST_NOTE = 'tcdb-scout-host-note'
   const ID_EMPTY_NOTE = 'tcdb-scout-empty-note'
   const ID_MATCH_SORTER_SCRIPT = 'tcdb-scout-match-sorter'
   const LS_OPEN_LIMIT = 'tcdb-scout-open-limit'
   const LS_OPENED = 'tcdb-scout-opened'
+  const LS_STATUS_FILTER = 'tcdb-scout-status-filter'
+  const LS_SEARCH_QUERY = 'tcdb-scout-search-query'
   const DEFAULT_OPEN_LIMIT = 10
   const EBAY_SEARCH_URL = 'https://www.ebay.com/sch/i.html?_nkw='
   const EBAY_SOLD_PARAMS = '&LH_Sold=1&LH_Complete=1'
@@ -280,6 +316,22 @@ const STYLESHEET = /*css*/ `
   const DATE_KEY_LENGTH = 10
   const ARIA_PRESSED = 'aria-pressed'
   const MATCH_SORTER_KEY = 'matchSorter'
+  const STATUS_CONFIG = {
+    collection: { key: 'collection', label: 'Collection', color: '#d9edf7' },
+    forSale: { key: 'forSale', label: 'For Sale', color: '#9dff9d' },
+    wantlist: { key: 'wantlist', label: 'Wantlist', color: '#ffcece' },
+    inTransaction: { key: 'inTransaction', label: 'Transaction', color: '#d6d6d6' },
+    inbound: { key: 'inbound', label: 'Inbound', color: '#f2e28a' },
+    outbound: { key: 'outbound', label: 'Outbound', color: '#f2e28a' },
+    none: { key: 'none', label: 'None', color: '#ffffff' },
+  }
+  const STATUS_TITLE_MAP = {
+    'For Sale / Trade': 'forSale',
+    Wantlist: 'wantlist',
+    'In-Transaction': 'inTransaction',
+    'In-Transit (Inbound)': 'inbound',
+    'In-Transit (Outbound)': 'outbound',
+  }
 
   const ensureStyles = () => {
     if (document.getElementById(ID_STYLESHEET)) return
@@ -314,6 +366,21 @@ const STYLESHEET = /*css*/ `
     return ''
   }
 
+  const getStatusFromRow = (row) => {
+    if (!row) return STATUS_CONFIG.none
+    const checkbox = row.querySelector('input.form-check-input[type="checkbox"]')
+    if (checkbox) {
+      return checkbox.checked ? STATUS_CONFIG.collection : STATUS_CONFIG.none
+    }
+    const icon = row.querySelector('i[title]')
+    if (icon) {
+      const title = normalizeText(icon.getAttribute('title') || '')
+      const key = STATUS_TITLE_MAP[title]
+      if (key && STATUS_CONFIG[key]) return STATUS_CONFIG[key]
+    }
+    return STATUS_CONFIG.none
+  }
+
   const collectItems = () => {
     const links = Array.from(document.querySelectorAll('a[href*="/ViewCard.cfm"]'))
     return links
@@ -321,11 +388,13 @@ const STYLESHEET = /*css*/ `
         const title = normalizeText(link.textContent || '')
         if (!title) return null
         const cell = link.closest('td')
+        const row = link.closest('tr')
         const cellText = normalizeText(cell ? cell.textContent || '' : title)
         const serial = getSerial(cellText)
         const variant = getVariant(cell, cellText)
         const query = serial ? `${title} ${serial}` : title
-        return { title, serial, variant, query }
+        const status = getStatusFromRow(row)
+        return { title, serial, variant, query, status }
       })
       .filter(Boolean)
   }
@@ -334,6 +403,20 @@ const STYLESHEET = /*css*/ `
     const stored = parseInt(localStorage.getItem(LS_OPEN_LIMIT) || `${DEFAULT_OPEN_LIMIT}`, 10)
     if (Number.isNaN(stored)) return DEFAULT_OPEN_LIMIT
     return Math.max(1, stored)
+  }
+
+  const getStoredStatus = () => localStorage.getItem(LS_STATUS_FILTER) || 'all'
+
+  const setStoredStatus = (value) => {
+    if (!value) return
+    localStorage.setItem(LS_STATUS_FILTER, value)
+  }
+
+  const getStoredSearch = () => localStorage.getItem(LS_SEARCH_QUERY) || ''
+
+  const setStoredSearch = (value) => {
+    if (typeof value !== 'string') return
+    localStorage.setItem(LS_SEARCH_QUERY, value)
   }
 
   const setLimit = (value) => {
@@ -433,6 +516,8 @@ const STYLESHEET = /*css*/ `
     const openedSet = new Set(Object.keys(openedState.opened))
     const itemIndexMap = new Map(items.map((item, index) => [item, index]))
     let currentEntries = items.map((item, index) => ({ item, index }))
+    let currentStatus = getStoredStatus()
+    let currentQuery = getStoredSearch()
 
     const html = /*html*/ `
       <div id="${ID_OVERLAY}">
@@ -452,6 +537,15 @@ const STYLESHEET = /*css*/ `
               </label>
             </div>
             <div class="tcdb-scout-meta-right">
+              <label class="tcdb-scout-filter">
+                <span class="tcdb-scout-label">Status</span>
+                <select id="${ID_STATUS_FILTER}">
+                  <option value="all">All</option>
+                  ${Object.values(STATUS_CONFIG)
+                    .map((status) => `<option value="${status.key}">${status.label}</option>`)
+                    .join('')}
+                </select>
+              </label>
               <label class="tcdb-scout-limit">
                 <span class="tcdb-scout-label">Max</span>
                 <input type="number" min="1" id="${ID_LIMIT}" value="${limit}" />
@@ -490,6 +584,7 @@ const STYLESHEET = /*css*/ `
     const limitInput = document.getElementById(ID_LIMIT)
     const resetButton = document.getElementById(ID_RESET)
     const searchInput = document.getElementById(ID_SEARCH)
+    const statusFilter = document.getElementById(ID_STATUS_FILTER)
     const list = document.getElementById(ID_LIST)
     const countLabel = panel.querySelector('.tcdb-scout-count')
 
@@ -535,6 +630,9 @@ const STYLESHEET = /*css*/ `
                   ${item.title}${item.serial ? `<span class="tcdb-scout-serial">${item.serial}</span>` : EMPTY_STRING}
                 </div>
                 ${item.variant ? `<div class="tcdb-scout-variant">${item.variant}</div>` : EMPTY_STRING}
+                <div class="tcdb-scout-status">
+                  <span class="tcdb-scout-status-text">${item.status.label}</span>
+                </div>
               </div>
               <div class="tcdb-scout-actions">
                 <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
@@ -545,11 +643,21 @@ const STYLESHEET = /*css*/ `
         )
         .join('')
 
-    const updateList = (entries, query) => {
+    const updateList = (entries, query, status) => {
       currentEntries = entries
       if (!list) return
-      if (!entries.length && query) {
-        list.innerHTML = `<div class="tcdb-scout-empty">No matches for "${query}".</div>`
+      if (!entries.length) {
+        const trimmed = query.trim()
+        const statusLabel = status && status !== 'all' ? STATUS_CONFIG[status]?.label || STATUS_CONFIG.none.label : ''
+        const message =
+          trimmed && statusLabel
+            ? `No matches for "${trimmed}" with ${statusLabel}.`
+            : trimmed
+              ? `No matches for "${trimmed}".`
+              : statusLabel
+                ? `No matches for ${statusLabel}.`
+                : 'No matches found.'
+        list.innerHTML = `<div class="tcdb-scout-empty">${message}</div>`
       } else {
         list.innerHTML = renderItems(entries)
       }
@@ -566,12 +674,16 @@ const STYLESHEET = /*css*/ `
       if (event.target === overlay) handleClose()
     })
 
-    const filterEntries = async (query) => {
+    const filterEntries = async (query, status) => {
       const trimmed = query.trim()
+      const statusKey = status === 'all' ? '' : status
+      const matchesStatus = (item) => (!statusKey ? true : item.status.key === statusKey)
+
       if (!trimmed) {
         updateList(
-          items.map((item, index) => ({ item, index })),
-          ''
+          items.map((item, index) => ({ item, index })).filter(({ item }) => matchesStatus(item)),
+          '',
+          status
         )
         return
       }
@@ -583,8 +695,9 @@ const STYLESHEET = /*css*/ `
           threshold: matchSorter.rankings ? matchSorter.rankings.CONTAINS : undefined,
         })
         updateList(
-          ranked.map((item) => ({ item, index: itemIndexMap.get(item) })),
-          trimmed
+          ranked.filter(matchesStatus).map((item) => ({ item, index: itemIndexMap.get(item) })),
+          trimmed,
+          status
         )
         return
       }
@@ -592,10 +705,11 @@ const STYLESHEET = /*css*/ `
       const fallback = items
         .map((item, index) => ({ item, index }))
         .filter(({ item }) => {
+          if (!matchesStatus(item)) return false
           const haystack = `${item.title} ${item.serial} ${item.variant || ''}`.toLowerCase()
           return haystack.includes(trimmed.toLowerCase())
         })
-      updateList(fallback, trimmed)
+      updateList(fallback, trimmed, status)
     }
 
     const resetOpened = () => {
@@ -626,8 +740,19 @@ const STYLESHEET = /*css*/ `
     limitInput.addEventListener('change', (event) => setLimit(event.target.value))
     if (resetButton) resetButton.addEventListener('click', resetOpened)
     if (searchInput) {
+      searchInput.value = currentQuery
       searchInput.addEventListener('input', (event) => {
-        filterEntries(event.target.value)
+        currentQuery = event.target.value
+        setStoredSearch(currentQuery)
+        filterEntries(currentQuery, currentStatus)
+      })
+    }
+    if (statusFilter) {
+      statusFilter.value = currentStatus
+      statusFilter.addEventListener('change', (event) => {
+        currentStatus = event.target.value
+        setStoredStatus(currentStatus)
+        filterEntries(currentQuery, currentStatus)
       })
     }
 
@@ -641,7 +766,11 @@ const STYLESHEET = /*css*/ `
       markOpened(action, items[index])
     })
 
-    updateList(currentEntries, '')
+    if (currentStatus !== 'all' || currentQuery) {
+      filterEntries(currentQuery, currentStatus)
+    } else {
+      updateList(currentEntries, '', currentStatus)
+    }
   }
 
   window.TCDBScout = render
