@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAnimationControls } from 'framer-motion'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
@@ -61,11 +61,18 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
   const [games, setGames] = useState<ScheduleGame[]>(initialGames)
   const [lineScore, setLineScore] = useState<LineScore | null>(null)
   const [selectedGame, setSelectedGame] = useState<ScheduleGame | null>(null)
+  const [isLoadingTeams, setIsLoadingTeams] = useState(false)
+  const [isLoadingSchedule, setIsLoadingSchedule] = useState(false)
+  const [isLoadingLineScore, setIsLoadingLineScore] = useState(false)
+  const [scheduleError, setScheduleError] = useState<string | null>(null)
 
   const controls = useAnimationControls()
   const pollRef = useRef<NodeJS.Timeout>(null)
+  const lineScoreCache = useRef<Map<number, LineScore>>(new Map())
 
   /** ---------- derived ---------- */
+  const selectedTeam = useMemo(() => teams.find((team) => team.id === teamId) ?? null, [teams, teamId])
+
   const { liveGame, pastGames, upcomingGames } = useMemo(() => {
     const liveGame = games.find((g) => g.status.abstractGameState === 'Live')
     const pastGames = games
@@ -85,28 +92,57 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
 
   useEffect(() => {
     // Fetch the list of teams and resolve the default team ID
-    fetchTeams().then((list) => {
-      setTeams(list)
-      const id = resolveTeamId(String(defaultTeam), list)
-      if (id) {
-        setTeamId(id)
-        const team = list.find((t) => t.id === id)
-        if (team) setTeamInput(team.name) // Set the full team name
-      }
-    })
+    let isActive = true
+    setIsLoadingTeams(true)
+    fetchTeams()
+      .then((list) => {
+        if (!isActive) return
+        setTeams(list)
+        const id = resolveTeamId(String(defaultTeam), list)
+        if (id) {
+          setTeamId(id)
+          const team = list.find((t) => t.id === id)
+          if (team) setTeamInput(team.name)
+        }
+      })
+      .catch(() => {
+        if (!isActive) return
+        setTeams([])
+      })
+      .finally(() => {
+        if (!isActive) return
+        setIsLoadingTeams(false)
+      })
+    return () => {
+      isActive = false
+    }
   }, [defaultTeam])
 
   useEffect(() => {
     // Fetch the schedule for the selected team
     if (!teamId) return
+    let isActive = true
+    setIsLoadingSchedule(true)
+    setScheduleError(null)
     ;(async () => {
-      const fetchedGames = await fetchSchedule(teamId)
-      setGames(fetchedGames)
+      try {
+        const fetchedGames = await fetchSchedule(teamId)
+        if (!isActive) return
+        setGames(fetchedGames)
 
-      // Reset selected game to live game or null
-      const liveGame = fetchedGames.find((g) => g.status.abstractGameState === 'Live')
-      setSelectedGame(liveGame || null)
+        const liveGame = fetchedGames.find((g) => g.status.abstractGameState === 'Live')
+        setSelectedGame(liveGame || null)
+        setIsLoadingSchedule(false)
+      } catch {
+        if (!isActive) return
+        setScheduleError('Schedule unavailable. Try again in a moment.')
+        setGames([])
+        setIsLoadingSchedule(false)
+      }
     })()
+    return () => {
+      isActive = false
+    }
   }, [teamId])
 
   useEffect(() => {
@@ -124,46 +160,100 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
       return
     }
 
+    let isActive = true
+
     const load = async () => {
-      setLineScore(await fetchLineScore(selectedGame.gamePk))
+      setIsLoadingLineScore(true)
+      const cached = lineScoreCache.current.get(selectedGame.gamePk)
+      if (cached) {
+        if (isActive) setLineScore(cached)
+        setIsLoadingLineScore(false)
+        return
+      }
+      const score = await fetchLineScore(selectedGame.gamePk)
+      if (!isActive) return
+      if (!score) {
+        setLineScore(null)
+        setIsLoadingLineScore(false)
+        return
+      }
+      lineScoreCache.current.set(selectedGame.gamePk, score)
+      setLineScore(score)
+      setIsLoadingLineScore(false)
       if (selectedGame.status.abstractGameState === 'Live') {
         controls.start({ scale: [1, 1.04, 1] })
       }
     }
 
     load()
-    // Only poll if game is live
     if (selectedGame.status.abstractGameState === 'Live') {
       pollRef.current = setInterval(load, 30_000)
     }
 
     return () => {
+      isActive = false
       if (pollRef.current) clearInterval(pollRef.current)
     }
   }, [selectedGame, controls])
 
   /** ---------- helpers ---------- */
-  const base = teamId ? getTeamColor(teamId) : '#303030'
-  const scheduleGradient = `linear-gradient(135deg, ${rgba(base, 0.25)} 0%, ${rgba(base, 0.65)} 100%)`
+  const base = useMemo(() => (teamId ? getTeamColor(teamId) : '#303030'), [teamId])
+  const scheduleGradient = useMemo(
+    () => `linear-gradient(135deg, ${rgba(base, 0.25)} 0%, ${rgba(base, 0.65)} 100%)`,
+    [base]
+  )
 
-  const getGameGradient = (game: ScheduleGame) =>
-    `linear-gradient(135deg, 
-      ${rgba(getTeamColor(game.teams.away.team.id), 0.45)} 0%, 
-      ${rgba(getTeamColor(game.teams.home.team.id), 0.45)} 100%),
-      linear-gradient(45deg,
-      ${rgba(getTeamColor(game.teams.away.team.id), 0.45)} 10%,
-      ${rgba(getTeamColor(game.teams.home.team.id), 0.45)} 100%)`
+  const gameGradientMap = useMemo(() => {
+    const map = new Map<number, string>()
+    games.forEach((game) => {
+      const away = getTeamColor(game.teams.away.team.id)
+      const home = getTeamColor(game.teams.home.team.id)
+      map.set(
+        game.gamePk,
+        `linear-gradient(135deg, ${rgba(away, 0.45)} 0%, ${rgba(home, 0.45)} 100%),
+        linear-gradient(45deg, ${rgba(away, 0.45)} 10%, ${rgba(home, 0.45)} 100%)`
+      )
+    })
+    return map
+  }, [games])
 
-  const handleSelectTeam = (t: TeamInfo) => {
-    setTeamId(t.id)
-    setTeamInput(t.name)
-  }
+  const getGameGradient = useCallback(
+    (game: ScheduleGame) => gameGradientMap.get(game.gamePk) ?? scheduleGradient,
+    [gameGradientMap, scheduleGradient]
+  )
 
-  const handleGameSelect = async (game: ScheduleGame) => {
-    const score = game.linescore || (await fetchLineScore(game.gamePk))
-    setLineScore(score)
-    setSelectedGame(game)
-  }
+  const handleSelectTeam = useCallback((team: TeamInfo) => {
+    setTeamId(team.id)
+    setTeamInput(team.name)
+  }, [])
+
+  const handleGameSelect = useCallback(
+    async (game: ScheduleGame) => {
+      const cached = lineScoreCache.current.get(game.gamePk)
+      if (cached) {
+        setLineScore(cached)
+      } else if (game.linescore) {
+        lineScoreCache.current.set(game.gamePk, game.linescore)
+        setLineScore(game.linescore)
+      } else {
+        setLineScore(null)
+      }
+      setSelectedGame(game)
+    },
+    [setSelectedGame]
+  )
+
+  const handleBackToSchedule = useCallback(() => {
+    setSelectedGame(null)
+  }, [])
+
+  const isScheduleEmpty = !liveGame && pastGames.length === 0 && upcomingGames.length === 0
+  const isScheduleLoading = isLoadingSchedule && games.length === 0
+  const teamName = selectedTeam?.name ?? 'this team'
+  const emptyTitle = scheduleError ? 'Schedule unavailable' : 'Offseason mode'
+  const emptyBody = scheduleError
+    ? scheduleError
+    : `No games are scheduled for ${teamName} right now. Check back when the season kicks back up.`
 
   /** ---------- render ---------- */
   return (
@@ -171,13 +261,35 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
       <TeamSearch teams={teams} value={teamInput} onChange={setTeamInput} onSelect={handleSelectTeam} />
 
       {selectedGame && (
-        <BackButton onClick={() => setSelectedGame(null)} aria-label="Back to schedule">
+        <BackButton onClick={handleBackToSchedule} aria-label="Back to schedule">
           ← Back to Schedule
         </BackButton>
       )}
 
-      {selectedGame && lineScore ? (
-        <GameCard game={selectedGame} lineScore={lineScore} gradient={getGameGradient(selectedGame)} />
+      {selectedGame ? (
+        lineScore ? (
+          <GameCard game={selectedGame} lineScore={lineScore} gradient={getGameGradient(selectedGame)} />
+        ) : (
+          <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
+            <StateTitle>{isLoadingLineScore ? 'Loading score' : 'Score unavailable'}</StateTitle>
+            <StateBody>
+              {isLoadingLineScore
+                ? 'Gathering the latest line score...'
+                : 'We could not load the latest line score for this game.'}
+            </StateBody>
+          </StateCard>
+        )
+      ) : isScheduleLoading || isLoadingTeams ? (
+        <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
+          <StateTitle>Loading schedule</StateTitle>
+          <StateBody>Fetching the latest games for {teamName}.</StateBody>
+        </StateCard>
+      ) : isScheduleEmpty ? (
+        <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
+          <StateTitle>{emptyTitle}</StateTitle>
+          <StateBody>{emptyBody}</StateBody>
+          <StateHint>Try another team or check back closer to spring training.</StateHint>
+        </StateCard>
       ) : (
         <>
           {/* Recent games */}
@@ -186,7 +298,7 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
             games={pastGames}
             gradient={scheduleGradient}
             onGameSelect={handleGameSelect}
-            selectedGameId={selectedGame?.gamePk}
+            emptyMessage="No recent games on the books."
           />
           {/* Live game */}
           {liveGame && (
@@ -195,7 +307,6 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
               games={[liveGame]}
               gradient={getGameGradient(liveGame)}
               onGameSelect={handleGameSelect}
-              selectedGameId={selectedGame?.gamePk}
             />
           )}
           {/* Upcoming games */}
@@ -204,7 +315,7 @@ const MLBScoreboard: React.FC<MLBScoreboardProps> = ({ defaultTeam = 'SF', initi
             games={upcomingGames}
             gradient={scheduleGradient}
             onGameSelect={handleGameSelect}
-            selectedGameId={selectedGame?.gamePk}
+            emptyMessage="No upcoming games scheduled yet."
           />
         </>
       )}
@@ -260,4 +371,34 @@ const BackButton = styled.button`
     outline: 2px solid var(--heading);
     outline-offset: 2px;
   }
+`
+
+const StateCard = styled.div<{ $gradient: string }>`
+  background: ${({ $gradient }) => $gradient};
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--text);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+`
+
+const StateTitle = styled.h3`
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--heading);
+`
+
+const StateBody = styled.p`
+  margin: 0 auto 0.75rem;
+  max-width: 32rem;
+  color: var(--text);
+`
+
+const StateHint = styled.p`
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-dark);
 `
