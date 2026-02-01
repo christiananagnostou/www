@@ -34,6 +34,7 @@
   // LocalStorage keys
   const LS_MIN_BIDS = 'hotbids-min-bids'
   const LS_SORT_BY_BIDS = 'hotbids-sort-by-bids'
+  const LS_SORT_MODE = 'hotbids-sort-mode'
   const LS_POSITION = 'hotbids-position'
   const LS_HIDE_NON_RESULTS = 'hotbids-hide-non-results'
   // eBay selectors
@@ -41,6 +42,7 @@
     '.s-item__bidCount, .str-item-card__property-bidCount, .s-card__attribute-row .su-styled-text.secondary.large'
   const SEL_ITEM_CONTAINER = '.s-item, .s-card'
   const SEL_ITEM_TITLE = '.s-item__title, .s-card__title .su-styled-text.primary'
+  const SEL_ITEM_PRICE = '.s-item__price, .s-card__price'
   // Invalid containers (items within these containers will be ignored)
   const INVALID_CONTAINERS = ['srp-items-carousel__container']
   // URL constants
@@ -57,7 +59,7 @@
       this.matches = []
       this.currentMatchIndex = -1
       this.minBids = parseInt(localStorage.getItem(LS_MIN_BIDS) || '1') || 1
-      this.sortByBids = localStorage.getItem(LS_SORT_BY_BIDS) === 'true'
+      this.sortMode = this.loadSortMode()
       this.hideNonResults = localStorage.getItem(LS_HIDE_NON_RESULTS) === 'true'
 
       this.injectStyles()
@@ -74,6 +76,60 @@
         styleEl.textContent = STYLESHEET
         document.head.appendChild(styleEl)
       }
+    }
+
+    loadSortMode() {
+      const savedMode = localStorage.getItem(LS_SORT_MODE)
+      if (savedMode) return savedMode
+      if (localStorage.getItem(LS_SORT_BY_BIDS) === 'true') return 'bids-desc'
+      return 'bids-desc'
+    }
+
+    getSortField() {
+      return this.sortMode.split('-')[0]
+    }
+
+    getSortOrder() {
+      return this.sortMode.split('-')[1]
+    }
+
+    setSortMode(field, order) {
+      const nextMode = `${field}-${order}`
+      if (this.sortMode === nextMode) return
+      this.sortMode = nextMode
+      localStorage.setItem(LS_SORT_MODE, this.sortMode)
+      this.updateSortButtons()
+      this.retryMatches()
+    }
+
+    updateSortButtons() {
+      if (!this.sortFieldButtons || !this.sortOrderButtons) return
+      const currentField = this.getSortField()
+      const currentOrder = this.getSortOrder()
+
+      this.sortFieldButtons.forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.sortField === currentField)
+      })
+      this.sortOrderButtons.forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.sortOrder === currentOrder)
+      })
+    }
+
+    extractPrice(itemContainer) {
+      if (!itemContainer) return null
+      const priceEl = itemContainer.querySelector(SEL_ITEM_PRICE)
+      if (!priceEl) return null
+      const rawText = priceEl.textContent || ''
+      const match = rawText.replace(/,/g, '').match(/(\d+(?:\.\d+)?)/)
+      if (!match) return null
+      return parseFloat(match[1])
+    }
+
+    getSortableValue(value, order) {
+      if (typeof value !== 'number' || Number.isNaN(value)) {
+        return order === 'desc' ? -1 : Number.POSITIVE_INFINITY
+      }
+      return value
     }
 
     collectMatches() {
@@ -95,13 +151,25 @@
         if (match) {
           const bidCount = parseInt(match[1])
           if (bidCount >= this.minBids) {
-            this.matches.push({ element: el, bidCount })
+            const itemContainer = el.closest(SEL_ITEM_CONTAINER)
+            const price = this.extractPrice(itemContainer)
+            this.matches.push({ element: el, bidCount, price })
           }
         }
       })
 
-      if (this.sortByBids) {
-        this.matches.sort((a, b) => b.bidCount - a.bidCount)
+      const sortField = this.getSortField()
+      const sortOrder = this.getSortOrder()
+      if (sortField === 'bids') {
+        this.matches.sort((a, b) =>
+          sortOrder === 'asc' ? a.bidCount - b.bidCount : b.bidCount - a.bidCount
+        )
+      } else if (sortField === 'price') {
+        this.matches.sort((a, b) => {
+          const aValue = this.getSortableValue(a.price, sortOrder)
+          const bValue = this.getSortableValue(b.price, sortOrder)
+          return sortOrder === 'asc' ? aValue - bValue : bValue - aValue
+        })
       }
 
       // Calculate max bids for color gradient
@@ -180,12 +248,19 @@
                   Show sold items
                 </label>
               </div>
-              <div class="hotbids-option">
-                <label class="custom-checkbox">
-                  <input type="checkbox" id="sortByBidsCheckbox" ${this.sortByBids ? 'checked' : ''}>
-                  <span class="checkmark"></span>
-                  Sort by bids descending
-                </label>
+              <div class="hotbids-option hotbids-option--stack">
+                <span class="hotbids-option__label">Sort by</span>
+                <div class="hotbids-segmented" role="group" aria-label="Sort by">
+                  <button class="hotbids-segment" data-sort-field="bids">Bids</button>
+                  <button class="hotbids-segment" data-sort-field="price">Price</button>
+                </div>
+              </div>
+              <div class="hotbids-option hotbids-option--stack">
+                <span class="hotbids-option__label">Order</span>
+                <div class="hotbids-segmented" role="group" aria-label="Sort order">
+                  <button class="hotbids-segment" data-sort-order="desc">Desc</button>
+                  <button class="hotbids-segment" data-sort-order="asc">Asc</button>
+                </div>
               </div>
               <div class="hotbids-option">
                 <label class="custom-checkbox">
@@ -210,7 +285,7 @@
               <li>Highlight items with bids using a color gradient based on bid count (green to red).</li>
               <li>Navigate through highlighted items with keyboard shortcuts.</li>
               <li>Filter items by minimum number of bids.</li>
-              <li>Sort items by bid count descending.</li>
+              <li>Sort items by bid count or price, ascending or descending.</li>
               <li>Each highlighted item has a "Check Sold Prices" link to compare with historical sold prices.</li>
             </ul>
             <h3>Navigation</h3>
@@ -253,7 +328,8 @@
       this.helpPanel = document.getElementById(ID_HELP_PANEL)
       this.helpPanelCloseBtn = document.getElementById(ID_HELP_CLOSE)
       this.minBidsInput = document.getElementById('minBidsInput')
-      this.sortByBidsCheckbox = document.getElementById('sortByBidsCheckbox')
+      this.sortFieldButtons = Array.from(document.querySelectorAll('[data-sort-field]'))
+      this.sortOrderButtons = Array.from(document.querySelectorAll('[data-sort-order]'))
       this.hideNonResultsCheckbox = document.getElementById('hideNonResultsCheckbox')
 
       // Load saved position
@@ -280,16 +356,27 @@
         localStorage.setItem(LS_MIN_BIDS, this.minBids)
         this.retryMatches()
       })
-      this.sortByBidsCheckbox.addEventListener('change', (e) => {
-        this.sortByBids = e.target.checked
-        localStorage.setItem(LS_SORT_BY_BIDS, this.sortByBids)
-        this.retryMatches()
+      this.sortFieldButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const field = btn.dataset.sortField
+          if (!field) return
+          this.setSortMode(field, this.getSortOrder())
+        })
+      })
+      this.sortOrderButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const order = btn.dataset.sortOrder
+          if (!order) return
+          this.setSortMode(this.getSortField(), order)
+        })
       })
       this.hideNonResultsCheckbox.addEventListener('change', (e) => {
         this.hideNonResults = e.target.checked
         localStorage.setItem(LS_HIDE_NON_RESULTS, this.hideNonResults)
         this.applyHideNonResults()
       })
+
+      this.updateSortButtons()
 
       if (!this.checkSoldCheckbox()) {
         this.toggleSoldBtn.disabled = true
@@ -614,6 +701,46 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+    }
+
+    .hotbids-option--stack {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    .hotbids-option__label {
+      font-size: 0.85rem;
+      color: lightgray;
+    }
+
+    .hotbids-segmented {
+      display: inline-flex;
+      border: 1px solid var(--toolbar-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--button-bg);
+      width: fit-content;
+    }
+
+    .hotbids-segment {
+      border: none;
+      background: transparent;
+      color: inherit;
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .hotbids-segment:hover,
+    .hotbids-segment:focus {
+      background: var(--button-bg-hover);
+      outline: none;
+    }
+
+    .hotbids-segment.is-active {
+      background: var(--toolbar-fg);
+      color: #111;
     }
 
     .custom-checkbox {
