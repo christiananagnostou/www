@@ -47,10 +47,11 @@ const ArticlesContainer = styled(HomepageBox)`
   ul {
     padding-left: 1rem;
     list-style-type: circle;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 
     li {
-      margin-bottom: 0.5rem;
-
       a {
         display: block;
       }

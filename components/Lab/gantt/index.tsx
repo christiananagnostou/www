@@ -1,14 +1,12 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import DateBar from './DateBar'
 import ItemBar from './ItemBar'
 import ItemTitle from './ItemTitle'
 import TodayCursor from './TodayCursor'
 import { getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
-
 import DragScrollContainer from '../../Shared/DragScrollContainer'
 import {
   Chart,

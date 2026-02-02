@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-export const TitleButton = styled.button<{ $paddingLeft: number; height: number }>`
+export const TitleButton = styled.button<{ $paddingLeft: number; $height: number }>`
   display: flex;
   align-items: center;
   width: 100%;
-  height: ${({ height }) => `${height}px`};
+  height: ${({ $height }) => `${$height}px`};
   padding-right: 0.25rem;
   padding-left: calc(${({ $paddingLeft }) => `${$paddingLeft}px`} + 0.25rem);
   border: none;
