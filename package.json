@@ -52,7 +52,7 @@
     "eslint-plugin-react": "^7.37.5",
     "jsdom": "^27.4.0",
     "oxfmt": "^0.24.0",
-    "oxlint": "^1.39.0",
+    "oxlint": "^1.43.0",
     "postcss-styled-syntax": "^0.7.1",
     "stylelint": "^17.1.0",
     "stylelint-config-recommended": "^18.0.0",
