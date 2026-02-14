@@ -582,7 +582,7 @@
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `ebay-purchase-history-${new Date().toISOString().slice(0, 10)}.csv`
+    link.download = `baytally-${new Date().toISOString().slice(0, 10)}.csv`
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -659,7 +659,7 @@
     return { visibleItems: sorted, visibleTotal, total }
   }
 
-  const EbayPurchaseHistory = () => {
+  const BayTally = () => {
     disconnectObserver()
     removeOverlay()
     ensureStyles()
@@ -670,10 +670,10 @@
     const isEbay = window.location.hostname.includes('ebay.')
     const html = /*html*/ `
       <div id="${ID_OVERLAY}">
-        <div id="${ID_PANEL}" role="dialog" aria-modal="true" aria-label="eBay Purchase History Totals">
+        <div id="${ID_PANEL}" role="dialog" aria-modal="true" aria-label="BayTally">
           <div class="ebay-ph-header">
             <div>
-              <h2>eBay Purchase History Totals</h2>
+              <h2>BayTally</h2>
               <p id="${ID_COUNT}">0 captured</p>
             </div>
             <button class="ebay-ph-close" id="${ID_CLOSE}" aria-label="Close">×</button>
@@ -869,6 +869,6 @@
     doScan()
   }
 
-  window.EbayPurchaseHistory = EbayPurchaseHistory
-  EbayPurchaseHistory()
+  window.BayTally = BayTally
+  BayTally()
 })()

@@ -53,28 +53,28 @@ export const bookmarkletsData = [
   },
   {
     id: 'ebay-purchase-history',
-    title: 'eBay Purchase History Totals',
+    title: 'BayTally',
     description:
       'Collects item prices from your eBay Purchase History across pages and shows totals with search + sorting.',
-    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/ebay-purchase-history.js',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/baytally.js',
     icon: Receipt,
     code: /*js*/ `
       javascript:(function(){
-        var s = document.getElementById('ebay-purchase-history-script');
+        var s = document.getElementById('baytally-script');
         if (!s) {
           s = document.createElement('script');
-          s.id = 'ebay-purchase-history-script';
-          s.src = '${BASE_URL}/scripts/ebay-purchase-history.js';
+          s.id = 'baytally-script';
+          s.src = '${BASE_URL}/scripts/baytally.js';
           s.onload = function(){
-            if (window.EbayPurchaseHistory) window.EbayPurchaseHistory();
+            if (window.BayTally) window.BayTally();
           };
           document.body.appendChild(s);
-        } else if (window.EbayPurchaseHistory) {
-          window.EbayPurchaseHistory();
+        } else if (window.BayTally) {
+          window.BayTally();
         }
       })();`,
     instructions: `
-      This bookmarklet records item prices on your eBay Purchase History page and adds them up into a running total.
+      BayTally records item prices on your eBay Purchase History page and adds them up into a running total.
       -
       Notes:
       - Data persists in your browser until you click Clear in the modal.
@@ -82,7 +82,7 @@ export const bookmarkletsData = [
       -
       Instructions:
       1. Open your eBay Purchase History page.
-      2. Click the eBay Purchase History Totals bookmarklet.
+      2. Click the BayTally bookmarklet.
       3. Page/scroll through your history and use Search/Sort as needed.`,
   },
   // {
