@@ -1,4 +1,4 @@
-import { BrokenGlass, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify, Receipt, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
@@ -50,6 +50,40 @@ export const bookmarkletsData = [
       1. Open your TCDB collection page.
       2. Click the TCDB Scout bookmarklet.
       3. Use the Active or Sold buttons, or Open all with a limit.`,
+  },
+  {
+    id: 'ebay-purchase-history',
+    title: 'eBay Purchase History Totals',
+    description:
+      'Collects item prices from your eBay Purchase History across pages and shows totals with search + sorting.',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/ebay-purchase-history.js',
+    icon: Receipt,
+    code: /*js*/ `
+      javascript:(function(){
+        var s = document.getElementById('ebay-purchase-history-script');
+        if (!s) {
+          s = document.createElement('script');
+          s.id = 'ebay-purchase-history-script';
+          s.src = '${BASE_URL}/scripts/ebay-purchase-history.js';
+          s.onload = function(){
+            if (window.EbayPurchaseHistory) window.EbayPurchaseHistory();
+          };
+          document.body.appendChild(s);
+        } else if (window.EbayPurchaseHistory) {
+          window.EbayPurchaseHistory();
+        }
+      })();`,
+    instructions: `
+      This bookmarklet records item prices on your eBay Purchase History page and adds them up into a running total.
+      -
+      Notes:
+      - Data persists in your browser until you click Clear in the modal.
+      - If eBay uses full page reload pagination, click the bookmarklet again on each page (it will keep the same running list).
+      -
+      Instructions:
+      1. Open your eBay Purchase History page.
+      2. Click the eBay Purchase History Totals bookmarklet.
+      3. Page/scroll through your history and use Search/Sort as needed.`,
   },
   // {
   //   title: 'PokeBattle',
