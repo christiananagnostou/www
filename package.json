@@ -46,7 +46,7 @@
     "@vitejs/plugin-react": "^5.1.2",
     "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.4",
+    "eslint-config-next": "^16.1.6",
     "eslint-plugin-10x": "^1.5.2",
     "eslint-plugin-no-inline-styles": "^1.0.5",
     "eslint-plugin-react": "^7.37.5",
