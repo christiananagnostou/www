@@ -546,29 +546,11 @@
       return s
     }
 
-    const header = [
-      'Title',
-      'PriceText',
-      'PriceValue',
-      'Currency',
-      'URL',
-      'ItemId',
-      'FirstSeenAt',
-      'Key',
-    ]
+    const header = ['Title', 'PriceText', 'PriceValue', 'Currency', 'URL', 'ItemId', 'FirstSeenAt', 'Key']
     const lines = [header.map(escape).join(',')]
     rows.forEach((row) => {
       lines.push(
-        [
-          row.title,
-          row.priceText,
-          row.priceValue,
-          row.currency,
-          row.url,
-          row.itemId,
-          row.firstSeenAt,
-          row.key,
-        ]
+        [row.title, row.priceText, row.priceValue, row.currency, row.url, row.itemId, row.firstSeenAt, row.key]
           .map(escape)
           .join(',')
       )
@@ -621,7 +603,9 @@
     const visibleTotal = sumPrices(sorted)
 
     if (!sorted.length) {
-      const emptyMessage = ui.searchQuery ? `No matches for "${normalizeText(ui.searchQuery)}".` : 'No items captured yet.'
+      const emptyMessage = ui.searchQuery
+        ? `No matches for "${normalizeText(ui.searchQuery)}".`
+        : 'No items captured yet.'
       listEl.innerHTML = `<div class="ebay-ph-empty">${emptyMessage}</div>`
       return { visibleItems: sorted, visibleTotal, total }
     }
