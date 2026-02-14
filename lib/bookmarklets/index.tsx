@@ -52,7 +52,7 @@ export const bookmarkletsData = [
       3. Use the Active or Sold buttons, or Open all with a limit.`,
   },
   {
-    id: 'ebay-purchase-history',
+    id: 'baytally',
     title: 'BayTally',
     description:
       'Collects item prices from your eBay Purchase History across pages and shows totals with search + sorting.',
