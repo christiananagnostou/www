@@ -71,3 +71,22 @@ export const TCDBScout = (
     <path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374" />
   </svg>
 )
+
+export const Receipt = (
+  <svg
+    fill="none"
+    height="1em"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M6 3h12v18l-2-1-2 1-2-1-2 1-2-1-2 1z" />
+    <path d="M9 7h6" />
+    <path d="M9 11h6" />
+    <path d="M9 15h4" />
+  </svg>
+)
