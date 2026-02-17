@@ -7,9 +7,9 @@ export const DateBarContainer = styled.div`
   border-bottom: 1px solid var(--border-color);
 `
 
-export const DateButton = styled.button<{ dateWidth: number }>`
+export const DateButton = styled.button<{ $dateWidth: number }>`
   position: relative;
-  width: ${({ dateWidth }) => `${dateWidth}px`};
+  width: ${({ $dateWidth }) => `${$dateWidth}px`};
   height: 100%;
   border: none;
   background: transparent;
@@ -18,7 +18,7 @@ export const DateButton = styled.button<{ dateWidth: number }>`
   cursor: pointer;
 `
 
-export const DateLabel = styled.div<{ dateWidth: number }>`
+export const DateLabel = styled.div<{ $dateWidth: number }>`
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -26,11 +26,11 @@ export const DateLabel = styled.div<{ dateWidth: number }>`
   transform: translateX(-50%);
 `
 
-export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`
+export const DaySpan = styled.span<{ $isToday: boolean; $opacity: number }>`
   position: relative;
   display: grid;
-  opacity: ${({ opacity }) => opacity};
-  color: ${({ isToday }) => (isToday ? 'white' : 'inherit')};
+  opacity: ${({ $opacity }) => $opacity};
+  color: ${({ $isToday }) => ($isToday ? 'white' : 'inherit')};
   place-items: center;
 
   /* Today Circle */
@@ -40,7 +40,7 @@ export const DaySpan = styled.span<{ isToday: boolean; opacity: number }>`
     top: 50%;
     left: 50%;
     z-index: -1;
-    display: ${({ isToday }) => (isToday ? 'block' : 'none')};
+    display: ${({ $isToday }) => ($isToday ? 'block' : 'none')};
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 9999px;

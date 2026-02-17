@@ -5,10 +5,12 @@ import { fade, pageAnimation } from '../components/animation'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
+import MLBScoreboard from '../components/Lab/scoreboard/MLBScoreboard'
+import type { ScheduleGame } from '../components/Lab/scoreboard/types'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
 
-export default function lab() {
+export default function lab({ initialGames }: { initialGames: ScheduleGame[] }) {
   return (
     <>
       <Head>
@@ -28,25 +30,41 @@ export default function lab() {
         </Heading>
 
         <LabItems>
-          {/* Throttle */}
           <Item variants={fade}>
-            <DateStyle>Apr 2025</DateStyle>
+            <ItemHeader>
+              <HeaderText>MLB Scoreboard</HeaderText>
+              <HeaderText>May 2025</HeaderText>
+            </ItemHeader>
+            <Inner>
+              <MLBScoreboard defaultTeam="SF" initialGames={initialGames} />
+            </Inner>
+          </Item>
+
+          <Item variants={fade}>
+            <ItemHeader>
+              <HeaderText>Speedometer</HeaderText>
+              <HeaderText>Apr 2025</HeaderText>
+            </ItemHeader>
             <Inner>
               <Speedometer />
             </Inner>
           </Item>
 
-          {/* Gantt */}
           <Item variants={fade}>
-            <DateStyle>May 2024</DateStyle>
+            <ItemHeader>
+              <HeaderText>Gantt Chart</HeaderText>
+              <HeaderText>May 2024</HeaderText>
+            </ItemHeader>
             <Inner>
               <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
             </Inner>
           </Item>
 
-          {/* Calendar */}
           <Item variants={fade}>
-            <DateStyle>Apr 2024</DateStyle>
+            <ItemHeader>
+              <HeaderText>Calendar</HeaderText>
+              <HeaderText>Apr 2024</HeaderText>
+            </ItemHeader>
             <Inner>
               <DailyCalendar />
             </Inner>
@@ -55,6 +73,17 @@ export default function lab() {
       </Container>
     </>
   )
+}
+
+export async function getServerSideProps() {
+  // Import the helpers dynamically so that they run server-side only.
+  const { fetchTeams, fetchSchedule } = await import('../components/Lab/scoreboard/utils')
+  const teams = await fetchTeams()
+  // Giants should always be used (teamCode "SF")
+  const giants = teams.find((t) => t.teamCode === 'SF')
+  let initialGames: ScheduleGame[] = []
+  if (giants) initialGames = await fetchSchedule(giants.id)
+  return { props: { initialGames } }
 }
 
 const Container = styled(motion.div)`
@@ -84,9 +113,15 @@ const Item = styled(motion.div)`
   max-width: var(--max-w-screen);
 `
 
-const DateStyle = styled.div`
-  width: 100%;
-  text-align: right;
+const ItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+`
+
+const HeaderText = styled.div`
   color: var(--text-dark);
   font-size: 0.9rem;
   margin-bottom: 1rem;

@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-export const ItemBarContainer = styled.div<{ height: number }>`
+export const ItemBarContainer = styled.div<{ $height: number }>`
   display: inline-flex;
   align-items: center;
   width: 100%;
-  height: ${({ height }) => `${height}px`};
+  height: ${({ $height }) => `${$height}px`};
   user-select: none;
 
   &.hovered {
@@ -12,20 +12,20 @@ export const ItemBarContainer = styled.div<{ height: number }>`
   }
 `
 
-export const BarWrap = styled.div<{ rightMargin: number }>`
-  margin-right: ${({ rightMargin }) => `${rightMargin}px`};
+export const BarWrap = styled.div<{ $rightMargin: number }>`
+  margin-right: ${({ $rightMargin }) => `${$rightMargin}px`};
 `
 
-export const Bar = styled.div<{ width: number; height: number; marginLeft: number; backgroundColor: string }>`
+export const Bar = styled.div<{ $width: number; $height: number; $marginLeft: number; $backgroundColor: string }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: ${({ width }) => `${width}px`};
-  height: ${({ height }) => `${height}px`};
-  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
+  width: ${({ $width }) => `${$width}px`};
+  height: ${({ $height }) => `${$height}px`};
+  margin-left: ${({ $marginLeft }) => `${$marginLeft}px`};
   border-radius: 4px;
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  background-color: ${({ $backgroundColor }) => $backgroundColor};
   font-size: 0.65rem;
 `
 
@@ -54,4 +54,36 @@ export const EndLabel = styled.span`
   z-index: 15;
   min-width: max-content;
   opacity: 0.5;
+`
+
+export const Tooltip = styled.span<{ $height: number }>`
+  position: absolute;
+  top: -${({ $height }) => $height / 2}px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dark-bg, rgba(30, 30, 30, 0.95));
+  color: var(--text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 20;
+
+  ${Bar}:hover & {
+    opacity: 1;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 3px solid var(--dark-bg, rgba(30, 30, 30, 0.95));
+  }
 `

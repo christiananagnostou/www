@@ -39,7 +39,7 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
         $paddingLeft={paddingLeft}
         className="gantt-title"
         data-item-id={item.id}
-        height={RowHeight}
+        $height={RowHeight}
         onClick={() => scrollToDate(item.startDate || dayjs().format('YYYY-MM-DD'), 'smooth')}
         onMouseEnter={() => handleRowMouseOver(item.id)}
         onMouseLeave={() => handleRowMouseOver(-1)}
