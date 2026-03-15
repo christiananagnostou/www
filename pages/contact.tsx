@@ -1,4 +1,4 @@
-import emailjs from 'emailjs-com'
+import emailjs from '@emailjs/browser'
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -15,6 +15,7 @@ const PageUrl = `${BASE_URL}/contact`
 
 const Contact = () => {
   const [sentSuccessful, setSentSuccessful] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -34,20 +35,36 @@ const Contact = () => {
     try {
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-      const userId = process.env.NEXT_PUBLIC_EMAILJS_USER_ID
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-      if (!serviceId || !templateId) {
+      setSentSuccessful(false)
+      setErrorMessage('')
+
+      if (!serviceId || !templateId || !publicKey) {
         console.error('Missing EmailJS configuration')
+        setErrorMessage('The contact form is not configured correctly right now. Please try again later.')
         return
       }
 
-      const res = await emailjs.send(serviceId, templateId, data, userId)
+      const res = await emailjs.send(serviceId, templateId, data, { publicKey })
       if (res.status === 200) {
-        form.reset() // Resetting the form fields
+        form.reset()
         setSentSuccessful(true)
       }
     } catch (error) {
       console.error(error)
+
+      if (typeof error === 'object' && error && 'text' in error && typeof error.text === 'string') {
+        if (error.text.includes('service ID not found')) {
+          setErrorMessage('The contact form is misconfigured. The EmailJS service ID needs to be updated.')
+          return
+        }
+
+        setErrorMessage(error.text)
+        return
+      }
+
+      setErrorMessage('Something went wrong while sending your message. Please try again later.')
     }
   }
 
@@ -127,6 +144,9 @@ const Contact = () => {
         <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
           Sent successfully. You&apos;ll hear from me soon!
         </p>
+        <p className="error-message" style={{ opacity: errorMessage ? 1 : 0 }}>
+          {errorMessage}
+        </p>
 
         <motion.div variants={fade}>
           <SocialLinks />
@@ -151,6 +171,14 @@ const ContactStyle = styled(motion.div)`
     transition: opacity 0.3s ease;
     text-align: center;
     width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .error-message {
+    transition: opacity 0.3s ease;
+    text-align: center;
+    width: 100%;
+    color: #ff6b6b;
     margin-bottom: 2rem;
   }
 `
