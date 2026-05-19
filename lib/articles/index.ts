@@ -19,7 +19,7 @@ export interface ArticleType {
 const postsDirectory = join(process.cwd(), '/public/articles')
 
 export function getPostSlugs(): string[] {
-  return fs.readdirSync(postsDirectory)
+  return fs.readdirSync(postsDirectory).filter((fileName) => fileName.endsWith('.md'))
 }
 
 export function getPostBySlug(slug: string) {
