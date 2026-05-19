@@ -2,6 +2,7 @@ import type { DocumentContext } from 'next/document'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import { BASE_URL, X_HANDLE } from '../lib/constants'
+import { STRIPPABLE_QUERY_PARAMS } from '../lib/queryParams'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -65,6 +66,39 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (() => {
+                  const cleanupTrackingParams = () => {
+                    const strippableParams = ${JSON.stringify(STRIPPABLE_QUERY_PARAMS)}
+                    const url = new URL(window.location.href)
+                    let removedTrackingParam = false
+
+                    strippableParams.forEach((param) => {
+                      if (url.searchParams.has(param)) {
+                        url.searchParams.delete(param)
+                        removedTrackingParam = true
+                      }
+                    })
+
+                    if (removedTrackingParam) {
+                      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash)
+                    }
+                  }
+
+                  const scheduleCleanup = () => window.setTimeout(cleanupTrackingParams, 2000)
+
+                  if (document.readyState === 'complete') {
+                    scheduleCleanup()
+                  } else {
+                    window.addEventListener('load', scheduleCleanup, { once: true })
+                  }
+                })()
+              `,
+            }}
+            id="cleanup-tracking-query-params"
+          />
         </body>
       </Html>
     )
