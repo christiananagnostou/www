@@ -137,8 +137,9 @@ export const getStravaActivities = async (): Promise<StravaActivity[]> => {
     const bestValuesByType = calculateBestValuesByType(mappedActivities)
     const finalActivities = mappedActivities.map((activity) => assignBestFlags(activity, bestValuesByType))
     return finalActivities
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown Strava activity error'
+    console.error('Failed to fetch Strava activities', message)
     return []
   }
 }

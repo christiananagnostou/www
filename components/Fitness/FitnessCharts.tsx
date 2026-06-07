@@ -450,7 +450,6 @@ const ChartCard = styled.div`
     mix-blend-mode: overlay;
   }
 
-
   .uplot-host {
     position: relative;
     margin-top: 1rem;
@@ -462,7 +461,6 @@ const ChartCard = styled.div`
     background: var(--text) !important;
     border-color: var(--text) !important;
   }
-
 
   .uplot {
     font-family: inherit;

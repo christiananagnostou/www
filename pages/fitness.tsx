@@ -97,7 +97,8 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const activities = await getStravaActivities()
     return { props: { activities }, revalidate: 60 * 60 * 12 }
   } catch (error) {
-    console.error('Failed to load Strava activities', error)
+    const message = error instanceof Error ? error.message : 'Unknown Strava fitness error'
+    console.error('Failed to load Strava activities', message)
     return {
       props: { activities: [], error: 'Unable to load Strava activities right now. Please try again soon.' },
       revalidate: 60 * 30,

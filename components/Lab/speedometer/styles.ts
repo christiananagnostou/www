@@ -55,11 +55,14 @@ export const RedlineArc = styled.div<{ $size: number; $start: number; $end: numb
     transparent 0,
     transparent ${({ $size }) => $size * 0.3}px,
     // Start of visible ring
-    var(--black) calc(${({ $size }) => $size / 2}px - var(--border-width)),
+    var(--black)
+      calc(${({ $size }) => $size / 2}px - var(--border-width)),
     // End of visible ring
-    transparent calc(${({ $size }) => $size / 2}px - var(--border-width) + 1px),
+    transparent
+      calc(${({ $size }) => $size / 2}px - var(--border-width) + 1px),
     // Start of outer transparent
-    transparent 100%
+    transparent
+      100%
   );
 `
 

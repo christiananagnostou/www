@@ -40,7 +40,6 @@ export default function RecentArt() {
 const ArtContainer = styled(HomepageBox)`
   overflow: hidden;
 
-
   .recent-art__hover-box {
     position: absolute;
     bottom: -50px;

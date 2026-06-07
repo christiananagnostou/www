@@ -23,11 +23,24 @@ interface Props {
 
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
-  await refreshAccessToken()
-  const allStravaActivities = await getStravaActivities()
-  const filteredActivities = allStravaActivities.filter((activity) =>
-    ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
-  )
+
+  const requiredEnv = ['STRAVA_REFRESH_TOKEN', 'STRAVA_CLIENT_ID', 'STRAVA_CLIENT_SECRET', 'STRAVA_REDIRECT_URI']
+  const hasStravaConfig = requiredEnv.every((key) => process.env[key])
+
+  let filteredActivities: StravaActivity[] = []
+
+  if (hasStravaConfig) {
+    try {
+      await refreshAccessToken()
+      const allStravaActivities = await getStravaActivities()
+      filteredActivities = allStravaActivities.filter((activity) =>
+        ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
+      )
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown Strava homepage error'
+      console.error('Failed to load homepage Strava activities', message)
+    }
+  }
 
   return {
     props: { posts, stravaActivities: filteredActivities },

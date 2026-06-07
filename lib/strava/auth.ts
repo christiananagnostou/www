@@ -27,7 +27,8 @@ export const refreshAccessToken = async (): Promise<AuthenticationConfig> => {
 
     return config
   } catch (error) {
-    console.error('Error refreshing token', error)
+    const message = error instanceof Error ? error.message : 'Unknown Strava auth error'
+    console.error('Error refreshing token', message)
     throw error
   }
 }
