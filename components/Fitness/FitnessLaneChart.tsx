@@ -241,7 +241,6 @@ const ChartCard = styled.div`
     fill: var(--text-dark);
   }
 
-
   .uplot-tooltip {
     position: absolute;
     top: 0;
