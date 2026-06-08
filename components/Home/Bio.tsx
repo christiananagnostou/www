@@ -9,7 +9,7 @@ function Bio() {
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
 
       <motion.p variants={fade}>
-        Creating web experiences that <em>inspire</em>. Currently working as a senior software engineer at{' '}
+        Creating web experiences that <em>inspire</em>. Currently working as a lead software engineer at{' '}
         <a aria-label="Visit Vuori website" href="https://vuoriclothing.com/" rel="noreferrer" target="_blank">
           <em>Vuori</em>
         </a>
