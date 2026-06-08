@@ -60,7 +60,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^6.0.5",
-    "vitest": "^4.0.17"
+    "vitest": "^4.1.8"
   },
   "overrides": {
     "postcss": "8.5.14"
