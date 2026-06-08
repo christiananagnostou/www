@@ -53,15 +53,16 @@ const ArticlesContainer = styled(HomepageBox)`
 
       a {
         display: block;
-      }
+        text-decoration: none;
 
-      .recent-article__title {
-        text-decoration: underline solid var(--accent);
-        transition: all 0.2s ease;
-        text-underline-offset: 3px;
+        .recent-article__title {
+          text-decoration: underline solid var(--accent);
+          transition: all 0.2s ease;
+          text-underline-offset: 3px;
+        }
 
-        &:hover,
-        &:active {
+        &:hover .recent-article__title,
+        &:active .recent-article__title {
           color: var(--heading);
           text-decoration: underline solid var(--text);
         }
@@ -71,6 +72,7 @@ const ArticlesContainer = styled(HomepageBox)`
         margin-top: 0.25rem;
         font-size: 0.8rem;
         color: var(--text-dark);
+        text-decoration: none;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
