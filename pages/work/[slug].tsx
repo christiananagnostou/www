@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
+import type { CSSProperties } from 'react'
 import styled from 'styled-components'
 
-import { pageAnimation } from '../../components/animation'
+import { fade, pageAnimation, staggerFade } from '../../components/animation'
 import type { ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
 
@@ -21,67 +23,119 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const project = ProjectState.find((proj) => proj.slug === context.params?.slug)
+  if (!project) {
+    return { notFound: true }
+  }
+
   return { props: { project } }
 }
 
 const SingleProject = ({ project }: Props) => {
+  const primaryImage = project.desktopImgs[0]
+  const supportingDesktopImages = project.desktopImgs.slice(1)
+  const hasMedia = project.desktopImgs.length > 0 || project.mobileImgs.length > 0
+  const accent = getProjectAccent(project)
+
   return (
     <>
       <Head>
-        <title>{project.title}</title>
-        <meta content="Christian Anagnostou's Web Portfolio" name="description" />
+        <title>{project.title} | Christian Anagnostou</title>
+        <meta content={project.summary} name="description" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
-        <h2>{project.title}</h2>
+      <Container
+        $hasMedia={hasMedia}
+        animate="show"
+        exit="exit"
+        initial="hidden"
+        style={{ '--project-accent': accent } as CSSProperties}
+        variants={pageAnimation}
+      >
+        <BackLink href="/projects">Projects</BackLink>
 
-        <div className="link-container">
-          {project.externalLink ? (
-            <motion.a className="live-link" href={project.externalLink} rel="noreferrer" target="_blank">
-              {project.externalLinkLabel || 'Live Site'}
-            </motion.a>
+        <Hero $hasMedia={Boolean(primaryImage)} variants={staggerFade}>
+          <HeroCopy variants={fade}>
+            <ProjectKicker>
+              <span>{project.date}</span>
+              <span>{project.tags.join(' / ')}</span>
+            </ProjectKicker>
+
+            <h1>{project.title}</h1>
+            <p>{project.summary}</p>
+
+            <ActionRow aria-label={`${project.title} links`}>
+              {project.externalLink ? (
+                <a href={project.externalLink} rel="noreferrer" target="_blank">
+                  {project.externalLinkLabel || 'Live Site'}
+                </a>
+              ) : null}
+
+              {project.github ? (
+                <a href={project.github} rel="noreferrer" target="_blank">
+                  GitHub
+                </a>
+              ) : null}
+            </ActionRow>
+          </HeroCopy>
+
+          {primaryImage ? (
+            <HeroImage variants={fade}>
+              <ProjectImage alt={`${project.title} project preview`} image={primaryImage} priority />
+            </HeroImage>
           ) : null}
+        </Hero>
 
-          {project.github ? (
-            <motion.a className="live-link" href={project.github} rel="noreferrer" target="_blank">
-              Github
-            </motion.a>
-          ) : null}
-        </div>
-
-        <DesktopImage>
-          <Image
-            alt={project.title}
-            blurDataURL={project.desktopImgs[0].blurDataURL}
-            height={666}
-            loading="eager"
-            src={project.desktopImgs[0]}
-            width={1000}
-          />
-        </DesktopImage>
-
-        <MobileAndText>
-          <Details>
-            {project.details.map(({ title, description }, i) => (
-              <Detail key={i} description={description} title={title} />
-            ))}
+        <BodyGrid $hasMedia={hasMedia}>
+          <Details variants={staggerFade}>
+            {project.details.length > 0 ? (
+              project.details.map(({ title, description }) => (
+                <Detail key={title} description={description} title={title} />
+              ))
+            ) : (
+              <Detail description={project.summary} title="Overview" />
+            )}
           </Details>
 
-          <div className="mobile-imgs">
-            {project.mobileImgs.map((image, i) => (
-              <MobileImage key={i}>
-                <Image alt="mobile" blurDataURL={image.blurDataURL} height={600} src={image} width={300} />
-              </MobileImage>
-            ))}
-          </div>
-        </MobileAndText>
+          <ProjectMeta variants={fade}>
+            <MetaItem>
+              <span>Type</span>
+              <strong>{project.tags.join(', ')}</strong>
+            </MetaItem>
+            <MetaItem>
+              <span>Date</span>
+              <strong>{project.date}</strong>
+            </MetaItem>
+            <MetaItem>
+              <span>Media</span>
+              <strong>{hasMedia ? 'Screenshots' : 'Text-first'}</strong>
+            </MetaItem>
+          </ProjectMeta>
+        </BodyGrid>
 
-        {project.desktopImgs.slice(1).map((image, i) => (
-          <DesktopImage key={i}>
-            <Image alt={`desktop ${i}`} blurDataURL={image.blurDataURL} height={600} src={image} width={900} />
-          </DesktopImage>
-        ))}
+        {hasMedia ? (
+          <MediaSection aria-label={`${project.title} screenshots`} variants={staggerFade}>
+            {supportingDesktopImages.length > 0 ? (
+              <WideGallery>
+                {supportingDesktopImages.map((image, i) => (
+                  <GalleryImage key={image.src} variants={fade}>
+                    <ProjectImage alt={`${project.title} desktop screenshot ${i + 2}`} image={image} />
+                  </GalleryImage>
+                ))}
+              </WideGallery>
+            ) : null}
+
+            {project.mobileImgs.length > 0 ? (
+              <PhoneGallery>
+                {project.mobileImgs.map((image, i) => (
+                  <PhoneFrame key={image.src} variants={fade}>
+                    <ProjectImage alt={`${project.title} mobile screenshot ${i + 1}`} image={image} />
+                  </PhoneFrame>
+                ))}
+              </PhoneGallery>
+            ) : null}
+          </MediaSection>
+        ) : null}
       </Container>
     </>
   )
@@ -98,103 +152,288 @@ const Detail = ({ title, description }: { title: string; description: string }) 
   )
 }
 
-const Container = styled(motion.div)`
-  max-width: var(--max-w-screen);
-  padding: 1rem;
+const ProjectImage = ({
+  alt,
+  image,
+  priority = false,
+}: {
+  alt: string
+  image: ProjectType['desktopImgs'][number]
+  priority?: boolean
+}) => {
+  return (
+    <Image
+      alt={alt}
+      height={image.height}
+      {...(priority ? { priority: true } : { loading: 'lazy' as const })}
+      sizes="(width >= 980px) 900px, calc(100vw - 32px)"
+      src={image}
+      width={image.width}
+    />
+  )
+}
+
+const getProjectAccent = (project: ProjectType) => {
+  if (project.tags.includes('commercial')) {
+    return '#b8a266'
+  }
+
+  if (project.tags.includes('open-source')) {
+    return '#72c8b7'
+  }
+
+  return '#8da1d9'
+}
+
+const Container = styled(motion.main)<{ $hasMedia: boolean }>`
+  --page-width: ${({ $hasMedia }) => ($hasMedia ? '1040px' : '820px')};
+
+  max-width: var(--page-width);
+  padding: 2rem 1rem 5rem;
   margin: auto;
+  color: var(--text);
+`
 
-  h2 {
-    color: #cfcfcf;
-    padding-top: 5vh;
-    font-size: 1.8rem;
-    font-weight: 300;
+const BackLink = styled(Link)`
+  display: inline-flex;
+  margin-bottom: 3.5rem;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  text-decoration: none;
+
+  &::before {
+    content: '/';
+    margin-right: 0.45rem;
+    color: var(--project-accent);
   }
-  .link-container {
-    display: flex;
-    margin: 1rem 0;
 
-    .live-link {
-      font-size: 1rem;
-      color: #cccccc;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      margin-right: 30px;
+  &:hover {
+    color: var(--heading);
+    text-decoration: none;
+  }
+`
 
-      &:hover {
-        color: #ffffff;
-      }
+const Hero = styled(motion.header)<{ $hasMedia: boolean }>`
+  display: grid;
+  grid-template-columns: ${({ $hasMedia }) => ($hasMedia ? 'minmax(0, 0.85fr) minmax(320px, 1.15fr)' : '1fr')};
+  gap: 2rem;
+  align-items: end;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--accent);
+
+  @media screen and (width <= 860px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+`
+
+const HeroCopy = styled(motion.div)`
+  h1 {
+    max-width: 34rem;
+    margin: 0.85rem 0 1rem;
+    font-weight: normal;
+    font-size: clamp(2.35rem, 8vw, 5.4rem);
+    line-height: 0.96;
+  }
+
+  p {
+    max-width: 680px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+`
+
+const ProjectKicker = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  color: var(--text-dark);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+
+  span {
+    font-weight: 500;
+  }
+
+  span:first-child {
+    color: var(--project-accent);
+  }
+`
+
+const ActionRow = styled.nav`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 0.9rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    color: var(--heading);
+    font-size: 0.8rem;
+    text-decoration: none;
+
+    &:hover {
+      border-color: var(--project-accent);
+      color: #ffffff;
+      text-decoration: none;
     }
   }
 `
 
-const MobileAndText = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  margin: 3rem 0 0;
-  overflow: hidden;
+const HeroImage = styled(motion.figure)`
+  align-self: stretch;
+  margin: 0;
+  padding: 0.45rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
 
-  .mobile-imgs {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    img {
-    }
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    max-height: 560px;
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
   }
 `
 
-const Details = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+const BodyGrid = styled.div<{ $hasMedia: boolean }>`
+  display: grid;
+  grid-template-columns: ${({ $hasMedia }) => ($hasMedia ? 'minmax(0, 1fr) 220px' : '1fr')};
+  gap: 2rem;
+  align-items: start;
+  margin: 3rem 0;
+
+  @media screen and (width <= 760px) {
+    grid-template-columns: 1fr;
+    margin: 2rem 0;
+  }
+`
+
+const Details = styled(motion.section)`
+  display: grid;
+  gap: 0;
 `
 
 const DetailStyle = styled.div`
-  padding: 1.5rem 1rem;
-  background: var(--dark-bg);
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.35rem 0;
+  border-top: 1px solid var(--accent);
 
-  &:first-child {
-    border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
-  }
   &:last-child {
-    margin-bottom: 2rem;
-    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    border-bottom: 1px solid var(--accent);
+  }
+
+  @media screen and (width <= 640px) {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
 
   h3 {
-    font-size: 1.25rem;
-    font-weight: 300;
+    color: var(--heading);
+    font-weight: normal;
+    font-size: 0.95rem;
   }
+
   p {
-    padding-top: 1rem;
     font-weight: 200;
-    line-height: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 `
 
-const DesktopImage = styled.div`
+const ProjectMeta = styled(motion.aside)`
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: rgb(20 20 20 / 45%);
+
+  @media screen and (width <= 760px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media screen and (width <= 520px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const MetaItem = styled.div`
+  display: grid;
+  gap: 0.35rem;
+
+  span {
+    color: var(--text-dark);
+    font-weight: normal;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: var(--heading);
+    font-weight: normal;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+`
+
+const MediaSection = styled(motion.section)`
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+`
+
+const WideGallery = styled.div`
+  display: grid;
+  gap: 1.25rem;
+`
+
+const GalleryImage = styled(motion.figure)`
+  margin: 0;
+  padding: 0.45rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
+
   img {
-    max-width: 100%;
-    margin-bottom: 2rem;
     display: block;
+    width: 100%;
     height: auto;
     border-radius: var(--border-radius-sm);
   }
 `
 
-const MobileImage = styled.div`
-  margin: 0 1rem;
-  flex: 1;
+const PhoneGallery = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+`
+
+const PhoneFrame = styled(motion.figure)`
+  margin: 0;
+  padding: 0.55rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-lg);
+  background: var(--dark-bg);
 
   img {
-    margin: auto;
-    margin-bottom: 2rem;
     display: block;
-    width: auto;
-    max-height: 500px;
-    max-width: 100%;
-    border-radius: var(--border-radius-sm);
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    object-fit: contain;
+    border-radius: var(--border-radius-md);
   }
 `

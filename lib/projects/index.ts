@@ -49,12 +49,6 @@ import NeoLogosMobile2 from '../../public/img/projects/neologos/neologos-mobile2
 // LofiWaves
 import LofiWavesDesktop from '../../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '../../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
-// Skillbox
-import SkillboxCover from '../../public/img/projects/skillbox/cover.webp'
-// ImgPress
-import ImgPressCover from '../../public/img/projects/imgpress/cover.webp'
-// Knip HTML Reporter
-import KnipHtmlReporterCover from '../../public/img/projects/knip-html-reporter/cover.webp'
 
 export interface ProjectType {
   title: string
@@ -75,7 +69,7 @@ export const ProjectState: ProjectType[] = [
     title: 'Skillbox',
     date: 'Jan 2026',
     tags: ['personal', 'open-source'],
-    desktopImgs: [SkillboxCover],
+    desktopImgs: [],
     mobileImgs: [],
     externalLink: 'https://www.npmjs.com/package/skillbox',
     externalLinkLabel: 'npm',
@@ -104,7 +98,7 @@ export const ProjectState: ProjectType[] = [
     title: 'ImgPress',
     date: 'Nov 2025',
     tags: ['personal', 'open-source'],
-    desktopImgs: [ImgPressCover],
+    desktopImgs: [],
     mobileImgs: [],
     externalLink: 'https://github.com/ChristianAnagnostou/imgpress#readme',
     externalLinkLabel: 'Readme',
@@ -133,7 +127,7 @@ export const ProjectState: ProjectType[] = [
     title: 'Knip HTML Reporter',
     date: 'Oct 2025',
     tags: ['personal', 'open-source'],
-    desktopImgs: [KnipHtmlReporterCover],
+    desktopImgs: [],
     mobileImgs: [],
     externalLink: 'https://www.npmjs.com/package/knip-html-reporter',
     externalLinkLabel: 'npm',
