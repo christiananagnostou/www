@@ -49,6 +49,12 @@ import NeoLogosMobile2 from '../../public/img/projects/neologos/neologos-mobile2
 // LofiWaves
 import LofiWavesDesktop from '../../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '../../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
+// Skillbox
+import SkillboxCover from '../../public/img/projects/skillbox/cover.webp'
+// ImgPress
+import ImgPressCover from '../../public/img/projects/imgpress/cover.webp'
+// Knip HTML Reporter
+import KnipHtmlReporterCover from '../../public/img/projects/knip-html-reporter/cover.webp'
 
 export interface ProjectType {
   title: string
@@ -57,6 +63,7 @@ export interface ProjectType {
   desktopImgs: StaticImageData[]
   mobileImgs: StaticImageData[]
   externalLink?: string
+  externalLinkLabel?: string
   github?: string
   slug: string
   summary: string
@@ -65,12 +72,100 @@ export interface ProjectType {
 
 export const ProjectState: ProjectType[] = [
   {
+    title: 'Skillbox',
+    date: 'Jan 2026',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [SkillboxCover],
+    mobileImgs: [],
+    externalLink: 'https://www.npmjs.com/package/skillbox',
+    externalLinkLabel: 'npm',
+    github: 'https://github.com/ChristianAnagnostou/skillbox',
+    slug: 'skillbox',
+    summary: 'Local-first, agent-agnostic skills manager for AI coding agents',
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'Skillbox installs, updates, imports, and syncs reusable agent skills across Claude, Cursor, Codex, OpenCode, Amp, and Antigravity without tying the workflow to one tool.',
+      },
+      {
+        title: 'Workflow',
+        description:
+          'The CLI focuses on the commands used most often: list installed skills, check for updates, update one or all skills, add skills from GitHub repositories or direct URLs, and register project-local skill folders.',
+      },
+      {
+        title: 'Project Shape',
+        description:
+          'Built in TypeScript with machine-readable JSON output, GitHub-backed install flows, project inspection, configurable install modes, and release automation through npm.',
+      },
+    ],
+  },
+  {
+    title: 'ImgPress',
+    date: 'Nov 2025',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [ImgPressCover],
+    mobileImgs: [],
+    externalLink: 'https://github.com/ChristianAnagnostou/imgpress#readme',
+    externalLinkLabel: 'Readme',
+    github: 'https://github.com/ChristianAnagnostou/imgpress',
+    slug: 'imgpress',
+    summary: 'Lightweight macOS menu bar app for batch image conversion and optimization',
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'ImgPress is a native menu bar utility for dragging in images or folders, choosing output formats, and running repeatable conversion workflows without opening a heavier editor.',
+      },
+      {
+        title: 'Features',
+        description:
+          'It supports JPEG, PNG, WebP, AVIF, and RAW inputs, with batch processing, conversion progress, size comparisons, pause/resume controls, quick presets, and custom saved presets.',
+      },
+      {
+        title: 'Implementation',
+        description:
+          "Built with Swift, SwiftUI, and Apple's ImageIO framework for a macOS-first workflow that stays close to the platform instead of wrapping a web app.",
+      },
+    ],
+  },
+  {
+    title: 'Knip HTML Reporter',
+    date: 'Oct 2025',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [KnipHtmlReporterCover],
+    mobileImgs: [],
+    externalLink: 'https://www.npmjs.com/package/knip-html-reporter',
+    externalLinkLabel: 'npm',
+    github: 'https://github.com/ChristianAnagnostou/knip-html-reporter',
+    slug: 'knip-html-reporter',
+    summary: 'Interactive HTML reporter that turns Knip output into navigable cleanup reports',
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'Knip HTML Reporter makes unused-file, dependency, and export analysis easier to review by converting Knip results into a searchable browser report.',
+      },
+      {
+        title: 'Workflow',
+        description:
+          'Reports can be generated through Knip reporter options, saved to a custom output path, auto-opened locally, or uploaded as CI artifacts for team review.',
+      },
+      {
+        title: 'Features',
+        description:
+          'The reporter includes issue-type filtering, full-text search across symbols and files, VS Code deep links to exact locations, custom styles, and zero runtime dependencies.',
+      },
+    ],
+  },
+  {
     title: 'Jukebox',
     date: 'Jun 2023',
     tags: ['personal'],
     desktopImgs: [JukeboxCollage, JukeboxLibrary, JukeboxArtists, JukeboxShortcuts],
     mobileImgs: [],
     externalLink: 'https://github.com/christiananagnostou/jukebox/releases',
+    externalLinkLabel: 'Releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
     slug: 'jukebox',
     summary: 'Keyboard-centric desktop music player made with Tauri + Qwik',

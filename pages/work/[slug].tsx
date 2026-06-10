@@ -39,7 +39,7 @@ const SingleProject = ({ project }: Props) => {
         <div className="link-container">
           {project.externalLink ? (
             <motion.a className="live-link" href={project.externalLink} rel="noreferrer" target="_blank">
-              Live Site
+              {project.externalLinkLabel || 'Live Site'}
             </motion.a>
           ) : null}
 
