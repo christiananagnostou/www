@@ -374,6 +374,9 @@ const MediaSection = styled(motion.section)`
 const WideGallery = styled.div`
   display: grid;
   gap: 1.25rem;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
 `
 
 const GalleryImage = styled(motion.figure)`
