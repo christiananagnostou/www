@@ -54,7 +54,7 @@ const SingleProject = ({ project }: Props) => {
       >
         <BackLink href="/projects">Projects</BackLink>
 
-        <Hero $hasMedia={Boolean(primaryImage)} variants={staggerFade}>
+        <Hero variants={staggerFade}>
           <HeroCopy variants={fade}>
             <ProjectKicker>
               <span>{project.date}</span>
@@ -77,13 +77,13 @@ const SingleProject = ({ project }: Props) => {
               ) : null}
             </ActionRow>
           </HeroCopy>
-
-          {primaryImage ? (
-            <HeroImage variants={fade}>
-              <ProjectImage alt={`${project.title} project preview`} image={primaryImage} priority />
-            </HeroImage>
-          ) : null}
         </Hero>
+
+        {primaryImage ? (
+          <FeaturedMedia variants={fade}>
+            <ProjectImage alt={`${project.title} project preview`} image={primaryImage} priority />
+          </FeaturedMedia>
+        ) : null}
 
         <BodyGrid $hasMedia={hasMedia}>
           <Details variants={staggerFade}>
@@ -159,7 +159,7 @@ const ProjectImage = ({
       alt={alt}
       height={image.height}
       {...(priority ? { priority: true } : { loading: 'lazy' as const })}
-      sizes="(width >= 980px) 900px, calc(100vw - 32px)"
+      sizes="(width >= 1080px) 1040px, calc(100vw - 32px)"
       src={image}
       width={image.width}
     />
@@ -201,18 +201,9 @@ const BackLink = styled(Link)`
   }
 `
 
-const Hero = styled(motion.header)<{ $hasMedia: boolean }>`
+const Hero = styled(motion.header)`
   display: grid;
-  grid-template-columns: ${({ $hasMedia }) => ($hasMedia ? 'minmax(0, 0.85fr) minmax(320px, 1.15fr)' : '1fr')};
-  gap: 2rem;
-  align-items: end;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--accent);
-
-  @media screen and (width <= 860px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  padding-bottom: 1.25rem;
 `
 
 const HeroCopy = styled(motion.div)`
@@ -229,6 +220,21 @@ const HeroCopy = styled(motion.div)`
     font-size: 1rem;
     line-height: 1.6;
     color: var(--text);
+  }
+`
+
+const FeaturedMedia = styled(motion.figure)`
+  margin: 1.25rem 0 0;
+  padding: 0.55rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-sm);
   }
 `
 
@@ -271,25 +277,6 @@ const ActionRow = styled.nav`
       color: #ffffff;
       text-decoration: none;
     }
-  }
-`
-
-const HeroImage = styled(motion.figure)`
-  align-self: stretch;
-  margin: 0;
-  padding: 0.45rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-md);
-  background: var(--dark-bg);
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: 280px;
-    max-height: 560px;
-    object-fit: contain;
-    border-radius: var(--border-radius-sm);
   }
 `
 
