@@ -279,7 +279,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [],
     externalLink: 'https://soylent.com/',
     slug: 'soylent',
-    summary: 'Showcasing one of my favorite clients',
+    summary: 'Shopify storefront work for a complete-nutrition brand across homepage, collection, and PDP flows',
     meta: [
       { label: 'Platform', value: 'Shopify storefront' },
       { label: 'Focus', value: 'Nutrition commerce' },
@@ -311,7 +311,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [SentfillPDPMobile, ScentfillCarouselMobile, SentfillScents],
     externalLink: 'https://scentfill.com/',
     slug: 'scentfill',
-    summary: '...another favorite client',
+    summary: 'Scent discovery and product-detail experience for a Shopify fragrance catalog with 80+ scents',
     meta: [
       { label: 'Platform', value: 'Shopify storefront' },
       { label: 'Focus', value: 'Scent discovery' },
