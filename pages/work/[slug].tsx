@@ -159,7 +159,7 @@ const ProjectImage = ({
       alt={alt}
       height={image.height}
       {...(priority ? { priority: true } : { loading: 'lazy' as const })}
-      sizes="(width >= 1080px) 1040px, calc(100vw - 32px)"
+      sizes="(width >= 920px) 860px, calc(100vw - 32px)"
       src={image}
       width={image.width}
     />
@@ -224,7 +224,9 @@ const HeroCopy = styled(motion.div)`
 `
 
 const FeaturedMedia = styled(motion.figure)`
-  margin: 1.25rem 0 0;
+  width: 100%;
+  max-width: 860px;
+  margin: 1.25rem auto 0;
   padding: 0.55rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
