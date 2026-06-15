@@ -34,7 +34,7 @@ const SingleProject = ({ project }: Props) => {
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
   const hasMedia = project.desktopImgs.length > 0 || project.mobileImgs.length > 0
-  const accent = getProjectAccent(project)
+  const accent = getProjectAccent(project.slug)
 
   return (
     <>
@@ -58,7 +58,6 @@ const SingleProject = ({ project }: Props) => {
           <HeroCopy variants={fade}>
             <ProjectKicker>
               <span>{project.date}</span>
-              <span>{project.tags.join(' / ')}</span>
             </ProjectKicker>
 
             <h1>{project.title}</h1>
@@ -98,18 +97,12 @@ const SingleProject = ({ project }: Props) => {
           </Details>
 
           <ProjectMeta variants={fade}>
-            <MetaItem>
-              <span>Type</span>
-              <strong>{project.tags.join(', ')}</strong>
-            </MetaItem>
-            <MetaItem>
-              <span>Date</span>
-              <strong>{project.date}</strong>
-            </MetaItem>
-            <MetaItem>
-              <span>Media</span>
-              <strong>{hasMedia ? 'Screenshots' : 'Text-first'}</strong>
-            </MetaItem>
+            {project.meta.map(({ label, value }) => (
+              <MetaItem key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </MetaItem>
+            ))}
           </ProjectMeta>
         </BodyGrid>
 
@@ -173,16 +166,11 @@ const ProjectImage = ({
   )
 }
 
-const getProjectAccent = (project: ProjectType) => {
-  if (project.tags.includes('commercial')) {
-    return '#b8a266'
-  }
+const getProjectAccent = (slug: string) => {
+  const accents = ['#72c8b7', '#b8a266', '#8da1d9', '#d08a72', '#a4bd78'] as const
+  const index = slug.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % accents.length
 
-  if (project.tags.includes('open-source')) {
-    return '#72c8b7'
-  }
-
-  return '#8da1d9'
+  return accents[index]
 }
 
 const Container = styled(motion.main)<{ $hasMedia: boolean }>`
