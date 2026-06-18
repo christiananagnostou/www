@@ -17,7 +17,7 @@ import SoylentCollage from '../../public/img/projects/soylent/collage.webp'
 import SoylentCollection from '../../public/img/projects/soylent/collection.webp'
 import SoylentHomepage from '../../public/img/projects/soylent/homepage.webp'
 import SoylentPDP from '../../public/img/projects/soylent/pdp.webp'
-//Scentfill
+// Scentfill
 import ScentfillCarouselMobile from '../../public/img/projects/scentfill/carousel.webp'
 import SentfillCollage from '../../public/img/projects/scentfill/collage.webp'
 import SentfillPDPMobile from '../../public/img/projects/scentfill/pdp-mobile.webp'
@@ -57,16 +57,16 @@ type CliCommandType = {
   command: string
   output: string[]
 }
-type CliShowcaseType = {
+export type ProjectShowcaseType = {
   type: 'cli'
   title: string
   description: string
-  commands: [CliCommandType, ...CliCommandType[]]
+  commands: CliCommandType[]
 }
 
 const SKILLBOX_GIT_SKILLS = ['agent-browser', 'create-pr', 'frontend-design', 'webapp-testing'] as const
-const SKILLBOX_SOURCE_SKILL = 'skillbox'
-const SKILLBOX_VISIBLE_SKILL_COUNT = SKILLBOX_GIT_SKILLS.length + 1
+const SKILLBOX_URL_SKILL = 'skillbox'
+const SKILLBOX_VISIBLE_SKILLS = [...SKILLBOX_GIT_SKILLS, SKILLBOX_URL_SKILL] as const
 
 export interface ProjectType {
   title: string
@@ -80,7 +80,7 @@ export interface ProjectType {
   slug: string
   summary: string
   meta: ProjectMetaType[]
-  showcase?: CliShowcaseType
+  showcase?: ProjectShowcaseType
   details: ProjectDetailType[]
 }
 
@@ -110,26 +110,25 @@ export const ProjectState: ProjectType[] = [
           label: 'List',
           command: 'skillbox list',
           output: [
-            `Global Skills (${SKILLBOX_VISIBLE_SKILL_COUNT})`,
+            `Global Skills (${SKILLBOX_VISIBLE_SKILLS.length})`,
             '  codex    → ~/.codex/skills',
             '',
             'git',
             ...SKILLBOX_GIT_SKILLS.map((skill) => `  ${skill}`),
             '',
             'url',
-            `  ${SKILLBOX_SOURCE_SKILL}`,
+            `  ${SKILLBOX_URL_SKILL}`,
           ],
         },
         {
           label: 'Update',
           command: 'skillbox update',
           output: [
-            `Updating ${SKILLBOX_VISIBLE_SKILL_COUNT} skills...`,
+            `Updating ${SKILLBOX_VISIBLE_SKILLS.length} skills...`,
             '',
-            ...SKILLBOX_GIT_SKILLS.map((skill) => `  ✓ ${skill}`),
-            `  ✓ ${SKILLBOX_SOURCE_SKILL}`,
+            ...SKILLBOX_VISIBLE_SKILLS.map((skill) => `  ✓ ${skill}`),
             '',
-            `Updated ${SKILLBOX_VISIBLE_SKILL_COUNT} of ${SKILLBOX_VISIBLE_SKILL_COUNT} trackable skills.`,
+            `Updated ${SKILLBOX_VISIBLE_SKILLS.length} of ${SKILLBOX_VISIBLE_SKILLS.length} trackable skills.`,
           ],
         },
         {

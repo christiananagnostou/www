@@ -8,15 +8,15 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
-import type { ProjectType } from '../../lib/projects'
+import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
 
 interface Props {
   project: ProjectType
 }
 
-type ProjectShowcaseType = NonNullable<ProjectType['showcase']>
 type ProjectLinkType = { href: string; label: string }
+type ProjectDetailType = ProjectType['details'][number]
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -37,12 +37,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const SingleProject = ({ project }: Props) => {
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
-  const hasMedia = project.desktopImgs.length > 0 || project.mobileImgs.length > 0
+  const hasMedia = hasProjectMedia(project)
   const accent = getProjectAccent(project.slug)
-  const projectLinks = [
-    project.externalLink ? { href: project.externalLink, label: project.externalLinkLabel ?? 'Live Site' } : null,
-    project.github ? { href: project.github, label: 'GitHub' } : null,
-  ].filter((link): link is ProjectLinkType => Boolean(link))
+  const projectLinks = getProjectLinks(project)
+  const projectDetails = getProjectDetails(project)
 
   return (
     <>
@@ -93,13 +91,9 @@ const SingleProject = ({ project }: Props) => {
 
         <BodyGrid $hasMedia={hasMedia}>
           <Details variants={staggerFade}>
-            {project.details.length > 0 ? (
-              project.details.map(({ title, description }) => (
-                <Detail key={title} description={description} title={title} />
-              ))
-            ) : (
-              <Detail description={project.summary} title="Overview" />
-            )}
+            {projectDetails.map(({ title, description }) => (
+              <Detail key={title} description={description} title={title} />
+            ))}
           </Details>
 
           <ProjectMeta variants={fade}>
@@ -152,8 +146,12 @@ const Detail = ({ title, description }: { title: string; description: string }) 
 }
 
 const CliShowcase = ({ showcase }: { showcase: ProjectShowcaseType }) => {
-  const [activeCommand, setActiveCommand] = useState(0)
-  const command = showcase.commands[activeCommand]
+  const [activeCommandIndex, setActiveCommandIndex] = useState(0)
+  const command = showcase.commands[activeCommandIndex]
+
+  if (!command) {
+    return null
+  }
 
   return (
     <CliPanel variants={fade}>
@@ -168,8 +166,8 @@ const CliShowcase = ({ showcase }: { showcase: ProjectShowcaseType }) => {
           {showcase.commands.map(({ label }, index) => (
             <button
               key={label}
-              aria-pressed={activeCommand === index}
-              onClick={() => setActiveCommand(index)}
+              aria-pressed={activeCommandIndex === index}
+              onClick={() => setActiveCommandIndex(index)}
               type="button"
             >
               {label}
@@ -207,16 +205,44 @@ const ProjectImage = ({
   image: StaticImageData
   priority?: boolean
 }) => {
+  const loadingProps = priority ? { priority: true } : { loading: 'lazy' as const }
+
   return (
     <Image
       alt={alt}
       height={image.height}
-      {...(priority ? { priority: true } : { loading: 'lazy' as const })}
+      {...loadingProps}
       sizes="(width >= 920px) 860px, calc(100vw - 32px)"
       src={image}
       width={image.width}
     />
   )
+}
+
+const getProjectLinks = (project: ProjectType) => {
+  const links: ProjectLinkType[] = []
+
+  if (project.externalLink) {
+    links.push({ href: project.externalLink, label: project.externalLinkLabel ?? 'Live Site' })
+  }
+
+  if (project.github) {
+    links.push({ href: project.github, label: 'GitHub' })
+  }
+
+  return links
+}
+
+const getProjectDetails = (project: ProjectType): ProjectDetailType[] => {
+  if (project.details.length > 0) {
+    return project.details
+  }
+
+  return [{ title: 'Overview', description: project.summary }]
+}
+
+const hasProjectMedia = (project: ProjectType) => {
+  return project.desktopImgs.length > 0 || project.mobileImgs.length > 0
 }
 
 const getProjectAccent = (slug: string) => {
