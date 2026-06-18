@@ -51,7 +51,6 @@ const SingleProject = ({ project }: Props) => {
       </Head>
 
       <Container
-        $hasMedia={hasMedia}
         animate="show"
         exit="exit"
         initial="hidden"
@@ -212,7 +211,7 @@ const ProjectImage = ({
       alt={alt}
       height={image.height}
       {...loadingProps}
-      sizes="(width >= 920px) 860px, calc(100vw - 32px)"
+      sizes="(width >= 800px) 768px, calc(100vw - 32px)"
       src={image}
       width={image.width}
     />
@@ -252,10 +251,9 @@ const getProjectAccent = (slug: string) => {
   return accents[index]
 }
 
-const Container = styled(motion.main)<{ $hasMedia: boolean }>`
-  --page-width: ${({ $hasMedia }) => ($hasMedia ? '1040px' : '820px')};
-
-  max-width: var(--page-width);
+const Container = styled(motion.main)`
+  width: 100%;
+  max-width: var(--max-w-screen);
   padding: 2rem 1rem 5rem;
   margin: auto;
   color: var(--text);
@@ -304,7 +302,6 @@ const HeroCopy = styled(motion.div)`
 
 const FeaturedMedia = styled(motion.figure)`
   width: 100%;
-  max-width: 860px;
   margin: 1.25rem auto 0;
   padding: 0.55rem;
   border: 1px solid var(--accent);
@@ -591,7 +588,6 @@ const WideGallery = styled.div`
   display: grid;
   gap: 1.25rem;
   width: 100%;
-  max-width: 860px;
   margin: 0 auto;
 `
 
