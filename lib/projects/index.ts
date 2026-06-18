@@ -97,7 +97,7 @@ export const ProjectState: ProjectType[] = [
     showcase: {
       type: 'cli',
       title: 'Golden workflow',
-      description: 'The core loop is intentionally small: list skills, check status, and preview a shared source.',
+      description: 'The core loop is intentionally small: list skills, update them, and preview a shared source.',
       commands: [
         {
           label: 'List',
@@ -117,19 +117,18 @@ export const ProjectState: ProjectType[] = [
           ],
         },
         {
-          label: 'Status',
-          command: 'skillbox status',
+          label: 'Update',
+          command: 'skillbox update',
           output: [
-            'Skill Status',
+            'Updating 5 skills...',
             '',
-            'url (1 skill)',
-            '  ✓ skillbox',
-            '',
-            'git (4 skills)',
             '  ✓ agent-browser',
             '  ✓ create-pr',
             '  ✓ frontend-design',
             '  ✓ webapp-testing',
+            '  ✓ skillbox',
+            '',
+            'Updated 5 of 5 trackable skills.',
           ],
         },
         {
