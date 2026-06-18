@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
-import Image from 'next/image'
+import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
 import type { CSSProperties } from 'react'
@@ -14,6 +14,9 @@ import { ProjectState } from '../../lib/projects'
 interface Props {
   project: ProjectType
 }
+
+type ProjectShowcaseType = NonNullable<ProjectType['showcase']>
+type ProjectLinkType = { href: string; label: string }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -36,6 +39,10 @@ const SingleProject = ({ project }: Props) => {
   const supportingDesktopImages = project.desktopImgs.slice(1)
   const hasMedia = project.desktopImgs.length > 0 || project.mobileImgs.length > 0
   const accent = getProjectAccent(project.slug)
+  const projectLinks = [
+    project.externalLink ? { href: project.externalLink, label: project.externalLinkLabel ?? 'Live Site' } : null,
+    project.github ? { href: project.github, label: 'GitHub' } : null,
+  ].filter((link): link is ProjectLinkType => Boolean(link))
 
   return (
     <>
@@ -64,19 +71,15 @@ const SingleProject = ({ project }: Props) => {
             <h1>{project.title}</h1>
             <p>{project.summary}</p>
 
-            <ActionRow aria-label={`${project.title} links`}>
-              {project.externalLink ? (
-                <a href={project.externalLink} rel="noreferrer" target="_blank">
-                  {project.externalLinkLabel || 'Live Site'}
-                </a>
-              ) : null}
-
-              {project.github ? (
-                <a href={project.github} rel="noreferrer" target="_blank">
-                  GitHub
-                </a>
-              ) : null}
-            </ActionRow>
+            {projectLinks.length > 0 ? (
+              <ActionRow aria-label={`${project.title} links`}>
+                {projectLinks.map(({ href, label }) => (
+                  <a key={label} href={href} rel="noreferrer" target="_blank">
+                    {label}
+                  </a>
+                ))}
+              </ActionRow>
+            ) : null}
           </HeroCopy>
         </Hero>
 
@@ -86,7 +89,7 @@ const SingleProject = ({ project }: Props) => {
           </FeaturedMedia>
         ) : null}
 
-        {project.showcase ? <ProjectShowcase showcase={project.showcase} /> : null}
+        {project.showcase ? <CliShowcase showcase={project.showcase} /> : null}
 
         <BodyGrid $hasMedia={hasMedia}>
           <Details variants={staggerFade}>
@@ -148,15 +151,7 @@ const Detail = ({ title, description }: { title: string; description: string }) 
   )
 }
 
-const ProjectShowcase = ({ showcase }: { showcase: NonNullable<ProjectType['showcase']> }) => {
-  if (showcase.type === 'cli') {
-    return <CliShowcase showcase={showcase} />
-  }
-
-  return null
-}
-
-const CliShowcase = ({ showcase }: { showcase: NonNullable<ProjectType['showcase']> }) => {
+const CliShowcase = ({ showcase }: { showcase: ProjectShowcaseType }) => {
   const [activeCommand, setActiveCommand] = useState(0)
   const command = showcase.commands[activeCommand]
 
@@ -209,7 +204,7 @@ const ProjectImage = ({
   priority = false,
 }: {
   alt: string
-  image: ProjectType['desktopImgs'][number]
+  image: StaticImageData
   priority?: boolean
 }) => {
   return (

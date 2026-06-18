@@ -25,7 +25,7 @@ const ProjectTile = ({ project }: Props) => {
 
           {project.externalLink ? (
             <a href={project.externalLink} rel="noreferrer" target="_blank">
-              {project.externalLinkLabel || 'Live Site'}
+              {project.externalLinkLabel ?? 'Live Site'}
             </a>
           ) : (
             <span>Shut Down</span>

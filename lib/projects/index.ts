@@ -50,16 +50,23 @@ import NeoLogosMobile2 from '../../public/img/projects/neologos/neologos-mobile2
 import LofiWavesDesktop from '../../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '../../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 
+type ProjectMetaType = { label: string; value: string }
+type ProjectDetailType = { title: string; description: string }
+type CliCommandType = {
+  label: string
+  command: string
+  output: string[]
+}
 type CliShowcaseType = {
   type: 'cli'
   title: string
   description: string
-  commands: Array<{
-    label: string
-    command: string
-    output: string[]
-  }>
+  commands: [CliCommandType, ...CliCommandType[]]
 }
+
+const SKILLBOX_GIT_SKILLS = ['agent-browser', 'create-pr', 'frontend-design', 'webapp-testing'] as const
+const SKILLBOX_SOURCE_SKILL = 'skillbox'
+const SKILLBOX_VISIBLE_SKILL_COUNT = SKILLBOX_GIT_SKILLS.length + 1
 
 export interface ProjectType {
   title: string
@@ -72,9 +79,9 @@ export interface ProjectType {
   github?: string
   slug: string
   summary: string
-  meta: Array<{ label: string; value: string }>
+  meta: ProjectMetaType[]
   showcase?: CliShowcaseType
-  details: Array<{ title: string; description: string }>
+  details: ProjectDetailType[]
 }
 
 export const ProjectState: ProjectType[] = [
@@ -103,32 +110,26 @@ export const ProjectState: ProjectType[] = [
           label: 'List',
           command: 'skillbox list',
           output: [
-            'Global Skills (5)',
+            `Global Skills (${SKILLBOX_VISIBLE_SKILL_COUNT})`,
             '  codex    → ~/.codex/skills',
             '',
             'git',
-            '  agent-browser',
-            '  create-pr',
-            '  frontend-design',
-            '  webapp-testing',
+            ...SKILLBOX_GIT_SKILLS.map((skill) => `  ${skill}`),
             '',
             'url',
-            '  skillbox',
+            `  ${SKILLBOX_SOURCE_SKILL}`,
           ],
         },
         {
           label: 'Update',
           command: 'skillbox update',
           output: [
-            'Updating 5 skills...',
+            `Updating ${SKILLBOX_VISIBLE_SKILL_COUNT} skills...`,
             '',
-            '  ✓ agent-browser',
-            '  ✓ create-pr',
-            '  ✓ frontend-design',
-            '  ✓ webapp-testing',
-            '  ✓ skillbox',
+            ...SKILLBOX_GIT_SKILLS.map((skill) => `  ✓ ${skill}`),
+            `  ✓ ${SKILLBOX_SOURCE_SKILL}`,
             '',
-            'Updated 5 of 5 trackable skills.',
+            `Updated ${SKILLBOX_VISIBLE_SKILL_COUNT} of ${SKILLBOX_VISIBLE_SKILL_COUNT} trackable skills.`,
           ],
         },
         {
