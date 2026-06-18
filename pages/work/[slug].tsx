@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
 import type { CSSProperties } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
@@ -85,6 +86,8 @@ const SingleProject = ({ project }: Props) => {
           </FeaturedMedia>
         ) : null}
 
+        {project.showcase ? <ProjectShowcase showcase={project.showcase} /> : null}
+
         <BodyGrid $hasMedia={hasMedia}>
           <Details variants={staggerFade}>
             {project.details.length > 0 ? (
@@ -142,6 +145,61 @@ const Detail = ({ title, description }: { title: string; description: string }) 
       <h3>{title}</h3>
       <p dangerouslySetInnerHTML={{ __html: description }} />
     </DetailStyle>
+  )
+}
+
+const ProjectShowcase = ({ showcase }: { showcase: NonNullable<ProjectType['showcase']> }) => {
+  if (showcase.type === 'cli') {
+    return <CliShowcase showcase={showcase} />
+  }
+
+  return null
+}
+
+const CliShowcase = ({ showcase }: { showcase: NonNullable<ProjectType['showcase']> }) => {
+  const [activeCommand, setActiveCommand] = useState(0)
+  const command = showcase.commands[activeCommand]
+
+  return (
+    <CliPanel variants={fade}>
+      <CliIntro>
+        <span>CLI preview</span>
+        <h2>{showcase.title}</h2>
+        <p>{showcase.description}</p>
+      </CliIntro>
+
+      <CliShell>
+        <CliTabs aria-label="Skillbox command examples">
+          {showcase.commands.map(({ label }, index) => (
+            <button
+              key={label}
+              aria-pressed={activeCommand === index}
+              onClick={() => setActiveCommand(index)}
+              type="button"
+            >
+              {label}
+            </button>
+          ))}
+        </CliTabs>
+
+        <Terminal aria-live="polite">
+          <TerminalBar>
+            <span />
+            <span />
+            <span />
+          </TerminalBar>
+          <TerminalCommand>
+            <span>$</span>
+            <code>{command.command}</code>
+          </TerminalCommand>
+          <TerminalOutput>
+            {command.output.map((line, index) => (
+              <code key={`${line}-${index}`}>{line}</code>
+            ))}
+          </TerminalOutput>
+        </Terminal>
+      </CliShell>
+    </CliPanel>
   )
 }
 
@@ -237,6 +295,143 @@ const FeaturedMedia = styled(motion.figure)`
     width: 100%;
     height: auto;
     border-radius: var(--border-radius-sm);
+  }
+`
+
+const CliPanel = styled(motion.section)`
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(340px, 1.25fr);
+  gap: 1.5rem;
+  align-items: stretch;
+  margin: 2rem 0 0;
+  padding: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: rgb(20 20 20 / 45%);
+
+  @media screen and (width <= 760px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const CliIntro = styled.div`
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+  padding: 0.25rem;
+
+  span {
+    color: var(--project-accent);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-weight: normal;
+    font-size: 1.35rem;
+  }
+
+  p {
+    max-width: 360px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+`
+
+const CliShell = styled.div`
+  display: grid;
+  gap: 0.75rem;
+`
+
+const CliTabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+
+  button {
+    min-height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background 0.2s ease;
+
+    &[aria-pressed='true'] {
+      border-color: var(--project-accent);
+      background: rgb(255 255 255 / 4%);
+      color: var(--heading);
+    }
+
+    &:hover {
+      color: var(--heading);
+    }
+  }
+
+  @media screen and (width <= 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+`
+
+const Terminal = styled.div`
+  min-height: 248px;
+  padding: 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: #0f0f0f;
+  overflow: hidden;
+`
+
+const TerminalBar = styled.div`
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+
+  span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+
+    &:first-child {
+      background: var(--project-accent);
+    }
+  }
+`
+
+const TerminalCommand = styled.div`
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 0.9rem;
+  color: var(--heading);
+  font-family: 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+  font-size: 0.84rem;
+  line-height: 1.55;
+
+  span {
+    color: var(--project-accent);
+    font-weight: normal;
+  }
+`
+
+const TerminalOutput = styled.pre`
+  display: grid;
+  gap: 0.32rem;
+  margin: 0;
+  color: var(--text);
+  font-family: 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+
+  code {
+    font-family: inherit;
   }
 `
 

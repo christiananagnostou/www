@@ -50,6 +50,17 @@ import NeoLogosMobile2 from '../../public/img/projects/neologos/neologos-mobile2
 import LofiWavesDesktop from '../../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '../../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 
+type CliShowcaseType = {
+  type: 'cli'
+  title: string
+  description: string
+  commands: Array<{
+    label: string
+    command: string
+    output: string[]
+  }>
+}
+
 export interface ProjectType {
   title: string
   date: string
@@ -62,6 +73,7 @@ export interface ProjectType {
   slug: string
   summary: string
   meta: Array<{ label: string; value: string }>
+  showcase?: CliShowcaseType
   details: Array<{ title: string; description: string }>
 }
 
@@ -82,6 +94,56 @@ export const ProjectState: ProjectType[] = [
       { label: 'Focus', value: 'Agent skills' },
       { label: 'Distribution', value: 'npm package' },
     ],
+    showcase: {
+      type: 'cli',
+      title: 'Golden workflow',
+      description: 'The core loop is intentionally small: list skills, check status, and preview a shared source.',
+      commands: [
+        {
+          label: 'List',
+          command: 'skillbox list',
+          output: [
+            'Global Skills (5)',
+            '  codex    → ~/.codex/skills',
+            '',
+            'git',
+            '  agent-browser',
+            '  create-pr',
+            '  frontend-design',
+            '  webapp-testing',
+            '',
+            'url',
+            '  skillbox',
+          ],
+        },
+        {
+          label: 'Status',
+          command: 'skillbox status',
+          output: [
+            'Skill Status',
+            '',
+            'url (1 skill)',
+            '  ✓ skillbox',
+            '',
+            'git (4 skills)',
+            '  ✓ agent-browser',
+            '  ✓ create-pr',
+            '  ✓ frontend-design',
+            '  ✓ webapp-testing',
+          ],
+        },
+        {
+          label: 'Add',
+          command: 'skillbox add christiananagnostou/skillbox --list',
+          output: ['Repo Skills: christiananagnostou/skillbox', '', 'Found 1 skill(s):', '  - skillbox'],
+        },
+        {
+          label: 'Project',
+          command: 'skillbox project list',
+          output: ['Projects: 2', '- ~/code/company-site', '- ~/code/agent-tools'],
+        },
+      ],
+    },
     details: [
       {
         title: 'Purpose',
