@@ -17,7 +17,7 @@ import SoylentCollage from '../../public/img/projects/soylent/collage.webp'
 import SoylentCollection from '../../public/img/projects/soylent/collection.webp'
 import SoylentHomepage from '../../public/img/projects/soylent/homepage.webp'
 import SoylentPDP from '../../public/img/projects/soylent/pdp.webp'
-//Scentfill
+// Scentfill
 import ScentfillCarouselMobile from '../../public/img/projects/scentfill/carousel.webp'
 import SentfillCollage from '../../public/img/projects/scentfill/collage.webp'
 import SentfillPDPMobile from '../../public/img/projects/scentfill/pdp-mobile.webp'
@@ -50,6 +50,24 @@ import NeoLogosMobile2 from '../../public/img/projects/neologos/neologos-mobile2
 import LofiWavesDesktop from '../../public/img/projects/lofiwaves/lofiwaves-desktop.jpg'
 import LofiWavesMain from '../../public/img/projects/lofiwaves/lofiwaves-main.jpeg'
 
+type ProjectMetaType = { label: string; value: string }
+type ProjectDetailType = { title: string; description: string }
+type CliCommandType = {
+  label: string
+  command: string
+  output: string[]
+}
+export type ProjectShowcaseType = {
+  type: 'cli'
+  title: string
+  description: string
+  commands: CliCommandType[]
+}
+
+const SKILLBOX_GIT_SKILLS = ['agent-browser', 'create-pr', 'frontend-design', 'webapp-testing'] as const
+const SKILLBOX_URL_SKILL = 'skillbox'
+const SKILLBOX_VISIBLE_SKILLS = [...SKILLBOX_GIT_SKILLS, SKILLBOX_URL_SKILL] as const
+
 export interface ProjectType {
   title: string
   date: string
@@ -57,13 +75,169 @@ export interface ProjectType {
   desktopImgs: StaticImageData[]
   mobileImgs: StaticImageData[]
   externalLink?: string
+  externalLinkLabel?: string
   github?: string
   slug: string
   summary: string
-  details: Array<{ title: string; description: string }>
+  meta: ProjectMetaType[]
+  showcase?: ProjectShowcaseType
+  details: ProjectDetailType[]
 }
 
 export const ProjectState: ProjectType[] = [
+  {
+    title: 'Skillbox',
+    date: 'Jan 2026',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [],
+    mobileImgs: [],
+    externalLink: 'https://www.npmjs.com/package/skillbox',
+    externalLinkLabel: 'npm',
+    github: 'https://github.com/ChristianAnagnostou/skillbox',
+    slug: 'skillbox',
+    summary: 'Local-first, agent-agnostic skills manager for AI coding agents',
+    meta: [
+      { label: 'Stack', value: 'TypeScript CLI' },
+      { label: 'Focus', value: 'Agent skills' },
+      { label: 'Distribution', value: 'npm package' },
+    ],
+    showcase: {
+      type: 'cli',
+      title: 'Golden workflow',
+      description: 'The core loop is intentionally small: list skills, update them, and preview a shared source.',
+      commands: [
+        {
+          label: 'List',
+          command: 'skillbox list',
+          output: [
+            `Global Skills (${SKILLBOX_VISIBLE_SKILLS.length})`,
+            '  codex    → ~/.codex/skills',
+            '',
+            'git',
+            ...SKILLBOX_GIT_SKILLS.map((skill) => `  ${skill}`),
+            '',
+            'url',
+            `  ${SKILLBOX_URL_SKILL}`,
+          ],
+        },
+        {
+          label: 'Update',
+          command: 'skillbox update',
+          output: [
+            `Updating ${SKILLBOX_VISIBLE_SKILLS.length} skills...`,
+            '',
+            ...SKILLBOX_VISIBLE_SKILLS.map((skill) => `  ✓ ${skill}`),
+            '',
+            `Updated ${SKILLBOX_VISIBLE_SKILLS.length} of ${SKILLBOX_VISIBLE_SKILLS.length} trackable skills.`,
+          ],
+        },
+        {
+          label: 'Add',
+          command: 'skillbox add christiananagnostou/skillbox --list',
+          output: ['Repo Skills: christiananagnostou/skillbox', '', 'Found 1 skill(s):', '  - skillbox'],
+        },
+        {
+          label: 'Show',
+          command: 'skillbox show skillbox',
+          output: [
+            'skillbox',
+            'Manage skills with the skillbox CLI',
+            '',
+            'Source: github.com/christiananagnostou/skillbox',
+            '',
+            'Installs (2)',
+            '  user/codex',
+            '  user/opencode',
+          ],
+        },
+      ],
+    },
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'Skillbox installs, updates, imports, and syncs reusable agent skills across Claude, Cursor, Codex, OpenCode, Amp, and Antigravity without tying the workflow to one tool.',
+      },
+      {
+        title: 'Workflow',
+        description:
+          'The CLI focuses on the commands used most often: list installed skills, check for updates, update one or all skills, add skills from GitHub repositories or direct URLs, and register project-local skill folders.',
+      },
+      {
+        title: 'Project Shape',
+        description:
+          'Built in TypeScript with machine-readable JSON output, GitHub-backed install flows, project inspection, configurable install modes, and release automation through npm.',
+      },
+    ],
+  },
+  {
+    title: 'ImgPress',
+    date: 'Nov 2025',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [],
+    mobileImgs: [],
+    externalLink: 'https://github.com/ChristianAnagnostou/imgpress#readme',
+    externalLinkLabel: 'Readme',
+    github: 'https://github.com/ChristianAnagnostou/imgpress',
+    slug: 'imgpress',
+    summary: 'Lightweight macOS menu bar app for batch image conversion and optimization',
+    meta: [
+      { label: 'Stack', value: 'Swift / SwiftUI' },
+      { label: 'Platform', value: 'macOS menu bar' },
+      { label: 'Formats', value: 'JPEG, PNG, WebP, AVIF' },
+    ],
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'ImgPress is a native menu bar utility for dragging in images or folders, choosing output formats, and running repeatable conversion workflows without opening a heavier editor.',
+      },
+      {
+        title: 'Features',
+        description:
+          'It supports JPEG, PNG, WebP, AVIF, and RAW inputs, with batch processing, conversion progress, size comparisons, pause/resume controls, quick presets, and custom saved presets.',
+      },
+      {
+        title: 'Implementation',
+        description:
+          "Built with Swift, SwiftUI, and Apple's ImageIO framework for a macOS-first workflow that stays close to the platform instead of wrapping a web app.",
+      },
+    ],
+  },
+  {
+    title: 'Knip HTML Reporter',
+    date: 'Oct 2025',
+    tags: ['personal', 'open-source'],
+    desktopImgs: [],
+    mobileImgs: [],
+    externalLink: 'https://www.npmjs.com/package/knip-html-reporter',
+    externalLinkLabel: 'npm',
+    github: 'https://github.com/ChristianAnagnostou/knip-html-reporter',
+    slug: 'knip-html-reporter',
+    summary: 'Interactive HTML reporter that turns Knip output into navigable cleanup reports',
+    meta: [
+      { label: 'Stack', value: 'TypeScript' },
+      { label: 'Output', value: 'Static HTML report' },
+      { label: 'Distribution', value: 'npm package' },
+    ],
+    details: [
+      {
+        title: 'Purpose',
+        description:
+          'Knip HTML Reporter makes unused-file, dependency, and export analysis easier to review by converting Knip results into a searchable browser report.',
+      },
+      {
+        title: 'Workflow',
+        description:
+          'Reports can be generated through Knip reporter options, saved to a custom output path, auto-opened locally, or uploaded as CI artifacts for team review.',
+      },
+      {
+        title: 'Features',
+        description:
+          'The reporter includes issue-type filtering, full-text search across symbols and files, VS Code deep links to exact locations, custom styles, and zero runtime dependencies.',
+      },
+    ],
+  },
   {
     title: 'Jukebox',
     date: 'Jun 2023',
@@ -71,14 +245,35 @@ export const ProjectState: ProjectType[] = [
     desktopImgs: [JukeboxCollage, JukeboxLibrary, JukeboxArtists, JukeboxShortcuts],
     mobileImgs: [],
     externalLink: 'https://github.com/christiananagnostou/jukebox/releases',
+    externalLinkLabel: 'Releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
     slug: 'jukebox',
     summary: 'Keyboard-centric desktop music player made with Tauri + Qwik',
+    meta: [
+      { label: 'Stack', value: 'Tauri / Qwik / Rust' },
+      { label: 'Platform', value: 'macOS, Windows, Linux' },
+      { label: 'Focus', value: 'Local music libraries' },
+    ],
     details: [
       {
-        title: 'Current Project',
+        title: 'Purpose',
         description:
-          'This project is a current work in progress. Check out the project readme for more information about the app and how to install it to use yourself.',
+          'Jukebox is a desktop music player for managing and playing local digital music collections without giving up the keyboard-first feel of a developer tool.',
+      },
+      {
+        title: 'Library',
+        description:
+          'The app supports bulk music import, dedicated library views for tracks, artists, and albums, and advanced search so larger collections stay browsable.',
+      },
+      {
+        title: 'Controls',
+        description:
+          'Keyboard shortcuts are a core part of the interaction model, making common playback and navigation flows fast without relying on pointer-heavy UI.',
+      },
+      {
+        title: 'Shell',
+        description:
+          'Built with Tauri, Qwik, TypeScript, and Rust to keep the desktop wrapper lightweight while still using a web UI for the music library experience.',
       },
     ],
   },
@@ -92,6 +287,11 @@ export const ProjectState: ProjectType[] = [
     github: 'https://github.com/ChristianAnagnostou/qwikdraw',
     slug: 'qwikdraw',
     summary: 'A simple web-based design canvas built using the Qwik framework',
+    meta: [
+      { label: 'Stack', value: 'Qwik / TypeScript' },
+      { label: 'Surface', value: 'Browser design tool' },
+      { label: 'Controls', value: 'Shortcuts, zoom, undo' },
+    ],
     details: [
       {
         title: 'Objective',
@@ -120,6 +320,11 @@ export const ProjectState: ProjectType[] = [
     externalLink: 'https://electriq.app/',
     slug: 'electriq-app',
     summary: 'Visualize and manage Linear projects with timelines, kanbans, calendars, and much more',
+    meta: [
+      { label: 'Stack', value: 'React app' },
+      { label: 'Data', value: 'Linear projects' },
+      { label: 'Views', value: 'Timeline, kanban, calendar' },
+    ],
     details: [
       {
         title: 'Purpose',
@@ -144,8 +349,29 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [],
     externalLink: 'https://soylent.com/',
     slug: 'soylent',
-    summary: 'Showcasing one of my favorite clients',
-    details: [],
+    summary: "A polished ecommerce storefront for Soylent's complete nutrition lineup",
+    meta: [
+      { label: 'Platform', value: 'Shopify storefront' },
+      { label: 'Focus', value: 'Nutrition commerce' },
+      { label: 'Surfaces', value: 'Home, collection, PDP' },
+    ],
+    details: [
+      {
+        title: 'Storefront',
+        description:
+          'Soylent needed a commerce experience that could make complete nutrition feel simple, practical, and easy to shop across homepage, collection, and product-detail flows.',
+      },
+      {
+        title: 'Product Storytelling',
+        description:
+          'The page work balances dense product information with direct shopping paths, keeping nutrition benefits, flavors, subscriptions, and purchase decisions close together.',
+      },
+      {
+        title: 'System',
+        description:
+          'The screenshots capture reusable storefront modules: product cards, carousel sections, collection layouts, and PDP content blocks built to scale across a large catalog.',
+      },
+    ],
   },
   {
     title: 'Scentfill',
@@ -155,8 +381,30 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [SentfillPDPMobile, ScentfillCarouselMobile, SentfillScents],
     externalLink: 'https://scentfill.com/',
     slug: 'scentfill',
-    summary: '...another favorite client',
-    details: [],
+    summary:
+      'A fragrance-focused storefront for browsing scents, subscribing to refills, and shopping Scentfill products',
+    meta: [
+      { label: 'Platform', value: 'Shopify storefront' },
+      { label: 'Focus', value: 'Scent discovery' },
+      { label: 'Surfaces', value: 'PDP, quiz, mobile' },
+    ],
+    details: [
+      {
+        title: 'Discovery',
+        description:
+          'Scentfill sells a large scent catalog, so the storefront needed browsing patterns that help shoppers narrow choices by fragrance family, product type, and preference.',
+      },
+      {
+        title: 'Product Detail',
+        description:
+          'The PDP work emphasizes scent notes, compatibility, bundles, and purchase confidence while keeping add-to-cart behavior clear on both desktop and mobile.',
+      },
+      {
+        title: 'Responsive System',
+        description:
+          'The project includes desktop commerce layouts and mobile-specific screens, making the shopping flow feel deliberate instead of simply squeezed down.',
+      },
+    ],
   },
   {
     title: "Electriq's Website",
@@ -167,11 +415,26 @@ export const ProjectState: ProjectType[] = [
     externalLink: 'https://www.electriqmarketing.com/',
     slug: 'electriq-home',
     summary: "Collaborated with the agency's in-house design team to craft the rebranding of Electriq",
+    meta: [
+      { label: 'Stack', value: 'React' },
+      { label: 'Focus', value: 'Agency rebrand' },
+      { label: 'Surface', value: 'Marketing site' },
+    ],
     details: [
       {
         title: 'Purpose',
         description:
-          "React web application to give PM's and clients the ability to visualize the progress and make changes to the web department's projects.",
+          'A marketing site for the Electriq rebrand, built to give the agency a sharper public face and a more flexible surface for presenting services and work.',
+      },
+      {
+        title: 'Collaboration',
+        description:
+          "I worked with the agency's in-house design team to translate the new brand direction into a production React experience with responsive page sections.",
+      },
+      {
+        title: 'Implementation',
+        description:
+          'The build focused on reusable page composition, polished hero and content modules, and enough flexibility for the site to evolve as the agency repositioned itself.',
       },
     ],
   },
@@ -185,6 +448,11 @@ export const ProjectState: ProjectType[] = [
     github: 'https://github.com/ChristianAnagnostou/liftclub',
     slug: 'liftclub',
     summary: 'Track your workout progress with little effort and gain big insights',
+    meta: [
+      { label: 'Stack', value: 'TypeScript / PWA' },
+      { label: 'Focus', value: 'Workout tracking' },
+      { label: 'Model', value: 'Social fitness app' },
+    ],
     details: [
       {
         title: 'Purpose',
@@ -194,7 +462,7 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'Join',
         description:
-          'Best experienced as a lightweght PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.',
+          'Best experienced as a lightweight PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.',
       },
       {
         title: 'Features',
@@ -202,7 +470,7 @@ export const ProjectState: ProjectType[] = [
           'Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.',
       },
       {
-        title: 'Documantation',
+        title: 'Documentation',
         description:
           'Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.',
       },
@@ -219,11 +487,16 @@ export const ProjectState: ProjectType[] = [
     slug: 'awildchristian',
     summary:
       "See the photos on my art page? I'll print them out, sign them, and send them to you if you send me a few shekels",
+    meta: [
+      { label: 'Stack', value: 'Next.js / Strapi' },
+      { label: 'Commerce', value: 'Stripe checkout' },
+      { label: 'Auth', value: 'Passwordless login' },
+    ],
     details: [
       {
         title: 'Front-end',
         description:
-          'Utlizes NextJS for fast page loading times, improved SEO, and control over server-side vs client-side rendering.',
+          'Utilizes Next.js for fast page loading times, improved SEO, and control over server-side vs client-side rendering.',
       },
       {
         title: 'Back-end',
@@ -246,6 +519,11 @@ export const ProjectState: ProjectType[] = [
     github: 'https://github.com/ChristianAnagnostou/NeoLogos',
     slug: 'neologos',
     summary: 'Ever made of a word for something? Well now you know where to put it.',
+    meta: [
+      { label: 'Stack', value: 'React / Redux / Express' },
+      { label: 'Data', value: 'MongoDB' },
+      { label: 'Pattern', value: 'Dictionary + voting' },
+    ],
     details: [
       {
         title: 'Front-end',
@@ -255,12 +533,12 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'Back-end',
         description:
-          'For the back-end, I used a combination of Express and Mongoose create my server and schemas for my database.',
+          'For the back-end, I used a combination of Express and Mongoose to create my server and schemas for my database.',
       },
       {
         title: 'Deployment',
         description:
-          'For this project, I choose to use Heroku as my hosting service as they have a great system for deploying right when you commit to github',
+          'For this project, I chose to use Heroku as my hosting service as they have a great system for deploying right when you commit to GitHub.',
       },
     ],
   },
@@ -274,6 +552,11 @@ export const ProjectState: ProjectType[] = [
     github: 'https://github.com/ChristianAnagnostou/LofiWaves',
     slug: 'lofiwaves',
     summary: 'Like lofi? So do I, so why not checkout out some of my faves here',
+    meta: [
+      { label: 'Stack', value: 'React / SCSS' },
+      { label: 'Routing', value: 'React Router' },
+      { label: 'Surface', value: 'Music player UI' },
+    ],
     details: [
       {
         title: 'Front-end',
