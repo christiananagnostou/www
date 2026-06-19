@@ -44,7 +44,7 @@
     "@types/styled-components": "^5.1.36",
     "@vitejs/plugin-react": "^5.2.0",
     "baseline-browser-mapping": "^2.10.31",
-    "jsdom": "^27.4.0",
+    "jsdom": "^29.1.1",
     "oxfmt": "^0.54.0",
     "oxlint": "^1.43.0",
     "postcss-styled-syntax": "^0.7.1",
