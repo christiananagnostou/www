@@ -261,7 +261,7 @@ const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[]
 const formatHours = (hours: number) => hours.toFixed(0)
 
 const FitnessPage = ({ activities, error }: Props) => {
-  const { fade, staggerFade } = useMotionPresets()
+  const { fade, pageAnimation, staggerFade } = useMotionPresets()
   const [windowMonths, setWindowMonths] = useState(12)
 
   const parsedActivities = useMemo<ParsedActivity[]>(
@@ -418,7 +418,7 @@ const FitnessPage = ({ activities, error }: Props) => {
           <meta content={PageDescription} name="description" />
           <link href={PageUrl} rel="canonical" />
         </Head>
-        <Container>
+        <Container animate="show" initial="hidden" variants={pageAnimation}>
           <SectionCard variants={fade}>
             <SectionHeaderText>
               <h2>Fitness</h2>
@@ -437,7 +437,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         <meta content={PageDescription} name="description" />
         <link href={PageUrl} rel="canonical" />
       </Head>
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <HeroPanel variants={fade}>
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
@@ -594,7 +594,7 @@ const FitnessPage = ({ activities, error }: Props) => {
 
 export default FitnessPage
 
-const Container = styled.main`
+const Container = styled(motion.main)`
   display: flex;
   flex-direction: column;
   gap: 2rem;

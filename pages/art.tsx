@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -27,7 +27,7 @@ const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags
 )
 
 const Art = () => {
-  const { fade } = useMotionPresets()
+  const { fade, pageAnimation } = useMotionPresets()
   const router = useRouter()
   const { query } = router
   const queriedTag = query.tag?.toString()
@@ -70,7 +70,7 @@ const Art = () => {
         />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Photography</h1>
           <p>
@@ -156,7 +156,7 @@ const Art = () => {
 
 export default Art
 
-const Container = styled.section`
+const Container = styled(motion.section)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);

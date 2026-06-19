@@ -1,4 +1,6 @@
 import { useReducedMotion } from 'framer-motion'
+
+import { useMotionPresets } from '../../components/animation/MotionPresetsProvider'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
@@ -62,6 +64,7 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
 
 const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const { title, content, dateCreated, slug, likes } = post
+  const { pageAnimation } = useMotionPresets()
   const prefersReducedMotion = useReducedMotion()
   const [copied, setCopied] = useState(false)
   const [liked, setLiked] = useState(false)
@@ -207,7 +210,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     <>
       <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
 
-      <ArticleStyle>
+      <ArticleStyle animate="show" initial="hidden" variants={pageAnimation}>
         <TopBar>
           <Link href="/articles">
             <LeftArrow />

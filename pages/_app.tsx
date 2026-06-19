@@ -9,7 +9,7 @@ import Layout from '../components/Layout'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={domAnimation} strict={false}>
       <MotionPresetsProvider>
         <GlobalStyle />
         <Analytics />

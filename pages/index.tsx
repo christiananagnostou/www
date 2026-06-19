@@ -1,6 +1,9 @@
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
+
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import RecentArt from '../components/Home/RecentArt'
@@ -46,6 +49,8 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Home = ({ posts, stravaActivities }: Props) => {
+  const { pageAnimation } = useMotionPresets()
+
   return (
     <>
       <Head>
@@ -77,7 +82,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
         />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <div className="page-inner-container">
           <Bio />
 
@@ -107,7 +112,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
 
 export default Home
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
   min-height: calc(100vh - var(--nav-height));
   margin: auto;

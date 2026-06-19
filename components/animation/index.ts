@@ -7,11 +7,16 @@ export const instant = {
 } as const
 
 export const pageAnimation = {
-  hidden: {},
+  hidden: { opacity: 0 },
   show: {
-    transition: { staggerChildren: 0.1 },
+    opacity: 1,
+    transition: { duration: 0.1, staggerChildren: 0.1 },
   },
   exit: { opacity: 0, transition: { duration: 0.2 } },
+} as const
+
+export const pageExitAnimation = {
+  exit: { opacity: 0, transition: { duration: 0.15 } },
 } as const
 
 export const fade = {
@@ -23,9 +28,10 @@ export const fade = {
 } as const
 
 export const staggerFade = {
-  hidden: {},
+  hidden: { opacity: 0 },
   show: {
-    transition: { staggerChildren: 0.06 },
+    opacity: 1,
+    transition: { duration: 0.25, staggerChildren: 0.06 },
   },
 } as const
 
@@ -39,20 +45,20 @@ export const photoAnim = {
 } as const
 
 export const lineAnim = {
-  hidden: { scaleX: 0.95, opacity: 0.8 },
-  show: { scaleX: 1, opacity: 1, transition: { duration: 0.4 } },
+  hidden: { width: '95%' },
+  show: { width: '100%', transition: { duration: 0.4 } },
 } as const
 
 export const dropdown = {
-  hidden: { opacity: 0, y: -8 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+  hidden: { height: 0, opacity: 0 },
+  show: { height: 'auto', opacity: 1, transition: { duration: 0.2 } },
+  exit: { height: 0, opacity: 0, transition: { duration: 0.2 } },
 } as const
 
 export const menuAnimation = {
-  hidden: { opacity: 0, y: -10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.2, staggerChildren: 0.1 } },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+  hidden: { height: 0 },
+  show: { height: 'auto', transition: { duration: 0.2, staggerChildren: 0.1 } },
+  exit: { height: 0, transition: { duration: 0.2 } },
 } as const
 
 export const desktopSubmenuAnimation = {

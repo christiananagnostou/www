@@ -1,22 +1,18 @@
-import { AnimatePresence, m as motion } from 'framer-motion'
+import { AnimatePresence, m as motion, useReducedMotion } from 'framer-motion'
 import { useRouter } from 'next/router'
 import type { ReactNode } from 'react'
 
-import { useMotionPresets } from './MotionPresetsProvider'
-
 export function PageTransition({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { pageAnimation } = useMotionPresets()
+  const prefersReducedMotion = useReducedMotion()
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence initial={false}>
       <motion.div
         key={router.asPath}
-        animate="show"
-        exit="exit"
-        initial="hidden"
+        exit={prefersReducedMotion ? undefined : { opacity: 0, transition: { duration: 0.15 } }}
+        initial={false}
         style={{ width: '100%' }}
-        variants={pageAnimation}
       >
         {children}
       </motion.div>

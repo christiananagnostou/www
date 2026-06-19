@@ -52,7 +52,7 @@ export async function getStaticProps() {
 }
 
 export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
-  const { dropdown, fade, staggerFade } = useMotionPresets()
+  const { dropdown, fade, pageAnimation, staggerFade } = useMotionPresets()
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
   const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
   const [localInstallCounts, setLocalInstallCounts] = useState<{ [key: string]: number }>({})
@@ -143,7 +143,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -251,7 +251,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   )
 }
 
-const Container = styled.section`
+const Container = styled(motion.section)`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;

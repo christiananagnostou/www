@@ -9,7 +9,7 @@ import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
 
 export default function lab() {
-  const { fade, staggerFade } = useMotionPresets()
+  const { fade, pageAnimation, staggerFade } = useMotionPresets()
 
   return (
     <>
@@ -19,7 +19,7 @@ export default function lab() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -59,7 +59,7 @@ export default function lab() {
   )
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);

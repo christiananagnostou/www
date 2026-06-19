@@ -12,7 +12,7 @@ const PageTitle = 'Projects | Christian Anagnostou'
 const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
 
 export default function Projects() {
-  const { fade, staggerFade } = useMotionPresets()
+  const { fade, pageAnimation, staggerFade } = useMotionPresets()
 
   return (
     <>
@@ -43,7 +43,7 @@ export default function Projects() {
         />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Projects</h1>
           <p>
@@ -63,7 +63,7 @@ export default function Projects() {
   )
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;

@@ -1,8 +1,8 @@
 import emailjs from '@emailjs/browser'
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { cssStaggerChild } from '../components/animation/cssStagger'
 import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import { Heading } from '../components/Shared/Heading'
 import SocialLinks from '../components/SocialLinks'
@@ -14,7 +14,7 @@ const PageDescription = 'Get in touch with Christian Anagnostou for inquiries, c
 const PageUrl = `${BASE_URL}/contact`
 
 const Contact = () => {
-  const { fade } = useMotionPresets()
+  const { fade, pageAnimation, staggerFade } = useMotionPresets()
   const [sentSuccessful, setSentSuccessful] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -94,7 +94,7 @@ const Contact = () => {
         />
       </Head>
 
-      <ContactStyle>
+      <ContactStyle animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Contact</h1>
           <p>
@@ -103,40 +103,40 @@ const Contact = () => {
           </p>
         </Heading>
 
-        <StyledForm method="POST" onSubmit={handleSubmit}>
-          <FormField $index={0}>
+        <StyledForm method="POST" variants={staggerFade} onSubmit={handleSubmit}>
+          <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="name">
                 Name <span>*</span>
               </label>
               <input className="form-input custom-focus" id="name" name="name" required type="text" />
             </FormGroup>
-          </FormField>
-          <FormField $index={1}>
+          </motion.div>
+          <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="email">Email</label>
               <input className="form-input custom-focus" id="email" name="email" type="email" />
             </FormGroup>
-          </FormField>
-          <FormField $index={2}>
+          </motion.div>
+          <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="subject">Subject</label>
               <input autoComplete="off" className="form-input custom-focus" id="subject" name="subject" type="text" />
             </FormGroup>
-          </FormField>
-          <FormField $index={3}>
+          </motion.div>
+          <motion.div variants={fade}>
             <FormGroup>
               <label htmlFor="message">Message</label>
               <textarea className="form-input custom-focus" id="message" name="message" rows={6} />
             </FormGroup>
-          </FormField>
-          <FormField $index={4}>
+          </motion.div>
+          <motion.div variants={fade}>
             <FormGroup>
               <button className="form-btn custom-focus" type="submit">
                 SEND
               </button>
             </FormGroup>
-          </FormField>
+          </motion.div>
         </StyledForm>
 
         <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
@@ -146,9 +146,9 @@ const Contact = () => {
           {errorMessage}
         </p>
 
-        <SocialLinksWrap $index={5}>
+        <motion.div variants={fade}>
           <SocialLinks />
-        </SocialLinksWrap>
+        </motion.div>
       </ContactStyle>
     </>
   )
@@ -156,7 +156,7 @@ const Contact = () => {
 
 export default Contact
 
-const ContactStyle = styled.div`
+const ContactStyle = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -181,18 +181,10 @@ const ContactStyle = styled.div`
   }
 `
 
-const StyledForm = styled.form`
+const StyledForm = styled(motion.form)`
   width: 100%;
   margin-top: -1rem;
   margin-bottom: 2rem;
-`
-
-const FormField = styled.div<{ $index: number }>`
-  ${({ $index }) => cssStaggerChild($index)}
-`
-
-const SocialLinksWrap = styled.div<{ $index: number }>`
-  ${({ $index }) => cssStaggerChild($index)}
 `
 
 const FormGroup = styled.div`

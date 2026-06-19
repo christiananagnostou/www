@@ -29,7 +29,7 @@ const Articles = ({ posts }: Props) => {
   const router = useRouter()
   const { query } = router
   const queriedCategory = query.category?.toString() || ''
-  const { fade, staggerFade } = useMotionPresets()
+  const { fade, pageAnimation, staggerFade } = useMotionPresets()
 
   return (
     <>
@@ -65,7 +65,7 @@ const Articles = ({ posts }: Props) => {
         />
       </Head>
 
-      <Container>
+      <Container animate="show" initial="hidden" variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Articles</h1>
           <p>
@@ -113,7 +113,7 @@ const Articles = ({ posts }: Props) => {
 
 export default Articles
 
-const Container = styled.section`
+const Container = styled(motion.section)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);

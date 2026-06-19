@@ -53,7 +53,6 @@ const ProjectHeader = styled(motion.header)`
   margin-bottom: 0.5rem;
   padding: 0.25rem 0;
   border-bottom: 1px solid var(--accent);
-  transform-origin: left center;
 
   h2 {
     display: inline-block;
