@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
@@ -7,7 +7,8 @@ import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { fade, pageAnimation, staggerFade } from '../../components/animation'
+import { cssStaggerChild } from '../../components/animation/cssStagger'
+import { useMotionPresets } from '../../components/animation/MotionPresetsProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
 
@@ -35,6 +36,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 const SingleProject = ({ project }: Props) => {
+  const { fade, staggerFade } = useMotionPresets()
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
   const hasMedia = hasProjectMedia(project)
@@ -50,13 +52,7 @@ const SingleProject = ({ project }: Props) => {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container
-        animate="show"
-        exit="exit"
-        initial="hidden"
-        style={{ '--project-accent': accent } as CSSProperties}
-        variants={pageAnimation}
-      >
+      <Container style={{ '--project-accent': accent } as CSSProperties}>
         <BackLink href="/projects">Projects</BackLink>
 
         <Hero variants={staggerFade}>
@@ -110,7 +106,7 @@ const SingleProject = ({ project }: Props) => {
             {supportingDesktopImages.length > 0 ? (
               <WideGallery>
                 {supportingDesktopImages.map((image, i) => (
-                  <GalleryImage key={image.src} variants={fade}>
+                  <GalleryImage key={image.src} $index={i}>
                     <ProjectImage alt={`${project.title} desktop screenshot ${i + 2}`} image={image} />
                   </GalleryImage>
                 ))}
@@ -120,7 +116,7 @@ const SingleProject = ({ project }: Props) => {
             {project.mobileImgs.length > 0 ? (
               <PhoneGallery>
                 {project.mobileImgs.map((image, i) => (
-                  <PhoneFrame key={image.src} variants={fade}>
+                  <PhoneFrame key={image.src} $index={i}>
                     <ProjectImage alt={`${project.title} mobile screenshot ${i + 1}`} image={image} />
                   </PhoneFrame>
                 ))}
@@ -145,6 +141,7 @@ const Detail = ({ title, description }: { title: string; description: string }) 
 }
 
 const CliShowcase = ({ showcase }: { showcase: ProjectShowcaseType }) => {
+  const { fade } = useMotionPresets()
   const [activeCommandIndex, setActiveCommandIndex] = useState(0)
   const command = showcase.commands[activeCommandIndex]
 
@@ -251,7 +248,7 @@ const getProjectAccent = (slug: string) => {
   return accents[index]
 }
 
-const Container = styled(motion.main)`
+const Container = styled.main`
   width: 100%;
   max-width: var(--max-w-screen);
   padding: 2rem 1rem 5rem;
@@ -591,12 +588,13 @@ const WideGallery = styled.div`
   margin: 0 auto;
 `
 
-const GalleryImage = styled(motion.figure)`
+const GalleryImage = styled.figure<{ $index: number }>`
   margin: 0;
   padding: 0.45rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
   background: var(--dark-bg);
+  ${({ $index }) => cssStaggerChild($index)}
 
   img {
     display: block;
@@ -613,12 +611,13 @@ const PhoneGallery = styled.div`
   align-items: start;
 `
 
-const PhoneFrame = styled(motion.figure)`
+const PhoneFrame = styled.figure<{ $index: number }>`
   margin: 0;
   padding: 0.55rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-lg);
   background: var(--dark-bg);
+  ${({ $index }) => cssStaggerChild($index)}
 
   img {
     display: block;

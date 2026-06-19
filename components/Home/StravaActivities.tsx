@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
 import { type StravaActivity, type StravaActivityType } from '../../lib/strava'
-import { fade, staggerFade } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
 import MiniMap from './StravaMinimap'
 
@@ -32,6 +32,7 @@ const AlternateMetricTitles = {
 } as const
 
 const StravaActivities = ({ activities }: Props) => {
+  const { fade, staggerFade } = useMotionPresets()
   const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
   const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
@@ -73,7 +74,6 @@ const StravaActivities = ({ activities }: Props) => {
         aria-pressed={isActive}
         className={isActive ? 'active' : ''}
         title={label}
-        variants={fade}
         onClick={() => setFilter((current) => (current === type ? '' : type))}
       >
         {ActivityIcons[type]}
@@ -134,8 +134,8 @@ const StravaActivities = ({ activities }: Props) => {
 
   return (
     <ActivitiesSection variants={staggerFade}>
-      <SectionHeader>
-        <Title variants={fade}>
+      <SectionHeader variants={fade}>
+        <Title>
           <Link href="/fitness">Fitness</Link>
         </Title>
 
@@ -216,14 +216,14 @@ const ActivitiesSection = styled(motion.section)`
   }
 `
 
-const SectionHeader = styled.div`
+const SectionHeader = styled(motion.div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem 1rem;
 `
 
-const Title = styled(motion.h2)`
+const Title = styled.h2`
   margin: 0;
 
   a {
@@ -237,7 +237,7 @@ const ActivityFilters = styled.div`
   gap: 0.25rem;
 `
 
-const ActivityFilter = styled(motion.button)`
+const ActivityFilter = styled.button`
   padding: 0.15rem 0.25rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-sm);
@@ -276,7 +276,7 @@ const ActivityList = styled.ul`
   }
 `
 
-const ActivityItem = styled(motion.li)`
+const ActivityItem = styled.li`
   position: relative;
   flex: 1;
   min-width: 200px;
@@ -316,7 +316,7 @@ const ActivityDate = styled.p`
   color: var(--text-dark);
 `
 
-const SeeAllItem = styled(motion.li)<{ $compact?: boolean }>`
+const SeeAllItem = styled.li<{ $compact?: boolean }>`
   position: relative;
   display: flex;
   flex: ${({ $compact }) => ($compact ? '0 0 200px' : '1')};

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import type { ArtImage } from '../../lib/art'
 import LeftArrow from '../SVG/LeftArrow'
@@ -16,7 +16,8 @@ interface FullscreenModalProps {
 
 const deltaX = 25
 const duration = 0.25
-const imageVariants = {
+
+const slideVariants = {
   initial: (direction: number) => ({
     x: direction ? direction * deltaX : 0,
     opacity: 0,
@@ -33,10 +34,18 @@ const imageVariants = {
   }),
 }
 
+const instantVariants = {
+  initial: { opacity: 1 },
+  animate: { opacity: 1 },
+  exit: { opacity: 1 },
+}
+
 const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex, onClose, onNavigate }) => {
   const image = images[currentIndex]
-  const formattedDate = dayjs(image.date).format("MMM 'YY") // e.g., "Jan '23"
+  const formattedDate = dayjs(image.date).format("MMM 'YY")
   const [direction, setDirection] = useState(0)
+  const prefersReducedMotion = useReducedMotion()
+  const imageVariants = useMemo(() => (prefersReducedMotion ? instantVariants : slideVariants), [prefersReducedMotion])
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -60,7 +69,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
   return (
     <ModalOverlay>
       <AnimatePresence custom={direction} mode="wait">
-        <MetadataArea
+        <SlideContent
           key={currentIndex}
           animate="animate"
           custom={direction}
@@ -68,34 +77,28 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
           initial="initial"
           variants={imageVariants}
         >
-          <p>{image.title}</p>
-          <p>{formattedDate}</p>
-        </MetadataArea>
+          <MetadataArea>
+            <p>{image.title}</p>
+            <p>{formattedDate}</p>
+          </MetadataArea>
+
+          <ImageArea>
+            <MotionImageContainer>
+              <Image
+                alt={`${image.title} - ${formattedDate}`}
+                fill
+                quality={100}
+                sizes="100vw"
+                src={image.image}
+                style={{ objectFit: 'contain' }}
+                unoptimized
+                onClick={(e) => e.stopPropagation()}
+              />
+            </MotionImageContainer>
+          </ImageArea>
+        </SlideContent>
       </AnimatePresence>
 
-      <ImageArea>
-        <AnimatePresence custom={direction} mode="wait">
-          <MotionImageContainer
-            key={currentIndex}
-            animate="animate"
-            custom={direction}
-            exit="exit"
-            initial="initial"
-            variants={imageVariants}
-          >
-            <Image
-              alt={`${image.title} - ${formattedDate}`}
-              fill
-              quality={100}
-              sizes="100vw"
-              src={image.image}
-              style={{ objectFit: 'contain' }}
-              unoptimized
-              onClick={(e) => e.stopPropagation()}
-            />
-          </MotionImageContainer>
-        </AnimatePresence>
-      </ImageArea>
       <BottomBar>
         <button
           aria-label="Previous image"
@@ -144,12 +147,19 @@ const ModalOverlay = styled.div`
   inset: 0;
 `
 
+const SlideContent = styled(motion.div)`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+`
+
 const ImageArea = styled.div`
   position: relative;
   flex: 1;
 `
 
-const MotionImageContainer = styled(motion.div)`
+const MotionImageContainer = styled.div`
   position: absolute;
   width: 100%;
   max-width: 800px;
@@ -158,7 +168,7 @@ const MotionImageContainer = styled(motion.div)`
   inset: 0;
 `
 
-const MetadataArea = styled(motion.div)`
+const MetadataArea = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: end;

@@ -1,9 +1,6 @@
-import { motion } from 'framer-motion'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
-
-import { pageAnimation } from '../components/animation'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import RecentArt from '../components/Home/RecentArt'
@@ -80,7 +77,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <div className="page-inner-container">
           <Bio />
 
@@ -110,7 +107,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
 
 export default Home
 
-const Container = styled(motion.div)`
+const Container = styled.div`
   max-width: var(--max-w-screen);
   min-height: calc(100vh - var(--nav-height));
   margin: auto;
@@ -129,7 +126,7 @@ const Container = styled(motion.div)`
   }
 `
 
-const FlexWrap = styled(motion.section)`
+const FlexWrap = styled.section`
   display: flex;
   align-items: stretch;
   justify-content: space-between;

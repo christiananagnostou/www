@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
-import { fade, staggerFade } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 
 const VuoriLogo = () => (
   <svg
@@ -26,39 +26,43 @@ const VuoriLogo = () => (
   </svg>
 )
 
-const FeaturedProjects = () => (
-  <Container variants={staggerFade}>
-    <ProjectLink
-      href="https://vuoriclothing.com/"
-      target="_blank"
-      title="Vuori - your new favorite clothing"
-      variants={fade}
-    >
-      <VuoriLogo />
-      Vuori
-    </ProjectLink>
+const FeaturedProjects = () => {
+  const { fade, staggerFade } = useMotionPresets()
 
-    <ProjectLink
-      href="https://www.liftclub.app/"
-      target="_blank"
-      title="Lift Club - your new favorite workout app"
-      variants={fade}
-    >
-      <Image alt="Lift Club logo" loading="eager" src={LiftClubLogo} />
-      Lift Club
-    </ProjectLink>
+  return (
+    <Container variants={staggerFade}>
+      <ProjectLink
+        href="https://vuoriclothing.com/"
+        target="_blank"
+        title="Vuori - your new favorite clothing"
+        variants={fade}
+      >
+        <VuoriLogo />
+        Vuori
+      </ProjectLink>
 
-    <ProjectLink
-      href="https://github.com/christiananagnostou/jukebox"
-      target="_blank"
-      title="Jukebox - your new favorite desktop music player"
-      variants={fade}
-    >
-      <Image alt="Jukebox logo" className="darker" loading="eager" src={JukeboxLogo} />
-      Jukebox
-    </ProjectLink>
-  </Container>
-)
+      <ProjectLink
+        href="https://www.liftclub.app/"
+        target="_blank"
+        title="Lift Club - your new favorite workout app"
+        variants={fade}
+      >
+        <Image alt="Lift Club logo" loading="eager" src={LiftClubLogo} />
+        Lift Club
+      </ProjectLink>
+
+      <ProjectLink
+        href="https://github.com/christiananagnostou/jukebox"
+        target="_blank"
+        title="Jukebox - your new favorite desktop music player"
+        variants={fade}
+      >
+        <Image alt="Jukebox logo" className="darker" loading="eager" src={JukeboxLogo} />
+        Jukebox
+      </ProjectLink>
+    </Container>
+  )
+}
 
 export default FeaturedProjects
 

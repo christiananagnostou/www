@@ -1,9 +1,10 @@
+import { useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL } from '../../lib/constants'
-import { pageAnimation } from '../../components/animation'
+
 import LeftArrow from '../../components/SVG/LeftArrow'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
 import ChainLink from '../../components/SVG/ChainLink'
@@ -61,6 +62,7 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
 
 const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
   const { title, content, dateCreated, slug, likes } = post
+  const prefersReducedMotion = useReducedMotion()
   const [copied, setCopied] = useState(false)
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(likes)
@@ -205,7 +207,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     <>
       <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
 
-      <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <ArticleStyle>
         <TopBar>
           <Link href="/articles">
             <LeftArrow />
@@ -219,9 +221,9 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
                 onClick={copyUrl}
                 aria-label="Copy URL"
                 title="Copy URL"
-                variants={{ notCopied: { width: 30 }, copied: { width: 106 } }}
-                animate={copied ? 'copied' : 'notCopied'}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                animate={prefersReducedMotion ? undefined : copied ? 'copied' : 'notCopied'}
+                transition={prefersReducedMotion ? undefined : { type: 'spring', stiffness: 300, damping: 20 }}
+                variants={prefersReducedMotion ? undefined : { notCopied: { width: 30 }, copied: { width: 106 } }}
               >
                 {copied ? (
                   <>

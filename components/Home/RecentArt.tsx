@@ -1,12 +1,14 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
-import { fade, photoAnim, staggerFade } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
+  const { fade, photoAnim, staggerFade } = useMotionPresets()
+
   return (
     <ArtContainer variants={staggerFade}>
       <Title variants={fade}>

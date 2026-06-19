@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
-import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
 import { BASE_URL } from '../lib/constants'
@@ -12,6 +12,8 @@ const PageTitle = 'Projects | Christian Anagnostou'
 const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
 
 export default function Projects() {
+  const { fade, staggerFade } = useMotionPresets()
+
   return (
     <>
       <Head>
@@ -41,7 +43,7 @@ export default function Projects() {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <Heading variants={fade}>
           <h1>Projects</h1>
           <p>
@@ -61,7 +63,7 @@ export default function Projects() {
   )
 }
 
-const Container = styled(motion.div)`
+const Container = styled.div`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;

@@ -1,5 +1,5 @@
 import type { PanInfo } from 'framer-motion'
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useWindowSize } from '../Hooks'

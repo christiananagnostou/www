@@ -1,8 +1,8 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import Head from 'next/head'
 import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import { Heading } from '../components/Shared/Heading'
 import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
 import { FilledBookmark } from '../components/SVG/bookmarklets/FilledBookmark'
@@ -52,6 +52,7 @@ export async function getStaticProps() {
 }
 
 export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
+  const { dropdown, fade, staggerFade } = useMotionPresets()
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
   const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
   const [localInstallCounts, setLocalInstallCounts] = useState<{ [key: string]: number }>({})
@@ -142,7 +143,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -250,7 +251,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   )
 }
 
-const Container = styled(motion.section)`
+const Container = styled.section`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;

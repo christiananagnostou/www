@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import { styled } from 'styled-components'
 
-export const ArticleStyle = styled(motion.section)`
+export const ArticleStyle = styled.section`
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;

@@ -1,9 +1,27 @@
-import { motion } from 'framer-motion'
+import { m as motion, useReducedMotion } from 'framer-motion'
 import styled from 'styled-components'
-import { fade, staggerFade } from '../animation'
+import { instant } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 import Giants from '../SVG/Giants'
 
+const spring = { type: 'spring', stiffness: 300, damping: 20 } as const
+
+const hoverTextSlotVariants = {
+  rest: { y: 0, opacity: 1, transition: spring },
+  hover: { y: '-100%', opacity: 0, transition: spring },
+}
+
+const hoverSvgSlotVariants = {
+  rest: { y: '100%', opacity: 0, transition: spring },
+  hover: { y: 0, opacity: 1, transition: spring },
+}
+
 function Bio() {
+  const { fade, staggerFade } = useMotionPresets()
+  const prefersReducedMotion = useReducedMotion()
+  const textSlotVariants = prefersReducedMotion ? { rest: instant.show, hover: instant.show } : hoverTextSlotVariants
+  const svgSlotVariants = prefersReducedMotion ? { rest: instant.show, hover: instant.show } : hoverSvgSlotVariants
+
   return (
     <Description className="max-w-screen" variants={staggerFade}>
       <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
@@ -18,7 +36,7 @@ function Bio() {
 
       <motion.p variants={fade}>
         Among other things, I&apos;m a huge fan of the{' '}
-        <GiantsSlotContainer animate="rest" initial="rest" whileHover="hover">
+        <GiantsSlotContainer animate="rest" initial="rest" whileHover={prefersReducedMotion ? undefined : 'hover'}>
           <Slot>
             <TextSlot variants={textSlotVariants}>SF</TextSlot>
             <SVGSlot aria-hidden="true" variants={svgSlotVariants}>
@@ -40,23 +58,10 @@ function Bio() {
 
 export default Bio
 
-const spring = { type: 'spring', stiffness: 300, damping: 20 } as const
-
-const textSlotVariants = {
-  rest: { y: 0, opacity: 1, transition: spring },
-  hover: { y: '-100%', opacity: 0, transition: spring },
-}
-
-const svgSlotVariants = {
-  rest: { y: '100%', opacity: 0, transition: spring },
-  hover: { y: 0, opacity: 1, transition: spring },
-}
-
 const GiantsSlotContainer = styled(motion.em)`
   position: relative;
 `
 
-// The slot container masks the overflowing text/SVG.
 const Slot = styled.span`
   position: relative;
   display: inline-block;
@@ -64,13 +69,11 @@ const Slot = styled.span`
   vertical-align: bottom;
 `
 
-// The "SF" text which animates upward on hover.
 const TextSlot = styled(motion.span)`
   position: relative;
   display: block;
 `
 
-// The SVG starts below and slides upward into view.
 const SVGSlot = styled(motion.span)`
   position: absolute;
   inset: 0;

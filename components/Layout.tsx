@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { PageTransition } from './animation/PageTransition'
 import Nav from './Nav'
 
 interface Props {
@@ -16,7 +17,7 @@ const Layout = ({ children }: Props) => {
       {shouldShowBlur ? <div aria-hidden="true" className="blur" /> : null}
 
       <main id="main-content" tabIndex={-1}>
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
     </>
   )

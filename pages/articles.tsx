@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
-import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
 import type { ArticleType } from '../lib/articles'
@@ -29,6 +29,7 @@ const Articles = ({ posts }: Props) => {
   const router = useRouter()
   const { query } = router
   const queriedCategory = query.category?.toString() || ''
+  const { fade, staggerFade } = useMotionPresets()
 
   return (
     <>
@@ -64,7 +65,7 @@ const Articles = ({ posts }: Props) => {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <Heading variants={fade}>
           <h1>Articles</h1>
           <p>
@@ -112,7 +113,7 @@ const Articles = ({ posts }: Props) => {
 
 export default Articles
 
-const Container = styled(motion.section)`
+const Container = styled.section`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);

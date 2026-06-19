@@ -1,12 +1,14 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import styled from 'styled-components'
-import { fade } from './animation'
+import { useMotionPresets } from './animation/MotionPresetsProvider'
 import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
 import Readcv from './SVG/Readcv'
 import Twitter from './SVG/Twitter'
 
 function SocialLinks() {
+  const { fade } = useMotionPresets()
+
   return (
     <SocialLinkList variants={fade}>
       <li>

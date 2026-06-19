@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Head from 'next/head'
 import styled from 'styled-components'
-import { fade, pageAnimation } from '../components/animation'
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
@@ -9,6 +9,8 @@ import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
 
 export default function lab() {
+  const { fade, staggerFade } = useMotionPresets()
+
   return (
     <>
       <Head>
@@ -17,7 +19,7 @@ export default function lab() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -27,7 +29,7 @@ export default function lab() {
           </p>
         </Heading>
 
-        <LabItems>
+        <LabItems variants={staggerFade}>
           {/* Throttle */}
           <Item variants={fade}>
             <DateStyle>Apr 2025</DateStyle>
@@ -57,7 +59,7 @@ export default function lab() {
   )
 }
 
-const Container = styled(motion.div)`
+const Container = styled.div`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);

@@ -1,11 +1,11 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
-import { dropdown, fade, staggerFade } from './animation'
+import { useMotionPresets } from './animation/MotionPresetsProvider'
 import A from './SVG/A'
 import DownArrow from './SVG/DownArrow'
 
@@ -38,6 +38,7 @@ const NAV_LINKS: NavLinks = [
 const Nav: React.FC = () => {
   const router = useRouter()
   const { pathname } = router
+  const { dropdown, fade, staggerFade, menuAnimation, desktopSubmenuAnimation } = useMotionPresets()
 
   // Hide-on-scroll
   const [hidden, setHidden] = useState(false)
@@ -136,13 +137,7 @@ const Nav: React.FC = () => {
         itemType="https://schema.org/SiteNavigationElement"
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
-        <motion.div
-          animate="show"
-          className="nav-inner max-w-screen"
-          exit="exit"
-          initial="hidden"
-          variants={staggerFade}
-        >
+        <motion.div animate="show" className="nav-inner max-w-screen" initial="hidden" variants={staggerFade}>
           <LogoWrapper aria-label="Home" href="/" variants={fade}>
             <A height="30px" width="30px" />
           </LogoWrapper>
@@ -258,18 +253,6 @@ const SkipLink = styled.a`
     top: 0;
   }
 `
-
-const menuAnimation = {
-  hidden: { height: 0 },
-  show: { height: 'auto', transition: { duration: 0.2, staggerChildren: 0.1 } },
-  exit: { height: 0, transition: { duration: 0.2 } },
-} as const
-
-const desktopSubmenuAnimation = {
-  hidden: { opacity: 0, y: -5, pointerEvents: 'none' },
-  show: { opacity: 1, y: 0, pointerEvents: 'auto', transition: { duration: 0.2 } },
-  exit: { opacity: 0, y: -5, pointerEvents: 'none', transition: { duration: 0.15 } },
-} as const
 
 const StyledNav = styled.nav`
   position: sticky;

@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { useMotionPresets } from '../components/animation/MotionPresetsProvider'
 import { ride, run, swim } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
@@ -261,6 +261,7 @@ const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[]
 const formatHours = (hours: number) => hours.toFixed(0)
 
 const FitnessPage = ({ activities, error }: Props) => {
+  const { fade, staggerFade } = useMotionPresets()
   const [windowMonths, setWindowMonths] = useState(12)
 
   const parsedActivities = useMemo<ParsedActivity[]>(
@@ -417,7 +418,7 @@ const FitnessPage = ({ activities, error }: Props) => {
           <meta content={PageDescription} name="description" />
           <link href={PageUrl} rel="canonical" />
         </Head>
-        <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+        <Container>
           <SectionCard variants={fade}>
             <SectionHeaderText>
               <h2>Fitness</h2>
@@ -436,7 +437,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         <meta content={PageDescription} name="description" />
         <link href={PageUrl} rel="canonical" />
       </Head>
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container>
         <HeroPanel variants={fade}>
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
@@ -593,7 +594,7 @@ const FitnessPage = ({ activities, error }: Props) => {
 
 export default FitnessPage
 
-const Container = styled(motion.main)`
+const Container = styled.main`
   display: flex;
   flex-direction: column;
   gap: 2rem;

@@ -1,17 +1,19 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
 import type { ProjectType } from '../../lib/projects'
-import { fade, lineAnim } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 
 interface Props {
   project: ProjectType
 }
 
 const ProjectTile = ({ project }: Props) => {
+  const { fade, lineAnim } = useMotionPresets()
+
   return (
     <ProjectContainer variants={fade}>
-      <motion.header variants={lineAnim}>
+      <ProjectHeader variants={lineAnim}>
         <Link href={`/work/${project.slug}`}>
           <h2>{project.title}</h2>
         </Link>
@@ -31,7 +33,7 @@ const ProjectTile = ({ project }: Props) => {
             <span>Shut Down</span>
           )}
         </div>
-      </motion.header>
+      </ProjectHeader>
 
       <motion.span className="summary" variants={fade}>
         {project.summary}
@@ -44,47 +46,49 @@ const ProjectTile = ({ project }: Props) => {
 
 export default ProjectTile
 
-const ProjectContainer = styled(motion.div)`
-  position: relative;
-  margin-bottom: 3.5rem;
+const ProjectHeader = styled(motion.header)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--accent);
+  transform-origin: left center;
 
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid var(--accent);
+  h2 {
+    display: inline-block;
+    min-width: max-content;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--heading);
+    transition: all 0.2s ease-in-out;
 
-    h2 {
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  .links {
+    a,
+    span {
       display: inline-block;
-      min-width: max-content;
-      font-weight: 500;
-      font-size: 1.1rem;
-      color: var(--heading);
+      margin-left: 20px;
+      font-weight: normal;
+      font-size: 0.8rem;
+      color: var(--text);
+      text-decoration: none;
       transition: all 0.2s ease-in-out;
 
-      &:hover {
+      &:not(span):hover {
         color: #ffffff;
       }
     }
-    .links {
-      a,
-      span {
-        display: inline-block;
-        margin-left: 20px;
-        font-weight: normal;
-        font-size: 0.8rem;
-        color: var(--text);
-        text-decoration: none;
-        transition: all 0.2s ease-in-out;
-
-        &:not(span):hover {
-          color: #ffffff;
-        }
-      }
-    }
   }
+`
+
+const ProjectContainer = styled(motion.div)`
+  position: relative;
+  margin-bottom: 3.5rem;
 
   @media screen and (width >= 768px) {
     flex-direction: row;

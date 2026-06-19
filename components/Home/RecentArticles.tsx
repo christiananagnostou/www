@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
 import type { ArticleType } from '../../lib/articles'
-import { fade, staggerFade } from '../animation'
+import { useMotionPresets } from '../animation/MotionPresetsProvider'
 import { HomepageBox } from './styles'
 
 interface ArticlesProps {
@@ -10,6 +10,8 @@ interface ArticlesProps {
 }
 
 export default function RecentArticles({ posts }: ArticlesProps) {
+  const { fade, staggerFade } = useMotionPresets()
+
   return (
     <ArticlesContainer variants={staggerFade}>
       <Title variants={fade}>
