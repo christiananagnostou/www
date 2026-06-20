@@ -49,7 +49,7 @@ const Nav: React.FC = () => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   // Track if user is on desktop
-  const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
   // Hide on scroll logic
   useEffect(() => {
@@ -77,10 +77,12 @@ const Nav: React.FC = () => {
 
   // Track screen size for desktop vs mobile
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768)
-    handleResize() // check on initial mount
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    const desktopQuery = window.matchMedia('(width >= 768px)')
+    const handleBreakpointChange = (event: MediaQueryListEvent) => setIsDesktop(event.matches)
+
+    setIsDesktop(desktopQuery.matches)
+    desktopQuery.addEventListener('change', handleBreakpointChange)
+    return () => desktopQuery.removeEventListener('change', handleBreakpointChange)
   }, [])
 
   // Close all menus on route change
@@ -142,17 +144,14 @@ const Nav: React.FC = () => {
             <A height="30px" width="30px" />
           </LogoWrapper>
 
-          <AnimatePresence>
-            {menuOpen || isDesktop ? (
+          <AnimatePresence initial={false}>
+            {menuOpen || isDesktop !== false ? (
               <Menu
                 key="main-menu"
                 animate="show"
+                data-menu-open={menuOpen}
                 exit="exit"
-                initial="hidden"
-                style={{
-                  height: isDesktop ? 'auto' : undefined,
-                  opacity: isDesktop ? 1 : undefined,
-                }}
+                initial={isDesktop === false ? 'hidden' : false}
                 variants={menuAnimation}
               >
                 {NAV_LINKS.map(({ href, title, subLinks }, index) => {
@@ -219,18 +218,11 @@ const Nav: React.FC = () => {
           </AnimatePresence>
 
           {/* Hamburger (mobile) */}
-          {!isDesktop && (
-            <Hamburger
-              aria-expanded={menuOpen}
-              aria-label="Toggle navigation menu"
-              variants={fade}
-              onClick={toggleMenu}
-            >
-              <span />
-              <span />
-              <span />
-            </Hamburger>
-          )}
+          <Hamburger aria-expanded={menuOpen} aria-label="Toggle navigation menu" variants={fade} onClick={toggleMenu}>
+            <span />
+            <span />
+            <span />
+          </Hamburger>
         </m.div>
       </StyledNav>
     </>
@@ -331,6 +323,10 @@ const Hamburger = styled(m.button)`
       transform-origin: center;
     }
   }
+
+  @media (width >= 768px) {
+    display: none;
+  }
 `
 
 const Menu = styled(m.ul)`
@@ -360,6 +356,10 @@ const Menu = styled(m.ul)`
     box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
     transform-origin: top;
     overflow: hidden;
+
+    &[data-menu-open='false'] {
+      display: none;
+    }
   }
 `
 

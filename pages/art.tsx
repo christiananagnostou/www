@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { fade, pageAnimation } from '../components/animation'
+import { fade, pageAnimation, photoAnim, staggerFade, staggerFadeFast } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import FullscreenModal from '../components/Art/FullScreenModal'
 import { ButtonRow } from '../components/Shared/ButtonRow'
@@ -83,28 +83,30 @@ const Art = () => {
         </Heading>
 
         {UNIQUE_TAGS.length > 1 && (
-          <ButtonRow>
-            <button className={!queriedTag ? 'selected' : ''} onClick={() => router.push({ query: { tag: '' } })}>
-              All
-            </button>
-
-            {UNIQUE_TAGS.map((tag) => (
-              <button
-                key={tag}
-                className={queriedTag === tag ? 'selected' : ''}
-                onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
-              >
-                {tag}
+          <m.div variants={fade}>
+            <ButtonRow>
+              <button className={!queriedTag ? 'selected' : ''} onClick={() => router.push({ query: { tag: '' } })}>
+                All
               </button>
-            ))}
-          </ButtonRow>
+
+              {UNIQUE_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  className={queriedTag === tag ? 'selected' : ''}
+                  onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
+                >
+                  {tag}
+                </button>
+              ))}
+            </ButtonRow>
+          </m.div>
         )}
 
-        <Columns $numColumns={NUM_COLUMNS}>
+        <Columns $numColumns={NUM_COLUMNS} variants={staggerFadeFast}>
           {columns.map((colImages, colIndex) => (
-            <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS}>
+            <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS} variants={staggerFade}>
               {colImages.map((item) => (
-                <ImageWrapper key={item.image.src}>
+                <ImageWrapper key={item.image.src} variants={photoAnim}>
                   <Image
                     alt={`${item.title} - ${item.date}`}
                     aria-label={`Open full screen image: ${item.title}`}
@@ -166,12 +168,12 @@ const Container = styled(m.section)`
   margin: 2rem auto;
 `
 
-const Columns = styled.section<{ $numColumns: number }>`
+const Columns = styled(m.section)<{ $numColumns: number }>`
   display: flex;
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
 `
 
-const Column = styled.div<{ $numColumns: number }>`
+const Column = styled(m.div)<{ $numColumns: number }>`
   display: flex;
   flex-direction: column;
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
@@ -239,7 +241,7 @@ const HoverBox = styled.div`
     }
   }
 `
-const ImageWrapper = styled.div`
+const ImageWrapper = styled(m.div)`
   position: relative;
   overflow: hidden;
   border-radius: var(--border-radius-sm);
