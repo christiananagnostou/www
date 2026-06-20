@@ -41,8 +41,8 @@ export const photoAnim = {
 }
 
 export const lineAnim = {
-  hidden: { width: '95%' },
-  show: { width: '100%', transition: { duration: 0.4 } },
+  hidden: { scaleX: 0.95 },
+  show: { scaleX: 1, transition: { duration: 0.4 } },
 }
 
 export const dropdown = {

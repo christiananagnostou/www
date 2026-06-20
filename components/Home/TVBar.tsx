@@ -1,5 +1,3 @@
-import type { PanInfo } from 'framer-motion'
-import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useWindowSize } from '../Hooks'
@@ -43,32 +41,52 @@ interface Props {
   onBarFilled: (filled: boolean) => void
 }
 
-const BarGradient = 'linear-gradient(to right, rgb(80,80,95), rgba(200, 200, 200, 0.2)'
+const BAR_GRADIENT = 'linear-gradient(to right, rgb(80 80 95), rgb(200 200 200 / 20%))'
+
+const endPointerDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+}
 
 const TVBar = ({ onBarFilled }: Props) => {
   const knobRef = useRef<HTMLDivElement>(null)
   const barsRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const barFillRef = useRef<HTMLDivElement>(null)
+  const currentPosition = useRef(0)
+  const barFullRef = useRef(false)
+  const dragStart = useRef({ clientX: 0, position: 0 })
 
   const { width } = useWindowSize()
 
   const [sectionIndex, setSectionIndex] = useState(0)
-  const [percentToFull, setPercentToFull] = useState(0)
-  const isBarFull = percentToFull === 100
+  const [isBarFull, setIsBarFull] = useState(false)
 
-  const onKnobPan = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!knobRef.current || !barsRef.current || !buttonRef.current) return
+  const updateBarPosition = (position: number) => {
+    if (!knobRef.current || !barsRef.current || !barFillRef.current) return
     const barsContainerWidth = barsRef.current.clientWidth
+    if (!barsContainerWidth) return
 
-    const prevPos = parseFloat(knobRef.current.dataset.currentDeg || '0')
-    const newPos = Math.max(Math.min(prevPos + info.delta.x, barsContainerWidth), 0)
-
-    const percentToFull = (newPos / barsContainerWidth) * 100
-
-    setPercentToFull(percentToFull)
+    const nextPosition = Math.max(Math.min(position, barsContainerWidth), 0)
+    const percentToFull = (nextPosition / barsContainerWidth) * 100
+    currentPosition.current = nextPosition
 
     knobRef.current.style.rotate = `${(percentToFull / 100) * 360}deg`
-    knobRef.current.dataset.currentDeg = newPos.toString()
+    barFillRef.current.style.transform = `translateX(${percentToFull - 100}%)`
+    const isFull = nextPosition === barsContainerWidth
+    if (barFullRef.current !== isFull) {
+      barFullRef.current = isFull
+      setIsBarFull(isFull)
+    }
+  }
+
+  const onDragStart = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    dragStart.current = { clientX: event.clientX, position: currentPosition.current }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onDragMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return
+    updateBarPosition(dragStart.current.position + event.clientX - dragStart.current.clientX)
   }
 
   useEffect(() => {
@@ -78,31 +96,34 @@ const TVBar = ({ onBarFilled }: Props) => {
   return (
     <>
       <TVControls>
-        <Knob onPan={onKnobPan}>
+        <Knob
+          onPointerCancel={endPointerDrag}
+          onPointerDown={onDragStart}
+          onPointerMove={onDragMove}
+          onPointerUp={endPointerDrag}
+        >
           <div ref={knobRef} className="knob" style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
         </Knob>
 
-        <motion.div ref={barsRef} className="bar-wrap" onPan={(width || 0) < 768 ? onKnobPan : () => {}}>
+        <div
+          ref={barsRef}
+          className="bar-wrap"
+          onPointerCancel={endPointerDrag}
+          onPointerDown={(width ?? Number.POSITIVE_INFINITY) < 768 ? onDragStart : undefined}
+          onPointerMove={onDragMove}
+          onPointerUp={endPointerDrag}
+        >
           <div className="bar">
-            <div
-              className="bar-inner"
-              style={{
-                left: `${-(100 - percentToFull)}%`,
-                background: BarGradient,
-              }}
-            />
+            <div ref={barFillRef} className="bar-inner" style={{ background: BAR_GRADIENT }} />
           </div>
-        </motion.div>
+        </div>
 
         <div className="current-control">
-          <motion.button
-            ref={buttonRef}
+          <button
             className={`button ${isBarFull ? 'highlight' : ''}`}
             disabled={!isBarFull}
             style={{ width: Sections[sectionIndex].length * 10 }}
-            onClick={
-              isBarFull ? () => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1)) : () => {}
-            }
+            onClick={() => setSectionIndex((prev) => (prev === Sections.length - 1 ? 0 : prev + 1))}
           >
             {Sections.map((section) => (
               <span
@@ -113,7 +134,7 @@ const TVBar = ({ onBarFilled }: Props) => {
                 {section}
               </span>
             ))}
-          </motion.button>
+          </button>
         </div>
       </TVControls>
 
@@ -124,7 +145,7 @@ const TVBar = ({ onBarFilled }: Props) => {
 
 export default TVBar
 
-const Knob = styled(motion.div)`
+const Knob = styled.div`
   --knob-border-width: 1px;
   --knob-size: 24px;
   --s: rgb(58 59 65);
@@ -188,7 +209,7 @@ const Knob = styled(motion.div)`
   }
 `
 
-const TVControls = styled(motion.div)`
+const TVControls = styled.div`
   position: relative;
   position: absolute;
   bottom: 0;
@@ -217,9 +238,11 @@ const TVControls = styled(motion.div)`
 
       .bar-inner {
         position: absolute;
-        left: -100%;
+        left: 0;
         width: 100%;
         height: 100%;
+        transform: translateX(-100%);
+        will-change: transform;
       }
     }
   }

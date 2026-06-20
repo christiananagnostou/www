@@ -1,7 +1,8 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
 import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
@@ -9,6 +10,8 @@ import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
 
 export default function lab() {
+  const pageTransitionInitial = usePageTransitionInitial()
+
   return (
     <>
       <Head>
@@ -17,7 +20,7 @@ export default function lab() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -57,7 +60,7 @@ export default function lab() {
   )
 }
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
@@ -69,7 +72,7 @@ const Container = styled(motion.div)`
   }
 `
 
-const LabItems = styled(motion.div)`
+const LabItems = styled(m.div)`
   display: flex;
   flex-direction: column;
   gap: 4rem;
@@ -79,7 +82,7 @@ const LabItems = styled(motion.div)`
   }
 `
 
-const Item = styled(motion.div)`
+const Item = styled(m.div)`
   width: 100%;
   max-width: var(--max-w-screen);
 `

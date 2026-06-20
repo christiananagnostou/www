@@ -1,16 +1,26 @@
+import { AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL } from '../../lib/constants'
 import { pageAnimation } from '../../components/animation'
+import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import LeftArrow from '../../components/SVG/LeftArrow'
 import ArticleFooter from '../../components/Articles/ArticleFooter'
 import ChainLink from '../../components/SVG/ChainLink'
 import Checkmark from '../../components/SVG/Checkmark'
 import HeartEmpty from '../../components/SVG/HeartEmpty'
 import ArticleHead from '../../components/Articles/ArticleHead'
-import { ArticleStyle, TopBar, TopBarButton, TitleWrap, ArticleContent } from '../../components/Articles/ArticleStyles'
+import {
+  ArticleContent,
+  ArticleStyle,
+  CopyButtonWrap,
+  CopyConfirmation,
+  TitleWrap,
+  TopBar,
+  TopBarButton,
+} from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
 import { getLikes } from '../../lib/articles/likes'
 
@@ -60,6 +70,7 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
 }
 
 const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
   const { title, content, dateCreated, slug, likes } = post
   const [copied, setCopied] = useState(false)
   const [liked, setLiked] = useState(false)
@@ -205,7 +216,7 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     <>
       <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
 
-      <ArticleStyle variants={pageAnimation} initial="hidden" animate="show" exit="exit">
+      <ArticleStyle animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <TopBar>
           <Link href="/articles">
             <LeftArrow />
@@ -215,22 +226,25 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
           <div className="top-bar__right-side">
             <p className="date">{dateCreated}</p>
             <div className="top-bar__right-side__buttons">
-              <TopBarButton
-                onClick={copyUrl}
-                aria-label="Copy URL"
-                title="Copy URL"
-                variants={{ notCopied: { width: 30 }, copied: { width: 106 } }}
-                animate={copied ? 'copied' : 'notCopied'}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              >
-                {copied ? (
-                  <>
-                    <Checkmark /> <span>Copied URL</span>
-                  </>
-                ) : (
+              <CopyButtonWrap>
+                <TopBarButton aria-label="Copy URL" title="Copy URL" onClick={copyUrl}>
                   <ChainLink />
-                )}
-              </TopBarButton>
+                </TopBarButton>
+                <AnimatePresence>
+                  {copied ? (
+                    <CopyConfirmation
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      aria-live="polite"
+                      exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                      initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                      role="status"
+                      transition={{ duration: 0.16 }}
+                    >
+                      <Checkmark /> <span>Copied URL</span>
+                    </CopyConfirmation>
+                  ) : null}
+                </AnimatePresence>
+              </CopyButtonWrap>
               <TopBarButton aria-label="Like" title="Like" onClick={handleLike}>
                 {liked ? <HeartFull /> : <HeartEmpty />}
                 <span>{likeCount}</span>

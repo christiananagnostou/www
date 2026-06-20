@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import { styled } from 'styled-components'
 
-export const ArticleStyle = styled(motion.section)`
+export const ArticleStyle = styled(m.section)`
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
@@ -44,7 +44,30 @@ export const TopBar = styled.div`
   }
 `
 
-export const TopBarButton = styled(motion.button)`
+export const CopyButtonWrap = styled.div`
+  position: relative;
+  display: flex;
+`
+
+export const CopyConfirmation = styled(m.div)`
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: max-content;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-sm);
+  background: var(--dark-bg);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 25%);
+  line-height: 1;
+  pointer-events: none;
+`
+
+export const TopBarButton = styled.button`
   background: transparent;
   border: 1px solid var(--accent);
   color: inherit;
@@ -55,6 +78,7 @@ export const TopBarButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  min-width: 30px;
   line-height: 0.7;
   overflow: hidden;
 

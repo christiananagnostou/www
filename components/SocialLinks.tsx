@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 import { fade } from './animation'
 import Github from './SVG/GitHub'
@@ -33,7 +33,7 @@ function SocialLinks() {
   )
 }
 
-const SocialLinkList = styled(motion.ul)`
+const SocialLinkList = styled(m.ul)`
   display: flex;
   justify-content: center;
   align-items: center;

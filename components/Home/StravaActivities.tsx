@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
@@ -201,7 +201,7 @@ const StravaActivities = ({ activities }: Props) => {
 
 export default StravaActivities
 
-const ActivitiesSection = styled(motion.section)`
+const ActivitiesSection = styled(m.section)`
   position: relative;
   width: 100%;
   padding: 1rem 0;
@@ -223,7 +223,7 @@ const SectionHeader = styled.div`
   padding: 0 1rem 1rem;
 `
 
-const Title = styled(motion.h2)`
+const Title = styled(m.h2)`
   margin: 0;
 
   a {
@@ -237,7 +237,7 @@ const ActivityFilters = styled.div`
   gap: 0.25rem;
 `
 
-const ActivityFilter = styled(motion.button)`
+const ActivityFilter = styled(m.button)`
   padding: 0.15rem 0.25rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-sm);
@@ -276,7 +276,7 @@ const ActivityList = styled.ul`
   }
 `
 
-const ActivityItem = styled(motion.li)`
+const ActivityItem = styled.li`
   position: relative;
   flex: 1;
   min-width: 200px;
@@ -316,7 +316,7 @@ const ActivityDate = styled.p`
   color: var(--text-dark);
 `
 
-const SeeAllItem = styled(motion.li)<{ $compact?: boolean }>`
+const SeeAllItem = styled.li<{ $compact?: boolean }>`
   position: relative;
   display: flex;
   flex: ${({ $compact }) => ($compact ? '0 0 200px' : '1')};

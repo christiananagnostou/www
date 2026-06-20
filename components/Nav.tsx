@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -136,13 +137,7 @@ const Nav: React.FC = () => {
         itemType="https://schema.org/SiteNavigationElement"
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
-        <motion.div
-          animate="show"
-          className="nav-inner max-w-screen"
-          exit="exit"
-          initial="hidden"
-          variants={staggerFade}
-        >
+        <m.div animate="show" className="nav-inner max-w-screen" exit="exit" initial={false} variants={staggerFade}>
           <LogoWrapper aria-label="Home" href="/" variants={fade}>
             <A height="30px" width="30px" />
           </LogoWrapper>
@@ -236,7 +231,7 @@ const Nav: React.FC = () => {
               <span />
             </Hamburger>
           )}
-        </motion.div>
+        </m.div>
       </StyledNav>
     </>
   )
@@ -260,9 +255,9 @@ const SkipLink = styled.a`
 `
 
 const menuAnimation = {
-  hidden: { height: 0 },
-  show: { height: 'auto', transition: { duration: 0.2, staggerChildren: 0.1 } },
-  exit: { height: 0, transition: { duration: 0.2 } },
+  hidden: { opacity: 0, y: -8, scaleY: 0.98 },
+  show: { opacity: 1, y: 0, scaleY: 1, transition: { duration: 0.2, staggerChildren: 0.1 } },
+  exit: { opacity: 0, y: -8, scaleY: 0.98, transition: { duration: 0.15 } },
 } as const
 
 const desktopSubmenuAnimation = {
@@ -289,7 +284,7 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled(motion.create(Link))`
+const LogoWrapper = styled(m.create(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
@@ -301,7 +296,7 @@ const LogoWrapper = styled(motion.create(Link))`
   }
 `
 
-const Hamburger = styled(motion.button)`
+const Hamburger = styled(m.button)`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -338,7 +333,7 @@ const Hamburger = styled(motion.button)`
   }
 `
 
-const Menu = styled(motion.ul)`
+const Menu = styled(m.ul)`
   position: relative;
   margin: 0;
   padding: 0;
@@ -363,11 +358,12 @@ const Menu = styled(motion.ul)`
     border-bottom: 1px solid var(--accent);
     background: var(--dark-bg);
     box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+    transform-origin: top;
     overflow: hidden;
   }
 `
 
-const MenuItem = styled(motion.li)`
+const MenuItem = styled(m.li)`
   position: relative;
 
   /* Mobile */
@@ -415,7 +411,7 @@ const DropdownToggle = styled.button`
   }
 `
 
-const Submenu = styled(motion.ul)`
+const Submenu = styled(m.ul)`
   margin: 0;
   padding: 0;
 

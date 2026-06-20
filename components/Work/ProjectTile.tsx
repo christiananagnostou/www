@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import styled from 'styled-components'
 import type { ProjectType } from '../../lib/projects'
@@ -11,7 +11,7 @@ interface Props {
 const ProjectTile = ({ project }: Props) => {
   return (
     <ProjectContainer variants={fade}>
-      <motion.header variants={lineAnim}>
+      <header>
         <Link href={`/work/${project.slug}`}>
           <h2>{project.title}</h2>
         </Link>
@@ -31,30 +31,31 @@ const ProjectTile = ({ project }: Props) => {
             <span>Shut Down</span>
           )}
         </div>
-      </motion.header>
+        <ProjectLine aria-hidden="true" variants={lineAnim} />
+      </header>
 
-      <motion.span className="summary" variants={fade}>
+      <m.span className="summary" variants={fade}>
         {project.summary}
 
         <span className="date">{project.date}</span>
-      </motion.span>
+      </m.span>
     </ProjectContainer>
   )
 }
 
 export default ProjectTile
 
-const ProjectContainer = styled(motion.div)`
+const ProjectContainer = styled(m.div)`
   position: relative;
   margin-bottom: 3.5rem;
 
   header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
     padding: 0.25rem 0;
-    border-bottom: 1px solid var(--accent);
 
     h2 {
       display: inline-block;
@@ -107,4 +108,14 @@ const ProjectContainer = styled(motion.div)`
       color: var(--text-dark);
     }
   }
+`
+
+const ProjectLine = styled(m.div)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: left;
 `

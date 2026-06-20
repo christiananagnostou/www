@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 
 /*
@@ -103,7 +103,7 @@ export const Marker = styled.div`
   translate: -50% 50%;
 `
 
-export const Needle = styled(motion.div)`
+export const Needle = styled(m.div)`
   position: absolute;
   bottom: 50%;
   left: 50%;
@@ -151,7 +151,7 @@ export const ThrottleText = styled.span`
 /*
 PEDAL 
 */
-export const PedalBtn = styled(motion.button)`
+export const PedalBtn = styled.button`
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
@@ -167,9 +167,10 @@ export const PedalBtn = styled(motion.button)`
   background: var(--accent);
   cursor: pointer;
   perspective: 900px;
+  touch-action: none;
 `
 
-export const PedalFace = styled(motion.div)`
+export const PedalFace = styled(m.div)`
   position: relative;
   width: 100%;
   height: 100%;
@@ -198,7 +199,7 @@ export const PedalFace = styled(motion.div)`
   }
 `
 
-export const ThrottleBar = styled.div<{ throttle: number }>`
+export const ThrottleBar = styled.div`
   position: absolute;
   right: calc(0.5rem + var(--pedal-w) + 0.5rem);
   bottom: 0.5rem;
@@ -207,16 +208,16 @@ export const ThrottleBar = styled.div<{ throttle: number }>`
   border-radius: 5px;
   background: var(--gray-dark);
   overflow: hidden;
+`
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: ${({ throttle }) => throttle * 100}%;
-    background: var(--accent-light);
-  }
+export const ThrottleFill = styled(m.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--accent-light);
+  transform-origin: bottom;
+  inset: 0;
+  will-change: transform;
 `
 
 /*

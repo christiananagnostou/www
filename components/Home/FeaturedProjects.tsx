@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -62,7 +62,7 @@ const FeaturedProjects = () => (
 
 export default FeaturedProjects
 
-const Container = styled(motion.section)`
+const Container = styled(m.section)`
   display: flex;
   flex: 1;
   flex-wrap: wrap;
@@ -70,7 +70,7 @@ const Container = styled(motion.section)`
   color: var(--text);
 `
 
-const ProjectLink = styled(motion.create(Link))`
+const ProjectLink = styled(m.create(Link))`
   display: flex;
   align-items: center;
   gap: 0.5rem;

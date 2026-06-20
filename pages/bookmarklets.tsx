@@ -1,8 +1,10 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
 import { BookWithBookmark } from '../components/SVG/bookmarklets/BookWithBookmark'
 import { FilledBookmark } from '../components/SVG/bookmarklets/FilledBookmark'
@@ -52,6 +54,7 @@ export async function getStaticProps() {
 }
 
 export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
+  const pageTransitionInitial = usePageTransitionInitial()
   const [openIndexes, setOpenIndexes] = useState<number[]>([])
   const [installedStates, setInstalledStates] = useState<{ [key: string]: boolean }>({})
   const [localInstallCounts, setLocalInstallCounts] = useState<{ [key: string]: number }>({})
@@ -142,7 +145,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -222,7 +225,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                   {/* Instructions panel, if open */}
                   <AnimatePresence>
                     {isOpen ? (
-                      <motion.div
+                      <m.div
                         key={title}
                         animate="show"
                         aria-label={`${title} instructions`}
@@ -237,7 +240,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                             <p key={`${title}-line-${i}`}>{line}</p>
                           ))}
                         </div>
-                      </motion.div>
+                      </m.div>
                     ) : null}
                   </AnimatePresence>
                 </div>
@@ -250,7 +253,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
   )
 }
 
-const Container = styled(motion.section)`
+const Container = styled(m.section)`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;
@@ -258,7 +261,7 @@ const Container = styled(motion.section)`
   overflow: hidden;
 `
 
-const BookmarkletsContainer = styled(motion.div)`
+const BookmarkletsContainer = styled(m.div)`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -266,7 +269,7 @@ const BookmarkletsContainer = styled(motion.div)`
   place-content: center center;
 `
 
-const BookmarkletItem = styled(motion.div)`
+const BookmarkletItem = styled(m.div)`
   display: flex;
   width: 100%;
 
