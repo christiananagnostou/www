@@ -21,12 +21,17 @@ const OLYMPIC_POOL_MILES = 0.0311
 
 const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
-  loading: () => <div>Loading charts…</div>,
+  loading: () => (
+    <ChartsLoading aria-label="Loading charts">
+      <SharedChartLoading>Loading chart…</SharedChartLoading>
+      <SharedChartLoading>Loading chart…</SharedChartLoading>
+    </ChartsLoading>
+  ),
 })
 
 const FitnessLaneChart = dynamic(async () => import('../components/Fitness/FitnessLaneChart'), {
   ssr: false,
-  loading: () => <div>Loading chart…</div>,
+  loading: () => <LaneChartLoading>Loading chart…</LaneChartLoading>,
 })
 
 interface Props {
@@ -791,6 +796,32 @@ const LaneChart = styled.div`
     width: 100%;
     height: 80px;
   }
+`
+
+const ChartLoadingBase = styled.div`
+  display: grid;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 3%);
+  font-size: 0.7rem;
+  color: var(--text-dark);
+`
+
+const LaneChartLoading = styled(ChartLoadingBase)`
+  min-height: 176px;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: var(--border-radius-lg);
+`
+
+const ChartsLoading = styled.section`
+  display: contents;
+`
+
+const SharedChartLoading = styled(ChartLoadingBase)`
+  min-height: 363px;
+  padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
 `
 
 const LaneStats = styled.div`

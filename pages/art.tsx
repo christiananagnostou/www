@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { fade, pageAnimation, photoAnim, staggerFade, staggerFadeFast } from '../components/animation'
+import { fade, pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import FullscreenModal from '../components/Art/FullScreenModal'
 import { ButtonRow } from '../components/Shared/ButtonRow'
@@ -102,11 +102,11 @@ const Art = () => {
           </m.div>
         )}
 
-        <Columns $numColumns={NUM_COLUMNS} variants={staggerFadeFast}>
+        <Columns $numColumns={NUM_COLUMNS} variants={fade}>
           {columns.map((colImages, colIndex) => (
-            <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS} variants={staggerFade}>
+            <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS}>
               {colImages.map((item) => (
-                <ImageWrapper key={item.image.src} variants={photoAnim}>
+                <ImageWrapper key={item.image.src}>
                   <Image
                     alt={`${item.title} - ${item.date}`}
                     aria-label={`Open full screen image: ${item.title}`}
@@ -173,7 +173,7 @@ const Columns = styled(m.section)<{ $numColumns: number }>`
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
 `
 
-const Column = styled(m.div)<{ $numColumns: number }>`
+const Column = styled.div<{ $numColumns: number }>`
   display: flex;
   flex-direction: column;
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
@@ -241,7 +241,7 @@ const HoverBox = styled.div`
     }
   }
 `
-const ImageWrapper = styled(m.div)`
+const ImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
   border-radius: var(--border-radius-sm);

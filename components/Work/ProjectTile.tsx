@@ -1,17 +1,27 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import styled from 'styled-components'
+import { useRef } from 'react'
+import styled, { css, keyframes } from 'styled-components'
 import type { ProjectType } from '../../lib/projects'
 import { fade, lineAnim } from '../animation'
+import { usePageTransitionInitial } from '../animation/MotionProvider'
 
 interface Props {
   project: ProjectType
 }
 
 const ProjectTile = ({ project }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
+  const animateLineOnMount = useRef(pageTransitionInitial === false).current
+
   return (
     <ProjectContainer variants={fade}>
-      <header>
+      <ProjectHeader
+        $animateOnMount={animateLineOnMount}
+        inherit={!animateLineOnMount}
+        initial={animateLineOnMount ? false : undefined}
+        variants={lineAnim}
+      >
         <Link href={`/work/${project.slug}`}>
           <h2>{project.title}</h2>
         </Link>
@@ -31,8 +41,7 @@ const ProjectTile = ({ project }: Props) => {
             <span>Shut Down</span>
           )}
         </div>
-        <ProjectLine aria-hidden="true" variants={lineAnim} />
-      </header>
+      </ProjectHeader>
 
       <m.span className="summary" variants={fade}>
         {project.summary}
@@ -45,6 +54,20 @@ const ProjectTile = ({ project }: Props) => {
 
 export default ProjectTile
 
+const revealLine = keyframes`
+  from { width: 95%; }
+  to { width: 100%; }
+`
+
+const ProjectHeader = styled(m.header)<{ $animateOnMount: boolean }>`
+  ${({ $animateOnMount }) =>
+    $animateOnMount
+      ? css`
+          animation: ${revealLine} 0.4s ease forwards;
+        `
+      : null}
+`
+
 const ProjectContainer = styled(m.div)`
   position: relative;
   margin-bottom: 3.5rem;
@@ -56,6 +79,7 @@ const ProjectContainer = styled(m.div)`
     align-items: center;
     margin-bottom: 0.5rem;
     padding: 0.25rem 0;
+    border-bottom: 1px solid var(--accent);
 
     h2 {
       display: inline-block;
@@ -108,14 +132,4 @@ const ProjectContainer = styled(m.div)`
       color: var(--text-dark);
     }
   }
-`
-
-const ProjectLine = styled(m.div)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 1px;
-  background: var(--accent);
-  transform-origin: left;
 `

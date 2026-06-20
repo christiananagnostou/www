@@ -4,7 +4,12 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
-import { fade, staggerFade } from '../animation'
+import { fade } from '../animation'
+
+const featuredProjectsAnimation = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+}
 
 const VuoriLogo = () => (
   <svg
@@ -27,7 +32,7 @@ const VuoriLogo = () => (
 )
 
 const FeaturedProjects = () => (
-  <Container variants={staggerFade}>
+  <Container variants={featuredProjectsAnimation}>
     <ProjectLink
       href="https://vuoriclothing.com/"
       target="_blank"

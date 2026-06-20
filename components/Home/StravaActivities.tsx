@@ -1,5 +1,4 @@
 import * as m from 'framer-motion/m'
-import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
@@ -30,6 +29,22 @@ const AlternateMetricTitles = {
   AverageSpeed: 'Avg Speed',
   ElevationGain: 'Elevation Gain',
 } as const
+
+const ACTIVITY_TIME_ZONE = 'America/Los_Angeles'
+const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: ACTIVITY_TIME_ZONE,
+  year: 'numeric',
+})
+const activityDateKeyFormatter = new Intl.DateTimeFormat('en-CA', {
+  day: '2-digit',
+  month: '2-digit',
+  timeZone: ACTIVITY_TIME_ZONE,
+  year: 'numeric',
+})
+
+const getActivityDateKey = (date: Date) => activityDateKeyFormatter.format(date)
 
 const StravaActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
@@ -132,6 +147,10 @@ const StravaActivities = ({ activities }: Props) => {
     document.addEventListener('mouseup', handleMouseUp)
   }
 
+  const now = new Date()
+  const todayDateKey = getActivityDateKey(now)
+  const yesterdayDateKey = getActivityDateKey(new Date(now.getTime() - 24 * 60 * 60 * 1000))
+
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
@@ -149,9 +168,10 @@ const StravaActivities = ({ activities }: Props) => {
 
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
         {filteredActivities.map((activity) => {
-          const pubDate = dayjs(activity.pubDate)
-          const isToday = pubDate.isSame(dayjs(), 'day')
-          const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
+          const pubDate = new Date(activity.pubDate)
+          const activityDateKey = getActivityDateKey(pubDate)
+          const isToday = activityDateKey === todayDateKey
+          const isYesterday = activityDateKey === yesterdayDateKey
 
           return (
             <ActivityItem key={activity.guid}>
@@ -171,7 +191,7 @@ const StravaActivities = ({ activities }: Props) => {
 
               {isToday ? <ActivityDate>Today</ActivityDate> : null}
               {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
-              {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
+              {!isToday && !isYesterday && <ActivityDate>{activityDateFormatter.format(pubDate)}</ActivityDate>}
             </ActivityItem>
           )
         })}
