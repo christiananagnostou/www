@@ -37,14 +37,6 @@ const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: ACTIVITY_TIME_ZONE,
   year: 'numeric',
 })
-const activityDateKeyFormatter = new Intl.DateTimeFormat('en-CA', {
-  day: '2-digit',
-  month: '2-digit',
-  timeZone: ACTIVITY_TIME_ZONE,
-  year: 'numeric',
-})
-
-const getActivityDateKey = (date: Date) => activityDateKeyFormatter.format(date)
 
 const StravaActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
@@ -147,10 +139,6 @@ const StravaActivities = ({ activities }: Props) => {
     document.addEventListener('mouseup', handleMouseUp)
   }
 
-  const now = new Date()
-  const todayDateKey = getActivityDateKey(now)
-  const yesterdayDateKey = getActivityDateKey(new Date(now.getTime() - 24 * 60 * 60 * 1000))
-
   return (
     <ActivitiesSection variants={staggerFade}>
       <SectionHeader>
@@ -169,9 +157,6 @@ const StravaActivities = ({ activities }: Props) => {
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
         {filteredActivities.map((activity) => {
           const pubDate = new Date(activity.pubDate)
-          const activityDateKey = getActivityDateKey(pubDate)
-          const isToday = activityDateKey === todayDateKey
-          const isYesterday = activityDateKey === yesterdayDateKey
 
           return (
             <ActivityItem key={activity.guid}>
@@ -189,9 +174,7 @@ const StravaActivities = ({ activities }: Props) => {
               {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
               {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
 
-              {isToday ? <ActivityDate>Today</ActivityDate> : null}
-              {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
-              {!isToday && !isYesterday && <ActivityDate>{activityDateFormatter.format(pubDate)}</ActivityDate>}
+              <ActivityDate>{activityDateFormatter.format(pubDate)}</ActivityDate>
             </ActivityItem>
           )
         })}
