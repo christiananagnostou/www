@@ -86,6 +86,9 @@ const ProjectLink = styled(m.create(Link))`
   background: var(--dark-bg);
   font-size: 0.85rem;
   letter-spacing: 0.03em;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
   cursor: alias;
 
   svg,
