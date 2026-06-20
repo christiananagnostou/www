@@ -5,11 +5,12 @@ const PageTransitionContext = createContext<false | 'hidden'>(false)
 
 interface Props {
   children: React.ReactNode
+  forcePageTransitionInitial?: boolean
 }
 
 export const usePageTransitionInitial = () => useContext(PageTransitionContext)
 
-const MotionProvider = ({ children }: Props) => {
+const MotionProvider = ({ children, forcePageTransitionInitial = false }: Props) => {
   const [hasHydrated, setHasHydrated] = useState(false)
 
   useEffect(() => setHasHydrated(true), [])
@@ -17,7 +18,9 @@ const MotionProvider = ({ children }: Props) => {
   return (
     <LazyMotion features={domAnimation} strict>
       <MotionConfig reducedMotion="user">
-        <PageTransitionContext value={hasHydrated ? 'hidden' : false}>{children}</PageTransitionContext>
+        <PageTransitionContext value={forcePageTransitionInitial || hasHydrated ? 'hidden' : false}>
+          {children}
+        </PageTransitionContext>
       </MotionConfig>
     </LazyMotion>
   )
