@@ -1,9 +1,10 @@
 import emailjs from '@emailjs/browser'
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
 import SocialLinks from '../components/SocialLinks'
 import { BASE_URL } from '../lib/constants'
@@ -14,6 +15,7 @@ const PageDescription = 'Get in touch with Christian Anagnostou for inquiries, c
 const PageUrl = `${BASE_URL}/contact`
 
 const Contact = () => {
+  const pageTransitionInitial = usePageTransitionInitial()
   const [sentSuccessful, setSentSuccessful] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -96,7 +98,7 @@ const Contact = () => {
         />
       </Head>
 
-      <ContactStyle animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <ContactStyle animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Contact</h1>
           <p>
@@ -106,39 +108,39 @@ const Contact = () => {
         </Heading>
 
         <StyledForm method="POST" variants={staggerFade} onSubmit={handleSubmit}>
-          <motion.div variants={fade}>
+          <m.div variants={fade}>
             <FormGroup>
               <label htmlFor="name">
                 Name <span>*</span>
               </label>
               <input className="form-input custom-focus" id="name" name="name" required type="text" />
             </FormGroup>
-          </motion.div>
-          <motion.div variants={fade}>
+          </m.div>
+          <m.div variants={fade}>
             <FormGroup>
               <label htmlFor="email">Email</label>
               <input className="form-input custom-focus" id="email" name="email" type="email" />
             </FormGroup>
-          </motion.div>
-          <motion.div variants={fade}>
+          </m.div>
+          <m.div variants={fade}>
             <FormGroup>
               <label htmlFor="subject">Subject</label>
               <input autoComplete="off" className="form-input custom-focus" id="subject" name="subject" type="text" />
             </FormGroup>
-          </motion.div>
-          <motion.div variants={fade}>
+          </m.div>
+          <m.div variants={fade}>
             <FormGroup>
               <label htmlFor="message">Message</label>
               <textarea className="form-input custom-focus" id="message" name="message" rows={6} />
             </FormGroup>
-          </motion.div>
-          <motion.div variants={fade}>
+          </m.div>
+          <m.div variants={fade}>
             <FormGroup>
               <button className="form-btn custom-focus" type="submit">
                 SEND
               </button>
             </FormGroup>
-          </motion.div>
+          </m.div>
         </StyledForm>
 
         <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
@@ -148,9 +150,9 @@ const Contact = () => {
           {errorMessage}
         </p>
 
-        <motion.div variants={fade}>
+        <m.div variants={fade}>
           <SocialLinks />
-        </motion.div>
+        </m.div>
       </ContactStyle>
     </>
   )
@@ -158,7 +160,7 @@ const Contact = () => {
 
 export default Contact
 
-const ContactStyle = styled(motion.div)`
+const ContactStyle = styled(m.div)`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -183,7 +185,7 @@ const ContactStyle = styled(motion.div)`
   }
 `
 
-const StyledForm = styled(motion.form)`
+const StyledForm = styled(m.form)`
   width: 100%;
   margin-top: -1rem;
   margin-bottom: 2rem;

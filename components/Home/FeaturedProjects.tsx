@@ -1,10 +1,15 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
-import { fade, staggerFade } from '../animation'
+import { fade } from '../animation'
+
+const featuredProjectsAnimation = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+}
 
 const VuoriLogo = () => (
   <svg
@@ -27,7 +32,7 @@ const VuoriLogo = () => (
 )
 
 const FeaturedProjects = () => (
-  <Container variants={staggerFade}>
+  <Container variants={featuredProjectsAnimation}>
     <ProjectLink
       href="https://vuoriclothing.com/"
       target="_blank"
@@ -62,7 +67,7 @@ const FeaturedProjects = () => (
 
 export default FeaturedProjects
 
-const Container = styled(motion.section)`
+const Container = styled(m.section)`
   display: flex;
   flex: 1;
   flex-wrap: wrap;
@@ -70,7 +75,7 @@ const Container = styled(motion.section)`
   color: var(--text);
 `
 
-const ProjectLink = styled(motion.create(Link))`
+const ProjectLink = styled(m.create(Link))`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -81,6 +86,9 @@ const ProjectLink = styled(motion.create(Link))`
   background: var(--dark-bg);
   font-size: 0.85rem;
   letter-spacing: 0.03em;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
   cursor: alias;
 
   svg,

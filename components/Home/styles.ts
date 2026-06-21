@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import { styled } from 'styled-components'
 
-export const HomepageBox = styled(motion.div)`
+export const HomepageBox = styled(m.div)`
   position: relative;
   flex: 1;
   padding: 1rem;

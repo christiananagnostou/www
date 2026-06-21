@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 
-export const Heading = styled(motion.div)`
+export const Heading = styled(m.div)`
   margin-bottom: 3.5rem;
 
   h1 {

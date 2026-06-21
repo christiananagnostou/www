@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -149,7 +150,7 @@ const ImageArea = styled.div`
   flex: 1;
 `
 
-const MotionImageContainer = styled(motion.div)`
+const MotionImageContainer = styled(m.div)`
   position: absolute;
   width: 100%;
   max-width: 800px;
@@ -158,7 +159,7 @@ const MotionImageContainer = styled(motion.div)`
   inset: 0;
 `
 
-const MetadataArea = styled(motion.div)`
+const MetadataArea = styled(m.div)`
   display: flex;
   justify-content: space-between;
   align-items: end;

@@ -1,17 +1,27 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import styled from 'styled-components'
+import { useRef } from 'react'
+import styled, { css, keyframes } from 'styled-components'
 import type { ProjectType } from '../../lib/projects'
 import { fade, lineAnim } from '../animation'
+import { usePageTransitionInitial } from '../animation/MotionProvider'
 
 interface Props {
   project: ProjectType
 }
 
 const ProjectTile = ({ project }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
+  const animateLineOnMount = useRef(pageTransitionInitial === false).current
+
   return (
     <ProjectContainer variants={fade}>
-      <motion.header variants={lineAnim}>
+      <ProjectHeader
+        $animateOnMount={animateLineOnMount}
+        inherit={!animateLineOnMount}
+        initial={animateLineOnMount ? false : undefined}
+        variants={lineAnim}
+      >
         <Link href={`/work/${project.slug}`}>
           <h2>{project.title}</h2>
         </Link>
@@ -31,24 +41,39 @@ const ProjectTile = ({ project }: Props) => {
             <span>Shut Down</span>
           )}
         </div>
-      </motion.header>
+      </ProjectHeader>
 
-      <motion.span className="summary" variants={fade}>
+      <m.span className="summary" variants={fade}>
         {project.summary}
 
         <span className="date">{project.date}</span>
-      </motion.span>
+      </m.span>
     </ProjectContainer>
   )
 }
 
 export default ProjectTile
 
-const ProjectContainer = styled(motion.div)`
+const revealLine = keyframes`
+  from { width: 95%; }
+  to { width: 100%; }
+`
+
+const ProjectHeader = styled(m.header)<{ $animateOnMount: boolean }>`
+  ${({ $animateOnMount }) =>
+    $animateOnMount
+      ? css`
+          animation: ${revealLine} 0.4s ease forwards;
+        `
+      : null}
+`
+
+const ProjectContainer = styled(m.div)`
   position: relative;
   margin-bottom: 3.5rem;
 
   header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;

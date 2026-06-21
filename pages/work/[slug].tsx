@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
+import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
 
@@ -35,6 +36,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 const SingleProject = ({ project }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
   const hasMedia = hasProjectMedia(project)
@@ -53,7 +55,7 @@ const SingleProject = ({ project }: Props) => {
       <Container
         animate="show"
         exit="exit"
-        initial="hidden"
+        initial={pageTransitionInitial}
         style={{ '--project-accent': accent } as CSSProperties}
         variants={pageAnimation}
       >
@@ -251,7 +253,7 @@ const getProjectAccent = (slug: string) => {
   return accents[index]
 }
 
-const Container = styled(motion.main)`
+const Container = styled(m.main)`
   width: 100%;
   max-width: var(--max-w-screen);
   padding: 2rem 1rem 5rem;
@@ -278,12 +280,12 @@ const BackLink = styled(Link)`
   }
 `
 
-const Hero = styled(motion.header)`
+const Hero = styled(m.header)`
   display: grid;
   padding-bottom: 1.25rem;
 `
 
-const HeroCopy = styled(motion.div)`
+const HeroCopy = styled(m.div)`
   h1 {
     max-width: 34rem;
     margin: 0.85rem 0 1rem;
@@ -300,7 +302,7 @@ const HeroCopy = styled(motion.div)`
   }
 `
 
-const FeaturedMedia = styled(motion.figure)`
+const FeaturedMedia = styled(m.figure)`
   width: 100%;
   margin: 1.25rem auto 0;
   padding: 0.55rem;
@@ -316,7 +318,7 @@ const FeaturedMedia = styled(motion.figure)`
   }
 `
 
-const CliPanel = styled(motion.section)`
+const CliPanel = styled(m.section)`
   display: grid;
   grid-template-columns: minmax(0, 0.75fr) minmax(340px, 1.25fr);
   gap: 1.5rem;
@@ -508,7 +510,7 @@ const BodyGrid = styled.div<{ $hasMedia: boolean }>`
   }
 `
 
-const Details = styled(motion.section)`
+const Details = styled(m.section)`
   display: grid;
   gap: 0;
 `
@@ -542,7 +544,7 @@ const DetailStyle = styled.div`
   }
 `
 
-const ProjectMeta = styled(motion.aside)`
+const ProjectMeta = styled(m.aside)`
   display: grid;
   gap: 1rem;
   padding: 1rem;
@@ -578,7 +580,7 @@ const MetaItem = styled.div`
   }
 `
 
-const MediaSection = styled(motion.section)`
+const MediaSection = styled(m.section)`
   display: grid;
   gap: 1.25rem;
   margin-top: 2.5rem;
@@ -591,7 +593,7 @@ const WideGallery = styled.div`
   margin: 0 auto;
 `
 
-const GalleryImage = styled(motion.figure)`
+const GalleryImage = styled(m.figure)`
   margin: 0;
   padding: 0.45rem;
   border: 1px solid var(--accent);
@@ -613,7 +615,7 @@ const PhoneGallery = styled.div`
   align-items: start;
 `
 
-const PhoneFrame = styled(motion.figure)`
+const PhoneFrame = styled(m.figure)`
   margin: 0;
   padding: 0.55rem;
   border: 1px solid var(--accent);

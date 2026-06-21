@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import styled from 'styled-components'
 import type { ArticleType } from '../../lib/articles'
@@ -18,19 +18,19 @@ export default function RecentArticles({ posts }: ArticlesProps) {
 
       <ul>
         {posts.slice(0, 3).map((article) => (
-          <motion.li key={article.slug} variants={fade}>
+          <m.li key={article.slug} variants={fade}>
             <Link href={`/article/${article.slug}`}>
               <p className="recent-article__title">{article.title}</p>
               <p className="recent-article__summary">{article.summary}</p>
             </Link>
-          </motion.li>
+          </m.li>
         ))}
       </ul>
     </ArticlesContainer>
   )
 }
 
-const Title = styled(motion.h2)`
+const Title = styled(m.h2)`
   margin: 0 0 1rem;
 
   a {

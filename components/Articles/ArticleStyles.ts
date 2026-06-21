@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import { styled } from 'styled-components'
 
-export const ArticleStyle = styled(motion.section)`
+export const ArticleStyle = styled(m.section)`
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
@@ -44,7 +44,7 @@ export const TopBar = styled.div`
   }
 `
 
-export const TopBarButton = styled(motion.button)`
+export const TopBarButton = styled(m.button)`
   background: transparent;
   border: 1px solid var(--accent);
   color: inherit;

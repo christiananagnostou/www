@@ -1,11 +1,13 @@
 import dayjs from 'dayjs'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import FullscreenModal from '../components/Art/FullScreenModal'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
@@ -28,6 +30,7 @@ const UNIQUE_TAGS = Array.from(new Set(SortedArtImages.flatMap((img) => img.tags
 
 const Art = () => {
   const router = useRouter()
+  const pageTransitionInitial = usePageTransitionInitial()
   const { query } = router
   const queriedTag = query.tag?.toString()
 
@@ -69,7 +72,7 @@ const Art = () => {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Photography</h1>
           <p>
@@ -80,24 +83,26 @@ const Art = () => {
         </Heading>
 
         {UNIQUE_TAGS.length > 1 && (
-          <ButtonRow>
-            <button className={!queriedTag ? 'selected' : ''} onClick={() => router.push({ query: { tag: '' } })}>
-              All
-            </button>
-
-            {UNIQUE_TAGS.map((tag) => (
-              <button
-                key={tag}
-                className={queriedTag === tag ? 'selected' : ''}
-                onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
-              >
-                {tag}
+          <m.div variants={fade}>
+            <ButtonRow>
+              <button className={!queriedTag ? 'selected' : ''} onClick={() => router.push({ query: { tag: '' } })}>
+                All
               </button>
-            ))}
-          </ButtonRow>
+
+              {UNIQUE_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  className={queriedTag === tag ? 'selected' : ''}
+                  onClick={() => router.push({ query: { tag: queriedTag === tag ? '' : tag } })}
+                >
+                  {tag}
+                </button>
+              ))}
+            </ButtonRow>
+          </m.div>
         )}
 
-        <Columns $numColumns={NUM_COLUMNS}>
+        <Columns $numColumns={NUM_COLUMNS} variants={fade}>
           {columns.map((colImages, colIndex) => (
             <Column key={`column_${colIndex}`} $numColumns={NUM_COLUMNS}>
               {colImages.map((item) => (
@@ -155,7 +160,7 @@ const Art = () => {
 
 export default Art
 
-const Container = styled(motion.section)`
+const Container = styled(m.section)`
   overflow: hidden;
   color: var(--text);
   max-width: var(--max-w-screen);
@@ -163,7 +168,7 @@ const Container = styled(motion.section)`
   margin: 2rem auto;
 `
 
-const Columns = styled.section<{ $numColumns: number }>`
+const Columns = styled(m.section)<{ $numColumns: number }>`
   display: flex;
   gap: ${({ $numColumns }) => 20 - $numColumns * 1.5}px;
 `

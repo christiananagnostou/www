@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -90,7 +90,7 @@ const ArtContainer = styled(HomepageBox)`
   }
 `
 
-const Title = styled(motion.h2)`
+const Title = styled(m.h2)`
   position: relative;
   z-index: 1;
   margin: 0 0 1rem;
@@ -101,7 +101,7 @@ const Title = styled(motion.h2)`
   }
 `
 
-const RecentImage = styled(motion.div)`
+const RecentImage = styled(m.div)`
   position: absolute;
   top: 0;
   left: 0;

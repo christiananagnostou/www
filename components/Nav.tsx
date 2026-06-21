@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -48,7 +49,7 @@ const Nav: React.FC = () => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   // Track if user is on desktop
-  const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
 
   // Hide on scroll logic
   useEffect(() => {
@@ -76,10 +77,12 @@ const Nav: React.FC = () => {
 
   // Track screen size for desktop vs mobile
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768)
-    handleResize() // check on initial mount
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    const desktopQuery = window.matchMedia('(width >= 768px)')
+    const handleBreakpointChange = (event: MediaQueryListEvent) => setIsDesktop(event.matches)
+
+    setIsDesktop(desktopQuery.matches)
+    desktopQuery.addEventListener('change', handleBreakpointChange)
+    return () => desktopQuery.removeEventListener('change', handleBreakpointChange)
   }, [])
 
   // Close all menus on route change
@@ -136,28 +139,19 @@ const Nav: React.FC = () => {
         itemType="https://schema.org/SiteNavigationElement"
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
-        <motion.div
-          animate="show"
-          className="nav-inner max-w-screen"
-          exit="exit"
-          initial="hidden"
-          variants={staggerFade}
-        >
+        <m.div animate="show" className="nav-inner max-w-screen" exit="exit" initial={false} variants={staggerFade}>
           <LogoWrapper aria-label="Home" href="/" variants={fade}>
             <A height="30px" width="30px" />
           </LogoWrapper>
 
-          <AnimatePresence>
-            {menuOpen || isDesktop ? (
+          <AnimatePresence initial={false}>
+            {menuOpen || isDesktop !== false ? (
               <Menu
                 key="main-menu"
                 animate="show"
+                data-menu-open={menuOpen}
                 exit="exit"
-                initial="hidden"
-                style={{
-                  height: isDesktop ? 'auto' : undefined,
-                  opacity: isDesktop ? 1 : undefined,
-                }}
+                initial={isDesktop === false ? 'hidden' : false}
                 variants={menuAnimation}
               >
                 {NAV_LINKS.map(({ href, title, subLinks }, index) => {
@@ -224,19 +218,12 @@ const Nav: React.FC = () => {
           </AnimatePresence>
 
           {/* Hamburger (mobile) */}
-          {!isDesktop && (
-            <Hamburger
-              aria-expanded={menuOpen}
-              aria-label="Toggle navigation menu"
-              variants={fade}
-              onClick={toggleMenu}
-            >
-              <span />
-              <span />
-              <span />
-            </Hamburger>
-          )}
-        </motion.div>
+          <Hamburger aria-expanded={menuOpen} aria-label="Toggle navigation menu" variants={fade} onClick={toggleMenu}>
+            <span />
+            <span />
+            <span />
+          </Hamburger>
+        </m.div>
       </StyledNav>
     </>
   )
@@ -260,9 +247,9 @@ const SkipLink = styled.a`
 `
 
 const menuAnimation = {
-  hidden: { height: 0 },
-  show: { height: 'auto', transition: { duration: 0.2, staggerChildren: 0.1 } },
-  exit: { height: 0, transition: { duration: 0.2 } },
+  hidden: { opacity: 0, y: -8, scaleY: 0.98 },
+  show: { opacity: 1, y: 0, scaleY: 1, transition: { duration: 0.2, staggerChildren: 0.1 } },
+  exit: { opacity: 0, y: -8, scaleY: 0.98, transition: { duration: 0.15 } },
 } as const
 
 const desktopSubmenuAnimation = {
@@ -289,7 +276,7 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoWrapper = styled(motion.create(Link))`
+const LogoWrapper = styled(m.create(Link))`
   display: flex;
   align-items: center;
   padding: 0 1rem;
@@ -301,7 +288,7 @@ const LogoWrapper = styled(motion.create(Link))`
   }
 `
 
-const Hamburger = styled(motion.button)`
+const Hamburger = styled(m.button)`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -336,9 +323,13 @@ const Hamburger = styled(motion.button)`
       transform-origin: center;
     }
   }
+
+  @media (width >= 768px) {
+    display: none;
+  }
 `
 
-const Menu = styled(motion.ul)`
+const Menu = styled(m.ul)`
   position: relative;
   margin: 0;
   padding: 0;
@@ -363,11 +354,16 @@ const Menu = styled(motion.ul)`
     border-bottom: 1px solid var(--accent);
     background: var(--dark-bg);
     box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+    transform-origin: top;
     overflow: hidden;
+
+    &[data-menu-open='false'] {
+      display: none;
+    }
   }
 `
 
-const MenuItem = styled(motion.li)`
+const MenuItem = styled(m.li)`
   position: relative;
 
   /* Mobile */
@@ -415,7 +411,7 @@ const DropdownToggle = styled.button`
   }
 `
 
-const Submenu = styled(motion.ul)`
+const Submenu = styled(m.ul)`
   margin: 0;
   padding: 0;
 

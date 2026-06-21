@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion'
-import dayjs from 'dayjs'
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
@@ -30,6 +29,14 @@ const AlternateMetricTitles = {
   AverageSpeed: 'Avg Speed',
   ElevationGain: 'Elevation Gain',
 } as const
+
+const ACTIVITY_TIME_ZONE = 'America/Los_Angeles'
+const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: ACTIVITY_TIME_ZONE,
+  year: 'numeric',
+})
 
 const StravaActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
@@ -149,9 +156,7 @@ const StravaActivities = ({ activities }: Props) => {
 
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
         {filteredActivities.map((activity) => {
-          const pubDate = dayjs(activity.pubDate)
-          const isToday = pubDate.isSame(dayjs(), 'day')
-          const isYesterday = pubDate.isSame(dayjs().subtract(1, 'day'), 'day')
+          const pubDate = new Date(activity.pubDate)
 
           return (
             <ActivityItem key={activity.guid}>
@@ -169,9 +174,7 @@ const StravaActivities = ({ activities }: Props) => {
               {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
               {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
 
-              {isToday ? <ActivityDate>Today</ActivityDate> : null}
-              {isYesterday ? <ActivityDate>Yesterday</ActivityDate> : null}
-              {!isToday && !isYesterday && <ActivityDate>{pubDate.format('MMM D, YYYY')}</ActivityDate>}
+              <ActivityDate>{activityDateFormatter.format(pubDate)}</ActivityDate>
             </ActivityItem>
           )
         })}
@@ -201,7 +204,7 @@ const StravaActivities = ({ activities }: Props) => {
 
 export default StravaActivities
 
-const ActivitiesSection = styled(motion.section)`
+const ActivitiesSection = styled(m.section)`
   position: relative;
   width: 100%;
   padding: 1rem 0;
@@ -223,7 +226,7 @@ const SectionHeader = styled.div`
   padding: 0 1rem 1rem;
 `
 
-const Title = styled(motion.h2)`
+const Title = styled(m.h2)`
   margin: 0;
 
   a {
@@ -237,7 +240,7 @@ const ActivityFilters = styled.div`
   gap: 0.25rem;
 `
 
-const ActivityFilter = styled(motion.button)`
+const ActivityFilter = styled(m.button)`
   padding: 0.15rem 0.25rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-sm);
@@ -276,7 +279,7 @@ const ActivityList = styled.ul`
   }
 `
 
-const ActivityItem = styled(motion.li)`
+const ActivityItem = styled.li`
   position: relative;
   flex: 1;
   min-width: 200px;
@@ -316,7 +319,7 @@ const ActivityDate = styled.p`
   color: var(--text-dark);
 `
 
-const SeeAllItem = styled(motion.li)<{ $compact?: boolean }>`
+const SeeAllItem = styled.li<{ $compact?: boolean }>`
   position: relative;
   display: flex;
   flex: ${({ $compact }) => ($compact ? '0 0 200px' : '1')};

@@ -1,11 +1,12 @@
 import dayjs from 'dayjs'
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ride, run, swim } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
 import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
@@ -20,12 +21,17 @@ const OLYMPIC_POOL_MILES = 0.0311
 
 const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
-  loading: () => <div>Loading charts…</div>,
+  loading: () => (
+    <ChartsLoading aria-label="Loading charts">
+      <SharedChartLoading>Loading chart…</SharedChartLoading>
+      <SharedChartLoading>Loading chart…</SharedChartLoading>
+    </ChartsLoading>
+  ),
 })
 
 const FitnessLaneChart = dynamic(async () => import('../components/Fitness/FitnessLaneChart'), {
   ssr: false,
-  loading: () => <div>Loading chart…</div>,
+  loading: () => <LaneChartLoading>Loading chart…</LaneChartLoading>,
 })
 
 interface Props {
@@ -261,6 +267,7 @@ const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[]
 const formatHours = (hours: number) => hours.toFixed(0)
 
 const FitnessPage = ({ activities, error }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
   const [windowMonths, setWindowMonths] = useState(12)
 
   const parsedActivities = useMemo<ParsedActivity[]>(
@@ -417,7 +424,7 @@ const FitnessPage = ({ activities, error }: Props) => {
           <meta content={PageDescription} name="description" />
           <link href={PageUrl} rel="canonical" />
         </Head>
-        <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+        <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
           <SectionCard variants={fade}>
             <SectionHeaderText>
               <h2>Fitness</h2>
@@ -436,7 +443,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         <meta content={PageDescription} name="description" />
         <link href={PageUrl} rel="canonical" />
       </Head>
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <HeroPanel variants={fade}>
           <HeroGlow />
           <HeroBadge>{windowLabel}</HeroBadge>
@@ -593,7 +600,7 @@ const FitnessPage = ({ activities, error }: Props) => {
 
 export default FitnessPage
 
-const Container = styled(motion.main)`
+const Container = styled(m.main)`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -601,7 +608,7 @@ const Container = styled(motion.main)`
   color: var(--text);
 `
 
-const HeroPanel = styled(motion.section)`
+const HeroPanel = styled(m.section)`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -729,13 +736,13 @@ const ToggleButton = styled.button<{ $active?: boolean }>`
   cursor: pointer;
 `
 
-const LaneGrid = styled(motion.section)`
+const LaneGrid = styled(m.section)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 `
 
-const LaneCard = styled(motion.div)<{ $accent: string }>`
+const LaneCard = styled(m.div)<{ $accent: string }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -791,6 +798,32 @@ const LaneChart = styled.div`
   }
 `
 
+const ChartLoadingBase = styled.div`
+  display: grid;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 3%);
+  font-size: 0.7rem;
+  color: var(--text-dark);
+`
+
+const LaneChartLoading = styled(ChartLoadingBase)`
+  min-height: 176px;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: var(--border-radius-lg);
+`
+
+const ChartsLoading = styled.section`
+  display: contents;
+`
+
+const SharedChartLoading = styled(ChartLoadingBase)`
+  min-height: 363px;
+  padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, #1e1e1e 0%, #191919 100%);
+`
+
 const LaneStats = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -821,7 +854,7 @@ const FunStat = styled.div`
   color: var(--text-dark);
 `
 
-const SectionCard = styled(motion.section)`
+const SectionCard = styled(m.section)`
   display: grid;
   gap: 1.5rem;
   padding: 1.75rem;

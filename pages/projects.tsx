@@ -1,7 +1,8 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
 import ProjectTile from '../components/Work/ProjectTile'
 import { BASE_URL } from '../lib/constants'
@@ -12,6 +13,8 @@ const PageTitle = 'Projects | Christian Anagnostou'
 const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
 
 export default function Projects() {
+  const pageTransitionInitial = usePageTransitionInitial()
+
   return (
     <>
       <Head>
@@ -41,7 +44,7 @@ export default function Projects() {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>
           <h1>Projects</h1>
           <p>
@@ -51,17 +54,17 @@ export default function Projects() {
           </p>
         </Heading>
 
-        <motion.section variants={staggerFade}>
+        <m.section variants={staggerFade}>
           {ProjectState.map((project) => (
             <ProjectTile key={project.title} project={project} />
           ))}
-        </motion.section>
+        </m.section>
       </Container>
     </>
   )
 }
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   max-width: var(--max-w-screen);
   margin: 2rem auto;
   padding: 0 1rem;

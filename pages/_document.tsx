@@ -3,6 +3,22 @@ import Document, { Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import { BASE_URL, X_HANDLE } from '../lib/constants'
 
+const pageEntryAnimationScript = `
+  (() => {
+    try {
+      const navigation = performance.getEntriesByType('navigation')[0]
+      const isFreshNavigation = navigation
+        ? navigation.type === 'navigate'
+        : performance.navigation?.type === 0
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (isFreshNavigation && !prefersReducedMotion) {
+        document.documentElement.dataset.pageEntry = 'pending'
+      }
+    } catch {}
+  })()
+`
+
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     const styledComponentsSheet = new ServerStyleSheet()
@@ -33,6 +49,7 @@ class MyDocument extends Document {
       <Html dir="ltr" lang="en">
         <Head>
           <meta charSet="utf-8" />
+          <script dangerouslySetInnerHTML={{ __html: pageEntryAnimationScript }} />
           <link href="https://fonts.googleapis.com" rel="preconnect" />
           <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />
           <link

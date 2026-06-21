@@ -431,7 +431,7 @@ const ChartCard = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 320px;
+  min-height: 363px;
   padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
   border: 1px solid rgb(255 255 255 / 8%);
   border-radius: var(--border-radius-md);

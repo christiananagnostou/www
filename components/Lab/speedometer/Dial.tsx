@@ -1,9 +1,9 @@
-import { animate, useMotionValue } from 'framer-motion'
-import { useEffect, useMemo } from 'react'
+import { type MotionValue, useSpring, useTransform } from 'framer-motion'
+import { Fragment, memo, useMemo } from 'react'
 import { DialShell, Label, Marker, Needle, RedlineArc, Tick } from './styles'
 
 interface DialProps {
-  speed: number
+  speed: MotionValue<number>
   maxSpeed: number
   diameter: number
 }
@@ -14,23 +14,11 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
   const TICK_MED = diameter * 0.045
   const TICK_MINOR = diameter * 0.03
 
-  const needleMv = useMotionValue(0) // Initialize to 0
-
   const startAngle = -135
   const endAngle = 135
   const angleRange = endAngle - startAngle
-
-  // Animate needle
-  useEffect(() => {
-    const clamped = Math.min(Math.max(speed, 0), maxSpeed)
-    const fraction = clamped / maxSpeed
-    const targetAngle = startAngle + fraction * angleRange
-    animate(needleMv, targetAngle, {
-      type: 'spring',
-      stiffness: 170,
-      damping: 26,
-    })
-  }, [speed, maxSpeed, needleMv])
+  const needleTarget = useTransform(speed, [0, maxSpeed], [startAngle, endAngle], { clamp: true })
+  const needleAngle = useSpring(needleTarget, { stiffness: 170, damping: 26 })
 
   // Ticks + labels every 10 mph, minor ticks every 1 mph
   const ticks = useMemo(() => {
@@ -61,16 +49,10 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
         const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
         const rotate = `rotate(${angle}deg)`
         return (
-          <>
-            <Tick
-              key={`t${i}`}
-              $len={len}
-              $major={major}
-              style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }}
-            />
+          <Fragment key={`tick-${i}`}>
+            <Tick $len={len} $major={major} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
             {label ? (
               <Label
-                key={`l${i}`}
                 style={{
                   transform: `${rotate} translateY(-${labelRadius}px) rotate(${-angle}deg)`,
                 }}
@@ -78,7 +60,7 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
                 {label}
               </Label>
             ) : null}
-          </>
+          </Fragment>
         )
       })}
 
@@ -88,9 +70,9 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
           <Marker key={`m${i}`} style={{ transform: `rotate(${angle}deg) translateY(-${radius - 8}px)` }} />
         ))}
 
-      <Needle style={{ rotate: needleMv }} />
+      <Needle style={{ rotate: needleAngle }} />
     </DialShell>
   )
 }
 
-export default Dial
+export default memo(Dial)

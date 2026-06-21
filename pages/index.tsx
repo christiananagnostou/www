@@ -1,9 +1,10 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import styled from 'styled-components'
 
 import { pageAnimation } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import RecentArt from '../components/Home/RecentArt'
@@ -49,6 +50,8 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Home = ({ posts, stravaActivities }: Props) => {
+  const pageTransitionInitial = usePageTransitionInitial()
+
   return (
     <>
       <Head>
@@ -80,7 +83,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial="hidden" variants={pageAnimation}>
+      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <div className="page-inner-container">
           <Bio />
 
@@ -110,7 +113,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
 
 export default Home
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   max-width: var(--max-w-screen);
   min-height: calc(100vh - var(--nav-height));
   margin: auto;
@@ -129,7 +132,7 @@ const Container = styled(motion.div)`
   }
 `
 
-const FlexWrap = styled(motion.section)`
+const FlexWrap = styled.section`
   display: flex;
   align-items: stretch;
   justify-content: space-between;

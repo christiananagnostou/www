@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
 import Giants from '../SVG/Giants'
@@ -6,17 +6,17 @@ import Giants from '../SVG/Giants'
 function Bio() {
   return (
     <Description className="max-w-screen" variants={staggerFade}>
-      <motion.h1 variants={fade}>Christian Anagnostou</motion.h1>
+      <m.h1 variants={fade}>Christian Anagnostou</m.h1>
 
-      <motion.p variants={fade}>
+      <m.p variants={fade}>
         Creating web experiences that <em>inspire</em>. Currently working as a lead software engineer at{' '}
         <a aria-label="Visit Vuori website" href="https://vuoriclothing.com/" rel="noreferrer" target="_blank">
           <em>Vuori</em>
         </a>
         .
-      </motion.p>
+      </m.p>
 
-      <motion.p variants={fade}>
+      <m.p variants={fade}>
         Among other things, I&apos;m a huge fan of the{' '}
         <GiantsSlotContainer animate="rest" initial="rest" whileHover="hover">
           <Slot>
@@ -28,12 +28,12 @@ function Bio() {
           <span> Giants</span>
         </GiantsSlotContainer>{' '}
         and baseball in general. If baseball is your thing too, hit me up and maybe we can catch a game together.
-      </motion.p>
+      </m.p>
 
-      <motion.p variants={fade}>
+      <m.p variants={fade}>
         As for this site, it&apos;s a place where I can share my thoughts, projects, and experiences. No matter how you
         stumbled upon this site or what you&apos;re looking for, I hope you find something that resonates with you.
-      </motion.p>
+      </m.p>
     </Description>
   )
 }
@@ -52,7 +52,7 @@ const svgSlotVariants = {
   hover: { y: 0, opacity: 1, transition: spring },
 }
 
-const GiantsSlotContainer = styled(motion.em)`
+const GiantsSlotContainer = styled(m.em)`
   position: relative;
 `
 
@@ -65,13 +65,13 @@ const Slot = styled.span`
 `
 
 // The "SF" text which animates upward on hover.
-const TextSlot = styled(motion.span)`
+const TextSlot = styled(m.span)`
   position: relative;
   display: block;
 `
 
 // The SVG starts below and slides upward into view.
-const SVGSlot = styled(motion.span)`
+const SVGSlot = styled(m.span)`
   position: absolute;
   inset: 0;
   margin: auto;
@@ -84,7 +84,7 @@ const SVGSlot = styled(motion.span)`
   }
 `
 
-const Description = styled(motion.section)`
+const Description = styled(m.section)`
   z-index: 2;
   display: flex;
   flex-direction: column;

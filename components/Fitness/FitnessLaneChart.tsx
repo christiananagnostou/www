@@ -214,6 +214,7 @@ export default FitnessLaneChart
 const ChartCard = styled.div`
   display: grid;
   gap: 0.6rem;
+  min-height: 176px;
   padding: 0.9rem 1rem 1rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid rgb(255 255 255 / 8%);
