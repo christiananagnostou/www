@@ -42,7 +42,6 @@ export default function GameRibbon({ games, selectedGamePk, onGameSelect }: Game
               <RibbonButton
                 $awayColor={awayColor}
                 $homeColor={homeColor}
-                $isLive={isLive}
                 $isSelected={isSelected}
                 aria-pressed={isSelected}
                 onClick={() => onGameSelect(game)}
@@ -107,7 +106,6 @@ const RibbonItem = styled.li`
 const RibbonButton = styled.button<{
   $awayColor: string
   $homeColor: string
-  $isLive: boolean
   $isSelected: boolean
 }>`
   display: grid;
@@ -132,9 +130,7 @@ const RibbonButton = styled.button<{
   box-shadow:
     ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.28)' : '0 8px 24px rgba(0, 0, 0, 0.14)')},
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+  transition: box-shadow 0.18s ease;
 
   &:hover,
   &:focus-visible {

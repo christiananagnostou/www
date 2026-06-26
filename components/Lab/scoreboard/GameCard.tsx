@@ -6,6 +6,7 @@ import type { LineScore, ScheduleGame } from '../../../lib/mlb/types'
 import { getTeamAbbreviation, rgba } from '../../../lib/mlb/utils'
 
 const LINESCORE_INNINGS = 9
+const getTeamPanelGradientAngle = (align: 'left' | 'right') => (align === 'left' ? '315deg' : '135deg')
 
 const getInningArrow = (half: string | undefined) =>
   half === 'Top' ? '↑' : half === 'Bottom' ? '↓' : half === 'Middle' ? '↕' : ''
@@ -400,8 +401,10 @@ const TeamPanel = styled.div<{ $align: 'left' | 'right'; $teamColor: string }>`
   padding: 0.65rem;
   text-align: ${({ $align }) => $align};
   background:
-    linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.3)}, rgba(0, 0, 0, 0.16)) padding-box,
-    linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.42)}, rgba(255, 255, 255, 0.1)) border-box;
+    ${({ $align, $teamColor }) =>
+      `linear-gradient(${getTeamPanelGradientAngle($align)}, ${rgba($teamColor, 0.3)}, rgba(0, 0, 0, 0.16)) padding-box`},
+    ${({ $align, $teamColor }) =>
+      `linear-gradient(${getTeamPanelGradientAngle($align)}, ${rgba($teamColor, 0.42)}, rgba(255, 255, 255, 0.1)) border-box`};
   border: 1px solid transparent;
   border-radius: 0.8rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -637,21 +640,20 @@ const LineScoreLedger = styled.table`
   }
 
   @media (width <= 720px) {
-    display: block;
-    box-sizing: border-box;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-
     th,
     td {
-      min-width: 1.35rem;
-      padding-right: 0.2rem;
-      padding-left: 0.2rem;
+      min-width: 0;
+      padding-right: 0.16rem;
+      padding-left: 0.16rem;
+    }
+
+    tbody th {
+      width: 1.9rem;
     }
 
     th:last-child,
     td:last-child {
-      padding-right: 0;
+      padding-right: 0.16rem;
     }
   }
 `
@@ -661,10 +663,6 @@ const PlayersSection = styled.div`
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
   margin-top: 0.65rem;
-
-  @media (width <= 620px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 `
 
 const PlayerColumnContainer = styled.div<{ $align: 'left' | 'right' }>`

@@ -242,10 +242,12 @@ const Wrapper = styled.div<{ $awayColor: string; $homeColor: string; $isLive: bo
   padding: 0.75rem;
   color: var(--text);
   background:
-    radial-gradient(circle at 16% 0, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 30%),
-    radial-gradient(circle at 100% 10%, ${({ $homeColor }) => rgba($homeColor, 0.28)}, transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    radial-gradient(circle at 16% 0, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 30%) padding-box,
+    radial-gradient(circle at 100% 10%, ${({ $homeColor }) => rgba($homeColor, 0.28)}, transparent 34%) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)) padding-box,
+    linear-gradient(135deg, ${({ $awayColor }) => rgba($awayColor, 0.34)}, ${({ $homeColor }) => rgba($homeColor, 0.3)})
+      border-box;
+  border: 1px solid transparent;
   border-radius: 1.2rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, ${({ $isLive }) => ($isLive ? 0.16 : 0.09)});
 

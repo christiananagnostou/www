@@ -83,39 +83,41 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
             </ErrorMessage>
           )}
         </AnimatePresence>
-        <input
-          id="team-search"
-          ref={inputRef}
-          placeholder="Enter team (e.g. ATH, Giants)"
-          value={value}
-          onChange={(event) => {
-            onChange(event.target.value)
-            setError(null)
-            setIsOpen(true)
-            setHighlightedIndex(-1)
-          }}
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setIsOpen(false)}
-          onKeyDown={handleKeyDown}
-          aria-autocomplete="list"
-          aria-controls="team-search-list"
-          aria-activedescendant={
-            highlightedIndex >= 0 ? `team-option-${filteredTeams[highlightedIndex]?.id}` : undefined
-          }
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-          role="combobox"
-        />
-        {value && (
-          <ClearButton
-            type="button"
-            aria-label="Clear team search"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={handleClear}
-          >
-            ×
-          </ClearButton>
-        )}
+        <InputControl>
+          <input
+            id="team-search"
+            ref={inputRef}
+            placeholder="Enter team (e.g. ATH, Giants)"
+            value={value}
+            onChange={(event) => {
+              onChange(event.target.value)
+              setError(null)
+              setIsOpen(true)
+              setHighlightedIndex(-1)
+            }}
+            onFocus={() => setIsOpen(true)}
+            onBlur={() => setIsOpen(false)}
+            onKeyDown={handleKeyDown}
+            aria-autocomplete="list"
+            aria-controls="team-search-list"
+            aria-activedescendant={
+              highlightedIndex >= 0 ? `team-option-${filteredTeams[highlightedIndex]?.id}` : undefined
+            }
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            role="combobox"
+          />
+          {value && (
+            <ClearButton
+              type="button"
+              aria-label="Clear team search"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={handleClear}
+            >
+              ×
+            </ClearButton>
+          )}
+        </InputControl>
 
         {isOpen && filteredTeams.length > 0 && (
           <Dropdown id="team-search-list" role="listbox" aria-label="Team suggestions">
@@ -177,9 +179,16 @@ const InputRow = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+`
+
+const InputControl = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
 
   input {
     flex: 1;
+    width: 100%;
     padding: 0.55rem 2.2rem 0.55rem 0.8rem;
     color: inherit;
     font-size: 0.9rem;
@@ -197,7 +206,7 @@ const InputRow = styled.div`
 const ClearButton = styled.button`
   position: absolute;
   right: 0.4rem;
-  bottom: 0.35rem;
+  top: 50%;
   display: grid;
   width: 1.45rem;
   height: 1.45rem;
@@ -206,20 +215,16 @@ const ClearButton = styled.button`
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  border: 0;
   border-radius: 50%;
+  transform: translateY(-50%);
   place-items: center;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
+  transition: color 0.15s ease;
 
   &:hover,
   &:focus-visible {
     color: var(--heading);
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.24);
   }
 
   &:focus-visible {
