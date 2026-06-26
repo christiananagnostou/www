@@ -3,45 +3,20 @@ import styled from 'styled-components'
 
 import { fetchLineScore, fetchSchedule, fetchTeams } from '../../../lib/mlb/api'
 import type { LineScore, ScheduleGame, TeamInfo } from '../../../lib/mlb/types'
-import { partitionSchedule, resolveTeamId } from '../../../lib/mlb/utils'
+import {
+  createGameGradient,
+  createGradient,
+  getTeamColor,
+  partitionSchedule,
+  resolveTeamId,
+  rgba,
+} from '../../../lib/mlb/utils'
 
 import GameCard from './GameCard'
-import ScheduleSection from './ScheduleSection'
+import GameRibbon from './GameRibbon'
 import TeamSearch from './TeamSearch'
 
 const LIVE_SCORE_POLL_INTERVAL = 30_000
-const TEAM_COLORS: Record<number, string> = {
-  108: '#ba0021',
-  109: '#a71930',
-  110: '#df4601',
-  111: '#bd3039',
-  112: '#0e3386',
-  113: '#c6011f',
-  114: '#e31937',
-  115: '#33006f',
-  116: '#0c2340',
-  117: '#002d62',
-  118: '#004687',
-  119: '#005a9c',
-  120: '#ba0c2f',
-  121: '#002d72',
-  133: '#003831',
-  134: '#fdb827',
-  135: '#362415',
-  136: '#005c5c',
-  137: '#fd5a1e',
-  138: '#c41e3a',
-  139: '#092c5c',
-  140: '#003278',
-  141: '#134a8e',
-  142: '#002b5c',
-  143: '#e81828',
-  144: '#ce1141',
-  145: '#27251f',
-  146: '#00a3e0',
-  147: '#003087',
-  158: '#192f50',
-}
 
 interface MLBScoreboardProps {
   defaultTeam: string | number
@@ -63,9 +38,7 @@ export default function MLBScoreboard({
   const [teamInput, setTeamInput] = useState(initialTeam?.name ?? String(defaultTeam))
   const [games, setGames] = useState(initialGames)
   const [lineScore, setLineScore] = useState<LineScore | null>(null)
-  const [selectedGame, setSelectedGame] = useState<ScheduleGame | null>(
-    initialGames.find(({ status }) => status.abstractGameState === 'Live') ?? null
-  )
+  const [selectedGame, setSelectedGame] = useState<ScheduleGame | null>(() => selectFeaturedGame(initialGames))
   const [isLoadingTeams, setIsLoadingTeams] = useState(initialTeams.length === 0)
   const [isLoadingSchedule, setIsLoadingSchedule] = useState(!hasInitialSchedule)
   const [isLoadingLineScore, setIsLoadingLineScore] = useState(false)
@@ -74,8 +47,23 @@ export default function MLBScoreboard({
 
   const selectedTeam = teams.find(({ id }) => id === teamId) ?? null
   const { liveGame, pastGames, upcomingGames } = useMemo(() => partitionSchedule(games), [games])
+  const ribbonGames = useMemo(() => {
+    const byGamePk = new Map<number, ScheduleGame>()
+    ;[...pastGames, ...(liveGame ? [liveGame] : []), ...upcomingGames].forEach((game) =>
+      byGamePk.set(game.gamePk, game)
+    )
+
+    return Array.from(byGamePk.values()).toSorted((a, b) => Date.parse(a.gameDate) - Date.parse(b.gameDate))
+  }, [liveGame, pastGames, upcomingGames])
   const baseColor = teamId ? getTeamColor(teamId) : '#303030'
   const scheduleGradient = createGradient(baseColor, baseColor, 0.25, 0.65)
+  const activeColors = getGameColors(selectedGame, baseColor)
+  const isScheduleEmpty = !liveGame && pastGames.length === 0 && upcomingGames.length === 0
+  const isScheduleLoading = isLoadingSchedule && games.length === 0
+  const teamName = selectedTeam?.name ?? 'this team'
+  const selectedGameCanRenderWithoutLineScore = selectedGame?.status.abstractGameState === 'Preview'
+  const shouldShowScoreLoading =
+    selectedGame && isLoadingLineScore && !lineScore && !selectedGameCanRenderWithoutLineScore
 
   useEffect(() => {
     if (initialTeams.length > 0) return
@@ -118,7 +106,7 @@ export default function MLBScoreboard({
     fetchSchedule(teamId, { signal: controller.signal })
       .then((fetchedGames) => {
         setGames(fetchedGames)
-        setSelectedGame(fetchedGames.find(({ status }) => status.abstractGameState === 'Live') ?? null)
+        setSelectedGame(selectFeaturedGame(fetchedGames))
       })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return
@@ -132,6 +120,12 @@ export default function MLBScoreboard({
 
     return () => controller.abort()
   }, [teamId])
+
+  useEffect(() => {
+    if (liveGame && selectedGame?.gamePk !== liveGame.gamePk) {
+      setSelectedGame(liveGame)
+    }
+  }, [liveGame, selectedGame?.gamePk])
 
   useEffect(() => {
     if (!selectedGame) {
@@ -166,37 +160,36 @@ export default function MLBScoreboard({
     }
   }, [selectedGame])
 
-  const getGameGradient = (game: ScheduleGame) =>
-    createGameGradient(getTeamColor(game.teams.away.team.id), getTeamColor(game.teams.home.team.id))
-
   const handleSelectTeam = (team: TeamInfo) => {
     setTeamId(team.id)
     setTeamInput(team.name)
   }
 
-  const isScheduleEmpty = !liveGame && pastGames.length === 0 && upcomingGames.length === 0
-  const teamName = selectedTeam?.name ?? 'this team'
-
   return (
-    <Wrapper>
+    <Wrapper $awayColor={activeColors.awayColor} $homeColor={activeColors.homeColor} $isLive={isLiveGame(selectedGame)}>
+      <BallparkBackdrop aria-hidden="true" />
       <TeamSearch teams={teams} value={teamInput} onChange={setTeamInput} onSelect={handleSelectTeam} />
 
-      {selectedGame && <BackButton onClick={() => setSelectedGame(null)}>← Back to Schedule</BackButton>}
+      {!isScheduleLoading && !isLoadingTeams && !isScheduleEmpty && (
+        <GameRibbon games={ribbonGames} selectedGamePk={selectedGame?.gamePk} onGameSelect={setSelectedGame} />
+      )}
 
       {selectedGame ? (
-        lineScore ? (
-          <GameCard game={selectedGame} lineScore={lineScore} gradient={getGameGradient(selectedGame)} />
+        shouldShowScoreLoading ? (
+          <ScoreSkeleton $gradient={getGameGradient(selectedGame)} role="status" aria-live="polite">
+            <StateTitle>Loading game center</StateTitle>
+            <StateBody>Building the scoreboard, line score, and live situation.</StateBody>
+          </ScoreSkeleton>
         ) : (
-          <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
-            <StateTitle>{isLoadingLineScore ? 'Loading score' : 'Score unavailable'}</StateTitle>
-            <StateBody>
-              {isLoadingLineScore
-                ? 'Gathering the latest line score...'
-                : 'We could not load the latest line score for this game.'}
-            </StateBody>
-          </StateCard>
+          <GameCard
+            awayColor={activeColors.awayColor}
+            game={selectedGame}
+            gradient={getGameGradient(selectedGame)}
+            homeColor={activeColors.homeColor}
+            lineScore={lineScore}
+          />
         )
-      ) : (isLoadingSchedule && games.length === 0) || isLoadingTeams ? (
+      ) : isScheduleLoading || isLoadingTeams ? (
         <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
           <StateTitle>Loading schedule</StateTitle>
           <StateBody>Fetching the latest games for {teamName}.</StateBody>
@@ -211,60 +204,51 @@ export default function MLBScoreboard({
           <StateHint>Try another team or check back closer to spring training.</StateHint>
         </StateCard>
       ) : (
-        <>
-          <ScheduleSection
-            title="Recent Games"
-            games={pastGames}
-            gradient={scheduleGradient}
-            onGameSelect={setSelectedGame}
-            emptyMessage="No recent games on the books."
-          />
-          {liveGame && (
-            <ScheduleSection
-              title="Live Game"
-              games={[liveGame]}
-              gradient={getGameGradient(liveGame)}
-              onGameSelect={setSelectedGame}
-            />
-          )}
-          <ScheduleSection
-            title="Upcoming Games"
-            games={upcomingGames}
-            gradient={scheduleGradient}
-            onGameSelect={setSelectedGame}
-            emptyMessage="No upcoming games scheduled yet."
-          />
-        </>
+        <StateCard $gradient={scheduleGradient} role="status" aria-live="polite">
+          <StateTitle>Select a game</StateTitle>
+          <StateBody>Choose a game from the ribbon to open the full scoreboard.</StateBody>
+        </StateCard>
       )}
     </Wrapper>
   )
 }
 
-function getTeamColor(teamId: number) {
-  return TEAM_COLORS[teamId] ?? '#303030'
+function selectFeaturedGame(games: ScheduleGame[]) {
+  const { liveGame, pastGames, upcomingGames } = partitionSchedule(games)
+  return liveGame ?? upcomingGames[0] ?? pastGames.at(-1) ?? null
 }
 
-function toRgba(hex: string, alpha: number) {
-  const red = Number.parseInt(hex.slice(1, 3), 16)
-  const green = Number.parseInt(hex.slice(3, 5), 16)
-  const blue = Number.parseInt(hex.slice(5, 7), 16)
-  return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+function getGameColors(game: ScheduleGame | null, fallbackColor: string) {
+  if (!game) return { awayColor: fallbackColor, homeColor: fallbackColor }
+
+  return {
+    awayColor: getTeamColor(game.teams.away.team.id),
+    homeColor: getTeamColor(game.teams.home.team.id),
+  }
 }
 
-function createGradient(from: string, to: string, fromAlpha: number, toAlpha: number) {
-  return `linear-gradient(135deg, ${toRgba(from, fromAlpha)} 0%, ${toRgba(to, toAlpha)} 100%)`
+function isLiveGame(game: ScheduleGame | null) {
+  return game?.status.abstractGameState === 'Live'
 }
 
-function createGameGradient(awayColor: string, homeColor: string) {
-  return `${createGradient(awayColor, homeColor, 0.45, 0.45)}, linear-gradient(45deg, ${toRgba(
-    awayColor,
-    0.45
-  )} 10%, ${toRgba(homeColor, 0.45)} 100%)`
+function getGameGradient(game: ScheduleGame) {
+  return createGameGradient(getTeamColor(game.teams.away.team.id), getTeamColor(game.teams.home.team.id))
 }
 
-const Wrapper = styled.div`
-  color: var(--text);
+const Wrapper = styled.div<{ $awayColor: string; $homeColor: string; $isLive: boolean }>`
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   max-width: 100%;
+  padding: 1rem;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 16% 0, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 30%),
+    radial-gradient(circle at 100% 10%, ${({ $homeColor }) => rgba($homeColor, 0.28)}, transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, ${({ $isLive }) => ($isLive ? 0.16 : 0.09)});
 
   .visually-hidden {
     position: absolute;
@@ -277,28 +261,60 @@ const Wrapper = styled.div`
     white-space: nowrap;
     border: 0;
   }
+
+  @media (width <= 768px) {
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+  }
 `
 
-const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  margin-bottom: 0.75rem;
-  color: var(--text-dark);
-  font-size: 0.9rem;
-  cursor: pointer;
-  background: none;
-  border: none;
-  transition: color 0.15s;
+const BallparkBackdrop = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 
-  &:hover {
-    color: var(--text);
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -18%;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--heading);
-    outline-offset: 2px;
+  &::before {
+    background:
+      linear-gradient(110deg, transparent 22%, rgba(255, 255, 255, 0.13) 48%, transparent 72%),
+      repeating-linear-gradient(
+        96deg,
+        rgba(255, 255, 255, 0.035) 0,
+        rgba(255, 255, 255, 0.035) 1px,
+        transparent 1px,
+        transparent 18px
+      );
+    filter: blur(18px);
+    opacity: 0.34;
+    transform: translateX(-18%) rotate(-7deg);
+  }
+
+  &::after {
+    background:
+      radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.22), transparent 10%),
+      radial-gradient(circle at 52% 0, rgba(255, 255, 255, 0.18), transparent 12%),
+      radial-gradient(circle at 84% 16%, rgba(255, 255, 255, 0.2), transparent 11%);
+    filter: blur(28px);
+    opacity: 0.28;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &::before {
+      animation: stadium-sweep 12s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes stadium-sweep {
+    to {
+      transform: translateX(12%) rotate(-7deg);
+    }
   }
 `
 
@@ -311,6 +327,34 @@ const StateCard = styled.div<{ $gradient: string }>`
   border-radius: 1rem;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
+`
+
+const ScoreSkeleton = styled(StateCard)`
+  position: relative;
+  display: grid;
+  min-height: 30rem;
+  overflow: hidden;
+  align-content: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.1) 50%, transparent 80%);
+    transform: translateX(-100%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &::after {
+      animation: scoreboard-loading 1.8s ease-in-out infinite;
+    }
+  }
+
+  @keyframes scoreboard-loading {
+    to {
+      transform: translateX(100%);
+    }
+  }
 `
 
 const StateTitle = styled.h3`

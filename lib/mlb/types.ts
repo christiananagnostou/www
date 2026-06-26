@@ -41,6 +41,9 @@ export interface LineScore {
     batter?: PlayerReference
     onDeck?: PlayerReference
     inHole?: PlayerReference
+    first?: PlayerReference
+    second?: PlayerReference
+    third?: PlayerReference
   }
   defense?: {
     pitcher?: PlayerReference
