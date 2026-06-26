@@ -61,6 +61,19 @@ export async function fetchSchedule(
   return dates.flatMap(({ games }) => games)
 }
 
+export async function fetchDailySchedule(
+  options: { referenceDate?: Date; signal?: AbortSignal } = {}
+): Promise<ScheduleGame[]> {
+  const referenceDate = options.referenceDate ?? new Date()
+  const params = new URLSearchParams({
+    sportId: '1',
+    date: formatDate(referenceDate),
+  })
+  const { dates } = await fetchJson<ScheduleResponse>(`${API_BASE_URL}/schedule?${params}`, options.signal)
+
+  return dates.flatMap(({ games }) => games)
+}
+
 export function fetchLineScore(gamePk: number, signal?: AbortSignal): Promise<LineScore> {
   return fetchJson<LineScore>(`${API_BASE_URL}/game/${gamePk}/linescore`, signal)
 }

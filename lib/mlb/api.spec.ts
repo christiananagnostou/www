@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { fetchLineScore, fetchSchedule } from './api'
+import { fetchDailySchedule, fetchLineScore, fetchSchedule } from './api'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -27,5 +27,21 @@ describe('MLB Stats API', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 }))
 
     await expect(fetchLineScore(123)).rejects.toThrow('status 503')
+  })
+
+  it('fetches a deterministic daily league schedule', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ dates: [{ games: [{ gamePk: 1 }] }] }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const games = await fetchDailySchedule({ referenceDate: new Date('2026-06-15T12:00:00Z') })
+
+    const requestUrl = new URL(fetchMock.mock.calls[0][0])
+    expect(requestUrl.searchParams.get('date')).toBe('2026-06-15')
+    expect(requestUrl.searchParams.get('sportId')).toBe('1')
+    expect(requestUrl.searchParams.has('teamId')).toBe(false)
+    expect(games.map(({ gamePk }) => gamePk)).toEqual([1])
   })
 })

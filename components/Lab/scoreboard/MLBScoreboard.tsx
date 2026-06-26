@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { fetchLineScore, fetchSchedule, fetchTeams } from '../../../lib/mlb/api'
+import { fetchDailySchedule, fetchLineScore, fetchSchedule, fetchTeams } from '../../../lib/mlb/api'
 import type { LineScore, ScheduleGame, TeamInfo } from '../../../lib/mlb/types'
 import {
   createGameGradient,
@@ -17,6 +17,7 @@ import GameRibbon from './GameRibbon'
 import TeamSearch from './TeamSearch'
 
 const LIVE_SCORE_POLL_INTERVAL = 30_000
+const LIVE_TEAMS_POLL_INTERVAL = 60_000
 
 interface MLBScoreboardProps {
   defaultTeam: string | number
@@ -39,6 +40,7 @@ export default function MLBScoreboard({
   const [games, setGames] = useState(initialGames)
   const [lineScore, setLineScore] = useState<LineScore | null>(null)
   const [selectedGame, setSelectedGame] = useState<ScheduleGame | null>(() => selectFeaturedGame(initialGames))
+  const [leagueLiveTeamIds, setLeagueLiveTeamIds] = useState<Set<number>>(() => collectLiveTeamIds(initialGames))
   const [isLoadingTeams, setIsLoadingTeams] = useState(initialTeams.length === 0)
   const [isLoadingSchedule, setIsLoadingSchedule] = useState(!hasInitialSchedule)
   const [isLoadingLineScore, setIsLoadingLineScore] = useState(false)
@@ -47,6 +49,7 @@ export default function MLBScoreboard({
 
   const selectedTeam = teams.find(({ id }) => id === teamId) ?? null
   const { liveGame, pastGames, upcomingGames } = useMemo(() => partitionSchedule(games), [games])
+  const liveTeamIds = useMemo(() => collectLiveTeamIds(games, new Set(leagueLiveTeamIds)), [games, leagueLiveTeamIds])
   const ribbonGames = useMemo(() => {
     const byGamePk = new Map<number, ScheduleGame>()
     ;[...pastGames, ...(liveGame ? [liveGame] : []), ...upcomingGames].forEach((game) =>
@@ -122,6 +125,33 @@ export default function MLBScoreboard({
   }, [teamId])
 
   useEffect(() => {
+    let isActive = true
+    let controller: AbortController | undefined
+    let pollTimer: ReturnType<typeof setTimeout> | undefined
+
+    const loadLiveTeams = async () => {
+      controller = new AbortController()
+
+      try {
+        const fetchedGames = await fetchDailySchedule({ signal: controller.signal })
+        if (isActive) setLeagueLiveTeamIds(collectLiveTeamIds(fetchedGames))
+      } catch {
+        // Keep the last known live-team state if the league schedule is temporarily unavailable.
+      } finally {
+        if (isActive) pollTimer = setTimeout(loadLiveTeams, LIVE_TEAMS_POLL_INTERVAL)
+      }
+    }
+
+    void loadLiveTeams()
+
+    return () => {
+      isActive = false
+      controller?.abort()
+      if (pollTimer) clearTimeout(pollTimer)
+    }
+  }, [])
+
+  useEffect(() => {
     if (liveGame && selectedGame?.gamePk !== liveGame.gamePk) {
       setSelectedGame(liveGame)
     }
@@ -168,7 +198,13 @@ export default function MLBScoreboard({
   return (
     <Wrapper $awayColor={activeColors.awayColor} $homeColor={activeColors.homeColor} $isLive={isLiveGame(selectedGame)}>
       <BallparkBackdrop aria-hidden="true" />
-      <TeamSearch teams={teams} value={teamInput} onChange={setTeamInput} onSelect={handleSelectTeam} />
+      <TeamSearch
+        teams={teams}
+        value={teamInput}
+        liveTeamIds={liveTeamIds}
+        onChange={setTeamInput}
+        onSelect={handleSelectTeam}
+      />
 
       {!isScheduleLoading && !isLoadingTeams && !isScheduleEmpty && (
         <GameRibbon games={ribbonGames} selectedGamePk={selectedGame?.gamePk} onGameSelect={setSelectedGame} />
@@ -228,6 +264,17 @@ function getGameColors(game: ScheduleGame | null, fallbackColor: string) {
 
 function isLiveGame(game: ScheduleGame | null) {
   return game?.status.abstractGameState === 'Live'
+}
+
+function collectLiveTeamIds(games: ScheduleGame[], teamIds = new Set<number>()) {
+  games.forEach((game) => {
+    if (!isLiveGame(game)) return
+
+    teamIds.add(game.teams.away.team.id)
+    teamIds.add(game.teams.home.team.id)
+  })
+
+  return teamIds
 }
 
 function getGameGradient(game: ScheduleGame) {

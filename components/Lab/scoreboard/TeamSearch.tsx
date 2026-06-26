@@ -8,16 +8,20 @@ import type { TeamInfo } from '../../../lib/mlb/types'
 interface TeamSearchProps {
   teams: TeamInfo[]
   value: string
+  liveTeamIds: ReadonlySet<number>
   onChange: (value: string) => void
   onSelect: (team: TeamInfo) => void
 }
 
-export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSearchProps) {
+export default function TeamSearch({ teams, value, liveTeamIds, onChange, onSelect }: TeamSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const filteredTeams = useMemo(() => filterTeams(teams, value), [teams, value])
+  const visibleTeams = useMemo(() => getVisibleTeams(teams, value, liveTeamIds), [teams, value, liveTeamIds])
+  const liveTeamOptions = visibleTeams.flatMap((team, index) => (liveTeamIds.has(team.id) ? [{ index, team }] : []))
+  const idleTeamOptions = visibleTeams.flatMap((team, index) => (!liveTeamIds.has(team.id) ? [{ index, team }] : []))
+  const showGroupLabels = liveTeamOptions.length > 0 && idleTeamOptions.length > 0
 
   const selectTeam = (team: TeamInfo) => {
     onSelect(team)
@@ -33,17 +37,17 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
       return
     }
 
-    if (!isOpen || filteredTeams.length === 0) return
+    if (!isOpen || visibleTeams.length === 0) return
 
     if (event.key === 'ArrowDown') {
       event.preventDefault()
-      setHighlightedIndex((current) => (current + 1) % filteredTeams.length)
+      setHighlightedIndex((current) => (current + 1) % visibleTeams.length)
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
-      setHighlightedIndex((current) => (current - 1 + filteredTeams.length) % filteredTeams.length)
+      setHighlightedIndex((current) => (current - 1 + visibleTeams.length) % visibleTeams.length)
     } else if (event.key === 'Enter' && highlightedIndex >= 0) {
       event.preventDefault()
-      selectTeam(filteredTeams[highlightedIndex])
+      selectTeam(visibleTeams[highlightedIndex])
       inputRef.current?.blur()
     }
   }
@@ -51,10 +55,15 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     const normalizedValue = value.trim().toLowerCase()
+    if (!normalizedValue) {
+      setIsOpen(true)
+      return
+    }
+
     const team =
       teams.find(
         ({ name, teamCode }) => name.toLowerCase() === normalizedValue || teamCode.toLowerCase() === normalizedValue
-      ) ?? filteredTeams[0]
+      ) ?? visibleTeams[0]
 
     if (team) {
       selectTeam(team)
@@ -68,7 +77,7 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
     onChange('')
     setError(null)
     setHighlightedIndex(-1)
-    setIsOpen(false)
+    setIsOpen(true)
     inputRef.current?.focus()
   }
 
@@ -101,7 +110,7 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
             aria-autocomplete="list"
             aria-controls="team-search-list"
             aria-activedescendant={
-              highlightedIndex >= 0 ? `team-option-${filteredTeams[highlightedIndex]?.id}` : undefined
+              highlightedIndex >= 0 ? `team-option-${visibleTeams[highlightedIndex]?.id}` : undefined
             }
             aria-expanded={isOpen}
             aria-haspopup="listbox"
@@ -119,9 +128,29 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
           )}
         </InputControl>
 
-        {isOpen && filteredTeams.length > 0 && (
+        {isOpen && visibleTeams.length > 0 && (
           <Dropdown id="team-search-list" role="listbox" aria-label="Team suggestions">
-            {filteredTeams.map((team, index) => (
+            {showGroupLabels && <GroupLabel role="presentation">Live now</GroupLabel>}
+            {liveTeamOptions.map(({ index, team }) => (
+              <TeamOption
+                key={team.id}
+                id={`team-option-${team.id}`}
+                role="option"
+                aria-selected={highlightedIndex === index}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectTeam(team)}
+                onMouseEnter={() => setHighlightedIndex(index)}
+              >
+                <TeamCode>{highlightMatch(team.teamCode, value)}</TeamCode>
+                <TeamName>{highlightMatch(team.name, value)}</TeamName>
+                <LiveBadge>
+                  <LiveDot aria-hidden="true" />
+                  Live
+                </LiveBadge>
+              </TeamOption>
+            ))}
+            {showGroupLabels && <GroupLabel role="presentation">All teams</GroupLabel>}
+            {idleTeamOptions.map(({ index, team }) => (
               <TeamOption
                 key={team.id}
                 id={`team-option-${team.id}`}
@@ -142,14 +171,19 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
   )
 }
 
-function filterTeams(teams: TeamInfo[], value: string) {
+function getVisibleTeams(teams: TeamInfo[], value: string, liveTeamIds: ReadonlySet<number>) {
   const normalizedValue = value.trim().toLowerCase()
-  if (!normalizedValue) return []
+  const matchingTeams = normalizedValue
+    ? teams.filter(
+        ({ name, teamCode }) =>
+          name.toLowerCase().includes(normalizedValue) || teamCode.toLowerCase().includes(normalizedValue)
+      )
+    : teams
 
-  return teams.filter(
-    ({ name, teamCode }) =>
-      name.toLowerCase().includes(normalizedValue) || teamCode.toLowerCase().includes(normalizedValue)
-  )
+  return matchingTeams.toSorted((teamA, teamB) => {
+    const liveSort = Number(liveTeamIds.has(teamB.id)) - Number(liveTeamIds.has(teamA.id))
+    return liveSort || teamA.name.localeCompare(teamB.name)
+  })
 }
 
 function highlightMatch(text: string, value: string) {
@@ -255,6 +289,15 @@ const Dropdown = styled.ul`
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 `
 
+const GroupLabel = styled.li`
+  padding: 0.5rem 0.8rem 0.28rem;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.52rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+`
+
 const TeamOption = styled.li`
   display: flex;
   align-items: center;
@@ -271,8 +314,30 @@ const TeamOption = styled.li`
 
 const TeamCode = styled.span`
   width: 38px;
+  flex: 0 0 auto;
 `
 
 const TeamName = styled.span`
   flex: 1;
+  min-width: 0;
+`
+
+const LiveBadge = styled.span`
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.28rem;
+  color: #75ff8d;
+  font-size: 0.52rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+`
+
+const LiveDot = styled.span`
+  width: 0.38rem;
+  height: 0.38rem;
+  background: #75ff8d;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(117, 255, 141, 0.7);
 `
