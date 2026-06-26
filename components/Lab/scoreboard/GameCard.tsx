@@ -24,12 +24,11 @@ const getGameEyebrow = (game: ScheduleGame, lineScore: LineScore | null) => {
 interface GameCardProps {
   game: ScheduleGame
   lineScore: LineScore | null
-  gradient: string
   awayColor: string
   homeColor: string
 }
 
-export default function GameCard({ game, lineScore, gradient, awayColor, homeColor }: GameCardProps) {
+export default function GameCard({ game, lineScore, awayColor, homeColor }: GameCardProps) {
   const shouldReduceMotion = useReducedMotion()
   const totalInnings = Math.max(
     lineScore?.currentInning || 0,
@@ -47,7 +46,6 @@ export default function GameCard({ game, lineScore, gradient, awayColor, homeCol
   return (
     <ScoreboardCard
       $awayColor={awayColor}
-      $gradient={gradient}
       $homeColor={homeColor}
       $isLive={isLive}
       aria-label={`Game details: ${game.teams.away.team.name} vs ${game.teams.home.team.name}`}
@@ -278,7 +276,6 @@ function PlayerColumn({
 
 const ScoreboardCard = styled(motion.article)<{
   $awayColor: string
-  $gradient: string
   $homeColor: string
   $isLive: boolean
 }>`
@@ -287,10 +284,17 @@ const ScoreboardCard = styled(motion.article)<{
   isolation: isolate;
   padding: 0.85rem;
   background:
-    radial-gradient(circle at 18% 12%, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 34%),
-    radial-gradient(circle at 84% 18%, ${({ $homeColor }) => rgba($homeColor, 0.32)}, transparent 36%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025)), ${({ $gradient }) => $gradient};
-  border: 1px solid rgba(255, 255, 255, 0.12);
+    radial-gradient(circle at 18% 12%, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 34%) padding-box,
+    radial-gradient(circle at 84% 18%, ${({ $homeColor }) => rgba($homeColor, 0.32)}, transparent 36%) padding-box,
+    linear-gradient(
+        135deg,
+        ${({ $awayColor }) => rgba($awayColor, 0.24)},
+        ${({ $homeColor }) => rgba($homeColor, 0.22)}
+      )
+      padding-box,
+    linear-gradient(135deg, ${({ $awayColor }) => rgba($awayColor, 0.5)}, ${({ $homeColor }) => rgba($homeColor, 0.5)})
+      border-box;
+  border: 1px solid transparent;
   border-radius: 1.1rem;
   box-shadow:
     0 18px 54px rgba(0, 0, 0, 0.28),
@@ -387,7 +391,7 @@ const HeroGrid = styled.div`
   margin-bottom: 0.7rem;
 
   @media (width <= 620px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `
 
@@ -396,13 +400,22 @@ const TeamPanel = styled.div<{ $align: 'left' | 'right'; $teamColor: string }>`
   padding: 0.65rem;
   text-align: ${({ $align }) => $align};
   background:
-    linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.34)}, rgba(0, 0, 0, 0.12)), rgba(12, 12, 12, 0.26);
-  border: 1px solid ${({ $teamColor }) => rgba($teamColor, 0.36)};
+    linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.3)}, rgba(0, 0, 0, 0.16)) padding-box,
+    linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.42)}, rgba(255, 255, 255, 0.1)) border-box;
+  border: 1px solid transparent;
   border-radius: 0.8rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
   @media (width <= 620px) {
-    text-align: left;
+    &:first-child {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    &:last-child {
+      grid-row: 1;
+      grid-column: 2;
+    }
   }
 `
 
@@ -441,6 +454,11 @@ const SituationPanel = styled.div`
   background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.1), transparent 48%), rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 0.8rem;
+
+  @media (width <= 620px) {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
 `
 
 const InningBadge = styled.div`
@@ -558,6 +576,7 @@ const LineScoreLedger = styled.table`
   width: 100%;
   overflow: hidden;
   font-size: 0.68rem;
+  table-layout: fixed;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-spacing: 0;
@@ -581,6 +600,7 @@ const LineScoreLedger = styled.table`
   }
 
   tbody th {
+    width: 2.25rem;
     color: var(--heading);
     font-weight: 900;
     text-align: left;
@@ -618,8 +638,21 @@ const LineScoreLedger = styled.table`
 
   @media (width <= 720px) {
     display: block;
+    box-sizing: border-box;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+
+    th,
+    td {
+      min-width: 1.35rem;
+      padding-right: 0.2rem;
+      padding-left: 0.2rem;
+    }
+
+    th:last-child,
+    td:last-child {
+      padding-right: 0;
+    }
   }
 `
 
@@ -630,7 +663,7 @@ const PlayersSection = styled.div`
   margin-top: 0.65rem;
 
   @media (width <= 620px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `
 

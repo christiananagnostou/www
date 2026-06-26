@@ -119,13 +119,15 @@ const RibbonButton = styled.button<{
   text-align: left;
   cursor: pointer;
   background:
+    linear-gradient(135deg, ${({ $awayColor }) => rgba($awayColor, 0.32)}, ${({ $homeColor }) => rgba($homeColor, 0.3)})
+      padding-box,
     linear-gradient(
-      135deg,
-      ${({ $awayColor }) => rgba($awayColor, 0.32)},
-      ${({ $homeColor }) => rgba($homeColor, 0.3)}
-    ),
-    rgba(255, 255, 255, 0.06);
-  border: 1px solid ${({ $isSelected }) => ($isSelected ? 'rgba(248, 240, 200, 0.6)' : 'rgba(255, 255, 255, 0.12)')};
+        135deg,
+        ${({ $awayColor, $isSelected }) => rgba($awayColor, $isSelected ? 0.56 : 0.36)},
+        ${({ $homeColor, $isSelected }) => rgba($homeColor, $isSelected ? 0.56 : 0.36)}
+      )
+      border-box;
+  border: 1px solid transparent;
   border-radius: 0.75rem;
   box-shadow:
     ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.28)' : '0 8px 24px rgba(0, 0, 0, 0.14)')},
@@ -136,7 +138,6 @@ const RibbonButton = styled.button<{
 
   &:hover,
   &:focus-visible {
-    border-color: ${({ $isLive }) => ($isLive ? 'rgba(117, 255, 141, 0.55)' : 'rgba(248, 240, 200, 0.48)')};
     box-shadow:
       ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.34)' : '0 8px 24px rgba(0, 0, 0, 0.18)')},
       inset 0 1px 0 rgba(255, 255, 255, 0.12);

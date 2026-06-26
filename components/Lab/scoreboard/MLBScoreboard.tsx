@@ -184,7 +184,6 @@ export default function MLBScoreboard({
           <GameCard
             awayColor={activeColors.awayColor}
             game={selectedGame}
-            gradient={getGameGradient(selectedGame)}
             homeColor={activeColors.homeColor}
             lineScore={lineScore}
           />

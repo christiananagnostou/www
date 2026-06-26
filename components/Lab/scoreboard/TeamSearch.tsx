@@ -53,18 +53,23 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
     const normalizedValue = value.trim().toLowerCase()
     const team =
       teams.find(
-        ({ id, name, teamCode }) =>
-          String(id) === normalizedValue ||
-          name.toLowerCase() === normalizedValue ||
-          teamCode.toLowerCase() === normalizedValue
+        ({ name, teamCode }) => name.toLowerCase() === normalizedValue || teamCode.toLowerCase() === normalizedValue
       ) ?? filteredTeams[0]
 
     if (team) {
       selectTeam(team)
     } else {
-      setError('Team not found — try a city, team name, code, or ID.')
+      setError('Team not found — try a city, team name, or abbreviation.')
       setIsOpen(false)
     }
+  }
+
+  const handleClear = () => {
+    onChange('')
+    setError(null)
+    setHighlightedIndex(-1)
+    setIsOpen(false)
+    inputRef.current?.focus()
   }
 
   return (
@@ -81,7 +86,7 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
         <input
           id="team-search"
           ref={inputRef}
-          placeholder="Enter team (e.g. ATH, Giants, 147)"
+          placeholder="Enter team (e.g. ATH, Giants)"
           value={value}
           onChange={(event) => {
             onChange(event.target.value)
@@ -101,6 +106,16 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
           aria-haspopup="listbox"
           role="combobox"
         />
+        {value && (
+          <ClearButton
+            type="button"
+            aria-label="Clear team search"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={handleClear}
+          >
+            ×
+          </ClearButton>
+        )}
 
         {isOpen && filteredTeams.length > 0 && (
           <Dropdown id="team-search-list" role="listbox" aria-label="Team suggestions">
@@ -116,7 +131,6 @@ export default function TeamSearch({ teams, value, onChange, onSelect }: TeamSea
               >
                 <TeamCode>{highlightMatch(team.teamCode, value)}</TeamCode>
                 <TeamName>{highlightMatch(team.name, value)}</TeamName>
-                <TeamId>#{highlightMatch(String(team.id), value)}</TeamId>
               </TeamOption>
             ))}
           </Dropdown>
@@ -131,10 +145,8 @@ function filterTeams(teams: TeamInfo[], value: string) {
   if (!normalizedValue) return []
 
   return teams.filter(
-    ({ id, name, teamCode }) =>
-      name.toLowerCase().includes(normalizedValue) ||
-      teamCode.toLowerCase().includes(normalizedValue) ||
-      String(id).includes(normalizedValue)
+    ({ name, teamCode }) =>
+      name.toLowerCase().includes(normalizedValue) || teamCode.toLowerCase().includes(normalizedValue)
   )
 }
 
@@ -168,7 +180,7 @@ const InputRow = styled.div`
 
   input {
     flex: 1;
-    padding: 0.55rem 0.8rem;
+    padding: 0.55rem 2.2rem 0.55rem 0.8rem;
     color: inherit;
     font-size: 0.9rem;
     background: var(--dark-bg, #141414);
@@ -179,6 +191,40 @@ const InputRow = styled.div`
       border-color: var(--text-dark);
       outline: none;
     }
+  }
+`
+
+const ClearButton = styled.button`
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.35rem;
+  display: grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  place-items: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--heading);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: 2px;
   }
 `
 
@@ -224,9 +270,4 @@ const TeamCode = styled.span`
 
 const TeamName = styled.span`
   flex: 1;
-`
-
-const TeamId = styled.span`
-  color: #7e7e7e;
-  font-size: 12px;
 `
