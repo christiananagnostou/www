@@ -70,15 +70,15 @@ export default function GameRibbon({ games, selectedGamePk, onGameSelect }: Game
 }
 
 const RibbonSection = styled.nav`
-  margin: 1rem 0;
+  margin: 0.75rem 0;
 `
 
 const RibbonTrack = styled.ul`
   display: grid;
-  grid-auto-columns: minmax(11.25rem, 14rem);
+  grid-auto-columns: minmax(8.75rem, 10.75rem);
   grid-auto-flow: column;
-  gap: 0.75rem;
-  padding: 0 0 0.65rem;
+  gap: 0.5rem;
+  padding: 0 0 0.5rem;
   margin: 0;
   overflow-x: auto;
   list-style: none;
@@ -86,7 +86,7 @@ const RibbonTrack = styled.ul`
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
-    height: 0.45rem;
+    height: 0.35rem;
   }
 
   &::-webkit-scrollbar-track {
@@ -112,9 +112,9 @@ const RibbonButton = styled.button<{
 }>`
   display: grid;
   width: 100%;
-  min-height: 7.25rem;
-  gap: 0.55rem;
-  padding: 0.85rem;
+  min-height: 5rem;
+  gap: 0.35rem;
+  padding: 0.62rem;
   color: var(--heading);
   text-align: left;
   cursor: pointer;
@@ -126,19 +126,20 @@ const RibbonButton = styled.button<{
     ),
     rgba(255, 255, 255, 0.06);
   border: 1px solid ${({ $isSelected }) => ($isSelected ? 'rgba(248, 240, 200, 0.6)' : 'rgba(255, 255, 255, 0.12)')};
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   box-shadow:
-    ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.28)' : '0 12px 32px rgba(0, 0, 0, 0.16)')},
+    ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.28)' : '0 8px 24px rgba(0, 0, 0, 0.14)')},
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition:
     border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.18s ease;
+    box-shadow 0.18s ease;
 
   &:hover,
   &:focus-visible {
     border-color: ${({ $isLive }) => ($isLive ? 'rgba(117, 255, 141, 0.55)' : 'rgba(248, 240, 200, 0.48)')};
-    transform: translateY(-2px);
+    box-shadow:
+      ${({ $isSelected }) => ($isSelected ? '0 0 0 1px rgba(248, 240, 200, 0.34)' : '0 8px 24px rgba(0, 0, 0, 0.18)')},
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   &:focus-visible {
@@ -148,28 +149,23 @@ const RibbonButton = styled.button<{
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-
-    &:hover,
-    &:focus-visible {
-      transform: none;
-    }
   }
 `
 
 const RibbonStatus = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 0.68rem;
+  font-size: 0.54rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 `
 
 const StatusDot = styled.span<{ $isLive: boolean }>`
-  width: 0.42rem;
-  height: 0.42rem;
+  width: 0.32rem;
+  height: 0.32rem;
   background: ${({ $isLive }) => ($isLive ? '#75ff8d' : 'rgba(255, 255, 255, 0.4)')};
   border-radius: 50%;
   box-shadow: ${({ $isLive }) => ($isLive ? '0 0 14px rgba(117, 255, 141, 0.64)' : 'none')};
@@ -178,15 +174,15 @@ const StatusDot = styled.span<{ $isLive: boolean }>`
 const RibbonTeams = styled.div`
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 0.45rem;
+  gap: 0.32rem;
   align-items: baseline;
-  font-size: 1rem;
+  font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.04em;
 
   strong {
     color: #f8f0c8;
-    font-size: 1.25rem;
+    font-size: 0.98rem;
     letter-spacing: -0.04em;
   }
 `
@@ -197,5 +193,5 @@ const RibbonMeta = styled.div`
   gap: 0.1rem;
   min-width: 0;
   color: rgba(255, 255, 255, 0.56);
-  font-size: 0.72rem;
+  font-size: 0.58rem;
 `

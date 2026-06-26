@@ -240,14 +240,14 @@ const Wrapper = styled.div<{ $awayColor: string; $homeColor: string; $isLive: bo
   isolation: isolate;
   overflow: hidden;
   max-width: 100%;
-  padding: 1rem;
+  padding: 0.75rem;
   color: var(--text);
   background:
     radial-gradient(circle at 16% 0, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 30%),
     radial-gradient(circle at 100% 10%, ${({ $homeColor }) => rgba($homeColor, 0.28)}, transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.75rem;
+  border-radius: 1.2rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, ${({ $isLive }) => ($isLive ? 0.16 : 0.09)});
 
   .visually-hidden {
@@ -263,8 +263,8 @@ const Wrapper = styled.div<{ $awayColor: string; $homeColor: string; $isLive: bo
   }
 
   @media (width <= 768px) {
-    padding: 0.75rem;
-    border-radius: 1.25rem;
+    padding: 0.6rem;
+    border-radius: 1rem;
   }
 `
 
@@ -319,20 +319,20 @@ const BallparkBackdrop = styled.div`
 `
 
 const StateCard = styled.div<{ $gradient: string }>`
-  padding: 2rem;
-  margin-top: 1rem;
+  padding: 1.35rem;
+  margin-top: 0.75rem;
   color: var(--text);
   text-align: center;
   background: ${({ $gradient }) => $gradient};
-  border-radius: 1rem;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+  border-radius: 0.85rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(10px);
 `
 
 const ScoreSkeleton = styled(StateCard)`
   position: relative;
   display: grid;
-  min-height: 30rem;
+  min-height: 20rem;
   overflow: hidden;
   align-content: center;
 
@@ -360,7 +360,7 @@ const ScoreSkeleton = styled(StateCard)`
 const StateTitle = styled.h3`
   margin: 0 0 0.5rem;
   color: var(--heading);
-  font-size: 1.35rem;
+  font-size: 1.05rem;
   font-weight: 600;
 `
 
@@ -368,10 +368,11 @@ const StateBody = styled.p`
   max-width: 32rem;
   margin: 0 auto 0.75rem;
   color: var(--text);
+  font-size: 0.82rem;
 `
 
 const StateHint = styled.p`
   margin: 0;
   color: var(--text-dark);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 `

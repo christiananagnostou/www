@@ -80,7 +80,7 @@ export default function GameCard({ game, lineScore, gradient, awayColor, homeCol
 
         <SituationPanel>
           <InningBadge>
-            <span aria-hidden="true">{getInningArrow(lineScore?.inningHalf)}</span>
+            {isLive && <span aria-hidden="true">{getInningArrow(lineScore?.inningHalf)}</span>}
             <strong>{getGameEyebrow(game, lineScore)}</strong>
           </InningBadge>
           <Diamond lineScore={lineScore} />
@@ -201,19 +201,18 @@ function Diamond({ lineScore }: { lineScore: LineScore | null }) {
     second: Boolean(lineScore?.offense?.second),
     third: Boolean(lineScore?.offense?.third),
   }
+  const baseState = [
+    occupiedBases.first ? 'runner on first' : 'first base empty',
+    occupiedBases.second ? 'runner on second' : 'second base empty',
+    occupiedBases.third ? 'runner on third' : 'third base empty',
+  ].join(', ')
 
   return (
-    <DiamondField aria-label="Base runner state">
-      <BaseNode className="second" $isOccupied={occupiedBases.second}>
-        2B
-      </BaseNode>
-      <BaseNode className="third" $isOccupied={occupiedBases.third}>
-        3B
-      </BaseNode>
-      <BaseNode className="first" $isOccupied={occupiedBases.first}>
-        1B
-      </BaseNode>
-      <HomePlate>H</HomePlate>
+    <DiamondField aria-label={`Base runner state: ${baseState}`}>
+      <BaseNode aria-hidden="true" className="second" $isOccupied={occupiedBases.second} />
+      <BaseNode aria-hidden="true" className="third" $isOccupied={occupiedBases.third} />
+      <BaseNode aria-hidden="true" className="first" $isOccupied={occupiedBases.first} />
+      <HomePlate aria-hidden="true" />
     </DiamondField>
   )
 }
@@ -286,17 +285,17 @@ const ScoreboardCard = styled(motion.article)<{
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  padding: 1.25rem;
+  padding: 0.85rem;
   background:
     radial-gradient(circle at 18% 12%, ${({ $awayColor }) => rgba($awayColor, 0.34)}, transparent 34%),
     radial-gradient(circle at 84% 18%, ${({ $homeColor }) => rgba($homeColor, 0.32)}, transparent 36%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025)), ${({ $gradient }) => $gradient};
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 1.5rem;
+  border-radius: 1.1rem;
   box-shadow:
-    0 28px 90px rgba(0, 0, 0, 0.34),
+    0 18px 54px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px);
 
   &::before {
     content: '';
@@ -321,8 +320,8 @@ const ScoreboardCard = styled(motion.article)<{
     transform: skewX(-12deg);
   }
 
-  @media (width <= 720px) {
-    padding: 1rem;
+  @media (width <= 620px) {
+    padding: 0.75rem;
   }
 `
 
@@ -330,8 +329,8 @@ const HeroHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
 
   @media (width <= 620px) {
     align-items: flex-start;
@@ -343,17 +342,17 @@ const HeroHeader = styled.div`
 const StatusCluster = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
   color: var(--heading);
-  font-size: 0.78rem;
+  font-size: 0.64rem;
   font-weight: bold;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 `
 
 const LiveDot = styled.span<{ $isLive: boolean }>`
-  width: 0.48rem;
-  height: 0.48rem;
+  width: 0.36rem;
+  height: 0.36rem;
   background: ${({ $isLive }) => ($isLive ? '#75ff8d' : 'rgba(255, 255, 255, 0.45)')};
   border-radius: 50%;
   box-shadow: ${({ $isLive }) => ($isLive ? '0 0 18px rgba(117, 255, 141, 0.72)' : 'none')};
@@ -372,7 +371,7 @@ const LiveDot = styled.span<{ $isLive: boolean }>`
 
 const VenueMeta = styled.div`
   color: rgba(255, 255, 255, 0.66);
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   text-align: right;
 
   @media (width <= 620px) {
@@ -382,54 +381,54 @@ const VenueMeta = styled.div`
 
 const HeroGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.76fr) minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(7.75rem, 0.62fr) minmax(0, 1fr);
+  gap: 0.6rem;
   align-items: stretch;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 
-  @media (width <= 820px) {
+  @media (width <= 620px) {
     grid-template-columns: 1fr;
   }
 `
 
 const TeamPanel = styled.div<{ $align: 'left' | 'right'; $teamColor: string }>`
   min-width: 0;
-  padding: 1rem;
+  padding: 0.65rem;
   text-align: ${({ $align }) => $align};
   background:
     linear-gradient(135deg, ${({ $teamColor }) => rgba($teamColor, 0.34)}, rgba(0, 0, 0, 0.12)), rgba(12, 12, 12, 0.26);
   border: 1px solid ${({ $teamColor }) => rgba($teamColor, 0.36)};
-  border-radius: 1.15rem;
+  border-radius: 0.8rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-  @media (width <= 820px) {
+  @media (width <= 620px) {
     text-align: left;
   }
 `
 
 const TeamCode = styled.div`
   color: rgba(255, 255, 255, 0.62);
-  font-size: 0.76rem;
+  font-size: 0.58rem;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
 `
 
 const TeamName = styled.h3`
-  margin: 0.25rem 0 0;
+  margin: 0.18rem 0 0;
   color: var(--heading);
-  font-size: clamp(1.1rem, 3vw, 2rem);
+  font-size: clamp(0.78rem, 2vw, 1.18rem);
   line-height: 1.02;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.035em;
 `
 
 const ScoreValue = styled(motion.div)`
-  margin-top: 0.65rem;
+  margin-top: 0.38rem;
   color: var(--heading);
-  font-size: clamp(4.5rem, 16vw, 8.8rem);
+  font-size: clamp(2.6rem, 8vw, 4.8rem);
   font-weight: 900;
   line-height: 0.9;
-  letter-spacing: -0.1em;
-  text-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  letter-spacing: -0.08em;
+  text-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
 `
 
 const SituationPanel = styled.div`
@@ -437,29 +436,29 @@ const SituationPanel = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 0.9rem;
-  padding: 1rem;
+  gap: 0.45rem;
+  padding: 0.6rem;
   background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.1), transparent 48%), rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 1.15rem;
+  border-radius: 0.8rem;
 `
 
 const InningBadge = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2rem;
+  min-height: 1.25rem;
   color: var(--heading);
-  font-size: 0.84rem;
+  font-size: 0.66rem;
   text-align: center;
   letter-spacing: -0.01em;
-  gap: 0.35rem;
+  gap: 0.22rem;
 `
 
 const DiamondField = styled.div`
   position: relative;
-  width: 8.25rem;
-  height: 6.75rem;
+  width: 5.45rem;
+  height: 4.45rem;
   color: rgba(255, 255, 255, 0.72);
 
   &::before {
@@ -467,8 +466,8 @@ const DiamondField = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 4.7rem;
-    height: 4.7rem;
+    width: 3.15rem;
+    height: 3.15rem;
     background: rgba(255, 255, 255, 0.035);
     border: 1px solid rgba(255, 255, 255, 0.24);
     border-radius: 0.2rem;
@@ -480,21 +479,21 @@ const BaseNode = styled.span<{ $isOccupied: boolean }>`
   position: absolute;
   z-index: 1;
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: 1.36rem;
+  height: 1.36rem;
   color: ${({ $isOccupied }) => ($isOccupied ? '#101010' : 'rgba(255, 255, 255, 0.58)')};
-  font-size: 0.58rem;
+  font-size: 0.46rem;
   font-weight: 900;
   background: ${({ $isOccupied }) => ($isOccupied ? '#f8f0c8' : 'rgba(255, 255, 255, 0.08)')};
   border: 1px solid ${({ $isOccupied }) => ($isOccupied ? 'rgba(248, 240, 200, 0.92)' : 'rgba(255, 255, 255, 0.18)')};
-  border-radius: 0.42rem;
-  box-shadow: ${({ $isOccupied }) => ($isOccupied ? '0 0 22px rgba(248, 240, 200, 0.45)' : 'none')};
+  border-radius: 0.3rem;
+  box-shadow: ${({ $isOccupied }) => ($isOccupied ? '0 0 14px rgba(248, 240, 200, 0.38)' : 'none')};
   transform: rotate(45deg);
   place-items: center;
 
   &.first {
-    top: 2.3rem;
-    right: 0.45rem;
+    top: 1.52rem;
+    right: 0.32rem;
   }
 
   &.second {
@@ -504,8 +503,8 @@ const BaseNode = styled.span<{ $isOccupied: boolean }>`
   }
 
   &.third {
-    top: 2.3rem;
-    left: 0.45rem;
+    top: 1.52rem;
+    left: 0.32rem;
   }
 `
 
@@ -514,14 +513,14 @@ const HomePlate = styled.span`
   bottom: 0;
   left: 50%;
   display: grid;
-  width: 2rem;
-  height: 1.35rem;
+  width: 1.36rem;
+  height: 0.92rem;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 0.56rem;
+  font-size: 0.44rem;
   font-weight: 900;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 0.3rem 0.3rem 0.55rem 0.55rem;
+  border-radius: 0.22rem 0.22rem 0.4rem 0.4rem;
   transform: translateX(-50%);
   place-items: center;
 `
@@ -529,27 +528,27 @@ const HomePlate = styled.span`
 const CountGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, auto);
-  gap: 0.75rem;
+  gap: 0.45rem;
 `
 
 const CountMetric = styled.div`
   display: grid;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 0.66rem;
+  font-size: 0.52rem;
   font-weight: 900;
   text-align: center;
   letter-spacing: 0.12em;
-  gap: 0.35rem;
+  gap: 0.24rem;
 `
 
 const PipRow = styled.div`
   display: flex;
-  gap: 0.22rem;
+  gap: 0.14rem;
 `
 
 const Pip = styled.span<{ $isActive: boolean }>`
-  width: 0.42rem;
-  height: 0.42rem;
+  width: 0.3rem;
+  height: 0.3rem;
   background: ${({ $isActive }) => ($isActive ? '#f8f0c8' : 'rgba(255, 255, 255, 0.16)')};
   border-radius: 50%;
   box-shadow: ${({ $isActive }) => ($isActive ? '0 0 12px rgba(248, 240, 200, 0.44)' : 'none')};
@@ -558,23 +557,23 @@ const Pip = styled.span<{ $isActive: boolean }>`
 const LineScoreLedger = styled.table`
   width: 100%;
   overflow: hidden;
-  font-size: 0.78rem;
+  font-size: 0.68rem;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-spacing: 0;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
 
   th,
   td {
-    min-width: 2rem;
-    padding: 0.55rem 0.45rem;
+    min-width: 1.55rem;
+    padding: 0.34rem 0.28rem;
     color: rgba(255, 255, 255, 0.76);
     text-align: center;
   }
 
   thead th {
     color: rgba(255, 255, 255, 0.52);
-    font-size: 0.64rem;
+    font-size: 0.54rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -627,8 +626,8 @@ const LineScoreLedger = styled.table`
 const PlayersSection = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-top: 0.85rem;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
 
   @media (width <= 620px) {
     grid-template-columns: 1fr;
@@ -637,31 +636,31 @@ const PlayersSection = styled.div`
 
 const PlayerColumnContainer = styled.div<{ $align: 'left' | 'right' }>`
   min-width: 0;
-  padding: 0.9rem;
+  padding: 0.65rem;
   text-align: ${(props) => props.$align};
   background: rgba(0, 0, 0, 0.16);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.9rem;
+  border-radius: 0.7rem;
 
   h4 {
-    margin: 0 0 0.45rem;
+    margin: 0 0 0.3rem;
     color: rgba(255, 255, 255, 0.56);
-    font-size: 0.68rem;
+    font-size: 0.54rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
 
   .primary-player {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.25rem;
     color: var(--heading);
-    font-size: 0.98rem;
+    font-size: 0.78rem;
     font-weight: bold;
   }
 
   .secondary-players {
     color: rgba(255, 255, 255, 0.62);
-    font-size: 0.78rem;
+    font-size: 0.66rem;
     line-height: 1.45;
   }
 
@@ -671,22 +670,22 @@ const PlayerColumnContainer = styled.div<{ $align: 'left' | 'right' }>`
 `
 
 const PreviewPanel = styled.div`
-  padding: 1rem;
-  margin-top: 0.85rem;
+  padding: 0.75rem;
+  margin-top: 0.65rem;
   background: rgba(0, 0, 0, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
 `
 
 const PreviewTitle = styled.h4`
   margin: 0 0 0.35rem;
   color: var(--heading);
-  font-size: 1rem;
+  font-size: 0.86rem;
 `
 
 const PreviewBody = styled.p`
   margin: 0;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 0.86rem;
+  font-size: 0.74rem;
   line-height: 1.55;
 `
