@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { fetchDailySchedule, fetchLineScore, fetchSchedule, fetchTeams } from '../../../lib/mlb/api'
+import { fetchLineScore, fetchLiveSchedule, fetchSchedule, fetchTeams } from '../../../lib/mlb/api'
 import type { LineScore, ScheduleGame, TeamInfo } from '../../../lib/mlb/types'
 import {
   createGameGradient,
@@ -133,7 +133,7 @@ export default function MLBScoreboard({
       controller = new AbortController()
 
       try {
-        const fetchedGames = await fetchDailySchedule({ signal: controller.signal })
+        const fetchedGames = await fetchLiveSchedule({ signal: controller.signal })
         if (isActive) setLeagueLiveTeamIds(collectLiveTeamIds(fetchedGames))
       } catch {
         // Keep the last known live-team state if the league schedule is temporarily unavailable.

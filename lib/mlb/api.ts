@@ -61,13 +61,14 @@ export async function fetchSchedule(
   return dates.flatMap(({ games }) => games)
 }
 
-export async function fetchDailySchedule(
+export async function fetchLiveSchedule(
   options: { referenceDate?: Date; signal?: AbortSignal } = {}
 ): Promise<ScheduleGame[]> {
   const referenceDate = options.referenceDate ?? new Date()
   const params = new URLSearchParams({
     sportId: '1',
-    date: formatDate(referenceDate),
+    startDate: formatDate(shiftDate(referenceDate, -1)),
+    endDate: formatDate(referenceDate),
   })
   const { dates } = await fetchJson<ScheduleResponse>(`${API_BASE_URL}/schedule?${params}`, options.signal)
 
