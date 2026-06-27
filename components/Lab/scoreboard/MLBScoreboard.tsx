@@ -152,12 +152,6 @@ export default function MLBScoreboard({
   }, [])
 
   useEffect(() => {
-    if (liveGame && selectedGame?.gamePk !== liveGame.gamePk) {
-      setSelectedGame(liveGame)
-    }
-  }, [liveGame, selectedGame?.gamePk])
-
-  useEffect(() => {
     if (!selectedGame) {
       setLineScore(null)
       return
