@@ -71,3 +71,24 @@ export const TCDBScout = (
     <path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374" />
   </svg>
 )
+
+export const JsonLens = (
+  <svg
+    fill="none"
+    height="1em"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M8 3H5a2 2 0 0 0 -2 2v3" />
+    <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+    <path d="M8 21H5a2 2 0 0 1 -2 -2v-3" />
+    <path d="M16 21h3a2 2 0 0 0 2 -2v-3" />
+    <path d="M9 8l-2 4l2 4" />
+    <path d="M15 8l2 4l-2 4" />
+  </svg>
+)
