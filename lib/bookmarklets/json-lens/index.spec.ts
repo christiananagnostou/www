@@ -35,6 +35,32 @@ describe('JSON Lens bookmarklet', () => {
     expect(document.querySelector('.jl-bool-true')).not.toBeNull()
     expect(document.querySelector('.jl-bool-false')).not.toBeNull()
     expect(document.querySelector('.jl-date-source')?.textContent).toBe(response.metadata.createdAt)
+    expect(document.querySelector('.jl-token')?.textContent).toBe('{')
+  })
+
+  it('supports search, group expansion, and raw view controls', () => {
+    document.body.textContent = JSON.stringify({ id: 1, details: { status: 'ready' }, events: [{ code: 'OPENED' }] })
+
+    window.eval(JSON_LENS_SOURCE)
+
+    const search = document.querySelector<HTMLInputElement>('.jl-search')
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.jl-button'))
+    const expandButton = buttons.find(({ textContent }) => textContent === 'Expand')
+    const rawButton = buttons.find(({ textContent }) => textContent === 'Raw')
+
+    search!.value = 'status'
+    search!.dispatchEvent(new Event('input'))
+    expect(document.querySelector('.jl-search-status')?.textContent).toBe('1 match')
+
+    expandButton!.click()
+    expect(Array.from(document.querySelectorAll('details')).every(({ open }) => open)).toBe(true)
+    expandButton!.click()
+    expect(Array.from(document.querySelectorAll('details')).every(({ open }) => !open)).toBe(true)
+
+    rawButton!.click()
+    expect(rawButton?.textContent).toBe('Tree')
+    expect(rawButton?.getAttribute('aria-pressed')).toBe('true')
+    expect(document.querySelector('.jl-raw')?.classList.contains('jl-hidden')).toBe(false)
   })
 
   it('leaves the page unchanged when its text is not valid JSON', () => {
