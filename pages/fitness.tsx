@@ -9,7 +9,7 @@ import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ride, run, swim } from '../components/SVG/strava/icons'
 import { BASE_URL } from '../lib/constants'
-import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
+import { type FitnessActivity, getFitnessActivities } from '../lib/fitness'
 
 const PageTitle = 'Fitness | Christian Anagnostou'
 const PageDescription = "Christian Anagnostou's triathlon training dashboard"
@@ -35,7 +35,7 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
 })
 
 interface Props {
-  activities: StravaActivity[]
+  activities: FitnessActivity[]
   error?: string
 }
 
@@ -44,7 +44,7 @@ type Discipline = 'swim' | 'bike' | 'run' | 'other'
 type BikeKind = 'road' | 'zwift'
 
 interface ParsedActivity {
-  activity: StravaActivity
+  activity: FitnessActivity
   date: dayjs.Dayjs
   miles: number
   seconds: number
@@ -88,25 +88,14 @@ const DISCIPLINE_CONFIG: Record<Discipline, { label: string; color: string; acce
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const requiredEnv = ['STRAVA_REFRESH_TOKEN', 'STRAVA_CLIENT_ID', 'STRAVA_CLIENT_SECRET', 'STRAVA_REDIRECT_URI']
-  const missing = requiredEnv.filter((key) => !process.env[key])
-
-  if (missing.length) {
-    return {
-      props: { activities: [], error: 'Strava credentials are not configured; fitness data is unavailable.' },
-      revalidate: 60 * 30,
-    }
-  }
-
   try {
-    await refreshAccessToken()
-    const activities = await getStravaActivities()
+    const activities = await getFitnessActivities()
     return { props: { activities }, revalidate: 60 * 60 * 12 }
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown Strava fitness error'
-    console.error('Failed to load Strava activities', message)
+    const message = error instanceof Error ? error.message : 'Unknown fitness data error'
+    console.error('Failed to load fitness activities', message)
     return {
-      props: { activities: [], error: 'Unable to load Strava activities right now. Please try again soon.' },
+      props: { activities: [], error: 'Unable to load fitness activities right now. Please try again soon.' },
       revalidate: 60 * 30,
     }
   }
@@ -123,10 +112,10 @@ const parseSeconds = (moving?: string) => {
 
 const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, '')) || 0 : 0)
 
-const classifyActivity = (activity: StravaActivity): { discipline: Discipline; bikeKind?: BikeKind } => {
+const classifyActivity = (activity: FitnessActivity): { discipline: Discipline; bikeKind?: BikeKind } => {
   if (activity.type === 'Swim') return { discipline: 'swim' }
   if (activity.type === 'Run') return { discipline: 'run' }
-  if (activity.type === 'Zwift' || activity.type === 'VirtualRide') {
+  if (activity.type === 'Zwift') {
     return { discipline: 'bike', bikeKind: 'zwift' }
   }
   if (activity.type === 'Ride') return { discipline: 'bike', bikeKind: 'road' }

@@ -1,12 +1,12 @@
-export type StravaActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'VirtualRide' | 'Walk'
+export type FitnessActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'Walk' | 'Other'
 
-export interface StravaActivity {
+export interface FitnessActivity {
   title: string
   link: string
   description: string
   pubDate: string
   guid: string
-  type: StravaActivityType
+  type: FitnessActivityType
   Distance?: string
   ElevationGain?: string
   MovingTime?: string

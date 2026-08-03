@@ -24,7 +24,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 ## Environment Variables
 
-- Strava integration uses `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `STRAVA_REDIRECT_URI`.
+- Fitness imports use `FITNESS_IMPORT_TOKEN` and `REDIS_URL`.
 - Redis uses `REDIS_URL` for server-side likes storage.
 - Keep secrets out of the repo; prefer `.env.local`.
 
@@ -129,7 +129,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 ## Data & Utilities
 
 - Structured data helpers live in `lib/structured/`.
-- Strava helpers live in `lib/strava/` and may call external APIs.
+- Fitness import and storage helpers live in `lib/fitness/`.
 - Keep helper functions pure where possible.
 
 ## Tests and Fixtures

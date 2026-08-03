@@ -2,24 +2,24 @@ import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
-import { type StravaActivity, type StravaActivityType } from '../../lib/strava'
+import { type FitnessActivity, type FitnessActivityType } from '../../lib/fitness'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
-import MiniMap from './StravaMinimap'
+import MiniMap from './FitnessMinimap'
 
 interface Props {
-  activities: StravaActivity[]
+  activities: FitnessActivity[]
 }
 
-const ActivityIcons: Record<StravaActivityType, ReactElement> = {
+const ActivityIcons: Record<FitnessActivityType, ReactElement> = {
   Swim: swim(),
   Ride: ride(),
   Run: run(),
   WeightTraining: weight(),
   Hike: hike(),
   Zwift: zwift(),
-  VirtualRide: zwift(),
   Walk: run(),
+  Other: weight(),
 }
 
 const AlternateMetricTitles = {
@@ -38,7 +38,7 @@ const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 })
 
-const StravaActivities = ({ activities }: Props) => {
+const FitnessActivities = ({ activities }: Props) => {
   const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
   const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
@@ -54,13 +54,11 @@ const StravaActivities = ({ activities }: Props) => {
   }, {})
 
   const getFilterCount = (type: keyof typeof ActivityIcons) => {
-    if (type === 'Zwift') return (activityCounts.Zwift ?? 0) + (activityCounts.VirtualRide ?? 0)
     return activityCounts[type] ?? 0
   }
 
-  const matchesFilter = (activity: StravaActivity) => {
+  const matchesFilter = (activity: FitnessActivity) => {
     if (!filter) return true
-    if (filter === 'Zwift') return activity.type === 'Zwift' || activity.type === 'VirtualRide'
     return activity.type === filter
   }
 
@@ -88,7 +86,7 @@ const StravaActivities = ({ activities }: Props) => {
     )
   }
 
-  const renderActivityDetail = (type: keyof StravaActivity['best'], activity: StravaActivity) => (
+  const renderActivityDetail = (type: keyof FitnessActivity['best'], activity: FitnessActivity) => (
     <ActivityDetail $best={activity.best[type] === 1}>
       {AlternateMetricTitles[type]}: <strong>{activity[type]}</strong>
     </ActivityDetail>
@@ -202,7 +200,7 @@ const StravaActivities = ({ activities }: Props) => {
   )
 }
 
-export default StravaActivities
+export default FitnessActivities
 
 const ActivitiesSection = styled(m.section)`
   position: relative;
