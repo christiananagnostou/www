@@ -1,12 +1,7 @@
 import { timingSafeEqual } from 'node:crypto'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import {
-  FitnessPayloadError,
-  parseHealthAutoExport,
-  parsePrivacyZones,
-  saveFitnessActivities,
-} from '../../../lib/fitness'
+import { FitnessPayloadError, parseHealthAutoExport, saveFitnessActivities } from '../../../lib/fitness'
 
 interface ImportResponse {
   imported: number
@@ -32,8 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (!isAuthorized(req.headers.authorization, importToken)) return res.status(401).json({ error: 'Unauthorized' })
 
   try {
-    const privacyZones = parsePrivacyZones(process.env.FITNESS_PRIVACY_ZONES)
-    const activities = parseHealthAutoExport(req.body, privacyZones)
+    const activities = parseHealthAutoExport(req.body)
     const imported = await saveFitnessActivities(activities)
     const revalidations = await Promise.allSettled([res.revalidate('/'), res.revalidate('/fitness')])
     const failedRevalidations = revalidations.filter((result) => result.status === 'rejected')

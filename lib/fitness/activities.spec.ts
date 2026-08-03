@@ -21,9 +21,4 @@ describe('dedupeFitnessActivities', () => {
     const laterActivity = { ...activity, guid: 'source-b', pubDate: '2026-07-29T23:50:34.000Z' }
     expect(dedupeFitnessActivities([activity, laterActivity])).toEqual([activity, laterActivity])
   })
-
-  it('prefers a duplicate that includes a sanitized route', () => {
-    const activityWithRoute = { ...activity, guid: 'source-b', RoutePolylines: ['encoded-route'] }
-    expect(dedupeFitnessActivities([activity, activityWithRoute])).toEqual([activityWithRoute])
-  })
 })

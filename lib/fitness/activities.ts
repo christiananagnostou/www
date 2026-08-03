@@ -13,10 +13,7 @@ export const dedupeFitnessActivities = <T extends StoredFitnessActivity>(activit
   const uniqueActivities = new Map<string, T>()
   for (const activity of activities) {
     const fingerprint = getActivityFingerprint(activity)
-    const existing = uniqueActivities.get(fingerprint)
-    if (!existing || (!existing.RoutePolylines?.length && activity.RoutePolylines?.length)) {
-      uniqueActivities.set(fingerprint, activity)
-    }
+    if (!uniqueActivities.has(fingerprint)) uniqueActivities.set(fingerprint, activity)
   }
   return Array.from(uniqueActivities.values())
 }
@@ -85,7 +82,7 @@ export const saveFitnessActivities = async (activities: StoredFitnessActivity[])
 
   const existingActivities = await getStoredActivities()
   const existingByFingerprint = new Map(
-    dedupeFitnessActivities(existingActivities).map((activity) => [getActivityFingerprint(activity), activity])
+    dedupeFitnessActivities(existingActivities).map((activity) => [getActivityFingerprint(activity), activity.guid])
   )
   const existingById = new Map(existingActivities.map((activity) => [activity.guid, activity]))
   const uniqueActivities = dedupeFitnessActivities(
@@ -93,12 +90,9 @@ export const saveFitnessActivities = async (activities: StoredFitnessActivity[])
   )
   const changedActivities = uniqueActivities.flatMap((activity) => {
     const fingerprint = getActivityFingerprint(activity)
-    const existing = existingByFingerprint.get(fingerprint)
-    if (existing && existing.guid !== activity.guid) {
-      if (existing.RoutePolylines?.length || !activity.RoutePolylines?.length) return []
-      activity = { ...activity, guid: existing.guid }
-    }
-    existingByFingerprint.set(fingerprint, activity)
+    const existingId = existingByFingerprint.get(fingerprint)
+    if (existingId && existingId !== activity.guid) return []
+    existingByFingerprint.set(fingerprint, activity.guid)
     return JSON.stringify(existingById.get(activity.guid)) === JSON.stringify(activity) ? [] : [activity]
   })
 

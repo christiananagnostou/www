@@ -24,7 +24,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 ## Environment Variables
 
-- Fitness imports use `FITNESS_IMPORT_TOKEN`, `FITNESS_PRIVACY_ZONES`, and `REDIS_URL`.
+- Fitness imports use `FITNESS_IMPORT_TOKEN` and `REDIS_URL`.
 - Site metadata uses `NEXT_PUBLIC_BASE_URL`; the contact form uses the three `NEXT_PUBLIC_EMAILJS_*` variables.
 - Redis uses `REDIS_URL` for server-side likes storage.
 - Keep secrets out of the repo; prefer `.env.local`.

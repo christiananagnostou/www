@@ -13,7 +13,7 @@ This repo houses my personal site, www.christiancodes.co. It’s a straightforwa
 
 It’s a standard Next.js setup—clone it, install deps, run it. Figure it out; you’ve seen one, you’ve seen ‘em all.
 
-Configure `NEXT_PUBLIC_BASE_URL` and the three `NEXT_PUBLIC_EMAILJS_*` variables for the site. Fitness imports require `REDIS_URL`, `FITNESS_IMPORT_TOKEN`, and at least one `FITNESS_PRIVACY_ZONES` entry. Configure Health Auto Export to send Version 2 workout JSON to `/api/fitness/import` with an `Authorization: Bearer <FITNESS_IMPORT_TOKEN>` header. Route data is geofenced using the configured radius plus deterministic per-workout privacy padding, split into disconnected segments, simplified, and encoded before storage.
+Configure `NEXT_PUBLIC_BASE_URL` and the three `NEXT_PUBLIC_EMAILJS_*` variables for the site. Fitness imports require `REDIS_URL` and `FITNESS_IMPORT_TOKEN`. Configure Health Auto Export to send Version 2 workout JSON to `/api/fitness/import` with an `Authorization: Bearer <FITNESS_IMPORT_TOKEN>` header.
 
 ## Contributing
 
