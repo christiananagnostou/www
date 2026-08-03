@@ -1,7 +1,7 @@
 import { timingSafeEqual } from 'node:crypto'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { parseHealthAutoExport, saveFitnessActivities } from '../../../lib/fitness'
+import { FitnessPayloadError, parseHealthAutoExport, saveFitnessActivities } from '../../../lib/fitness'
 
 interface ImportResponse {
   imported: number
@@ -29,12 +29,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const activities = parseHealthAutoExport(req.body)
     const imported = await saveFitnessActivities(activities)
-    await Promise.allSettled([res.revalidate('/'), res.revalidate('/fitness')])
+    const revalidations = await Promise.allSettled([res.revalidate('/'), res.revalidate('/fitness')])
+    const failedRevalidations = revalidations.filter((result) => result.status === 'rejected')
+    if (failedRevalidations.length) {
+      console.error(`Failed to revalidate ${failedRevalidations.length} fitness page(s)`)
+    }
     return res.status(200).json({ imported })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unable to import workouts'
-    const status =
-      message.startsWith('Expected') || message.startsWith('Each') || message.startsWith('Invalid') ? 400 : 500
+    const status = error instanceof FitnessPayloadError ? 400 : 500
     console.error('Failed to import fitness activities', message)
     return res.status(status).json({ error: status === 400 ? message : 'Unable to import workouts' })
   }

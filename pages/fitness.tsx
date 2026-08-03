@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
-import { ride, run, swim } from '../components/SVG/strava/icons'
+import { ride, run, swim } from '../components/SVG/fitness/icons'
 import { BASE_URL } from '../lib/constants'
 import { type FitnessActivity, getFitnessActivities } from '../lib/fitness'
 

@@ -1,4 +1,6 @@
-import type { FitnessActivity, FitnessActivityType } from './types'
+import type { FitnessActivityType, StoredFitnessActivity } from './types'
+
+export class FitnessPayloadError extends Error {}
 
 interface Quantity {
   qty: number
@@ -13,61 +15,62 @@ interface HealthWorkout {
   isIndoor?: boolean
   distance?: Quantity
   avgSpeed?: Quantity
-  maxSpeed?: Quantity
   elevationUp?: Quantity
   avgHeartRate?: Quantity
   heartRate?: { avg?: Quantity }
   cyclingPower?: Quantity[]
 }
 
-const EMPTY_BEST = { MovingTime: 0, Distance: 0, Pace: 0, AverageSpeed: 0, ElevationGain: 0 }
-
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-const parseQuantity = (value: unknown): Quantity | undefined => {
+const parseQuantity = (value: unknown, field: string): Quantity | undefined => {
+  if (value == null) return undefined
   if (
     !isRecord(value) ||
     typeof value.qty !== 'number' ||
     !Number.isFinite(value.qty) ||
+    value.qty < 0 ||
     typeof value.units !== 'string'
   ) {
-    return undefined
+    throw new FitnessPayloadError(`Invalid ${field}`)
   }
   return { qty: value.qty, units: value.units }
 }
 
-const parseQuantityArray = (value: unknown): Quantity[] | undefined => {
-  if (!Array.isArray(value)) return undefined
-  const quantities = value.map(parseQuantity).filter((item): item is Quantity => Boolean(item))
-  return quantities.length ? quantities : undefined
+const parseQuantityArray = (value: unknown, field: string): Quantity[] | undefined => {
+  if (value == null) return undefined
+  if (!Array.isArray(value)) throw new FitnessPayloadError(`Invalid ${field}`)
+  return value.map((item, index) => parseQuantity(item, `${field}[${index}]`) as Quantity)
 }
 
 const parseWorkout = (value: unknown): HealthWorkout => {
-  if (!isRecord(value)) throw new Error('Each workout must be an object')
+  if (!isRecord(value)) throw new FitnessPayloadError('Each workout must be an object')
 
   const { id, name, start, duration } = value
   if (typeof id !== 'string' || !id || typeof name !== 'string' || !name || typeof start !== 'string') {
-    throw new Error('Each workout requires an id, name, and start date')
+    throw new FitnessPayloadError('Each workout requires an id, name, and start date')
   }
   if (typeof duration !== 'number' || !Number.isFinite(duration) || duration < 0) {
-    throw new Error('Each workout requires a valid duration')
+    throw new FitnessPayloadError('Each workout requires a valid duration')
   }
 
-  const heartRate = isRecord(value.heartRate) ? { avg: parseQuantity(value.heartRate.avg) } : undefined
+  if (value.heartRate != null && !isRecord(value.heartRate)) {
+    throw new FitnessPayloadError('Invalid heartRate')
+  }
+  const heartRate = isRecord(value.heartRate) ? { avg: parseQuantity(value.heartRate.avg, 'heartRate.avg') } : undefined
   return {
     id,
     name,
     start,
     duration,
     isIndoor: typeof value.isIndoor === 'boolean' ? value.isIndoor : undefined,
-    distance: parseQuantity(value.distance),
-    avgSpeed: parseQuantity(value.avgSpeed),
-    maxSpeed: parseQuantity(value.maxSpeed),
-    elevationUp: parseQuantity(value.elevationUp),
-    avgHeartRate: parseQuantity(value.avgHeartRate),
+    distance: parseQuantity(value.distance, 'distance'),
+    avgSpeed: parseQuantity(value.avgSpeed, 'avgSpeed'),
+    elevationUp: parseQuantity(value.elevationUp, 'elevationUp'),
+    avgHeartRate: parseQuantity(value.avgHeartRate, 'avgHeartRate'),
     heartRate,
-    cyclingPower: parseQuantityArray(value.cyclingPower),
+    cyclingPower: parseQuantityArray(value.cyclingPower, 'cyclingPower'),
   }
 }
 
@@ -77,7 +80,7 @@ const parseDate = (value: string) => {
     ? `${healthKitDate[1]}T${healthKitDate[2]}${healthKitDate[3]}:${healthKitDate[4]}`
     : value
   const date = new Date(normalized)
-  if (Number.isNaN(date.getTime())) throw new Error(`Invalid workout start date: ${value}`)
+  if (Number.isNaN(date.getTime())) throw new FitnessPayloadError(`Invalid workout start date: ${value}`)
   return date
 }
 
@@ -94,29 +97,19 @@ const getActivityType = (workout: HealthWorkout): FitnessActivityType => {
   return 'Other'
 }
 
-const toMiles = (quantity?: Quantity) => {
+const convertQuantity = (quantity: Quantity | undefined, factors: Record<string, number>, field: string) => {
   if (!quantity) return 0
-  if (quantity.units === 'mi') return quantity.qty
-  if (quantity.units === 'km') return quantity.qty * 0.621371
-  if (quantity.units === 'm') return quantity.qty * 0.000621371
-  if (quantity.units === 'yd') return quantity.qty / 1760
-  return 0
+  const factor = factors[quantity.units]
+  if (factor == null) throw new FitnessPayloadError(`Unsupported ${field} unit: ${quantity.units}`)
+  return quantity.qty * factor
 }
 
-const toFeet = (quantity?: Quantity) => {
-  if (!quantity) return 0
-  if (quantity.units === 'ft') return quantity.qty
-  if (quantity.units === 'm') return quantity.qty * 3.28084
-  return 0
-}
+const toMiles = (quantity?: Quantity) =>
+  convertQuantity(quantity, { mi: 1, km: 0.621371, m: 0.000621371, yd: 1 / 1760 }, 'distance')
 
-const toMph = (quantity?: Quantity) => {
-  if (!quantity) return 0
-  if (quantity.units === 'mph') return quantity.qty
-  if (quantity.units === 'kmph') return quantity.qty * 0.621371
-  if (quantity.units === 'm/s') return quantity.qty * 2.23694
-  return 0
-}
+const toFeet = (quantity?: Quantity) => convertQuantity(quantity, { ft: 1, m: 3.28084 }, 'elevation')
+
+const toMph = (quantity?: Quantity) => convertQuantity(quantity, { mph: 1, kmph: 0.621371, 'm/s': 2.23694 }, 'speed')
 
 const formatDuration = (seconds: number) => {
   const total = Math.round(seconds)
@@ -135,15 +128,19 @@ const formatPace = (duration: number, miles: number) => {
 }
 
 const getAveragePower = (values?: Quantity[]) => {
-  const watts = values?.filter((value) => value.units === 'W').map((value) => value.qty) ?? []
+  const watts =
+    values?.map((value) => {
+      if (value.units !== 'W') throw new FitnessPayloadError(`Unsupported cycling power unit: ${value.units}`)
+      return value.qty
+    }) ?? []
   if (!watts.length) return null
   return Math.round(watts.reduce((sum, value) => sum + value, 0) / watts.length)
 }
 
-export const parseHealthAutoExport = (payload: unknown): FitnessActivity[] => {
+export const parseHealthAutoExport = (payload: unknown): StoredFitnessActivity[] => {
   const data = isRecord(payload) && isRecord(payload.data) ? payload.data : undefined
   if (!data || !Array.isArray(data.workouts)) {
-    throw new Error('Expected a Health Auto Export payload with a data.workouts array')
+    throw new FitnessPayloadError('Expected a Health Auto Export payload with a data.workouts array')
   }
 
   return data.workouts.map(parseWorkout).map((workout) => {
@@ -151,14 +148,11 @@ export const parseHealthAutoExport = (payload: unknown): FitnessActivity[] => {
     const miles = toMiles(workout.distance)
     const elevationFeet = toFeet(workout.elevationUp)
     const averageMph = toMph(workout.avgSpeed) || (workout.duration > 0 ? miles / (workout.duration / 3600) : 0)
-    const maxMph = toMph(workout.maxSpeed)
     const averageHeartRate = workout.avgHeartRate?.qty ?? workout.heartRate?.avg?.qty ?? null
     const averageWatts = getAveragePower(workout.cyclingPower)
 
     return {
       title: workout.name,
-      link: '',
-      description: '',
       pubDate: parseDate(workout.start).toISOString(),
       guid: workout.id,
       type,
@@ -169,11 +163,6 @@ export const parseHealthAutoExport = (payload: unknown): FitnessActivity[] => {
       Pace: type === 'Run' || type === 'Swim' ? formatPace(workout.duration, miles) : '',
       AverageHeartRate: averageHeartRate,
       AverageWatts: averageWatts,
-      HasHeartRate: averageHeartRate !== null,
-      DeviceWatts: averageWatts !== null,
-      MaxSpeed: maxMph > 0 ? `${maxMph.toFixed(2)} mph` : '',
-      MapPolyline: '',
-      best: { ...EMPTY_BEST },
     }
   })
 }

@@ -1,15 +1,15 @@
 import { connectRedis, redisClient } from '../../db/redis'
-import type { FitnessActivity } from './types'
+import type { FitnessActivity, StoredFitnessActivity } from './types'
 
 const FITNESS_INDEX_KEY = 'fitness:activities'
 const getActivityKey = (id: string) => `fitness:activity:${id}`
 
 const parseMetric = (value?: string) => Number(value?.split(' ')[0]) || 0
 
-const getActivityFingerprint = (activity: FitnessActivity) =>
+const getActivityFingerprint = (activity: StoredFitnessActivity) =>
   [activity.type, activity.pubDate, activity.MovingTime, activity.Distance].join('|')
 
-export const dedupeFitnessActivities = (activities: FitnessActivity[]) => {
+export const dedupeFitnessActivities = <T extends StoredFitnessActivity>(activities: T[]) => {
   const fingerprints = new Set<string>()
   return activities.filter((activity) => {
     const fingerprint = getActivityFingerprint(activity)
@@ -27,23 +27,30 @@ const getStoredActivities = async () => {
   return values.flatMap((value) => {
     if (!value) return []
     try {
-      return [JSON.parse(value) as FitnessActivity]
+      return [JSON.parse(value) as StoredFitnessActivity]
     } catch {
       return []
     }
   })
 }
 
-const addBestFlags = (activities: FitnessActivity[]): FitnessActivity[] => {
+const getActivityMetrics = (activity: StoredFitnessActivity) => {
+  const distance = parseMetric(activity.Distance)
+  const durationParts = activity.MovingTime?.split(':').map(Number) ?? []
+  const duration = durationParts.length === 3 ? durationParts[0] * 3600 + durationParts[1] * 60 + durationParts[2] : 0
+  return {
+    distance,
+    elevation: parseMetric(activity.ElevationGain),
+    speed: parseMetric(activity.AverageSpeed),
+    pace: distance > 0 && duration > 0 ? duration / distance : 0,
+  }
+}
+
+const addBestFlags = (activities: StoredFitnessActivity[]): FitnessActivity[] => {
   const bestByType = new Map<string, { distance: number; elevation: number; speed: number; pace: number }>()
 
   for (const activity of activities) {
-    const distance = parseMetric(activity.Distance)
-    const elevation = parseMetric(activity.ElevationGain)
-    const speed = parseMetric(activity.AverageSpeed)
-    const durationParts = activity.MovingTime?.split(':').map(Number) ?? []
-    const duration = durationParts.length === 3 ? durationParts[0] * 3600 + durationParts[1] * 60 + durationParts[2] : 0
-    const pace = distance > 0 && duration > 0 ? duration / distance : 0
+    const { distance, elevation, speed, pace } = getActivityMetrics(activity)
     const current = bestByType.get(activity.type) ?? { distance: 0, elevation: 0, speed: 0, pace: Infinity }
     bestByType.set(activity.type, {
       distance: Math.max(current.distance, distance),
@@ -55,12 +62,7 @@ const addBestFlags = (activities: FitnessActivity[]): FitnessActivity[] => {
 
   return activities.map((activity) => {
     const best = bestByType.get(activity.type)
-    const distance = parseMetric(activity.Distance)
-    const elevation = parseMetric(activity.ElevationGain)
-    const speed = parseMetric(activity.AverageSpeed)
-    const durationParts = activity.MovingTime?.split(':').map(Number) ?? []
-    const duration = durationParts.length === 3 ? durationParts[0] * 3600 + durationParts[1] * 60 + durationParts[2] : 0
-    const pace = distance > 0 && duration > 0 ? duration / distance : 0
+    const { distance, elevation, speed, pace } = getActivityMetrics(activity)
 
     return {
       ...activity,
@@ -75,7 +77,7 @@ const addBestFlags = (activities: FitnessActivity[]): FitnessActivity[] => {
   })
 }
 
-export const saveFitnessActivities = async (activities: FitnessActivity[]) => {
+export const saveFitnessActivities = async (activities: StoredFitnessActivity[]) => {
   if (!(await connectRedis())) throw new Error('Fitness storage is unavailable')
   if (!activities.length) return 0
 
@@ -83,25 +85,30 @@ export const saveFitnessActivities = async (activities: FitnessActivity[]) => {
   const existingByFingerprint = new Map(
     existingActivities.map((activity) => [getActivityFingerprint(activity), activity.guid])
   )
-  const uniqueActivities = activities.filter((activity) => {
+  const existingById = new Map(existingActivities.map((activity) => [activity.guid, activity]))
+  const uniqueActivities = dedupeFitnessActivities(
+    Array.from(new Map(activities.map((activity) => [activity.guid, activity])).values())
+  )
+  const changedActivities = uniqueActivities.filter((activity) => {
     const fingerprint = getActivityFingerprint(activity)
     const existingId = existingByFingerprint.get(fingerprint)
     if (existingId && existingId !== activity.guid) return false
     existingByFingerprint.set(fingerprint, activity.guid)
-    return true
+    return JSON.stringify(existingById.get(activity.guid)) !== JSON.stringify(activity)
   })
 
+  if (!changedActivities.length) return 0
   const transaction = redisClient.multi()
-  for (const activity of uniqueActivities) {
+  for (const activity of changedActivities) {
     transaction.set(getActivityKey(activity.guid), JSON.stringify(activity))
     transaction.zAdd(FITNESS_INDEX_KEY, { score: new Date(activity.pubDate).getTime(), value: activity.guid })
   }
   await transaction.exec()
-  return uniqueActivities.length
+  return changedActivities.length
 }
 
 export const getFitnessActivities = async (): Promise<FitnessActivity[]> => {
-  if (!(await connectRedis())) return []
+  if (!(await connectRedis())) throw new Error('Fitness storage is unavailable')
 
   const activities = await getStoredActivities()
   return addBestFlags(dedupeFitnessActivities(activities))

@@ -1,11 +1,10 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
 import { type FitnessActivity, type FitnessActivityType } from '../../lib/fitness'
 import { fade, staggerFade } from '../animation'
-import { hike, ride, run, swim, weight, zwift } from '../SVG/strava/icons'
-import MiniMap from './FitnessMinimap'
+import { hike, ride, run, swim, weight, zwift } from '../SVG/fitness/icons'
 
 interface Props {
   activities: FitnessActivity[]
@@ -46,8 +45,6 @@ const FitnessActivities = ({ activities }: Props) => {
   const startX = useRef(0)
   const scrollLeft = useRef(0)
 
-  if (!activities?.length) return null
-
   const activityCounts = activities.reduce<Record<string, number>>((acc, act) => {
     acc[act.type] = (acc[act.type] ?? 0) + 1
     return acc
@@ -57,15 +54,7 @@ const FitnessActivities = ({ activities }: Props) => {
     return activityCounts[type] ?? 0
   }
 
-  const matchesFilter = (activity: FitnessActivity) => {
-    if (!filter) return true
-    return activity.type === filter
-  }
-
-  const filteredActivities = useMemo(() => {
-    const matching = activities.filter(matchesFilter)
-    return filter ? matching : matching.slice(0, 5)
-  }, [activities, filter])
+  const filteredActivities = filter ? activities.filter((activity) => activity.type === filter) : activities.slice(0, 5)
 
   const renderFilterButton = (type: keyof typeof ActivityIcons) => {
     const isActive = filter === type
@@ -109,6 +98,8 @@ const FitnessActivities = ({ activities }: Props) => {
       observer.disconnect()
     }
   }, [])
+
+  if (!activities.length) return null
 
   const handleMouseDown = (e: React.MouseEvent) => {
     activityListRef.current?.classList.add('grabbing')
@@ -159,12 +150,6 @@ const FitnessActivities = ({ activities }: Props) => {
           return (
             <ActivityItem key={activity.guid}>
               <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
-
-              {activity.MapPolyline ? (
-                <MapContainer>
-                  <MiniMap height={100} polyline={activity.MapPolyline} width={100} />
-                </MapContainer>
-              ) : null}
 
               {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
               {activity.Distance ? renderActivityDetail('Distance', activity) : null}
@@ -282,14 +267,6 @@ const ActivityItem = styled.li`
   flex: 1;
   min-width: 200px;
   background: var(--dark-bg);
-`
-
-const MapContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
 `
 
 const ActivityType = styled.div`

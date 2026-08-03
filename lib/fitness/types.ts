@@ -1,9 +1,7 @@
 export type FitnessActivityType = 'Swim' | 'Ride' | 'Run' | 'WeightTraining' | 'Hike' | 'Zwift' | 'Walk' | 'Other'
 
-export interface FitnessActivity {
+export interface StoredFitnessActivity {
   title: string
-  link: string
-  description: string
   pubDate: string
   guid: string
   type: FitnessActivityType
@@ -14,10 +12,9 @@ export interface FitnessActivity {
   Pace?: string
   AverageHeartRate?: number | null
   AverageWatts?: number | null
-  HasHeartRate?: boolean
-  DeviceWatts?: boolean
-  MaxSpeed?: string | null
-  MapPolyline: string | null
+}
+
+export interface FitnessActivity extends StoredFitnessActivity {
   best: {
     MovingTime: number
     Distance: number

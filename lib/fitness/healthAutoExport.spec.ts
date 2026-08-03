@@ -17,7 +17,6 @@ describe('parseHealthAutoExport', () => {
             distance: { qty: 40, units: 'km' },
             elevationUp: { qty: 500, units: 'm' },
             avgSpeed: { qty: 40, units: 'kmph' },
-            maxSpeed: { qty: 55, units: 'kmph' },
             heartRate: { avg: { qty: 148, units: 'bpm' } },
             cyclingPower: [
               { date: '2026-08-02 07:30:00 -0700', qty: 190, units: 'W', source: 'Garmin' },
@@ -37,10 +36,8 @@ describe('parseHealthAutoExport', () => {
       ElevationGain: '1640.42 ft',
       MovingTime: '01:00:00',
       AverageSpeed: '24.85 mph',
-      MaxSpeed: '34.18 mph',
       AverageHeartRate: 148,
       AverageWatts: 200,
-      MapPolyline: '',
     })
   })
 
@@ -69,5 +66,41 @@ describe('parseHealthAutoExport', () => {
     expect(() => parseHealthAutoExport({ metrics: [] })).toThrow(
       'Expected a Health Auto Export payload with a data.workouts array'
     )
+  })
+
+  it('rejects malformed optional metrics instead of silently dropping them', () => {
+    expect(() =>
+      parseHealthAutoExport({
+        data: {
+          workouts: [
+            {
+              id: 'workout-3',
+              name: 'Running',
+              start: '2026-08-02 12:00:00 +0000',
+              duration: 1800,
+              distance: { qty: -1, units: 'mi' },
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid distance')
+  })
+
+  it('rejects unsupported units', () => {
+    expect(() =>
+      parseHealthAutoExport({
+        data: {
+          workouts: [
+            {
+              id: 'workout-4',
+              name: 'Running',
+              start: '2026-08-02 12:00:00 +0000',
+              duration: 1800,
+              distance: { qty: 5, units: 'league' },
+            },
+          ],
+        },
+      })
+    ).toThrow('Unsupported distance unit: league')
   })
 })
