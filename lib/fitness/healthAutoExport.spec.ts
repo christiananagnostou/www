@@ -104,6 +104,25 @@ describe('parseHealthAutoExport', () => {
     ).toThrow('Unsupported distance unit: league')
   })
 
+  it('derives speed when the exporter labels average speed as distance', () => {
+    const [activity] = parseHealthAutoExport({
+      data: {
+        workouts: [
+          {
+            id: 'workout-speed-fallback',
+            name: 'Outdoor Cycling',
+            start: '2026-08-02 12:00:00 +0000',
+            duration: 3600,
+            distance: { qty: 10, units: 'mi' },
+            avgSpeed: { qty: 10, units: 'mi' },
+          },
+        ],
+      },
+    })
+
+    expect(activity.AverageSpeed).toBe('10.00 mph')
+  })
+
   it('stores only geofenced encoded route segments', () => {
     const [activity] = parseHealthAutoExport(
       {

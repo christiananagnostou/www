@@ -132,7 +132,11 @@ const toMiles = (quantity?: Quantity) =>
 
 const toFeet = (quantity?: Quantity) => convertQuantity(quantity, { ft: 1, m: 3.28084 }, 'elevation')
 
-const toMph = (quantity?: Quantity) => convertQuantity(quantity, { mph: 1, kmph: 0.621371, 'm/s': 2.23694 }, 'speed')
+const toMph = (quantity?: Quantity) => {
+  if (!quantity) return 0
+  const factor = { mph: 1, kmph: 0.621371, 'm/s': 2.23694 }[quantity.units]
+  return factor == null ? 0 : quantity.qty * factor
+}
 
 const formatDuration = (seconds: number) => {
   const total = Math.round(seconds)
