@@ -56,7 +56,7 @@ const JSON_LENS_SOURCE = String.raw`(function () {
   }
 
   function renderPrimitive(key, value) {
-    var row = create('div', 'jl-field')
+    var row = create('dl', 'jl-field')
     var label = create('dt', 'jl-key', humanize(key))
     label.title = key
     var output = create('dd', 'jl-value jl-' + valueType(value))
@@ -112,23 +112,19 @@ const JSON_LENS_SOURCE = String.raw`(function () {
 
   function renderObject(object) {
     var container = create('div', 'jl-object')
-    var fields = create('dl', 'jl-fields')
-    var groups = []
+    var ledger = create('div', 'jl-ledger')
 
     Object.keys(object).forEach(function (key) {
       var value = object[key]
       if (Array.isArray(value) || isObject(value)) {
-        groups.push([key, value])
+        ledger.appendChild(renderGroup(key, value))
       } else {
-        fields.appendChild(renderPrimitive(key, value))
+        ledger.appendChild(renderPrimitive(key, value))
       }
     })
 
-    if (fields.childNodes.length) container.appendChild(fields)
-    groups.forEach(function (entry) {
-      container.appendChild(renderGroup(entry[0], entry[1]))
-    })
-    if (!container.childNodes.length) container.appendChild(create('p', 'jl-empty', 'Empty object'))
+    if (ledger.childNodes.length) container.appendChild(ledger)
+    else container.appendChild(create('p', 'jl-empty', 'Empty object'))
     return container
   }
 
@@ -208,10 +204,12 @@ const JSON_LENS_SOURCE = String.raw`(function () {
       '.jl-search-status{margin-left:auto}',
       '.jl-document{overflow:hidden;border:1px solid var(--jl-line);border-radius:12px;background:var(--jl-white)}',
       '.jl-content{padding:6px 18px 22px}',
-      '.jl-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin:0;padding:4px 0 10px}',
-      '.jl-field{min-width:0;padding:12px 10px;border-bottom:1px solid #edf0ef}',
-      '.jl-key{overflow:hidden;margin:0 0 4px;color:var(--jl-muted);font:650 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}',
-      '.jl-value{overflow-wrap:anywhere;margin:0;color:var(--jl-ink);font-size:13px}',
+      '.jl-ledger{margin:0}',
+      '.jl-ledger>.jl-field,.jl-ledger>.jl-group{border-top:1px solid #edf0ef}',
+      '.jl-ledger>:first-child{border-top:0}',
+      '.jl-field{display:grid;grid-template-columns:minmax(140px,220px) minmax(0,1fr);gap:24px;min-width:0;margin:0;padding:10px 8px}',
+      '.jl-key{overflow:hidden;margin:2px 0 0;color:var(--jl-muted);font:650 9px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;text-overflow:ellipsis;white-space:nowrap}',
+      '.jl-value{min-width:0;overflow-wrap:anywhere;margin:0;color:var(--jl-ink);font-size:13px}',
       '.jl-boolean{display:flex;align-items:center;gap:7px;font-weight:600}',
       '.jl-bool-dot{width:6px;height:6px;border-radius:50%}',
       '.jl-bool-true{background:var(--jl-green);box-shadow:0 0 0 2px rgba(22,130,88,.1)}',
@@ -220,29 +218,33 @@ const JSON_LENS_SOURCE = String.raw`(function () {
       '.jl-date-friendly{display:block;font-weight:600}',
       '.jl-date-source{display:block;margin-top:2px;color:var(--jl-muted);font:9px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace}',
       '.jl-null{color:var(--jl-muted);font-style:italic}',
-      '.jl-group{border-top:1px solid var(--jl-line)}',
-      '.jl-group-summary{display:flex;align-items:center;gap:7px;padding:13px 4px;list-style:none;cursor:pointer}',
+      '.jl-group{min-width:0}',
+      '.jl-group-summary{display:grid;grid-template-columns:16px minmax(140px,220px) minmax(0,1fr);align-items:center;column-gap:12px;padding:10px 8px;list-style:none;cursor:pointer}',
       '.jl-group-summary::-webkit-details-marker{display:none}',
+      '.jl-group-summary:hover{background:#fafbfa}',
       '.jl-group-summary:hover .jl-group-name{color:var(--jl-accent)}',
       '.jl-chevron{color:var(--jl-muted);font:700 16px/1 monospace;transition:transform .16s ease}',
       '.jl-group[open]>.jl-group-summary .jl-chevron{transform:rotate(90deg)}',
-      '.jl-token{color:var(--jl-accent);font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace}',
-      '.jl-group-name{color:var(--jl-ink);font:700 12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}',
-      '.jl-count{margin-left:auto;color:var(--jl-muted);font:600 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}',
-      '.jl-group-content{position:relative;margin:0 0 10px 19px;padding:0 0 14px 15px;border-left:1px solid var(--jl-accent-soft)}',
+      '.jl-token{display:none;color:var(--jl-accent);font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace}',
+      '.jl-group-name{overflow:hidden;color:var(--jl-ink);font:700 11px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;text-overflow:ellipsis;white-space:nowrap}',
+      '.jl-count{color:var(--jl-muted);font:600 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}',
+      '.jl-count::before{content:"{";margin-right:6px;color:var(--jl-accent)}',
+      '.jl-group-array>.jl-group-summary .jl-count::before{content:"["}',
+      '.jl-group-content{position:relative;margin:0 0 10px 15px;padding:0 0 14px 15px;border-left:1px solid var(--jl-accent-soft)}',
       '.jl-group-content::after{position:absolute;bottom:-2px;left:-5px;padding:0 2px;background:var(--jl-white);color:var(--jl-accent);font:700 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace}',
       '.jl-group-object>.jl-group-content::after{content:"}"}',
       '.jl-group-array>.jl-group-content::after{content:"]"}',
-      '.jl-array{display:grid;gap:7px}',
-      '.jl-array-item{display:grid;grid-template-columns:30px minmax(0,1fr);overflow:hidden;border:1px solid #e7ebe9;border-radius:8px;background:var(--jl-white)}',
-      '.jl-item-number{padding-top:13px;border-right:1px solid #e7ebe9;background:#fafbfa;color:var(--jl-accent);font:700 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}',
-      '.jl-item-body{min-width:0;padding:0 8px}',
+      '.jl-array{margin:0}',
+      '.jl-array-item{display:grid;grid-template-columns:30px minmax(0,1fr);min-width:0;border-top:1px solid #edf0ef;background:var(--jl-white)}',
+      '.jl-array-item:first-child{border-top:0}',
+      '.jl-item-number{padding-top:13px;color:var(--jl-accent);font:700 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}',
+      '.jl-item-body{min-width:0;padding-left:8px;border-left:1px solid #edf0ef}',
       '.jl-empty{margin:0;padding:14px 10px;color:var(--jl-muted);font-size:12px;font-style:italic}',
       '.jl-search-empty{padding:48px 16px;color:var(--jl-muted);font-size:13px;text-align:center}',
       '.jl-raw{display:block;width:100%;min-height:70vh;margin:0;padding:20px;border:0;background:#202625;color:#e7ecea;font:11px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}',
       '.jl-hidden{display:none!important}',
       '.jl-toast{position:fixed;right:18px;bottom:18px;z-index:20;padding:9px 12px;border-radius:7px;background:var(--jl-ink);color:#ffffff;font-size:11px;box-shadow:0 8px 24px rgba(30,38,37,.2)}',
-      '@media(max-width:760px){.jl-shell{width:min(100% - 20px,1080px);padding-top:10px}.jl-header{top:6px;flex-wrap:wrap}.jl-brand{flex:1;min-width:0}.jl-search-wrap{order:3;flex-basis:100%}.jl-actions{margin-left:0}.jl-meta{overflow:auto;white-space:nowrap}.jl-search-status{display:none}.jl-content{padding:4px 10px 16px}.jl-fields{grid-template-columns:1fr}.jl-field{display:grid;grid-template-columns:minmax(88px,30%) minmax(0,1fr);gap:10px;padding:9px 7px}.jl-key{margin:2px 0 0;white-space:normal}.jl-group-content{margin-left:11px;padding-left:10px}}',
+      '@media(max-width:760px){.jl-shell{width:min(100% - 20px,1080px);padding-top:10px}.jl-header{top:6px;flex-wrap:wrap}.jl-brand{flex:1;min-width:0}.jl-search-wrap{order:3;flex-basis:100%}.jl-actions{margin-left:0}.jl-meta{overflow:auto;white-space:nowrap}.jl-search-status{display:none}.jl-content{padding:4px 10px 16px}.jl-field{grid-template-columns:minmax(88px,32%) minmax(0,1fr);gap:12px;padding:9px 7px}.jl-key{white-space:normal}.jl-group-summary{grid-template-columns:14px minmax(88px,32%) minmax(0,1fr);column-gap:8px;padding:9px 7px}.jl-group-content{margin-left:9px;padding-left:9px}.jl-item-body{padding-left:4px}}',
       '@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}',
     ].join('')
 
@@ -278,6 +280,7 @@ const JSON_LENS_SOURCE = String.raw`(function () {
     var previousRoot = document.getElementById(ROOT_ID)
     if (previousRoot) previousRoot.remove()
     injectStyles()
+    if (!document.documentElement.lang) document.documentElement.lang = navigator.language || 'en'
     document.title = 'JSON Lens — ' + document.title.replace(/^JSON Lens — /, '')
 
     var root = create('main')

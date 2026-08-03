@@ -11,6 +11,7 @@ describe('JSON Lens bookmarklet', () => {
   beforeEach(() => {
     document.head.replaceChildren()
     document.body.replaceChildren()
+    document.documentElement.removeAttribute('lang')
     document.title = 'API response'
     delete (window as JSONLensWindow).JSONLens
     vi.restoreAllMocks()
@@ -28,6 +29,7 @@ describe('JSON Lens bookmarklet', () => {
     window.eval(JSON_LENS_SOURCE)
 
     expect(document.querySelector('#json-lens-root')).not.toBeNull()
+    expect(document.documentElement.lang).not.toBe('')
     expect(document.body.textContent).toContain('EXAMPLE-123')
     expect(document.body.textContent).toContain('Metadata')
     expect(document.body.textContent).toContain('Events')
@@ -36,6 +38,16 @@ describe('JSON Lens bookmarklet', () => {
     expect(document.querySelector('.jl-bool-false')).not.toBeNull()
     expect(document.querySelector('.jl-date-source')?.textContent).toBe(response.metadata.createdAt)
     expect(document.querySelector('.jl-token')?.textContent).toBe('{')
+  })
+
+  it('keeps fields and nested groups in source order', () => {
+    document.body.textContent = JSON.stringify({ first: 1, nested: { value: 2 }, last: 3 })
+
+    window.eval(JSON_LENS_SOURCE)
+
+    const rows = Array.from(document.querySelectorAll('.jl-content > .jl-object > .jl-ledger > *'))
+
+    expect(rows.map(({ textContent }) => textContent)).toEqual(['First1', '›{Nested1 fieldValue2', 'Last3'])
   })
 
   it('supports search, group expansion, and raw view controls', () => {
