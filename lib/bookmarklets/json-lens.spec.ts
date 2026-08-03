@@ -1,15 +1,16 @@
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
-
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const script = readFileSync(join(process.cwd(), 'public/scripts/json-lens.js'), 'utf8')
+import { bookmarkletsData } from '.'
+import { JSON_LENS_SOURCE } from './jsonLens'
+
+type JSONLensWindow = typeof window & { JSONLens?: () => void }
 
 describe('JSON Lens bookmarklet', () => {
   beforeEach(() => {
     document.head.replaceChildren()
     document.body.replaceChildren()
     document.title = 'API response'
+    delete (window as JSONLensWindow).JSONLens
     vi.restoreAllMocks()
   })
 
@@ -22,8 +23,7 @@ describe('JSON Lens bookmarklet', () => {
     }
     document.body.textContent = JSON.stringify(response)
 
-    window.eval(script)
-    ;(window as typeof window & { JSONLens: () => void }).JSONLens()
+    window.eval(JSON_LENS_SOURCE)
 
     expect(document.querySelector('#json-lens-root')).not.toBeNull()
     expect(document.body.textContent).toContain('EXAMPLE-123')
@@ -39,10 +39,17 @@ describe('JSON Lens bookmarklet', () => {
     const alert = vi.spyOn(window, 'alert').mockImplementation(() => undefined)
     document.body.textContent = 'Not a JSON response'
 
-    window.eval(script)
-    ;(window as typeof window & { JSONLens: () => void }).JSONLens()
+    window.eval(JSON_LENS_SOURCE)
 
     expect(alert).toHaveBeenCalledWith('JSON Lens could not find a valid JSON response on this page.')
     expect(document.body.textContent).toBe('Not a JSON response')
+  })
+
+  it('is fully embedded instead of loading a script blocked by the page CSP', () => {
+    const bookmarklet = bookmarkletsData.find(({ id }) => id === 'json-lens')
+
+    expect(bookmarklet?.code).toBe(`javascript:${JSON_LENS_SOURCE}`)
+    expect(bookmarklet?.code).not.toContain("createElement('script')")
+    expect(bookmarklet?.code).not.toContain('/scripts/json-lens.js')
   })
 })

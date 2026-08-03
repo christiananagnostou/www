@@ -1,11 +1,17 @@
-;(function () {
+export const JSON_LENS_SOURCE = String.raw`(function () {
   'use strict'
+
+  if (window.JSONLens) {
+    window.JSONLens()
+    return
+  }
 
   var ROOT_ID = 'json-lens-root'
   var STYLE_ID = 'json-lens-styles'
   var sourceText = ''
   var sourceData
   var keyHandler
+  var styleSheet
 
   function create(tag, className, text) {
     var element = document.createElement(tag)
@@ -174,10 +180,8 @@
   }
 
   function injectStyles() {
-    if (document.getElementById(STYLE_ID)) return
-    var style = create('style')
-    style.id = STYLE_ID
-    style.textContent = [
+    if (styleSheet || document.getElementById(STYLE_ID)) return
+    var css = [
       ':root{color-scheme:light;--jl-ink:#17243d;--jl-muted:#69758a;--jl-line:#dce3ef;--jl-paper:#f7f9fc;--jl-white:#ffffff;--jl-blue:#2855d9;--jl-blue-soft:#edf2ff;--jl-amber:#c46b16;--jl-green:#198754;--jl-red:#c03b4b}',
       '*{box-sizing:border-box}',
       'html,body{min-height:100%;margin:0;background:var(--jl-paper)!important;color:var(--jl-ink)!important}',
@@ -237,6 +241,21 @@
       '@media(max-width:720px){.jl-shell{width:min(100% - 20px,1120px);padding-top:10px}.jl-header{top:6px;flex-wrap:wrap;gap:9px}.jl-brand{flex:1}.jl-search{order:3;width:100%}.jl-button span{display:none}.jl-content{padding:5px 12px 16px}.jl-document-head{padding:15px}.jl-fields{grid-template-columns:1fr}.jl-group-content{margin-left:2px;padding-left:9px}.jl-array-item{grid-template-columns:30px minmax(0,1fr)}.jl-meta{overflow:auto}}',
       '@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}',
     ].join('')
+
+    if ('adoptedStyleSheets' in document && typeof CSSStyleSheet === 'function') {
+      try {
+        styleSheet = new CSSStyleSheet()
+        styleSheet.replaceSync(css)
+        document.adoptedStyleSheets = document.adoptedStyleSheets.concat(styleSheet)
+        return
+      } catch {
+        styleSheet = undefined
+      }
+    }
+
+    var style = create('style')
+    style.id = STYLE_ID
+    style.textContent = css
     document.head.appendChild(style)
   }
 
@@ -370,4 +389,6 @@
     }
     render()
   }
-})()
+
+  window.JSONLens()
+})()`

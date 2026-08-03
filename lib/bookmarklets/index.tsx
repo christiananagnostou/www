@@ -1,24 +1,15 @@
 import { BrokenGlass, JsonLens, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
+import { JSON_LENS_SOURCE } from './jsonLens'
 
 export const bookmarkletsData = [
   {
     id: 'json-lens',
     title: 'JSON Lens',
     description: 'Turns a raw JSON response into a searchable, collapsible visual document.',
-    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/json-lens.js',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/lib/bookmarklets/jsonLens.ts',
     icon: JsonLens,
-    code: /*js*/ `
-      javascript:(function(){
-        if (window.JSONLens) {
-          window.JSONLens();
-          return;
-        }
-        var s = document.createElement('script');
-        s.src = '${BASE_URL}/scripts/json-lens.js';
-        s.onload = function(){ window.JSONLens(); };
-        document.documentElement.appendChild(s);
-      })();`,
+    code: `javascript:${JSON_LENS_SOURCE}`,
     instructions: `
       JSON Lens reads the JSON already visible in the current tab and renders it locally. It does not send, save, or add any of the response data to another service.
       -
