@@ -1,4 +1,5 @@
 import type { FitnessActivityType, StoredFitnessActivity } from './types'
+import { isValidRoutePoint, sanitizeRoute, type PrivacyZone, type RoutePoint } from './routes'
 
 export class FitnessPayloadError extends Error {}
 
@@ -19,7 +20,10 @@ interface HealthWorkout {
   avgHeartRate?: Quantity
   heartRate?: { avg?: Quantity }
   cyclingPower?: Quantity[]
+  route?: RoutePoint[]
 }
+
+const MAX_ROUTE_POINTS = 50_000
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -42,6 +46,24 @@ const parseQuantityArray = (value: unknown, field: string): Quantity[] | undefin
   if (value == null) return undefined
   if (!Array.isArray(value)) throw new FitnessPayloadError(`Invalid ${field}`)
   return value.map((item, index) => parseQuantity(item, `${field}[${index}]`) as Quantity)
+}
+
+const parseRoute = (value: unknown): RoutePoint[] | undefined => {
+  if (value == null) return undefined
+  if (!Array.isArray(value) || value.length > MAX_ROUTE_POINTS) {
+    throw new FitnessPayloadError('Invalid route')
+  }
+  return value.map((point, index) => {
+    if (
+      !isRecord(point) ||
+      typeof point.latitude !== 'number' ||
+      typeof point.longitude !== 'number' ||
+      !isValidRoutePoint({ latitude: point.latitude, longitude: point.longitude })
+    ) {
+      throw new FitnessPayloadError(`Invalid route point at index ${index}`)
+    }
+    return { latitude: point.latitude, longitude: point.longitude }
+  })
 }
 
 const parseWorkout = (value: unknown): HealthWorkout => {
@@ -71,6 +93,7 @@ const parseWorkout = (value: unknown): HealthWorkout => {
     avgHeartRate: parseQuantity(value.avgHeartRate, 'avgHeartRate'),
     heartRate,
     cyclingPower: parseQuantityArray(value.cyclingPower, 'cyclingPower'),
+    route: parseRoute(value.route),
   }
 }
 
@@ -137,7 +160,7 @@ const getAveragePower = (values?: Quantity[]) => {
   return Math.round(watts.reduce((sum, value) => sum + value, 0) / watts.length)
 }
 
-export const parseHealthAutoExport = (payload: unknown): StoredFitnessActivity[] => {
+export const parseHealthAutoExport = (payload: unknown, privacyZones: PrivacyZone[] = []): StoredFitnessActivity[] => {
   const data = isRecord(payload) && isRecord(payload.data) ? payload.data : undefined
   if (!data || !Array.isArray(data.workouts)) {
     throw new FitnessPayloadError('Expected a Health Auto Export payload with a data.workouts array')
@@ -150,6 +173,7 @@ export const parseHealthAutoExport = (payload: unknown): StoredFitnessActivity[]
     const averageMph = toMph(workout.avgSpeed) || (workout.duration > 0 ? miles / (workout.duration / 3600) : 0)
     const averageHeartRate = workout.avgHeartRate?.qty ?? workout.heartRate?.avg?.qty ?? null
     const averageWatts = getAveragePower(workout.cyclingPower)
+    const routePolylines = workout.route?.length ? sanitizeRoute(workout.route, privacyZones, workout.id) : undefined
 
     return {
       title: workout.name,
@@ -163,6 +187,7 @@ export const parseHealthAutoExport = (payload: unknown): StoredFitnessActivity[]
       Pace: type === 'Run' || type === 'Swim' ? formatPace(workout.duration, miles) : '',
       AverageHeartRate: averageHeartRate,
       AverageWatts: averageWatts,
+      RoutePolylines: routePolylines?.length ? routePolylines : undefined,
     }
   })
 }

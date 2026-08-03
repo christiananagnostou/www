@@ -12,6 +12,7 @@ export interface StoredFitnessActivity {
   Pace?: string
   AverageHeartRate?: number | null
   AverageWatts?: number | null
+  RoutePolylines?: string[]
 }
 
 export interface FitnessActivity extends StoredFitnessActivity {

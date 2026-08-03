@@ -22,13 +22,24 @@ interface Props {
   fitnessActivities: FitnessActivity[]
 }
 
+const HOMEPAGE_ACTIVITY_LIMIT = 50
+const HOMEPAGE_ROUTE_LIMIT = 5
+
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
 
   let fitnessActivities: FitnessActivity[] = []
   try {
     const activities = await getFitnessActivities()
-    fitnessActivities = activities.filter((activity) => ['Run', 'Ride', 'Zwift', 'Swim'].includes(activity.type))
+    fitnessActivities = activities
+      .filter((activity) => ['Run', 'Ride', 'Zwift', 'Swim'].includes(activity.type))
+      .slice(0, HOMEPAGE_ACTIVITY_LIMIT)
+      .map((activity, index) => {
+        if (index < HOMEPAGE_ROUTE_LIMIT) return activity
+        const activityWithoutRoute = { ...activity }
+        delete activityWithoutRoute.RoutePolylines
+        return activityWithoutRoute
+      })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness homepage error'
     console.error('Failed to load homepage fitness activities', message)

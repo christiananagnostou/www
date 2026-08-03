@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { type FitnessActivity, type FitnessActivityType } from '../../lib/fitness'
 import { fade, staggerFade } from '../animation'
 import { hike, ride, run, swim, weight, zwift } from '../SVG/fitness/icons'
+import FitnessRouteMap from './FitnessRouteMap'
 
 interface Props {
   activities: FitnessActivity[]
@@ -151,6 +152,12 @@ const FitnessActivities = ({ activities }: Props) => {
             <ActivityItem key={activity.guid}>
               <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
 
+              {activity.RoutePolylines?.length ? (
+                <MapContainer>
+                  <FitnessRouteMap polylines={activity.RoutePolylines} />
+                </MapContainer>
+              ) : null}
+
               {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
               {activity.Distance ? renderActivityDetail('Distance', activity) : null}
               {activity.Pace ? renderActivityDetail('Pace', activity) : null}
@@ -267,6 +274,14 @@ const ActivityItem = styled.li`
   flex: 1;
   min-width: 200px;
   background: var(--dark-bg);
+`
+
+const MapContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
 `
 
 const ActivityType = styled.div`

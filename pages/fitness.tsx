@@ -34,8 +34,13 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
   loading: () => <LaneChartLoading>Loading chart…</LaneChartLoading>,
 })
 
+type FitnessActivitySummary = Pick<
+  FitnessActivity,
+  'pubDate' | 'type' | 'Distance' | 'MovingTime' | 'ElevationGain' | 'AverageHeartRate' | 'AverageWatts'
+>
+
 interface Props {
-  activities: FitnessActivity[]
+  activities: FitnessActivitySummary[]
   error?: string
 }
 
@@ -44,7 +49,6 @@ type Discipline = 'swim' | 'bike' | 'run' | 'other'
 type BikeKind = 'road' | 'zwift'
 
 interface ParsedActivity {
-  activity: FitnessActivity
   date: dayjs.Dayjs
   miles: number
   seconds: number
@@ -89,7 +93,20 @@ const DISCIPLINE_CONFIG: Record<Discipline, { label: string; color: string; acce
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const activities = await getFitnessActivities()
+    const earliestActivity = dayjs()
+      .subtract(Math.max(...WINDOW_OPTIONS), 'month')
+      .startOf('day')
+    const activities = (await getFitnessActivities())
+      .filter((activity) => dayjs(activity.pubDate).isAfter(earliestActivity))
+      .map(({ pubDate, type, Distance, MovingTime, ElevationGain, AverageHeartRate, AverageWatts }) => ({
+        pubDate,
+        type,
+        Distance,
+        MovingTime,
+        ElevationGain,
+        AverageHeartRate,
+        AverageWatts,
+      }))
     return { props: { activities }, revalidate: 60 * 60 * 12 }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness data error'
@@ -112,7 +129,7 @@ const parseSeconds = (moving?: string) => {
 
 const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, '')) || 0 : 0)
 
-const classifyActivity = (activity: FitnessActivity): { discipline: Discipline; bikeKind?: BikeKind } => {
+const classifyActivity = (activity: FitnessActivitySummary): { discipline: Discipline; bikeKind?: BikeKind } => {
   if (activity.type === 'Swim') return { discipline: 'swim' }
   if (activity.type === 'Run') return { discipline: 'run' }
   if (activity.type === 'Zwift') {
@@ -264,7 +281,6 @@ const FitnessPage = ({ activities, error }: Props) => {
       activities.map((activity) => {
         const { discipline, bikeKind } = classifyActivity(activity)
         return {
-          activity,
           date: dayjs(activity.pubDate),
           miles: parseMiles(activity.Distance),
           seconds: parseSeconds(activity.MovingTime),
