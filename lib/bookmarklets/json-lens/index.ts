@@ -1,4 +1,4 @@
-export const JSON_LENS_SOURCE = String.raw`(function () {
+const JSON_LENS_SOURCE = String.raw`(function () {
   'use strict'
 
   if (window.JSONLens) {
@@ -88,7 +88,7 @@ export const JSON_LENS_SOURCE = String.raw`(function () {
   }
 
   function renderGroup(key, value, depth, open) {
-    var details = create('details', 'jl-group jl-depth-' + Math.min(depth, 3))
+    var details = create('details', 'jl-group')
     details.open = open
     var summary = create('summary', 'jl-group-summary')
     var marker = create('span', 'jl-chevron', '›')
@@ -236,9 +236,8 @@ export const JSON_LENS_SOURCE = String.raw`(function () {
       '.jl-empty{margin:0;padding:16px;color:var(--jl-muted);font-size:13px;font-style:italic}',
       '.jl-raw{display:block;width:100%;min-height:70vh;margin:0;padding:24px;border:0;background:#111827;color:#dbeafe;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}',
       '.jl-hidden{display:none!important}',
-      '.jl-no-results{padding:80px 20px;color:var(--jl-muted);text-align:center}',
       '.jl-toast{position:fixed;right:20px;bottom:20px;z-index:20;padding:10px 14px;border-radius:9px;background:var(--jl-ink);color:#ffffff;font-size:12px;box-shadow:0 8px 30px rgba(23,36,61,.24)}',
-      '@media(max-width:720px){.jl-shell{width:min(100% - 20px,1120px);padding-top:10px}.jl-header{top:6px;flex-wrap:wrap;gap:9px}.jl-brand{flex:1}.jl-search{order:3;width:100%}.jl-button span{display:none}.jl-content{padding:5px 12px 16px}.jl-document-head{padding:15px}.jl-fields{grid-template-columns:1fr}.jl-group-content{margin-left:2px;padding-left:9px}.jl-array-item{grid-template-columns:30px minmax(0,1fr)}.jl-meta{overflow:auto}}',
+      '@media(max-width:720px){.jl-shell{width:min(100% - 20px,1120px);padding-top:10px}.jl-header{top:6px;flex-wrap:wrap;gap:9px}.jl-brand{flex:1}.jl-search{order:3;width:100%}.jl-content{padding:5px 12px 16px}.jl-document-head{padding:15px}.jl-fields{grid-template-columns:1fr}.jl-group-content{margin-left:2px;padding-left:9px}.jl-array-item{grid-template-columns:30px minmax(0,1fr)}.jl-meta{overflow:auto}}',
       '@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}',
     ].join('')
 
@@ -392,3 +391,5 @@ export const JSON_LENS_SOURCE = String.raw`(function () {
 
   window.JSONLens()
 })()`
+
+export const JSON_LENS_BOOKMARKLET = `javascript:${encodeURIComponent(JSON_LENS_SOURCE)}`

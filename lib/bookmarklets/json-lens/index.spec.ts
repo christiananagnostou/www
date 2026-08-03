@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { bookmarkletsData } from '.'
-import { JSON_LENS_SOURCE } from './jsonLens'
+import { bookmarkletsData } from '..'
+import { JSON_LENS_BOOKMARKLET } from '.'
 
 type JSONLensWindow = typeof window & { JSONLens?: () => void }
+
+const JSON_LENS_SOURCE = decodeURIComponent(JSON_LENS_BOOKMARKLET.slice('javascript:'.length))
 
 describe('JSON Lens bookmarklet', () => {
   beforeEach(() => {
@@ -48,8 +50,17 @@ describe('JSON Lens bookmarklet', () => {
   it('is fully embedded instead of loading a script blocked by the page CSP', () => {
     const bookmarklet = bookmarkletsData.find(({ id }) => id === 'json-lens')
 
-    expect(bookmarklet?.code).toBe(`javascript:${JSON_LENS_SOURCE}`)
+    expect(bookmarklet?.code).toBe(JSON_LENS_BOOKMARKLET)
     expect(bookmarklet?.code).not.toContain("createElement('script')")
     expect(bookmarklet?.code).not.toContain('/scripts/json-lens.js')
+  })
+
+  it('preserves statement boundaries when browsers flatten bookmark URLs', () => {
+    const encodedSource = JSON_LENS_BOOKMARKLET.slice('javascript:'.length)
+    const flattenedBookmarklet = JSON_LENS_BOOKMARKLET.replace(/\s/g, '')
+
+    expect(flattenedBookmarklet).toBe(JSON_LENS_BOOKMARKLET)
+    expect(decodeURIComponent(encodedSource)).toBe(JSON_LENS_SOURCE)
+    expect(() => new Function(decodeURIComponent(encodedSource))).not.toThrow()
   })
 })
