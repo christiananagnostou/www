@@ -1,4 +1,6 @@
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import * as m from 'framer-motion/m'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
@@ -13,6 +15,9 @@ import type { FitnessActivity } from '../lib/fitness/activity'
 import { getActivitiesSince } from '../lib/fitness/server/activityRepository'
 import { metersToFeet, metersToMiles } from '../lib/fitness/units'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 const PageTitle = 'Fitness | Christian Anagnostou'
 const PageDescription = "Christian Anagnostou's triathlon training dashboard"
 const PageUrl = `${BASE_URL}/fitness`
@@ -20,6 +25,7 @@ const PageUrl = `${BASE_URL}/fitness`
 const WINDOW_OPTIONS = [1, 3, 6, 12, 24]
 const EVEREST_HEIGHT_FT = 29029
 const OLYMPIC_POOL_MILES = 0.0311
+const ACTIVITY_TIME_ZONE = 'America/Los_Angeles'
 
 const FitnessCharts = dynamic(async () => import('../components/Fitness/FitnessCharts'), {
   ssr: false,
@@ -38,6 +44,7 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
 
 interface Props {
   activities: FitnessActivity[]
+  windowEndsAt: string
   error?: string
 }
 
@@ -82,17 +89,20 @@ const DISCIPLINE_CONFIG: Record<Discipline, { label: string; color: string; acce
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  const windowEnd = dayjs().tz(ACTIVITY_TIME_ZONE).endOf('day')
   try {
-    const earliestActivity = dayjs()
-      .subtract(Math.max(...WINDOW_OPTIONS), 'month')
-      .startOf('day')
+    const earliestActivity = windowEnd.subtract(Math.max(...WINDOW_OPTIONS), 'month').startOf('day')
     const activities = await getActivitiesSince(earliestActivity.toDate())
-    return { props: { activities }, revalidate: 60 * 60 * 12 }
+    return { props: { activities, windowEndsAt: windowEnd.toISOString() }, revalidate: 60 * 60 * 12 }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness data error'
     console.error('Failed to load fitness activities', message)
     return {
-      props: { activities: [], error: 'Unable to load fitness activities right now. Please try again soon.' },
+      props: {
+        activities: [],
+        windowEndsAt: windowEnd.toISOString(),
+        error: 'Unable to load fitness activities right now. Please try again soon.',
+      },
       revalidate: 60 * 30,
     }
   }
@@ -184,7 +194,7 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets:
 
 const formatHours = (hours: number) => hours.toFixed(0)
 
-const FitnessPage = ({ activities, error }: Props) => {
+const FitnessPage = ({ activities, windowEndsAt, error }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
   const [windowMonths, setWindowMonths] = useState(12)
 
@@ -193,7 +203,7 @@ const FitnessPage = ({ activities, error }: Props) => {
       activities.map((activity) => {
         const { discipline, bikeKind } = classifyActivity(activity)
         return {
-          date: dayjs(activity.startedAt),
+          date: dayjs(activity.startedAt).tz(ACTIVITY_TIME_ZONE),
           miles: metersToMiles(activity.distanceMeters),
           seconds: activity.durationSeconds,
           elevation: metersToFeet(activity.elevationGainMeters),
@@ -206,7 +216,7 @@ const FitnessPage = ({ activities, error }: Props) => {
     [activities]
   )
 
-  const windowEnd = dayjs().endOf('day')
+  const windowEnd = dayjs(windowEndsAt).tz(ACTIVITY_TIME_ZONE)
   const windowStart = useMemo(() => {
     if (windowMonths < 1) {
       return windowEnd.subtract(6, 'day').startOf('day')
