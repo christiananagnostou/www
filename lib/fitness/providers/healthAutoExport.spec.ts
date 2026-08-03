@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { parseHealthAutoExport } from './healthAutoExport'
 
 describe('parseHealthAutoExport', () => {
-  it('maps a Version 2 cycling workout to the site activity format', () => {
+  it('maps a Version 2 cycling workout to the canonical activity model', () => {
     const activities = parseHealthAutoExport({
       data: {
         workouts: [
@@ -16,7 +16,6 @@ describe('parseHealthAutoExport', () => {
             isIndoor: false,
             distance: { qty: 40, units: 'km' },
             elevationUp: { qty: 500, units: 'm' },
-            avgSpeed: { qty: 40, units: 'kmph' },
             heartRate: { avg: { qty: 148, units: 'bpm' } },
             cyclingPower: [
               { date: '2026-08-02 07:30:00 -0700', qty: 190, units: 'W', source: 'Garmin' },
@@ -27,21 +26,23 @@ describe('parseHealthAutoExport', () => {
       },
     })
 
-    expect(activities).toHaveLength(1)
-    expect(activities[0]).toMatchObject({
-      guid: 'workout-1',
-      type: 'Ride',
-      pubDate: '2026-08-02T14:30:00.000Z',
-      Distance: '24.85 mi',
-      ElevationGain: '1640.42 ft',
-      MovingTime: '01:00:00',
-      AverageSpeed: '24.85 mph',
-      AverageHeartRate: 148,
-      AverageWatts: 200,
-    })
+    expect(activities).toEqual([
+      {
+        id: 'health-auto-export:workout-1',
+        startedAt: '2026-08-02T14:30:00.000Z',
+        endedAt: '2026-08-02T15:30:00.000Z',
+        kind: 'cycle',
+        indoor: false,
+        durationSeconds: 3600,
+        distanceMeters: 40000,
+        elevationGainMeters: 500,
+        averageHeartRateBpm: 148,
+        averagePowerWatts: 200,
+      },
+    ])
   })
 
-  it('classifies indoor cycling as Zwift and computes speed from distance', () => {
+  it('classifies indoor cycling without persisting a vendor-specific activity kind', () => {
     const [activity] = parseHealthAutoExport({
       data: {
         workouts: [
@@ -49,7 +50,6 @@ describe('parseHealthAutoExport', () => {
             id: 'workout-2',
             name: 'Indoor Cycling',
             start: '2026-08-02 12:00:00 +0000',
-            end: '2026-08-02 12:30:00 +0000',
             duration: 1800,
             isIndoor: true,
             distance: { qty: 10, units: 'mi' },
@@ -58,8 +58,12 @@ describe('parseHealthAutoExport', () => {
       },
     })
 
-    expect(activity.type).toBe('Zwift')
-    expect(activity.AverageSpeed).toBe('20.00 mph')
+    expect(activity).toMatchObject({
+      kind: 'cycle',
+      indoor: true,
+      distanceMeters: 16093.44,
+      endedAt: '2026-08-02T12:30:00.000Z',
+    })
   })
 
   it('rejects payloads that are not workout exports', () => {
@@ -104,22 +108,21 @@ describe('parseHealthAutoExport', () => {
     ).toThrow('Unsupported distance unit: league')
   })
 
-  it('derives speed when the exporter labels average speed as distance', () => {
-    const [activity] = parseHealthAutoExport({
-      data: {
-        workouts: [
-          {
-            id: 'workout-speed-fallback',
-            name: 'Outdoor Cycling',
-            start: '2026-08-02 12:00:00 +0000',
-            duration: 3600,
-            distance: { qty: 10, units: 'mi' },
-            avgSpeed: { qty: 10, units: 'mi' },
-          },
-        ],
-      },
-    })
-
-    expect(activity.AverageSpeed).toBe('10.00 mph')
+  it('rejects quantities large enough to overflow canonical measurements', () => {
+    expect(() =>
+      parseHealthAutoExport({
+        data: {
+          workouts: [
+            {
+              id: 'workout-5',
+              name: 'Running',
+              start: '2026-08-02 12:00:00 +0000',
+              duration: 1800,
+              distance: { qty: 1e308, units: 'mi' },
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid distance')
   })
 })

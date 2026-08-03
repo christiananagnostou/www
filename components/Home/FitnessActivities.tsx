@@ -2,32 +2,27 @@ import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
-import { type FitnessActivity, type FitnessActivityType } from '../../lib/fitness'
+import type { HomeActivity, HomeActivityCategory } from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
-import { hike, ride, run, swim, weight, zwift } from '../SVG/fitness/icons'
+import { ride, run, swim, zwift } from '../SVG/fitness/icons'
 
 interface Props {
-  activities: FitnessActivity[]
+  activities: HomeActivity[]
 }
 
-const ActivityIcons: Record<FitnessActivityType, ReactElement> = {
-  Swim: swim(),
-  Ride: ride(),
-  Run: run(),
-  WeightTraining: weight(),
-  Hike: hike(),
-  Zwift: zwift(),
-  Walk: run(),
-  Other: weight(),
+const ACTIVITY_ICONS: Record<HomeActivityCategory, ReactElement> = {
+  swim: swim(),
+  cycle: ride(),
+  run: run(),
+  indoorCycle: zwift(),
 }
 
-const AlternateMetricTitles = {
-  MovingTime: 'Time',
-  Distance: 'Distance',
-  Pace: 'Pace',
-  AverageSpeed: 'Avg Speed',
-  ElevationGain: 'Elevation Gain',
-} as const
+const ACTIVITY_LABELS: Record<HomeActivityCategory, string> = {
+  swim: 'Swim',
+  cycle: 'Cycle',
+  run: 'Run',
+  indoorCycle: 'Indoor cycle',
+}
 
 const ACTIVITY_TIME_ZONE = 'America/Los_Angeles'
 const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -38,7 +33,7 @@ const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
 })
 
 const FitnessActivities = ({ activities }: Props) => {
-  const [filter, setFilter] = useState<keyof typeof ActivityIcons | ''>('')
+  const [filter, setFilter] = useState<HomeActivityCategory | ''>('')
   const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
   const seeAllRef = useRef<HTMLLIElement>(null)
@@ -46,20 +41,22 @@ const FitnessActivities = ({ activities }: Props) => {
   const scrollLeft = useRef(0)
 
   const activityCounts = activities.reduce<Record<string, number>>((acc, act) => {
-    acc[act.type] = (acc[act.type] ?? 0) + 1
+    acc[act.category] = (acc[act.category] ?? 0) + 1
     return acc
   }, {})
 
-  const getFilterCount = (type: keyof typeof ActivityIcons) => {
-    return activityCounts[type] ?? 0
+  const getFilterCount = (category: HomeActivityCategory) => {
+    return activityCounts[category] ?? 0
   }
 
-  const filteredActivities = filter ? activities.filter((activity) => activity.type === filter) : activities.slice(0, 5)
+  const filteredActivities = filter
+    ? activities.filter((activity) => activity.category === filter)
+    : activities.slice(0, 5)
 
-  const renderFilterButton = (type: keyof typeof ActivityIcons) => {
-    const isActive = filter === type
-    const count = getFilterCount(type)
-    const label = `${type} (${count})`
+  const renderFilterButton = (category: HomeActivityCategory) => {
+    const isActive = filter === category
+    const count = getFilterCount(category)
+    const label = `${ACTIVITY_LABELS[category]} (${count})`
 
     return (
       <ActivityFilter
@@ -68,18 +65,12 @@ const FitnessActivities = ({ activities }: Props) => {
         className={isActive ? 'active' : ''}
         title={label}
         variants={fade}
-        onClick={() => setFilter((current) => (current === type ? '' : type))}
+        onClick={() => setFilter((current) => (current === category ? '' : category))}
       >
-        {ActivityIcons[type]}
+        {ACTIVITY_ICONS[category]}
       </ActivityFilter>
     )
   }
-
-  const renderActivityDetail = (type: keyof FitnessActivity['best'], activity: FitnessActivity) => (
-    <ActivityDetail $best={activity.best[type] === 1}>
-      {AlternateMetricTitles[type]}: <strong>{activity[type]}</strong>
-    </ActivityDetail>
-  )
 
   useEffect(() => {
     if (!seeAllRef.current) return
@@ -136,28 +127,30 @@ const FitnessActivities = ({ activities }: Props) => {
         </Title>
 
         <ActivityFilters>
-          {renderFilterButton('Swim')}
-          {renderFilterButton('Ride')}
-          {renderFilterButton('Run')}
-          {renderFilterButton('Zwift')}
+          {renderFilterButton('swim')}
+          {renderFilterButton('cycle')}
+          {renderFilterButton('run')}
+          {renderFilterButton('indoorCycle')}
         </ActivityFilters>
       </SectionHeader>
 
       <ActivityList ref={activityListRef} tabIndex={0} onMouseDown={handleMouseDown}>
         {filteredActivities.map((activity) => {
-          const pubDate = new Date(activity.pubDate)
+          const startedAt = new Date(activity.startedAt)
 
           return (
-            <ActivityItem key={activity.guid}>
-              <ActivityType title={activity.type}>{ActivityIcons[activity.type] || activity.type}</ActivityType>
+            <ActivityItem key={activity.id}>
+              <ActivityType title={ACTIVITY_LABELS[activity.category]}>
+                {ACTIVITY_ICONS[activity.category]}
+              </ActivityType>
 
-              {activity.MovingTime ? renderActivityDetail('MovingTime', activity) : null}
-              {activity.Distance ? renderActivityDetail('Distance', activity) : null}
-              {activity.Pace ? renderActivityDetail('Pace', activity) : null}
-              {activity.AverageSpeed ? renderActivityDetail('AverageSpeed', activity) : null}
-              {activity.ElevationGain ? renderActivityDetail('ElevationGain', activity) : null}
+              {activity.metrics.map((metric) => (
+                <ActivityDetail key={metric.label} $highlight={metric.highlight}>
+                  {metric.label}: <strong>{metric.value}</strong>
+                </ActivityDetail>
+              ))}
 
-              <ActivityDate>{activityDateFormatter.format(pubDate)}</ActivityDate>
+              <ActivityDate>{activityDateFormatter.format(startedAt)}</ActivityDate>
             </ActivityItem>
           )
         })}
@@ -166,16 +159,16 @@ const FitnessActivities = ({ activities }: Props) => {
         <SeeAllItem ref={seeAllRef} $compact={filteredActivities.length === 0}>
           <SeeAllContent data-in-view={seeAllInView} href="/fitness">
             <FloatingIcon $delay={0} $position="top-left" $rotation={-15}>
-              {ActivityIcons.Run}
+              {ACTIVITY_ICONS.run}
             </FloatingIcon>
             <FloatingIcon $delay={0.1} $position="top-right" $rotation={20}>
-              {ActivityIcons.Ride}
+              {ACTIVITY_ICONS.cycle}
             </FloatingIcon>
             <FloatingIcon $delay={0.2} $position="bottom-left" $rotation={-25}>
-              {ActivityIcons.Swim}
+              {ACTIVITY_ICONS.swim}
             </FloatingIcon>
             <FloatingIcon $delay={0.3} $position="bottom-right" $rotation={15}>
-              {ActivityIcons.WeightTraining}
+              {ACTIVITY_ICONS.indoorCycle}
             </FloatingIcon>
             <SeeAllText>See All Activities</SeeAllText>
           </SeeAllContent>
@@ -277,7 +270,7 @@ const ActivityType = styled.div`
   }
 `
 
-const ActivityDetail = styled.p<{ $best?: boolean }>`
+const ActivityDetail = styled.p<{ $highlight: boolean }>`
   position: relative;
   margin: 0.5rem 0;
   font-size: 0.8rem;
@@ -285,7 +278,7 @@ const ActivityDetail = styled.p<{ $best?: boolean }>`
   strong {
     font-weight: 600;
     font-size: 0.75rem;
-    color: ${(props) => (props.$best ? 'var(--text)' : 'inherit')};
+    color: ${({ $highlight }) => ($highlight ? 'var(--text)' : 'inherit')};
   }
 `
 

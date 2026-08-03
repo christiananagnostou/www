@@ -9,7 +9,9 @@ import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ride, run, swim } from '../components/SVG/fitness/icons'
 import { BASE_URL } from '../lib/constants'
-import { type FitnessActivity, getFitnessActivities } from '../lib/fitness'
+import type { FitnessActivity } from '../lib/fitness/activity'
+import { getActivitiesSince } from '../lib/fitness/server/activityRepository'
+import { metersToFeet, metersToMiles } from '../lib/fitness/units'
 
 const PageTitle = 'Fitness | Christian Anagnostou'
 const PageDescription = "Christian Anagnostou's triathlon training dashboard"
@@ -34,19 +36,14 @@ const FitnessLaneChart = dynamic(async () => import('../components/Fitness/Fitne
   loading: () => <LaneChartLoading>Loading chart…</LaneChartLoading>,
 })
 
-type FitnessActivitySummary = Pick<
-  FitnessActivity,
-  'pubDate' | 'type' | 'Distance' | 'MovingTime' | 'ElevationGain' | 'AverageHeartRate' | 'AverageWatts'
->
-
 interface Props {
-  activities: FitnessActivitySummary[]
+  activities: FitnessActivity[]
   error?: string
 }
 
 type Discipline = 'swim' | 'bike' | 'run' | 'other'
 
-type BikeKind = 'road' | 'zwift'
+type BikeKind = 'road' | 'indoor'
 
 interface ParsedActivity {
   date: dayjs.Dayjs
@@ -57,11 +54,6 @@ interface ParsedActivity {
   watts: number | null
   discipline: Discipline
   bikeKind?: BikeKind
-}
-
-interface ZoneStat {
-  label: string
-  seconds: number
 }
 
 interface LaneStats {
@@ -75,9 +67,7 @@ interface LaneStats {
   avgSpeed: number | null
   avgHeartRate: number | null
   avgWatts: number | null
-  zones: ZoneStat[]
   weeklyMiles: number[]
-  weeklyHours: number[]
   weeklyLabels: number[]
   weeklyLabelTexts: string[]
   weeklyHeartRate: Array<number | null>
@@ -96,17 +86,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const earliestActivity = dayjs()
       .subtract(Math.max(...WINDOW_OPTIONS), 'month')
       .startOf('day')
-    const activities = (await getFitnessActivities())
-      .filter((activity) => dayjs(activity.pubDate).isAfter(earliestActivity))
-      .map(({ pubDate, type, Distance, MovingTime, ElevationGain, AverageHeartRate, AverageWatts }) => ({
-        pubDate,
-        type,
-        Distance,
-        MovingTime,
-        ElevationGain,
-        AverageHeartRate,
-        AverageWatts,
-      }))
+    const activities = await getActivitiesSince(earliestActivity.toDate())
     return { props: { activities }, revalidate: 60 * 60 * 12 }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness data error'
@@ -118,24 +98,10 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   }
 }
 
-const parseMiles = (distance?: string) => (distance ? Number(distance.replace(/ mi$/, '')) || 0 : 0)
-
-const parseSeconds = (moving?: string) => {
-  if (!moving) return 0
-  const parts = moving.split(':').map(Number)
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
-  return 0
-}
-
-const parseElevation = (elev?: string) => (elev ? Number(elev.replace(/ ft$/, '')) || 0 : 0)
-
-const classifyActivity = (activity: FitnessActivitySummary): { discipline: Discipline; bikeKind?: BikeKind } => {
-  if (activity.type === 'Swim') return { discipline: 'swim' }
-  if (activity.type === 'Run') return { discipline: 'run' }
-  if (activity.type === 'Zwift') {
-    return { discipline: 'bike', bikeKind: 'zwift' }
-  }
-  if (activity.type === 'Ride') return { discipline: 'bike', bikeKind: 'road' }
+const classifyActivity = (activity: FitnessActivity): { discipline: Discipline; bikeKind?: BikeKind } => {
+  if (activity.kind === 'swim') return { discipline: 'swim' }
+  if (activity.kind === 'run') return { discipline: 'run' }
+  if (activity.kind === 'cycle') return { discipline: 'bike', bikeKind: activity.indoor ? 'indoor' : 'road' }
   return { discipline: 'other' }
 }
 
@@ -216,60 +182,6 @@ const buildWeeklySeries = (items: ParsedActivity[], start: dayjs.Dayjs, buckets:
   return { miles, hours, labels, labelTexts, weeklyHeartRate, weeklyWatts }
 }
 
-const buildZones = (items: ParsedActivity[], discipline: Discipline): ZoneStat[] => {
-  const zones: ZoneStat[] =
-    discipline === 'run'
-      ? [
-          { label: 'Easy 10+', seconds: 0 },
-          { label: 'Steady 8-10', seconds: 0 },
-          { label: 'Tempo 7-8', seconds: 0 },
-          { label: 'Fast <7', seconds: 0 },
-        ]
-      : discipline === 'swim'
-        ? [
-            { label: 'Easy <1.5', seconds: 0 },
-            { label: 'Steady 1.5-2', seconds: 0 },
-            { label: 'Strong 2-2.5', seconds: 0 },
-            { label: 'Sprint 2.5+', seconds: 0 },
-          ]
-        : [
-            { label: 'Cruise <15', seconds: 0 },
-            { label: 'Endurance 15-20', seconds: 0 },
-            { label: 'Tempo 20-25', seconds: 0 },
-            { label: 'Fast 25+', seconds: 0 },
-          ]
-
-  items.forEach((item) => {
-    if (!item.miles || !item.seconds) return
-    const hours = item.seconds / 3600
-    const speed = item.miles / hours
-    const pace = item.seconds / 60 / item.miles
-
-    if (discipline === 'run') {
-      if (pace >= 10) zones[0].seconds += item.seconds
-      else if (pace >= 8) zones[1].seconds += item.seconds
-      else if (pace >= 7) zones[2].seconds += item.seconds
-      else zones[3].seconds += item.seconds
-      return
-    }
-
-    if (discipline === 'swim') {
-      if (speed < 1.5) zones[0].seconds += item.seconds
-      else if (speed < 2) zones[1].seconds += item.seconds
-      else if (speed < 2.5) zones[2].seconds += item.seconds
-      else zones[3].seconds += item.seconds
-      return
-    }
-
-    if (speed < 15) zones[0].seconds += item.seconds
-    else if (speed < 20) zones[1].seconds += item.seconds
-    else if (speed < 25) zones[2].seconds += item.seconds
-    else zones[3].seconds += item.seconds
-  })
-
-  return zones
-}
-
 const formatHours = (hours: number) => hours.toFixed(0)
 
 const FitnessPage = ({ activities, error }: Props) => {
@@ -281,12 +193,12 @@ const FitnessPage = ({ activities, error }: Props) => {
       activities.map((activity) => {
         const { discipline, bikeKind } = classifyActivity(activity)
         return {
-          date: dayjs(activity.pubDate),
-          miles: parseMiles(activity.Distance),
-          seconds: parseSeconds(activity.MovingTime),
-          elevation: parseElevation(activity.ElevationGain),
-          heartRate: activity.AverageHeartRate ?? null,
-          watts: activity.AverageWatts ?? null,
+          date: dayjs(activity.startedAt),
+          miles: metersToMiles(activity.distanceMeters),
+          seconds: activity.durationSeconds,
+          elevation: metersToFeet(activity.elevationGainMeters),
+          heartRate: activity.averageHeartRateBpm,
+          watts: activity.averagePowerWatts,
           discipline,
           bikeKind,
         }
@@ -321,7 +233,6 @@ const FitnessPage = ({ activities, error }: Props) => {
       const hours = laneItems.reduce((acc, item) => acc + item.seconds / 3600, 0)
       const elevation = laneItems.reduce((acc, item) => acc + item.elevation, 0)
       const weekly = buildWeeklySeries(laneItems, windowStart, bucketsInWindow, bucketInterval)
-      const zones = buildZones(laneItems, discipline)
       const avgSpeed = hours ? miles / hours : null
       const avgPace = miles ? (hours * 60) / miles : null
       const heartRateSeconds = laneItems.reduce((acc, item) => (item.heartRate ? acc + item.seconds : acc), 0)
@@ -345,9 +256,7 @@ const FitnessPage = ({ activities, error }: Props) => {
         avgSpeed,
         avgHeartRate,
         avgWatts,
-        zones,
         weeklyMiles: weekly.miles,
-        weeklyHours: weekly.hours,
         weeklyLabels: weekly.labels,
         weeklyLabelTexts: weekly.labelTexts,
         weeklyHeartRate: weekly.weeklyHeartRate,
@@ -399,12 +308,12 @@ const FitnessPage = ({ activities, error }: Props) => {
           if (item.discipline !== 'bike') return acc
           if (item.bikeKind === 'road') {
             acc.road += item.seconds / 3600
-          } else if (item.bikeKind === 'zwift') {
-            acc.zwift += item.seconds / 3600
+          } else if (item.bikeKind === 'indoor') {
+            acc.indoor += item.seconds / 3600
           }
           return acc
         },
-        { road: 0, zwift: 0 }
+        { road: 0, indoor: 0 }
       ),
     [windowedActivities]
   )
@@ -414,7 +323,7 @@ const FitnessPage = ({ activities, error }: Props) => {
   const distributionStacks = [
     { label: 'Swim', values: [disciplineMix.swim, 0, 0, 0], color: '#2f7ec4' },
     { label: 'Road bike', values: [0, bikeKindHours.road, 0, 0], color: '#7bbf3f' },
-    { label: 'Zwift bike', values: [0, bikeKindHours.zwift, 0, 0], color: '#a3d85f' },
+    { label: 'Indoor bike', values: [0, bikeKindHours.indoor, 0, 0], color: '#a3d85f' },
     { label: 'Run', values: [0, 0, disciplineMix.run, 0], color: '#d9634b' },
     { label: 'Other', values: [0, 0, 0, disciplineMix.other], color: '#8a8a8a' },
   ]

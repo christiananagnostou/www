@@ -14,12 +14,13 @@ import SocialLinks from '../components/SocialLinks'
 import type { ArticleType } from '../lib/articles'
 import { getAllPosts } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
-import { type FitnessActivity, getFitnessActivities } from '../lib/fitness'
+import { createHomeActivities, type HomeActivity } from '../lib/fitness/home'
+import { getLatestActivities } from '../lib/fitness/server/activityRepository'
 import { getHomeStructuredData } from '../lib/structured/home'
 
 interface Props {
   posts: ArticleType[]
-  fitnessActivities: FitnessActivity[]
+  fitnessActivities: HomeActivity[]
 }
 
 const HOMEPAGE_ACTIVITY_LIMIT = 50
@@ -27,12 +28,11 @@ const HOMEPAGE_ACTIVITY_LIMIT = 50
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
 
-  let fitnessActivities: FitnessActivity[] = []
+  let fitnessActivities: HomeActivity[] = []
   try {
-    const activities = await getFitnessActivities()
-    fitnessActivities = activities
-      .filter((activity) => ['Run', 'Ride', 'Zwift', 'Swim'].includes(activity.type))
-      .slice(0, HOMEPAGE_ACTIVITY_LIMIT)
+    fitnessActivities = createHomeActivities(
+      await getLatestActivities(HOMEPAGE_ACTIVITY_LIMIT, ['swim', 'cycle', 'run'])
+    )
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness homepage error'
     console.error('Failed to load homepage fitness activities', message)
