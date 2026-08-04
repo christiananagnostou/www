@@ -55,6 +55,31 @@ export const saveActivities = async (activities: FitnessActivity[]) => {
   return results.filter((result) => Number(result) === 1).length
 }
 
+export const removeMissingProviderActivities = async (
+  providerIdPrefix: string,
+  rangeStart: Date,
+  rangeEnd: Date,
+  retainedIds: string[]
+) => {
+  await requireConnection()
+  if (!providerIdPrefix || Number.isNaN(rangeStart.getTime()) || Number.isNaN(rangeEnd.getTime())) {
+    throw new Error('Invalid fitness reconciliation range')
+  }
+
+  const indexedIds = await redisClient.zRangeByScore(ACTIVITY_INDEX_KEY, rangeStart.getTime(), rangeEnd.getTime())
+  const retainedIdSet = new Set(retainedIds)
+  const removedIds = indexedIds.filter((id) => id.startsWith(providerIdPrefix) && !retainedIdSet.has(id))
+  if (!removedIds.length) return 0
+
+  const transaction = redisClient.multi()
+  for (const id of removedIds) {
+    transaction.del(getActivityKey(id))
+    transaction.zRem(ACTIVITY_INDEX_KEY, id)
+  }
+  await transaction.exec()
+  return removedIds.length
+}
+
 export const getLatestActivities = async (limit: number, kinds?: ActivityKind[]) => {
   await requireConnection()
   if (!Number.isInteger(limit) || limit < 1) return []
