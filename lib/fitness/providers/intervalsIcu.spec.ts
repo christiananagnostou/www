@@ -7,7 +7,6 @@ const activity = {
   start_date: '2026-08-01T15:21:19Z',
   type: 'GravelRide',
   moving_time: 8498,
-  elapsed_time: 9683,
   distance: 58571.25,
   total_elevation_gain: 114,
   trainer: null,
@@ -23,7 +22,6 @@ describe('parseIntervalsIcuActivities', () => {
       {
         id: 'intervals-icu:i172237313',
         startedAt: '2026-08-01T15:21:19.000Z',
-        endedAt: '2026-08-01T18:02:42.000Z',
         kind: 'cycle',
         indoor: false,
         durationSeconds: 8498,

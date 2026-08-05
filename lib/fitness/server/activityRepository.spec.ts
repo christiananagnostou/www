@@ -8,8 +8,6 @@ const redis = vi.hoisted(() => ({
   zRange: vi.fn(),
   zRangeByScore: vi.fn(),
   eval: vi.fn(),
-  del: vi.fn(),
-  zRem: vi.fn(),
   exec: vi.fn(),
   multi: vi.fn(),
 }))
@@ -24,17 +22,11 @@ vi.mock('../../../db/redis', () => ({
   },
 }))
 
-import {
-  getActivitiesSince,
-  getLatestActivities,
-  removeMissingProviderActivities,
-  saveActivities,
-} from './activityRepository'
+import { getActivitiesSince, getLatestActivities, saveActivities } from './activityRepository'
 
 const activity: FitnessActivity = {
   id: 'activity-1',
   startedAt: '2026-08-02T14:30:00.000Z',
-  endedAt: '2026-08-02T15:30:00.000Z',
   kind: 'cycle',
   indoor: false,
   durationSeconds: 3600,
@@ -48,7 +40,7 @@ describe('activityRepository', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     redis.connect.mockResolvedValue(true)
-    redis.multi.mockReturnValue({ eval: redis.eval, del: redis.del, zRem: redis.zRem, exec: redis.exec })
+    redis.multi.mockReturnValue({ eval: redis.eval, exec: redis.exec })
     redis.exec.mockResolvedValue([1])
   })
 
@@ -67,29 +59,12 @@ describe('activityRepository', () => {
     await expect(saveActivities([activity])).resolves.toBe(0)
   })
 
-  it('removes only missing provider records within the reconciliation range', async () => {
-    redis.zRangeByScore.mockResolvedValue([
-      'intervals-icu:retained',
-      'intervals-icu:removed',
-      'health-auto-export:historical',
-    ])
-    const rangeStart = new Date('2024-08-01T00:00:00.000Z')
-    const rangeEnd = new Date('2026-08-04T23:59:59.999Z')
-
-    await expect(
-      removeMissingProviderActivities('intervals-icu:', rangeStart, rangeEnd, ['intervals-icu:retained'])
-    ).resolves.toBe(1)
-
-    expect(redis.zRangeByScore).toHaveBeenCalledWith('fitness:v2:activities', rangeStart.getTime(), rangeEnd.getTime())
-    expect(redis.del).toHaveBeenCalledWith('fitness:v2:activity:intervals-icu:removed')
-    expect(redis.zRem).toHaveBeenCalledWith('fitness:v2:activities', 'intervals-icu:removed')
-  })
-
-  it('bounds latest activity queries and removes duplicate source records', async () => {
+  it('bounds latest activity queries', async () => {
+    const secondActivity = { ...activity, id: 'activity-2' }
     redis.zRange.mockResolvedValue(['activity-1', 'activity-2'])
-    redis.mGet.mockResolvedValue([JSON.stringify(activity), JSON.stringify({ ...activity, id: 'activity-2' })])
+    redis.mGet.mockResolvedValue([JSON.stringify(activity), JSON.stringify(secondActivity)])
 
-    await expect(getLatestActivities(5)).resolves.toEqual([activity])
+    await expect(getLatestActivities(5)).resolves.toEqual([activity, secondActivity])
 
     expect(redis.zRange).toHaveBeenCalledWith('fitness:v2:activities', 0, 99, { REV: true })
   })
@@ -126,7 +101,6 @@ describe('activityRepository', () => {
       ...activity,
       id: 'activity-2',
       startedAt: '2026-08-03T14:30:00.000Z',
-      endedAt: '2026-08-03T15:30:00.000Z',
     }
     redis.zRangeByScore.mockResolvedValue(['activity-1', 'activity-2'])
     redis.mGet.mockResolvedValue([JSON.stringify(activity), JSON.stringify(newerActivity)])

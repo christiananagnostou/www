@@ -6,7 +6,6 @@ import { syncRecentActivities } from '../../../lib/fitness/server/syncActivities
 interface SyncResponse {
   received: number
   saved: number
-  removed: number
 }
 
 interface ErrorResponse {
@@ -32,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     const result = await syncRecentActivities()
-    if (result.saved > 0 || result.removed > 0) {
+    if (result.saved > 0) {
       const revalidations = await Promise.allSettled([res.revalidate('/'), res.revalidate('/fitness')])
       const failedRevalidations = revalidations.filter((revalidation) => revalidation.status === 'rejected')
       if (failedRevalidations.length) {

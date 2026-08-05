@@ -5,7 +5,6 @@ export type ActivityKind = (typeof ACTIVITY_KINDS)[number]
 export interface FitnessActivity {
   id: string
   startedAt: string
-  endedAt: string
   kind: ActivityKind
   indoor: boolean
   durationSeconds: number
@@ -32,7 +31,6 @@ export const isFitnessActivity = (value: unknown): value is FitnessActivity => {
     typeof activity.id === 'string' &&
     activity.id.length > 0 &&
     isIsoDate(activity.startedAt) &&
-    isIsoDate(activity.endedAt) &&
     ACTIVITY_KINDS.includes(activity.kind as ActivityKind) &&
     typeof activity.indoor === 'boolean' &&
     isNonNegativeNumber(activity.durationSeconds) &&
@@ -41,28 +39,4 @@ export const isFitnessActivity = (value: unknown): value is FitnessActivity => {
     isNullableNonNegativeNumber(activity.averageHeartRateBpm) &&
     isNullableNonNegativeNumber(activity.averagePowerWatts)
   )
-}
-
-const getActivityFingerprint = (activity: FitnessActivity) =>
-  [activity.kind, activity.indoor, activity.startedAt, activity.durationSeconds, activity.distanceMeters].join('|')
-
-const getActivityCompleteness = (activity: FitnessActivity) =>
-  Number(activity.elevationGainMeters > 0) +
-  Number(activity.averageHeartRateBpm !== null) +
-  Number(activity.averagePowerWatts !== null)
-
-export const deduplicateActivities = (activities: FitnessActivity[]) => {
-  const uniqueActivities = new Map<string, FitnessActivity>()
-  for (const activity of activities) {
-    const fingerprint = getActivityFingerprint(activity)
-    const existing = uniqueActivities.get(fingerprint)
-    if (
-      !existing ||
-      getActivityCompleteness(activity) > getActivityCompleteness(existing) ||
-      (getActivityCompleteness(activity) === getActivityCompleteness(existing) && activity.id < existing.id)
-    ) {
-      uniqueActivities.set(fingerprint, activity)
-    }
-  }
-  return Array.from(uniqueActivities.values())
 }

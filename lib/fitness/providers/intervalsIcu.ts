@@ -1,13 +1,10 @@
-import { isFitnessActivity, type ActivityKind, type FitnessActivity } from '../activity'
-
-export class IntervalsIcuError extends Error {}
+import type { ActivityKind, FitnessActivity } from '../activity'
 
 interface IntervalsActivity {
   id: string
   startDate: string
   type: string
   movingTime: number
-  elapsedTime: number
   distance: number
   elevationGain: number
   indoor: boolean
@@ -45,7 +42,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 const parseString = (value: unknown, field: string) => {
   if (typeof value !== 'string' || !value || value.length > 256) {
-    throw new IntervalsIcuError(`Invalid Intervals.icu ${field}`)
+    throw new Error(`Invalid Intervals.icu ${field}`)
   }
   return value
 }
@@ -53,7 +50,7 @@ const parseString = (value: unknown, field: string) => {
 const parseNumber = (value: unknown, field: string, fallback?: number) => {
   if (value == null && fallback !== undefined) return fallback
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1_000_000_000) {
-    throw new IntervalsIcuError(`Invalid Intervals.icu ${field}`)
+    throw new Error(`Invalid Intervals.icu ${field}`)
   }
   return value
 }
@@ -61,16 +58,14 @@ const parseNumber = (value: unknown, field: string, fallback?: number) => {
 const parseNullableNumber = (value: unknown, field: string) => (value == null ? null : parseNumber(value, field))
 
 const parseActivity = (value: unknown): IntervalsActivity => {
-  if (!isRecord(value)) throw new IntervalsIcuError('Each Intervals.icu activity must be an object')
+  if (!isRecord(value)) throw new Error('Each Intervals.icu activity must be an object')
 
   const type = parseString(value.type, 'activity type')
-  const movingTime = parseNumber(value.moving_time, 'moving time')
   return {
     id: parseString(value.id, 'activity id'),
     startDate: parseString(value.start_date, 'start date'),
     type,
-    movingTime,
-    elapsedTime: Math.max(parseNumber(value.elapsed_time, 'elapsed time'), movingTime),
+    movingTime: parseNumber(value.moving_time, 'moving time'),
     distance: parseNumber(value.distance, 'distance', 0),
     elevationGain: parseNumber(value.total_elevation_gain, 'elevation gain', 0),
     indoor: value.trainer === true || type === 'VirtualRide' || type === 'VirtualRun',
@@ -84,13 +79,12 @@ const parseActivity = (value: unknown): IntervalsActivity => {
 const toFitnessActivity = (activity: IntervalsActivity): FitnessActivity => {
   const startedAt = new Date(activity.startDate)
   if (Number.isNaN(startedAt.getTime())) {
-    throw new IntervalsIcuError(`Invalid Intervals.icu start date: ${activity.startDate}`)
+    throw new Error(`Invalid Intervals.icu start date: ${activity.startDate}`)
   }
 
-  const fitnessActivity: FitnessActivity = {
+  return {
     id: `intervals-icu:${activity.id}`,
     startedAt: startedAt.toISOString(),
-    endedAt: new Date(startedAt.getTime() + activity.elapsedTime * 1000).toISOString(),
     kind: ACTIVITY_TYPES[activity.type] ?? 'other',
     indoor: activity.indoor,
     durationSeconds: activity.movingTime,
@@ -99,15 +93,11 @@ const toFitnessActivity = (activity: IntervalsActivity): FitnessActivity => {
     averageHeartRateBpm: activity.averageHeartRate,
     averagePowerWatts: activity.averagePower,
   }
-  if (!isFitnessActivity(fitnessActivity)) {
-    throw new IntervalsIcuError('Intervals.icu activity metrics exceed supported limits')
-  }
-  return fitnessActivity
 }
 
 export const parseIntervalsIcuActivities = (payload: unknown): FitnessActivity[] => {
   if (!Array.isArray(payload) || payload.length > MAX_ACTIVITIES) {
-    throw new IntervalsIcuError(`Expected at most ${MAX_ACTIVITIES} Intervals.icu activities`)
+    throw new Error(`Expected at most ${MAX_ACTIVITIES} Intervals.icu activities`)
   }
   return payload
     .map(parseActivity)
@@ -117,9 +107,9 @@ export const parseIntervalsIcuActivities = (payload: unknown): FitnessActivity[]
 
 export const fetchIntervalsIcuActivities = async ({ oldest, newest }: ActivityRange) => {
   const apiKey = process.env.INTERVALS_ICU_API_KEY
-  if (!apiKey) throw new IntervalsIcuError('Intervals.icu is not configured')
+  if (!apiKey) throw new Error('Intervals.icu is not configured')
   if (!/^\d{4}-\d{2}-\d{2}$/.test(oldest) || !/^\d{4}-\d{2}-\d{2}$/.test(newest)) {
-    throw new IntervalsIcuError('Invalid Intervals.icu activity range')
+    throw new Error('Invalid Intervals.icu activity range')
   }
 
   const url = new URL('https://intervals.icu/api/v1/athlete/0/activities')
@@ -129,10 +119,10 @@ export const fetchIntervalsIcuActivities = async ({ oldest, newest }: ActivityRa
   const response = await fetch(url, {
     headers: {
       Authorization: `Basic ${authorization}`,
-      'User-Agent': 'christiananagnostou.com fitness sync',
+      'User-Agent': 'christiancodes.co fitness sync',
     },
     signal: AbortSignal.timeout(10_000),
   })
-  if (!response.ok) throw new IntervalsIcuError(`Intervals.icu request failed with status ${response.status}`)
+  if (!response.ok) throw new Error(`Intervals.icu request failed with status ${response.status}`)
   return parseIntervalsIcuActivities((await response.json()) as unknown)
 }

@@ -1,5 +1,5 @@
 import { connectRedis, redisClient } from '../../../db/redis'
-import { deduplicateActivities, isFitnessActivity, type ActivityKind, type FitnessActivity } from '../activity'
+import { isFitnessActivity, type ActivityKind, type FitnessActivity } from '../activity'
 
 const ACTIVITY_INDEX_KEY = 'fitness:v2:activities'
 const getActivityKey = (id: string) => `fitness:v2:activity:${id}`
@@ -38,9 +38,8 @@ const getActivitiesByIds = async (ids: string[]) => {
 
 export const saveActivities = async (activities: FitnessActivity[]) => {
   await requireConnection()
-  if (!activities.length) return 0
   if (activities.some((activity) => !isFitnessActivity(activity))) {
-    throw new Error('Cannot save an invalid fitness activity')
+    throw new Error('Cannot save invalid fitness activities')
   }
 
   const uniqueById = Array.from(new Map(activities.map((activity) => [activity.id, activity])).values())
@@ -55,31 +54,6 @@ export const saveActivities = async (activities: FitnessActivity[]) => {
   return results.filter((result) => Number(result) === 1).length
 }
 
-export const removeMissingProviderActivities = async (
-  providerIdPrefix: string,
-  rangeStart: Date,
-  rangeEnd: Date,
-  retainedIds: string[]
-) => {
-  await requireConnection()
-  if (!providerIdPrefix || Number.isNaN(rangeStart.getTime()) || Number.isNaN(rangeEnd.getTime())) {
-    throw new Error('Invalid fitness reconciliation range')
-  }
-
-  const indexedIds = await redisClient.zRangeByScore(ACTIVITY_INDEX_KEY, rangeStart.getTime(), rangeEnd.getTime())
-  const retainedIdSet = new Set(retainedIds)
-  const removedIds = indexedIds.filter((id) => id.startsWith(providerIdPrefix) && !retainedIdSet.has(id))
-  if (!removedIds.length) return 0
-
-  const transaction = redisClient.multi()
-  for (const id of removedIds) {
-    transaction.del(getActivityKey(id))
-    transaction.zRem(ACTIVITY_INDEX_KEY, id)
-  }
-  await transaction.exec()
-  return removedIds.length
-}
-
 export const getLatestActivities = async (limit: number, kinds?: ActivityKind[]) => {
   await requireConnection()
   if (!Number.isInteger(limit) || limit < 1) return []
@@ -90,7 +64,7 @@ export const getLatestActivities = async (limit: number, kinds?: ActivityKind[])
 
   while (true) {
     const ids = await redisClient.zRange(ACTIVITY_INDEX_KEY, offset, offset + batchSize - 1, { REV: true })
-    activities = deduplicateActivities([...activities, ...(await getActivitiesByIds(ids))])
+    activities.push(...(await getActivitiesByIds(ids)))
     const eligibleActivities = kinds ? activities.filter((activity) => kinds.includes(activity.kind)) : activities
     if (eligibleActivities.length >= limit || ids.length < batchSize) return eligibleActivities.slice(0, limit)
     offset += batchSize
@@ -102,6 +76,6 @@ export const getActivitiesSince = async (startedAt: Date) => {
   if (Number.isNaN(startedAt.getTime())) throw new Error('Invalid fitness activity start date')
 
   const ids = await redisClient.zRangeByScore(ACTIVITY_INDEX_KEY, startedAt.getTime(), '+inf')
-  const activities = deduplicateActivities(await getActivitiesByIds(ids))
+  const activities = await getActivitiesByIds(ids)
   return activities.toSorted((a, b) => Date.parse(b.startedAt) - Date.parse(a.startedAt))
 }

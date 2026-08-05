@@ -6,7 +6,6 @@ import { createHomeActivities } from './home'
 const activity: FitnessActivity = {
   id: 'cycle-1',
   startedAt: '2026-08-02T14:30:00.000Z',
-  endedAt: '2026-08-02T15:30:00.000Z',
   kind: 'cycle',
   indoor: true,
   durationSeconds: 3600,

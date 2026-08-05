@@ -51,18 +51,18 @@ describe('/api/fitness/sync', () => {
 
   it('syncs recent activities and revalidates changed pages', async () => {
     const response = createResponse()
-    sync.syncRecentActivities.mockResolvedValue({ received: 3, saved: 2, removed: 1 })
+    sync.syncRecentActivities.mockResolvedValue({ received: 3, saved: 2 })
 
     await handler(createRequest(), response)
 
     expect(response.status).toHaveBeenCalledWith(200)
-    expect(response.json).toHaveBeenCalledWith({ received: 3, saved: 2, removed: 1 })
+    expect(response.json).toHaveBeenCalledWith({ received: 3, saved: 2 })
     expect(response.revalidate).toHaveBeenCalledTimes(2)
   })
 
   it('skips revalidation when every activity is unchanged', async () => {
     const response = createResponse()
-    sync.syncRecentActivities.mockResolvedValue({ received: 3, saved: 0, removed: 0 })
+    sync.syncRecentActivities.mockResolvedValue({ received: 3, saved: 0 })
 
     await handler(createRequest(), response)
 

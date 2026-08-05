@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
 import type { HomeActivity, HomeActivityCategory } from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
-import { ride, run, swim, zwift } from '../SVG/fitness/icons'
+import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
 
 interface Props {
   activities: HomeActivity[]
@@ -14,7 +14,7 @@ const ACTIVITY_ICONS: Record<HomeActivityCategory, ReactElement> = {
   swim: swim(),
   cycle: ride(),
   run: run(),
-  indoorCycle: zwift(),
+  indoorCycle: indoorCycle(),
 }
 
 const ACTIVITY_LABELS: Record<HomeActivityCategory, string> = {
