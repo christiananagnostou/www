@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 
   const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret || cronSecret.length < 32 || !process.env.INTERVALS_ICU_API_KEY) {
+  if (!cronSecret || cronSecret.length < 32 || !process.env.INTERVALS_ICU_API_KEY || !process.env.REDIS_URL) {
     return res.status(503).json({ error: 'Fitness sync is not configured' })
   }
   if (!isAuthorized(req.headers.authorization, cronSecret)) return res.status(401).json({ error: 'Unauthorized' })

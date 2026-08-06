@@ -24,9 +24,9 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 ## Environment Variables
 
-- Fitness sync uses `INTERVALS_ICU_API_KEY`, `CRON_SECRET`, and `REDIS_URL`.
+- Fitness sync uses `INTERVALS_ICU_API_KEY` and `CRON_SECRET`.
 - Site metadata uses `NEXT_PUBLIC_BASE_URL`; the contact form uses the three `NEXT_PUBLIC_EMAILJS_*` variables.
-- Redis uses `REDIS_URL` for server-side likes storage.
+- Redis uses `REDIS_URL` for fitness storage and server-side likes.
 - Keep secrets out of the repo; prefer `.env.local`.
 
 ## Dev / Build / Start
@@ -130,7 +130,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 ## Data & Utilities
 
 - Structured data helpers live in `lib/structured/`.
-- Fitness import and storage helpers live in `lib/fitness/`.
+- Fitness sync and storage helpers live in `lib/fitness/`.
 - Keep helper functions pure where possible.
 
 ## Tests and Fixtures

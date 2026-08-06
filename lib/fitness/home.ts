@@ -47,7 +47,7 @@ export const createHomeActivities = (activities: FitnessActivity[]): HomeActivit
     if (miles > 0) {
       metrics.push({ label: 'Distance', value: `${miles.toFixed(2)} mi`, highlight: false, score: miles })
     }
-    if (miles > 0 && (activity.kind === 'run' || activity.kind === 'swim')) {
+    if (miles > 0 && activity.durationSeconds > 0 && (activity.kind === 'run' || activity.kind === 'swim')) {
       metrics.push({
         label: 'Pace',
         value: formatPace(activity.durationSeconds, miles),

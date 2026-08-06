@@ -35,4 +35,9 @@ describe('createHomeActivities', () => {
   it('omits activity kinds that are not shown on the homepage', () => {
     expect(createHomeActivities([{ ...activity, kind: 'strength' }])).toEqual([])
   })
+
+  it('does not show pace for a zero-duration activity', () => {
+    const [homeActivity] = createHomeActivities([{ ...activity, kind: 'run', durationSeconds: 0 }])
+    expect(homeActivity.metrics.map((metric) => metric.label)).toEqual(['Distance', 'Elevation Gain'])
+  })
 })

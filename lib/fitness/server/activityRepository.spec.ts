@@ -22,7 +22,7 @@ vi.mock('../../../db/redis', () => ({
   },
 }))
 
-import { getActivitiesSince, getLatestActivities, saveActivities } from './activityRepository'
+import { getActivitiesSince, getAllActivities, saveActivities } from './activityRepository'
 
 const activity: FitnessActivity = {
   id: 'activity-1',
@@ -48,7 +48,7 @@ describe('activityRepository', () => {
     await expect(saveActivities([activity])).resolves.toBe(1)
 
     expect(redis.eval).toHaveBeenCalledWith(expect.stringContaining("redis.call('GET', KEYS[1])"), {
-      keys: ['fitness:v2:activity:activity-1', 'fitness:v2:activities'],
+      keys: ['fitness:activity:activity-1', 'fitness:activity-index'],
       arguments: [JSON.stringify(activity), String(Date.parse(activity.startedAt)), activity.id],
     })
   })
@@ -59,30 +59,13 @@ describe('activityRepository', () => {
     await expect(saveActivities([activity])).resolves.toBe(0)
   })
 
-  it('bounds latest activity queries', async () => {
-    const secondActivity = { ...activity, id: 'activity-2' }
-    redis.zRange.mockResolvedValue(['activity-1', 'activity-2'])
-    redis.mGet.mockResolvedValue([JSON.stringify(activity), JSON.stringify(secondActivity)])
+  it('loads complete activity history for homepage filters and best metrics', async () => {
+    redis.zRange.mockResolvedValue(['activity-1'])
+    redis.mGet.mockResolvedValue([JSON.stringify(activity)])
 
-    await expect(getLatestActivities(5)).resolves.toEqual([activity, secondActivity])
+    await expect(getAllActivities()).resolves.toEqual([activity])
 
-    expect(redis.zRange).toHaveBeenCalledWith('fitness:v2:activities', 0, 99, { REV: true })
-  })
-
-  it('continues through the index until it finds enough eligible activities', async () => {
-    const excludedActivities = Array.from({ length: 100 }, (_, index) => ({
-      ...activity,
-      id: `strength-${index}`,
-      kind: 'strength' as const,
-    }))
-    redis.zRange.mockResolvedValueOnce(excludedActivities.map(({ id }) => id)).mockResolvedValueOnce([activity.id])
-    redis.mGet
-      .mockResolvedValueOnce(excludedActivities.map((excludedActivity) => JSON.stringify(excludedActivity)))
-      .mockResolvedValueOnce([JSON.stringify(activity)])
-
-    await expect(getLatestActivities(1, ['cycle'])).resolves.toEqual([activity])
-
-    expect(redis.zRange).toHaveBeenNthCalledWith(2, 'fitness:v2:activities', 100, 199, { REV: true })
+    expect(redis.zRange).toHaveBeenCalledWith('fitness:activity-index', 0, -1, { REV: true })
   })
 
   it('isolates invalid stored records', async () => {
@@ -90,7 +73,7 @@ describe('activityRepository', () => {
     redis.zRange.mockResolvedValue(['invalid'])
     redis.mGet.mockResolvedValue(['{"id":"invalid"}'])
 
-    await expect(getLatestActivities(5)).resolves.toEqual([])
+    await expect(getAllActivities()).resolves.toEqual([])
     expect(consoleError).toHaveBeenCalledWith('Ignoring an invalid fitness activity in Redis')
 
     consoleError.mockRestore()
@@ -108,6 +91,6 @@ describe('activityRepository', () => {
 
     await expect(getActivitiesSince(since)).resolves.toEqual([newerActivity, activity])
 
-    expect(redis.zRangeByScore).toHaveBeenCalledWith('fitness:v2:activities', since.getTime(), '+inf')
+    expect(redis.zRangeByScore).toHaveBeenCalledWith('fitness:activity-index', since.getTime(), '+inf')
   })
 })

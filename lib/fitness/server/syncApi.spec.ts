@@ -9,6 +9,7 @@ import handler from '../../../pages/api/fitness/sync'
 
 const originalCronSecret = process.env.CRON_SECRET
 const originalApiKey = process.env.INTERVALS_ICU_API_KEY
+const originalRedisUrl = process.env.REDIS_URL
 const cronSecret = 'a-secure-fitness-cron-secret-1234567890'
 
 const createRequest = (authorization = `Bearer ${cronSecret}`) =>
@@ -30,6 +31,7 @@ describe('/api/fitness/sync', () => {
     vi.clearAllMocks()
     process.env.CRON_SECRET = cronSecret
     process.env.INTERVALS_ICU_API_KEY = 'intervals-api-key'
+    process.env.REDIS_URL = 'redis://localhost:6379'
   })
 
   afterAll(() => {
@@ -37,6 +39,8 @@ describe('/api/fitness/sync', () => {
     else process.env.CRON_SECRET = originalCronSecret
     if (originalApiKey === undefined) delete process.env.INTERVALS_ICU_API_KEY
     else process.env.INTERVALS_ICU_API_KEY = originalApiKey
+    if (originalRedisUrl === undefined) delete process.env.REDIS_URL
+    else process.env.REDIS_URL = originalRedisUrl
   })
 
   it('rejects unauthorized sync requests', async () => {
@@ -46,6 +50,17 @@ describe('/api/fitness/sync', () => {
 
     expect(response.status).toHaveBeenCalledWith(401)
     expect(response.json).toHaveBeenCalledWith({ error: 'Unauthorized' })
+    expect(sync.syncRecentActivities).not.toHaveBeenCalled()
+  })
+
+  it('rejects sync requests when Redis is not configured', async () => {
+    const response = createResponse()
+    delete process.env.REDIS_URL
+
+    await handler(createRequest(), response)
+
+    expect(response.status).toHaveBeenCalledWith(503)
+    expect(response.json).toHaveBeenCalledWith({ error: 'Fitness sync is not configured' })
     expect(sync.syncRecentActivities).not.toHaveBeenCalled()
   })
 

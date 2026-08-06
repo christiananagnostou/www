@@ -1,8 +1,8 @@
 import { connectRedis, redisClient } from '../../../db/redis'
-import { isFitnessActivity, type ActivityKind, type FitnessActivity } from '../activity'
+import { isFitnessActivity, type FitnessActivity } from '../activity'
 
-const ACTIVITY_INDEX_KEY = 'fitness:v2:activities'
-const getActivityKey = (id: string) => `fitness:v2:activity:${id}`
+const ACTIVITY_INDEX_KEY = 'fitness:activity-index'
+const getActivityKey = (id: string) => `fitness:activity:${id}`
 const SAVE_ACTIVITY_SCRIPT = `
   local existing = redis.call('GET', KEYS[1])
   if existing == ARGV[1] then return 0 end
@@ -54,21 +54,10 @@ export const saveActivities = async (activities: FitnessActivity[]) => {
   return results.filter((result) => Number(result) === 1).length
 }
 
-export const getLatestActivities = async (limit: number, kinds?: ActivityKind[]) => {
+export const getAllActivities = async () => {
   await requireConnection()
-  if (!Number.isInteger(limit) || limit < 1) return []
-
-  const batchSize = Math.max(limit * 2, 100)
-  let offset = 0
-  let activities: FitnessActivity[] = []
-
-  while (true) {
-    const ids = await redisClient.zRange(ACTIVITY_INDEX_KEY, offset, offset + batchSize - 1, { REV: true })
-    activities.push(...(await getActivitiesByIds(ids)))
-    const eligibleActivities = kinds ? activities.filter((activity) => kinds.includes(activity.kind)) : activities
-    if (eligibleActivities.length >= limit || ids.length < batchSize) return eligibleActivities.slice(0, limit)
-    offset += batchSize
-  }
+  const ids = await redisClient.zRange(ACTIVITY_INDEX_KEY, 0, -1, { REV: true })
+  return getActivitiesByIds(ids)
 }
 
 export const getActivitiesSince = async (startedAt: Date) => {

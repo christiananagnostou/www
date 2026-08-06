@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
 import type { HomeActivity, HomeActivityCategory } from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
-import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
+import { indoorCycle, ride, run, swim, weight } from '../SVG/fitness/icons'
 
 interface Props {
   activities: HomeActivity[]
@@ -168,7 +168,7 @@ const FitnessActivities = ({ activities }: Props) => {
               {ACTIVITY_ICONS.swim}
             </FloatingIcon>
             <FloatingIcon $delay={0.3} $position="bottom-right" $rotation={15}>
-              {ACTIVITY_ICONS.indoorCycle}
+              {weight()}
             </FloatingIcon>
             <SeeAllText>See All Activities</SeeAllText>
           </SeeAllContent>
