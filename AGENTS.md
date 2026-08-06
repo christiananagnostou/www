@@ -24,8 +24,9 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 ## Environment Variables
 
-- Strava integration uses `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `STRAVA_REDIRECT_URI`.
-- Redis uses `REDIS_URL` for server-side likes storage.
+- Fitness sync uses `INTERVALS_ICU_API_KEY` and `CRON_SECRET`.
+- Site metadata uses `NEXT_PUBLIC_BASE_URL`; the contact form uses the three `NEXT_PUBLIC_EMAILJS_*` variables.
+- Redis uses `REDIS_URL` for fitness storage and server-side likes.
 - Keep secrets out of the repo; prefer `.env.local`.
 
 ## Dev / Build / Start
@@ -129,7 +130,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 ## Data & Utilities
 
 - Structured data helpers live in `lib/structured/`.
-- Strava helpers live in `lib/strava/` and may call external APIs.
+- Fitness sync and storage helpers live in `lib/fitness/`.
 - Keep helper functions pure where possible.
 
 ## Tests and Fixtures
