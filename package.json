@@ -21,7 +21,7 @@
     "dayjs": "^1.11.19",
     "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
-    "next": "^16.1.6",
+    "next": "^16.3.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "redis": "^5.11.0",
@@ -30,7 +30,7 @@
     "rehype-stringify": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "sharp": "^0.34.1",
+    "sharp": "^0.35.0",
     "styled-components": "^6.3.11",
     "unified": "^11.0.5",
     "uplot": "^1.6.32"
