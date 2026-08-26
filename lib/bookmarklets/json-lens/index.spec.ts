@@ -1,0 +1,104 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { bookmarkletsData } from '..'
+import { JSON_LENS_BOOKMARKLET } from '.'
+
+type JSONLensWindow = typeof window & { JSONLens?: () => void }
+
+const JSON_LENS_SOURCE = decodeURIComponent(JSON_LENS_BOOKMARKLET.slice('javascript:'.length))
+
+describe('JSON Lens bookmarklet', () => {
+  beforeEach(() => {
+    document.head.replaceChildren()
+    document.body.replaceChildren()
+    document.documentElement.removeAttribute('lang')
+    document.title = 'API response'
+    delete (window as JSONLensWindow).JSONLens
+    vi.restoreAllMocks()
+  })
+
+  it('renders fields, nested groups, arrays, booleans, and dates from the current response', () => {
+    const response = {
+      reference: 'EXAMPLE-123',
+      ready: true,
+      metadata: { createdAt: '2026-01-02T12:30:00.000Z' },
+      events: [{ code: 'OPENED', complete: false }],
+    }
+    document.body.textContent = JSON.stringify(response)
+
+    window.eval(JSON_LENS_SOURCE)
+
+    expect(document.querySelector('#json-lens-root')).not.toBeNull()
+    expect(document.documentElement.lang).not.toBe('')
+    expect(document.body.textContent).toContain('EXAMPLE-123')
+    expect(document.body.textContent).toContain('Metadata')
+    expect(document.body.textContent).toContain('Events')
+    expect(document.body.textContent).toContain('OPENED')
+    expect(document.querySelector('.jl-bool-true')).not.toBeNull()
+    expect(document.querySelector('.jl-bool-false')).not.toBeNull()
+    expect(document.querySelector('.jl-date-source')?.textContent).toBe(response.metadata.createdAt)
+    expect(document.querySelector('.jl-token')?.textContent).toBe('{')
+  })
+
+  it('keeps fields and nested groups in source order', () => {
+    document.body.textContent = JSON.stringify({ first: 1, nested: { value: 2 }, last: 3 })
+
+    window.eval(JSON_LENS_SOURCE)
+
+    const rows = Array.from(document.querySelectorAll('.jl-content > .jl-object > .jl-ledger > *'))
+
+    expect(rows.map(({ textContent }) => textContent)).toEqual(['First1', '›{Nested1 fieldValue2', 'Last3'])
+  })
+
+  it('supports search, group expansion, and raw view controls', () => {
+    document.body.textContent = JSON.stringify({ id: 1, details: { status: 'ready' }, events: [{ code: 'OPENED' }] })
+
+    window.eval(JSON_LENS_SOURCE)
+
+    const search = document.querySelector<HTMLInputElement>('.jl-search')
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.jl-button'))
+    const expandButton = buttons.find(({ textContent }) => textContent === 'Expand')
+    const rawButton = buttons.find(({ textContent }) => textContent === 'Raw')
+
+    search!.value = 'status'
+    search!.dispatchEvent(new Event('input'))
+    expect(document.querySelector('.jl-search-status')?.textContent).toBe('1 match')
+
+    expandButton!.click()
+    expect(Array.from(document.querySelectorAll('details')).every(({ open }) => open)).toBe(true)
+    expandButton!.click()
+    expect(Array.from(document.querySelectorAll('details')).every(({ open }) => !open)).toBe(true)
+
+    rawButton!.click()
+    expect(rawButton?.textContent).toBe('Tree')
+    expect(rawButton?.getAttribute('aria-pressed')).toBe('true')
+    expect(document.querySelector('.jl-raw')?.classList.contains('jl-hidden')).toBe(false)
+  })
+
+  it('leaves the page unchanged when its text is not valid JSON', () => {
+    const alert = vi.spyOn(window, 'alert').mockImplementation(() => undefined)
+    document.body.textContent = 'Not a JSON response'
+
+    window.eval(JSON_LENS_SOURCE)
+
+    expect(alert).toHaveBeenCalledWith('JSON Lens could not find a valid JSON response on this page.')
+    expect(document.body.textContent).toBe('Not a JSON response')
+  })
+
+  it('is fully embedded instead of loading a script blocked by the page CSP', () => {
+    const bookmarklet = bookmarkletsData.find(({ id }) => id === 'json-lens')
+
+    expect(bookmarklet?.code).toBe(JSON_LENS_BOOKMARKLET)
+    expect(bookmarklet?.code).not.toContain("createElement('script')")
+    expect(bookmarklet?.code).not.toContain('/scripts/json-lens.js')
+  })
+
+  it('preserves statement boundaries when browsers flatten bookmark URLs', () => {
+    const encodedSource = JSON_LENS_BOOKMARKLET.slice('javascript:'.length)
+    const flattenedBookmarklet = JSON_LENS_BOOKMARKLET.replace(/\s/g, '')
+
+    expect(flattenedBookmarklet).toBe(JSON_LENS_BOOKMARKLET)
+    expect(decodeURIComponent(encodedSource)).toBe(JSON_LENS_SOURCE)
+    expect(() => new Function(decodeURIComponent(encodedSource))).not.toThrow()
+  })
+})

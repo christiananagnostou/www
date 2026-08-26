@@ -1,7 +1,23 @@
-import { BrokenGlass, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, JsonLens, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
+import { JSON_LENS_BOOKMARKLET } from './json-lens'
 
 export const bookmarkletsData = [
+  {
+    id: 'json-lens',
+    title: 'JSON Lens',
+    description: 'Turns a raw JSON response into a searchable, collapsible visual document.',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/lib/bookmarklets/json-lens/index.ts',
+    icon: JsonLens,
+    code: JSON_LENS_BOOKMARKLET,
+    instructions: `
+      JSON Lens reads the JSON already visible in the current tab and renders it locally. It does not send, save, or add any of the response data to another service.
+      -
+      Instructions:
+      1. Open an API endpoint that displays a JSON response.
+      2. Click the JSON Lens bookmarklet.
+      3. Search, collapse sections, copy the response, or switch back to the raw view.`,
+  },
   {
     id: 'hotbids',
     title: 'HotBids',
