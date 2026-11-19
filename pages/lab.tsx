@@ -1,5 +1,8 @@
 import * as m from 'framer-motion/m'
+import type { GetStaticProps, InferGetStaticPropsType } from 'next'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import type { ReactNode } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
@@ -8,8 +11,24 @@ import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
+import { fetchSchedule, fetchTeams } from '../lib/mlb/api'
+import type { ScheduleGame, TeamInfo } from '../lib/mlb/types'
+import { resolveTeamId } from '../lib/mlb/utils'
 
-export default function lab() {
+const MLBScoreboard = dynamic(() => import('../components/Lab/scoreboard/MLBScoreboard'))
+const DEFAULT_TEAM = 'SF'
+
+interface LabProps {
+  initialGames: ScheduleGame[]
+  initialTeams: TeamInfo[]
+  hasInitialSchedule: boolean
+}
+
+export default function Lab({
+  initialGames,
+  initialTeams,
+  hasInitialSchedule,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const pageTransitionInitial = usePageTransitionInitial()
 
   return (
@@ -31,33 +50,61 @@ export default function lab() {
         </Heading>
 
         <LabItems>
-          {/* Throttle */}
-          <Item variants={fade}>
-            <DateStyle>Apr 2025</DateStyle>
-            <Inner>
-              <Speedometer />
-            </Inner>
-          </Item>
+          <LabItem title="MLB Scoreboard" date="May 2025">
+            <MLBScoreboard
+              defaultTeam={DEFAULT_TEAM}
+              initialGames={initialGames}
+              initialTeams={initialTeams}
+              hasInitialSchedule={hasInitialSchedule}
+            />
+          </LabItem>
 
-          {/* Gantt */}
-          <Item variants={fade}>
-            <DateStyle>May 2024</DateStyle>
-            <Inner>
-              <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
-            </Inner>
-          </Item>
+          <LabItem title="Speedometer" date="Apr 2025">
+            <Speedometer />
+          </LabItem>
 
-          {/* Calendar */}
-          <Item variants={fade}>
-            <DateStyle>Apr 2024</DateStyle>
-            <Inner>
-              <DailyCalendar />
-            </Inner>
-          </Item>
+          <LabItem title="Gantt Chart" date="May 2024">
+            <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
+          </LabItem>
+
+          <LabItem title="Calendar" date="Apr 2024">
+            <DailyCalendar />
+          </LabItem>
         </LabItems>
       </Container>
     </>
   )
+}
+
+function LabItem({ title, date, children }: { title: string; date: string; children: ReactNode }) {
+  return (
+    <Item variants={fade}>
+      <ItemHeader>
+        <span>{title}</span>
+        <time>{date}</time>
+      </ItemHeader>
+      <Inner>{children}</Inner>
+    </Item>
+  )
+}
+
+export const getStaticProps: GetStaticProps<LabProps> = async () => {
+  try {
+    const initialTeams = await fetchTeams()
+    const defaultTeamId = resolveTeamId(DEFAULT_TEAM, initialTeams)
+    const initialGames = defaultTeamId ? await fetchSchedule(defaultTeamId) : []
+
+    return {
+      props: { initialGames, initialTeams, hasInitialSchedule: defaultTeamId !== null },
+      revalidate: 300,
+    }
+  } catch (error) {
+    console.error('Unable to pre-render the MLB scoreboard', error)
+    return {
+      props: { initialGames: [], initialTeams: [], hasInitialSchedule: false },
+      revalidate: 60,
+    }
+  }
 }
 
 const Container = styled(m.div)`
@@ -87,12 +134,14 @@ const Item = styled(m.div)`
   max-width: var(--max-w-screen);
 `
 
-const DateStyle = styled.div`
-  width: 100%;
-  text-align: right;
+const ItemHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
   color: var(--text-dark);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
 
   @media (width <= 768px) {
     padding-right: 1rem;
