@@ -1,7 +1,7 @@
-import type { ArticleType } from '../articles'
+import type { ArticleSummary } from '../articles'
 import { BASE_URL } from '../constants'
 
-export const getHomeStructuredData = (posts: ArticleType[]) =>
+export const getHomeStructuredData = (posts: ArticleSummary[]) =>
   ({
     '@context': 'https://schema.org',
     '@type': 'WebPage',

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { AnimatePresence } from 'framer-motion'
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
@@ -12,6 +11,7 @@ import FullscreenModal from '../components/Art/FullScreenModal'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
 import { SortedArtImages } from '../lib/art'
+import { formatPhotoDate } from '../lib/art/formatPhotoDate'
 import { BASE_URL } from '../lib/constants'
 import { getArtStructuredData } from '../lib/structured/art'
 
@@ -112,6 +112,7 @@ const Art = () => {
                     aria-label={`Open full screen image: ${item.title}`}
                     blurDataURL={item.image.blurDataURL}
                     layout="responsive"
+                    sizes="(min-width: 800px) 376px, calc(50vw - 1rem - 8.5px)"
                     placeholder="blur"
                     role="button"
                     src={item.image}
@@ -123,7 +124,7 @@ const Art = () => {
                   <HoverBox>
                     <div className="title-date">
                       <p className="title">{item.title}</p>
-                      <p className="date">{dayjs(item.date).format(`MMM 'YY`)}</p>
+                      <p className="date">{formatPhotoDate(item.date)}</p>
                     </div>
                     <div className="tags">
                       {item.tags.map((tag) => (

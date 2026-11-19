@@ -1,12 +1,12 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import styled from 'styled-components'
-import type { ArticleType } from '../../lib/articles'
+import type { ArticleSummary } from '../../lib/articles'
 import { fade, staggerFade } from '../animation'
 import { HomepageBox } from './styles'
 
 interface ArticlesProps {
-  posts: ArticleType[]
+  posts: ArticleSummary[]
 }
 
 export default function RecentArticles({ posts }: ArticlesProps) {

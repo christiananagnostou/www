@@ -10,6 +10,16 @@ export interface HomeActivity {
   metrics: Array<{ label: string; value: string; highlight: boolean }>
 }
 
+export const HOME_ACTIVITY_LIMIT = 5
+
+export function getHomeActivityPreview(activities: FitnessActivity[]) {
+  const totalCounts: Record<HomeActivityCategory, number> = { swim: 0, cycle: 0, indoorCycle: 0, run: 0 }
+  const recent = createHomeActivities(activities).filter(
+    ({ category }) => ++totalCounts[category] <= HOME_ACTIVITY_LIMIT
+  )
+  return { recent, totalCounts }
+}
+
 type HomeMetric = HomeActivity['metrics'][number] & { score?: number; lowerIsBetter?: boolean }
 
 const formatDuration = (seconds: number) => {
