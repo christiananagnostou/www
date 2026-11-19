@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{ $fontFamily: string }>`
   :root {
     --accent: #303030;
     --text:#bdbdbd;
@@ -10,9 +10,6 @@ const GlobalStyle = createGlobalStyle`
     --dark-bg: #141414;
     --nav-height: 50px;
     --max-w-screen: 800px;
-    --font-fallback: -apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
-    --font-serif: "Newsreader","Signifier","Times",serif;
-    --font-display: "Inter",var(--font-fallback);
     
     /* Border Radius Variables */
     --border-radius-xs: 2px;
@@ -60,7 +57,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html{
-    font-family: 'Inter', sans-serif;
+    font-family: ${({ $fontFamily }) => $fontFamily}, system-ui, sans-serif;
     overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

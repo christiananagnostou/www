@@ -98,7 +98,7 @@ const Description = styled(m.section)`
 
   em {
     font-weight: normal;
-    font-family: var(--font-serif);
+    font-family: "Georgia", serif;
     letter-spacing: 0.03em;
   }
 
@@ -116,7 +116,7 @@ const Description = styled(m.section)`
 
   p {
     margin: 0 0 1rem;
-    font-weight: 200;
+    font-weight: normal;
     font-size: 0.95rem;
     line-height: 1.5rem;
 
