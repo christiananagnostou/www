@@ -1,6 +1,6 @@
+import { timingSafeEqual } from 'node:crypto'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { isAuthorized } from '../../../lib/fitness/server/isAuthorized'
 import { syncRecentActivities } from '../../../lib/fitness/server/syncActivities'
 
 interface SyncResponse {
@@ -10,6 +10,13 @@ interface SyncResponse {
 
 interface ErrorResponse {
   error: string
+}
+
+const isAuthorized = (authorization: string | undefined, expectedToken: string) => {
+  const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : ''
+  const actual = Buffer.from(token)
+  const expected = Buffer.from(expectedToken)
+  return actual.length === expected.length && timingSafeEqual(actual, expected)
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SyncResponse | ErrorResponse>) {

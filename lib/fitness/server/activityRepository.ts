@@ -54,9 +54,9 @@ export const saveActivities = async (activities: FitnessActivity[]) => {
   return results.filter((result) => Number(result) === 1).length
 }
 
-export const getAllActivities = async (limit?: number) => {
+export const getAllActivities = async () => {
   await requireConnection()
-  const ids = await redisClient.zRange(ACTIVITY_INDEX_KEY, 0, limit === undefined ? -1 : limit - 1, { REV: true })
+  const ids = await redisClient.zRange(ACTIVITY_INDEX_KEY, 0, -1, { REV: true })
   return getActivitiesByIds(ids)
 }
 

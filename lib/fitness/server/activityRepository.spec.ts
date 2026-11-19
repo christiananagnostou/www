@@ -68,12 +68,6 @@ describe('activityRepository', () => {
     expect(redis.zRange).toHaveBeenCalledWith('fitness:activity-index', 0, -1, { REV: true })
   })
 
-  it('requests only the newest five ids for a limited read', async () => {
-    redis.zRange.mockResolvedValue([])
-    await getAllActivities(5)
-    expect(redis.zRange).toHaveBeenCalledWith('fitness:activity-index', 0, 4, { REV: true })
-  })
-
   it('isolates invalid stored records', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     redis.zRange.mockResolvedValue(['invalid'])
