@@ -16,6 +16,18 @@ export interface ArticleType {
   categories?: string[]
 }
 
+export type ArticleSummary = Pick<ArticleType, 'slug' | 'title' | 'summary' | 'categories' | 'dateCreated'>
+
+export function getArticleSummaries(): ArticleSummary[] {
+  return getAllPosts().map(({ slug, title, summary, categories, dateCreated }) => ({
+    slug,
+    title,
+    dateCreated,
+    categories: categories ?? [],
+    ...(summary !== undefined && { summary }),
+  }))
+}
+
 const postsDirectory = join(process.cwd(), '/public/articles')
 
 export function getPostSlugs(): string[] {

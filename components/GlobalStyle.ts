@@ -28,9 +28,6 @@ const GlobalStyle = createGlobalStyle`
     max-width: var(--max-w-screen);
   }
 
-  html[data-page-entry='pending'] #main-content {
-    visibility: hidden;
-  }
 
   *{
     box-sizing: border-box;

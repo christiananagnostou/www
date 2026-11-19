@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FitnessActivity } from './activity'
-import { createHomeActivities } from './home'
+import { createHomeActivities, getHomeActivityPreview } from './home'
 
 const activity: FitnessActivity = {
   id: 'cycle-1',
@@ -30,6 +30,13 @@ describe('createHomeActivities', () => {
         ],
       },
     ])
+  })
+
+  it('keeps five recent activities per sport and counts the full history', () => {
+    const rides = Array.from({ length: 7 }, (_, index) => ({ ...activity, id: String(index) }))
+    const preview = getHomeActivityPreview([...rides, { ...activity, id: 'run', kind: 'run' }])
+    expect(preview.recent.map(({ id }) => id)).toEqual(['0', '1', '2', '3', '4', 'run'])
+    expect(preview.counts).toEqual({ indoorCycle: 7, run: 1, swim: 0, cycle: 0 })
   })
 
   it('omits activity kinds that are not shown on the homepage', () => {

@@ -112,6 +112,7 @@ const Art = () => {
                     aria-label={`Open full screen image: ${item.title}`}
                     blurDataURL={item.image.blurDataURL}
                     layout="responsive"
+                    sizes="(min-width: 800px) 376px, calc(50vw - 1rem - 8.5px)"
                     placeholder="blur"
                     role="button"
                     src={item.image}

@@ -11,24 +11,24 @@ import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
 import FitnessActivities from '../components/Home/FitnessActivities'
 import SocialLinks from '../components/SocialLinks'
-import type { ArticleType } from '../lib/articles'
-import { getAllPosts } from '../lib/articles'
+import type { ArticleSummary } from '../lib/articles'
+import { getArticleSummaries } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
-import { createHomeActivities, type HomeActivity } from '../lib/fitness/home'
+import { getHomeActivityPreview } from '../lib/fitness/home'
 import { getAllActivities } from '../lib/fitness/server/activityRepository'
 import { getHomeStructuredData } from '../lib/structured/home'
 
 interface Props {
-  posts: ArticleType[]
-  fitnessActivities: HomeActivity[]
+  posts: ArticleSummary[]
+  fitnessActivities: ReturnType<typeof getHomeActivityPreview>
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const posts = getAllPosts()
+  const posts = getArticleSummaries().slice(0, 3)
 
-  let fitnessActivities: HomeActivity[] = []
+  let fitnessActivities = getHomeActivityPreview([])
   try {
-    fitnessActivities = createHomeActivities(await getAllActivities())
+    fitnessActivities = getHomeActivityPreview(await getAllActivities())
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown fitness homepage error'
     console.error('Failed to load homepage fitness activities', message)
@@ -83,7 +83,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
             <RecentArticles posts={posts} />
           </MiddleSection>
 
-          <FitnessActivities activities={fitnessActivities} />
+          <FitnessActivities activities={fitnessActivities.recent} counts={fitnessActivities.counts} />
 
           <FlexWrap>
             <FeaturedProjects />

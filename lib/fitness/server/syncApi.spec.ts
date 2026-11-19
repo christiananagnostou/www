@@ -4,6 +4,9 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 const sync = vi.hoisted(() => ({ syncRecentActivities: vi.fn() }))
 
 vi.mock('./syncActivities', () => sync)
+vi.mock('./activityRepository', () => ({ getAllActivities: vi.fn() }))
+
+import { getAllActivities } from './activityRepository'
 
 import handler from '../../../pages/api/fitness/sync'
 
@@ -13,7 +16,7 @@ const originalRedisUrl = process.env.REDIS_URL
 const cronSecret = 'a-secure-fitness-cron-secret-1234567890'
 
 const createRequest = (authorization = `Bearer ${cronSecret}`) =>
-  ({ method: 'GET', headers: { authorization } }) as NextApiRequest
+  ({ method: 'GET', query: {}, headers: { authorization } }) as NextApiRequest
 
 const createResponse = () => {
   const response = {
@@ -62,6 +65,27 @@ describe('/api/fitness/sync', () => {
     expect(response.status).toHaveBeenCalledWith(503)
     expect(response.json).toHaveBeenCalledWith({ error: 'Fitness sync is not configured' })
     expect(sync.syncRecentActivities).not.toHaveBeenCalled()
+  })
+
+  it('reads a limited history without syncing or revalidating', async () => {
+    const request = createRequest()
+    request.query.limit = '5'
+    const response = createResponse()
+    vi.mocked(getAllActivities).mockResolvedValue([])
+    await handler(request, response)
+    expect(getAllActivities).toHaveBeenCalledWith(5)
+    expect(response.json).toHaveBeenCalledWith({ activities: [] })
+    expect(sync.syncRecentActivities).not.toHaveBeenCalled()
+    expect(response.revalidate).not.toHaveBeenCalled()
+  })
+
+  it.each(['0', '-1', '1.5'])('rejects invalid limits', async (limit) => {
+    const request = createRequest()
+    request.query.limit = limit
+    const response = createResponse()
+    await handler(request, response)
+    expect(response.status).toHaveBeenCalledWith(400)
+    expect(getAllActivities).not.toHaveBeenCalled()
   })
 
   it('syncs recent activities and revalidates changed pages', async () => {

@@ -8,8 +8,8 @@ import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
-import type { ArticleType } from '../lib/articles'
-import { getAllPosts } from '../lib/articles'
+import type { ArticleSummary } from '../lib/articles'
+import { getArticleSummaries } from '../lib/articles'
 import { BASE_URL, X_HANDLE } from '../lib/constants'
 import { getArticlesListStructuredData } from '../lib/structured/articles'
 
@@ -18,11 +18,11 @@ export const PageDescription = 'Explore articles on technology, innovative ideas
 const PageUrl = `${BASE_URL}/articles`
 
 interface Props {
-  posts: ArticleType[]
+  posts: ArticleSummary[]
 }
 
 export const getStaticProps: GetStaticProps = () => {
-  const posts = getAllPosts()
+  const posts = getArticleSummaries()
   return { props: { posts } }
 }
 

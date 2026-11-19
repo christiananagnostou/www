@@ -2,12 +2,13 @@ import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import styled from 'styled-components'
-import type { HomeActivity, HomeActivityCategory } from '../../lib/fitness/home'
+import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
 import { indoorCycle, ride, run, swim, weight } from '../SVG/fitness/icons'
 
 interface Props {
   activities: HomeActivity[]
+  counts: Record<HomeActivityCategory, number>
 }
 
 const ACTIVITY_ICONS: Record<HomeActivityCategory, ReactElement> = {
@@ -32,7 +33,7 @@ const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 })
 
-const FitnessActivities = ({ activities }: Props) => {
+const FitnessActivities = ({ activities, counts }: Props) => {
   const [filter, setFilter] = useState<HomeActivityCategory | ''>('')
   const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
@@ -40,22 +41,13 @@ const FitnessActivities = ({ activities }: Props) => {
   const startX = useRef(0)
   const scrollLeft = useRef(0)
 
-  const activityCounts = activities.reduce<Record<string, number>>((acc, act) => {
-    acc[act.category] = (acc[act.category] ?? 0) + 1
-    return acc
-  }, {})
-
-  const getFilterCount = (category: HomeActivityCategory) => {
-    return activityCounts[category] ?? 0
-  }
-
   const filteredActivities = filter
     ? activities.filter((activity) => activity.category === filter)
-    : activities.slice(0, 5)
+    : activities.slice(0, HOME_ACTIVITY_LIMIT)
 
   const renderFilterButton = (category: HomeActivityCategory) => {
     const isActive = filter === category
-    const count = getFilterCount(category)
+    const count = counts[category]
     const label = `${ACTIVITY_LABELS[category]} (${count})`
 
     return (
