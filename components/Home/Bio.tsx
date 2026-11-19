@@ -98,7 +98,7 @@ const Description = styled(m.section)`
 
   em {
     font-weight: normal;
-    font-family: "Georgia", serif;
+    font-family: 'Georgia', serif;
     letter-spacing: 0.03em;
   }
 
