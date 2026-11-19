@@ -34,17 +34,6 @@ class MyDocument extends Document {
         <Head>
           <meta charSet="utf-8" />
 
-          <link href="https://fonts.googleapis.com" rel="preconnect" />
-          <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lobster&display=swap"
-            rel="stylesheet"
-          />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,200;1,6..72,300;1,6..72,400&display=swap"
-            rel="stylesheet"
-          />
-
           <link href="/A-square.png" rel="apple-touch-icon" sizes="180x180" />
           <link href="/A-no-bg.png" rel="icon" type="image/png" />
           <link href="/manifest.json" rel="manifest" />
