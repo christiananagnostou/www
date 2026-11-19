@@ -9,47 +9,38 @@ import Bio from '../components/Home/Bio'
 import FeaturedProjects from '../components/Home/FeaturedProjects'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
-import StravaActivities from '../components/Home/StravaActivities'
+import FitnessActivities from '../components/Home/FitnessActivities'
 import SocialLinks from '../components/SocialLinks'
 import type { ArticleType } from '../lib/articles'
 import { getAllPosts } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
-import { type StravaActivity, getStravaActivities, refreshAccessToken } from '../lib/strava'
+import { createHomeActivities, type HomeActivity } from '../lib/fitness/home'
+import { getAllActivities } from '../lib/fitness/server/activityRepository'
 import { getHomeStructuredData } from '../lib/structured/home'
 
 interface Props {
   posts: ArticleType[]
-  stravaActivities: StravaActivity[]
+  fitnessActivities: HomeActivity[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const posts = getAllPosts()
 
-  const requiredEnv = ['STRAVA_REFRESH_TOKEN', 'STRAVA_CLIENT_ID', 'STRAVA_CLIENT_SECRET', 'STRAVA_REDIRECT_URI']
-  const hasStravaConfig = requiredEnv.every((key) => process.env[key])
-
-  let filteredActivities: StravaActivity[] = []
-
-  if (hasStravaConfig) {
-    try {
-      await refreshAccessToken()
-      const allStravaActivities = await getStravaActivities()
-      filteredActivities = allStravaActivities.filter((activity) =>
-        ['Run', 'Ride', 'VirtualRide', 'Zwift', 'Swim'].includes(activity.type)
-      )
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown Strava homepage error'
-      console.error('Failed to load homepage Strava activities', message)
-    }
+  let fitnessActivities: HomeActivity[] = []
+  try {
+    fitnessActivities = createHomeActivities(await getAllActivities())
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown fitness homepage error'
+    console.error('Failed to load homepage fitness activities', message)
   }
 
   return {
-    props: { posts, stravaActivities: filteredActivities },
+    props: { posts, fitnessActivities },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
 
-const Home = ({ posts, stravaActivities }: Props) => {
+const Home = ({ posts, fitnessActivities }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
 
   return (
@@ -61,7 +52,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
         <link href={BASE_URL} rel="canonical" />
         <meta content="index, follow" name="robots" />
         <meta
-          content="software engineer, web developer, programmer, portfolio, articles, art, projects, Strava, Christian Anagnostou"
+          content="software engineer, web developer, programmer, portfolio, articles, art, projects, fitness, Christian Anagnostou"
           name="keywords"
         />
 
@@ -92,7 +83,7 @@ const Home = ({ posts, stravaActivities }: Props) => {
             <RecentArticles posts={posts} />
           </MiddleSection>
 
-          <StravaActivities activities={stravaActivities} />
+          <FitnessActivities activities={fitnessActivities} />
 
           <FlexWrap>
             <FeaturedProjects />
