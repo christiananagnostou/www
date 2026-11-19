@@ -68,7 +68,7 @@ export const hike = () => (
   </svg>
 )
 
-export const zwift = () => (
+export const indoorCycle = () => (
   <svg
     fill="none"
     height="1em"
