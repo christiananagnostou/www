@@ -8,7 +8,7 @@ import { indoorCycle, ride, run, swim, weight } from '../SVG/fitness/icons'
 
 interface Props {
   activities: HomeActivity[]
-  counts: Record<HomeActivityCategory, number>
+  totalCounts: Record<HomeActivityCategory, number>
 }
 
 const ACTIVITY_ICONS: Record<HomeActivityCategory, ReactElement> = {
@@ -33,7 +33,7 @@ const activityDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 })
 
-const FitnessActivities = ({ activities, counts }: Props) => {
+const FitnessActivities = ({ activities, totalCounts }: Props) => {
   const [filter, setFilter] = useState<HomeActivityCategory | ''>('')
   const [seeAllInView, setSeeAllInView] = useState(false)
   const activityListRef = useRef<HTMLUListElement>(null)
@@ -47,7 +47,7 @@ const FitnessActivities = ({ activities, counts }: Props) => {
 
   const renderFilterButton = (category: HomeActivityCategory) => {
     const isActive = filter === category
-    const count = counts[category]
+    const count = totalCounts[category]
     const label = `${ACTIVITY_LABELS[category]} (${count})`
 
     return (

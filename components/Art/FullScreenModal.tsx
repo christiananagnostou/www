@@ -1,10 +1,10 @@
-import dayjs from 'dayjs'
 import { AnimatePresence } from 'framer-motion'
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import type { ArtImage } from '../../lib/art'
+import { formatPhotoDate } from '../../lib/art/formatPhotoDate'
 import LeftArrow from '../SVG/LeftArrow'
 import RightArrow from '../SVG/RightArrow'
 
@@ -36,7 +36,7 @@ const imageVariants = {
 
 const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex, onClose, onNavigate }) => {
   const image = images[currentIndex]
-  const formattedDate = dayjs(image.date).format("MMM 'YY") // e.g., "Jan '23"
+  const formattedDate = formatPhotoDate(image.date) // e.g., "Jan '23"
   const [direction, setDirection] = useState(0)
 
   const handleKeyDown = useCallback(

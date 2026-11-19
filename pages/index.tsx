@@ -83,7 +83,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
             <RecentArticles posts={posts} />
           </MiddleSection>
 
-          <FitnessActivities activities={fitnessActivities.recent} counts={fitnessActivities.counts} />
+          <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
           <FlexWrap>
             <FeaturedProjects />

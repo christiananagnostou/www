@@ -8,6 +8,7 @@ vi.mock('./activityRepository', () => ({ getAllActivities: vi.fn() }))
 
 import { getAllActivities } from './activityRepository'
 
+import readActivities from '../../../pages/api/fitness/activities'
 import handler from '../../../pages/api/fitness/sync'
 
 const originalCronSecret = process.env.CRON_SECRET
@@ -29,7 +30,7 @@ const createResponse = () => {
   return response as unknown as NextApiResponse
 }
 
-describe('/api/fitness/sync', () => {
+describe('fitness API', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.CRON_SECRET = cronSecret
@@ -69,10 +70,9 @@ describe('/api/fitness/sync', () => {
 
   it('reads a limited history without syncing or revalidating', async () => {
     const request = createRequest()
-    request.query.limit = '5'
     const response = createResponse()
     vi.mocked(getAllActivities).mockResolvedValue([])
-    await handler(request, response)
+    await readActivities(request, response)
     expect(getAllActivities).toHaveBeenCalledWith(5)
     expect(response.json).toHaveBeenCalledWith({ activities: [] })
     expect(sync.syncRecentActivities).not.toHaveBeenCalled()
@@ -83,7 +83,7 @@ describe('/api/fitness/sync', () => {
     const request = createRequest()
     request.query.limit = limit
     const response = createResponse()
-    await handler(request, response)
+    await readActivities(request, response)
     expect(response.status).toHaveBeenCalledWith(400)
     expect(getAllActivities).not.toHaveBeenCalled()
   })
@@ -97,6 +97,20 @@ describe('/api/fitness/sync', () => {
     expect(response.status).toHaveBeenCalledWith(200)
     expect(response.json).toHaveBeenCalledWith({ received: 3, saved: 2 })
     expect(response.revalidate).toHaveBeenCalledTimes(2)
+  })
+
+  it('checks authorization before reading activities', async () => {
+    const response = createResponse()
+    await readActivities(createRequest('Bearer invalid'), response)
+    expect(response.status).toHaveBeenCalledWith(401)
+    expect(getAllActivities).not.toHaveBeenCalled()
+  })
+
+  it('applies an explicit activity limit', async () => {
+    const request = createRequest()
+    request.query.limit = '2'
+    await readActivities(request, createResponse())
+    expect(getAllActivities).toHaveBeenCalledWith(2)
   })
 
   it('skips revalidation when every activity is unchanged', async () => {

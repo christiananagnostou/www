@@ -36,7 +36,7 @@ describe('createHomeActivities', () => {
     const rides = Array.from({ length: 7 }, (_, index) => ({ ...activity, id: String(index) }))
     const preview = getHomeActivityPreview([...rides, { ...activity, id: 'run', kind: 'run' }])
     expect(preview.recent.map(({ id }) => id)).toEqual(['0', '1', '2', '3', '4', 'run'])
-    expect(preview.counts).toEqual({ indoorCycle: 7, run: 1, swim: 0, cycle: 0 })
+    expect(preview.totalCounts).toEqual({ indoorCycle: 7, run: 1, swim: 0, cycle: 0 })
   })
 
   it('omits activity kinds that are not shown on the homepage', () => {
