@@ -82,11 +82,16 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
 
 const Log = styled(m.section)`
   width: 100%;
-  padding: 1rem;
+  padding-block: 1rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
   background: var(--dark-bg);
 
+  > header,
+  > p,
+  > ul {
+    padding-inline: 1rem;
+  }
   header,
   [role='group'],
   ul {
@@ -137,13 +142,15 @@ const Log = styled(m.section)`
     scrollbar-width: none;
     list-style: none;
     margin: 0;
-    padding: 0;
     &::-webkit-scrollbar {
       display: none;
     }
   }
   li {
     flex: 0 0 9rem;
+  }
+  li:last-child {
+    margin-inline-start: auto;
   }
   h3 {
     display: flex;
