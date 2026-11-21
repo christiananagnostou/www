@@ -7,6 +7,7 @@ import type { ProjectType } from '../../lib/projects'
 import bayBike from '../../public/img/art/photography/bay_bike.jpg'
 import coit from '../../public/img/art/photography/coit.jpg'
 import goldenGate from '../../public/img/art/photography/golden_gate.jpg'
+import bayBikeExport from '../../public/img/projects/imgpress/bay-bike-export.jpg'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
 
@@ -35,13 +36,25 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
         <a href={project.github}>View source on GitHub</a>
       </header>
       <Stage>
-        <Image
-          src={bayBike}
-          alt="A blue road bike on the waterfront, one of the originals in this batch."
-          className="photo"
-          sizes="(min-width: 800px) 450px, 55vw"
-          priority
-        />
+        <Comparison>
+          <Image
+            src={bayBike}
+            alt="Bay Bike at the waterfront, split between the original on the left and the ImgPress export on the right."
+            unoptimized
+            priority
+          />
+          <Image src={bayBikeExport} alt="" className="export" unoptimized priority />
+          <FileLabels>
+            <div>
+              <dt>Original</dt>
+              <dd>{kb(photos[0].original)}</dd>
+            </div>
+            <div>
+              <dt>Export</dt>
+              <dd>{kb(photos[0].output)}</dd>
+            </div>
+          </FileLabels>
+        </Comparison>
         <a href={panel.src} aria-label="View the full-size ImgPress settings screenshot">
           <Image
             src={panel}
@@ -154,6 +167,8 @@ const Study = styled(m.article)`
 `
 
 const Stage = styled.figure`
+  --panel-width: min(48%, 17rem);
+  --panel-inset: clamp(1rem, 5vw, 3rem);
   position: relative;
   isolation: isolate;
   display: flex;
@@ -161,20 +176,11 @@ const Stage = styled.figure`
   justify-content: flex-end;
   overflow: hidden;
   border-radius: var(--border-radius-lg);
-  background: #86adbc;
-  .photo {
-    position: absolute;
-    z-index: -1;
-    inset: 0 auto 0 0;
-    width: 62%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 68%;
-  }
+  background: linear-gradient(166deg, #80b6ce, #a6c4cd 44%, #526e7a);
   a {
     display: block;
-    width: min(48%, 17rem);
-    margin: clamp(1rem, 3vw, 1.7rem) clamp(1rem, 5vw, 3rem) clamp(1rem, 3vw, 1.7rem) 0;
+    width: var(--panel-width);
+    margin: clamp(1rem, 3vw, 1.7rem) var(--panel-inset) clamp(1rem, 3vw, 1.7rem) 0;
   }
   a:focus-visible {
     outline-color: #183545;
@@ -185,6 +191,50 @@ const Stage = styled.figure`
     height: auto;
     border-radius: var(--border-radius-md);
     box-shadow: 0 8px 24px #13384855;
+  }
+`
+const Comparison = styled.div`
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 0;
+  width: calc(100% - var(--panel-width) - var(--panel-inset) / 2);
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 68%;
+  }
+  .export {
+    clip-path: inset(0 0 0 50%);
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 50%;
+    width: 1px;
+    background: #ffffff99;
+  }
+`
+const FileLabels = styled.dl`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding-block: clamp(0.65rem, 2vw, 1.1rem) 1.5rem;
+  background: linear-gradient(#102431db, #102431a8 55%, transparent);
+  color: #ffffff;
+  div {
+    padding-left: clamp(0.4rem, 1.4vw, 0.9rem);
+  }
+  dt {
+    font-size: 0.75rem;
+  }
+  dd {
+    font-size: clamp(0.82rem, 2vw, 1.1rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 `
 const Copy = styled.div`
