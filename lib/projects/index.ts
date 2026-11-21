@@ -454,7 +454,7 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'One more rep than last time.',
         description:
-          'Ten reps at 27.5 kg last session. Ten at 30 today. Lift Club puts those numbers on the same line, right where you enter your set.',
+          'Last time: ten reps at 100. Today: twelve at 110. Lift Club puts both sets on the same line, so you can see what changed before you rack the bar.',
       },
       {
         title: 'See the work add up.',

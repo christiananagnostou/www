@@ -38,11 +38,11 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
             src={cover}
             priority
             sizes="(min-width: 800px) 768px, 95vw"
-            alt="The Lift Club set logger beside a loaded barbell in an illustrated weight room."
+            alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
           />
           <figcaption>
-            <span>Inside the workout log</span>
-            <a href={set.src}>View set detail</a>
+            <span>Bench press in Lift Club</span>
+            <a href={set.src}>See a sample workout</a>
           </figcaption>
         </Cover>
         <Note>
