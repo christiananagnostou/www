@@ -3,9 +3,9 @@ import { createGlobalStyle } from 'styled-components'
 const GlobalStyle = createGlobalStyle<{ $fontFamily: string }>`
   :root {
     --accent: #303030;
-    --text:#bdbdbd;
-    --text-dark:#7e7e7e;
-    --heading:#d6d6d6;
+    --text: #d6d6d6;
+    --text-dark: #a8a8a8;
+    --heading: #ededed;
     --body-bg: #1b1b1b;
     --dark-bg: #141414;
     --nav-height: 50px;
@@ -75,6 +75,7 @@ const GlobalStyle = createGlobalStyle<{ $fontFamily: string }>`
   body{
     min-height: 100vh;
     background: var(--body-bg);
+    color: var(--text);
   }
 
   h1,
