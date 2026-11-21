@@ -72,8 +72,8 @@ const SocialLinkList = styled(m.ul)<{ $unboxed: boolean }>`
       display: flex;
       justify-content: center;
       align-items: center;
-      min-width: 2.75rem;
-      min-height: 2.75rem;
+      min-width: max(44px, 2.75rem);
+      min-height: max(44px, 2.75rem);
       padding: 0;
       cursor: pointer;
     }
