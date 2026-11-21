@@ -6,11 +6,10 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import Bio from '../components/Home/Bio'
-import FeaturedProjects from '../components/Home/FeaturedProjects'
+import FooterDesigns from '../components/Home/FooterDesigns'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
 import FitnessActivities from '../components/Home/FitnessActivities'
-import SocialLinks from '../components/SocialLinks'
 import type { ArticleSummary } from '../lib/articles'
 import { getArticleSummaries } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
@@ -19,6 +18,7 @@ import { getAllActivities } from '../lib/fitness/server/activityRepository'
 import { getHomeStructuredData } from '../lib/structured/home'
 
 interface Props {
+  compareFooters: boolean
   posts: ArticleSummary[]
   fitnessActivities: ReturnType<typeof getHomeActivityPreview>
 }
@@ -35,12 +35,16 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   return {
-    props: { posts, fitnessActivities },
+    props: {
+      posts,
+      fitnessActivities,
+      compareFooters: process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development',
+    },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
 
-const Home = ({ posts, fitnessActivities }: Props) => {
+const Home = ({ posts, fitnessActivities, compareFooters }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
 
   return (
@@ -85,12 +89,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
-          <LinkDirectory>
-            <FeaturedProjects />
-            <nav aria-label="Social profiles">
-              <SocialLinks unboxed />
-            </nav>
-          </LinkDirectory>
+          <FooterDesigns compare={compareFooters} />
 
           {/* <FlexWrap>
             <LabLink />
@@ -122,21 +121,6 @@ const Container = styled(m.div)`
     gap: 1rem;
     border-radius: 14px;
     position: relative;
-  }
-`
-
-const LinkDirectory = styled.footer`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: 1rem;
-  width: 100%;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--accent);
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: flex-start;
   }
 `
 
