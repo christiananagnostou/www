@@ -67,28 +67,31 @@ const SeeAllContent = styled(Link)`
   &::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    border-radius: 50%;
+    inset: 0;
     background:
       radial-gradient(circle at 70% 20%, rgb(255 255 255 / 6%), transparent 45%),
-      linear-gradient(135deg, rgb(255 255 255 / 3%), transparent 55%);
+      linear-gradient(135deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%) 55%);
     pointer-events: none;
-    transform-origin: center center;
-    transition: rotate 0.3s ease;
-    mix-blend-mode: overlay;
-    rotate: 0deg;
+    opacity: 0;
+    transform: rotate(-40deg);
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
   }
 
   &:hover,
+  &:focus-visible,
   &[data-in-view='true'] {
     border-color: rgb(255 255 255 / 15%);
     box-shadow: inset 0 0 0 1px var(--accent);
 
     &::before {
-      rotate: 40deg;
+      opacity: 1;
+      transform: none;
     }
   }
 
