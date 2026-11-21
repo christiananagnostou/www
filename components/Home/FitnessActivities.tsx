@@ -1,8 +1,10 @@
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useState } from 'react'
 import styled from 'styled-components'
 
 import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
+import { fade, staggerFade } from '../animation'
 import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
 import SeeAllActivitiesCard from './SeeAllActivitiesCard'
 
@@ -32,15 +34,16 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
   )
 
   return (
-    <Log aria-labelledby="training-title">
+    <Log aria-labelledby="training-title" variants={staggerFade}>
       <header>
-        <h2 id="training-title">
+        <m.h2 id="training-title" variants={fade}>
           <Link href="/fitness">Fitness</Link>
-        </h2>
+        </m.h2>
         <div role="group" aria-label="Filter training by sport">
           {filters.map((key) => (
-            <button
+            <m.button
               key={key}
+              variants={fade}
               type="button"
               aria-pressed={filter === key}
               aria-label={`${labels[key]} (${totalCounts[key]} recorded)`}
@@ -48,14 +51,14 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
               onClick={() => setFilter((current) => (current === key ? null : key))}
             >
               {icons[key]}
-            </button>
+            </m.button>
           ))}
         </div>
       </header>
       {recent.length === 0 && filter && <p>No {inlineLabel(filter)} activities recorded yet.</p>}
       <ul key={filter} aria-label="Recent activities" tabIndex={0}>
         {recent.map((activity) => {
-          const metric = (label: string) => activity.metrics.find((m) => m.label === label)
+          const metric = (label: string) => activity.metrics.find((entry) => entry.label === label)
           const distance = metric('Distance')
           const sport = inlineLabel(activity.category)
           const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
@@ -74,7 +77,7 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
   )
 }
 
-const Log = styled.section`
+const Log = styled(m.section)`
   width: 100%;
   padding: 1rem;
   border: 1px solid var(--accent);
