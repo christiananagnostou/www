@@ -170,6 +170,12 @@ const Note = styled.section`
     grid-template-columns: var(--story-columns);
     column-gap: var(--story-gutter);
     padding-block: 3rem;
+
+    ${Intro} + & {
+      grid-template-columns: minmax(0, 38rem);
+      gap: 0.6rem;
+      padding-block: 2.75rem 2.25rem;
+    }
   }
 `
 const Progress = styled.section`
