@@ -71,6 +71,7 @@ const SKILLBOX_VISIBLE_SKILLS = [...SKILLBOX_GIT_SKILLS, SKILLBOX_URL_SKILL] as 
 
 export interface ProjectType {
   title: string
+  themeColor: `#${string}`
   date: string
   tags: string[]
   desktopImgs: StaticImageData[]
@@ -96,6 +97,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'npm',
     github: 'https://github.com/ChristianAnagnostou/skillbox',
     slug: 'skillbox',
+    themeColor: '#72c8b7',
     summary: 'Local-first, agent-agnostic skills manager for AI coding agents',
     meta: [
       { label: 'Stack', value: 'TypeScript CLI' },
@@ -181,6 +183,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'Readme',
     github: 'https://github.com/ChristianAnagnostou/imgpress',
     slug: 'imgpress',
+    themeColor: '#b9d8ed',
     summary: 'A little Mac menu bar app I built to get a folder of photos ready to share without opening an editor.',
     meta: [
       { label: 'Stack', value: 'Swift / SwiftUI' },
@@ -210,6 +213,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'npm',
     github: 'https://github.com/ChristianAnagnostou/knip-html-reporter',
     slug: 'knip-html-reporter',
+    themeColor: '#a893d1',
     summary: 'Interactive HTML reporter that turns Knip output into navigable cleanup reports',
     meta: [
       { label: 'Stack', value: 'TypeScript' },
@@ -244,6 +248,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'Releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
     slug: 'jukebox',
+    themeColor: '#a8c1eb',
     summary:
       'A desktop player for the music on your hard drive. I built Jukebox around two things: a local collection and a keyboard.',
     meta: [
@@ -283,6 +288,7 @@ export const ProjectState: ProjectType[] = [
     externalLink: 'https://qwikdraw.app/',
     github: 'https://github.com/ChristianAnagnostou/qwikdraw',
     slug: 'qwikdraw',
+    themeColor: '#aba6a1',
     summary: 'A simple web-based design canvas built using the Qwik framework',
     meta: [
       { label: 'Stack', value: 'Qwik / TypeScript' },
@@ -316,6 +322,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [Calendar],
     externalLink: 'https://electriq.app/',
     slug: 'electriq-app',
+    themeColor: '#e3b342',
     summary: 'Visualize and manage Linear projects with timelines, kanbans, calendars, and much more',
     meta: [
       { label: 'Stack', value: 'React app' },
@@ -346,6 +353,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [],
     externalLink: 'https://soylent.com/',
     slug: 'soylent',
+    themeColor: '#74966b',
     summary: "A polished ecommerce storefront for Soylent's complete nutrition lineup",
     meta: [
       { label: 'Platform', value: 'Shopify storefront' },
@@ -378,6 +386,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [SentfillPDPMobile, ScentfillCarouselMobile, SentfillScents],
     externalLink: 'https://scentfill.com/',
     slug: 'scentfill',
+    themeColor: '#9cad47',
     summary:
       'A fragrance-focused storefront for browsing scents, subscribing to refills, and shopping Scentfill products',
     meta: [
@@ -411,6 +420,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [],
     externalLink: 'https://www.electriqmarketing.com/',
     slug: 'electriq-home',
+    themeColor: '#6776e3',
     summary: "Collaborated with the agency's in-house design team to craft the rebranding of Electriq",
     meta: [
       { label: 'Stack', value: 'React' },
@@ -443,6 +453,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [LiftClubProgress],
     externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
+    themeColor: '#4361ee',
     summary:
       'I started Lift Club in 2021 as a workout log for my cousin George and me. These days, more than 100 people use it, including a lot of our family and friends.',
     meta: [
@@ -481,6 +492,7 @@ export const ProjectState: ProjectType[] = [
     externalLink: 'https://awildchristian.com/',
     github: 'https://github.com/ChristianAnagnostou/anagnostou-photography-frontend',
     slug: 'awildchristian',
+    themeColor: '#828bc4',
     summary:
       "See the photos on my art page? I'll print them out, sign them, and send them to you if you send me a few shekels",
     meta: [
@@ -514,6 +526,7 @@ export const ProjectState: ProjectType[] = [
     // externalLink: "https://neologos.herokuapp.com/",
     github: 'https://github.com/ChristianAnagnostou/NeoLogos',
     slug: 'neologos',
+    themeColor: '#d6b24b',
     summary: 'Ever made of a word for something? Well now you know where to put it.',
     meta: [
       { label: 'Stack', value: 'React / Redux / Express' },
@@ -547,6 +560,7 @@ export const ProjectState: ProjectType[] = [
     externalLink: 'http://lofiwaves.surge.sh/',
     github: 'https://github.com/ChristianAnagnostou/LofiWaves',
     slug: 'lofiwaves',
+    themeColor: '#c09fd8',
     summary: 'Like lofi? So do I, so why not checkout out some of my faves here',
     meta: [
       { label: 'Stack', value: 'React / SCSS' },

@@ -16,6 +16,9 @@ import sonomaTruckExport from '../../public/img/projects/imgpress/sonoma_truck.j
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
 
+import ProjectsBackLink from './ProjectsBackLink'
+import { projectTheme } from './projectTheme'
+
 // Bytes on disk using Shareable JPEG at 75% quality and 50% dimensions.
 const featured = { title: 'Bay Bike', image: bayBike, exported: bayBikeExport, original: 177416, output: 64632 }
 const photos = [
@@ -42,8 +45,14 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
   const [panel, result] = project.desktopImgs
   const [batch, reflection] = project.details
   return (
-    <Study initial={initial} animate="show" exit="exit" variants={pageAnimation}>
-      <Link href="/projects">/ Projects</Link>
+    <Study
+      style={projectTheme(project.themeColor)}
+      initial={initial}
+      animate="show"
+      exit="exit"
+      variants={pageAnimation}
+    >
+      <ProjectsBackLink />
       <header>
         <h1>{project.title}</h1>
         <p>{project.summary}</p>
@@ -167,21 +176,18 @@ const Study = styled(m.article)`
   a {
     text-underline-offset: 0.25em;
   }
-  > a,
   footer {
     color: var(--text-dark);
+    margin-top: 2rem;
     font-size: 0.88rem;
   }
   header a {
-    color: #b9d8ed;
+    color: var(--project-accent);
     text-decoration-color: currentColor;
   }
   a:focus-visible {
-    outline: 2px solid #b9d8ed;
+    outline: 2px solid var(--project-accent);
     outline-offset: 4px;
-  }
-  footer {
-    margin-top: 2rem;
   }
 `
 
@@ -308,11 +314,11 @@ const Files = styled.table`
     inset: 0;
   }
   th button:is(:hover, [aria-pressed='true']) {
-    color: #b9d8ed;
+    color: var(--project-accent);
     text-decoration-color: currentColor;
   }
   th button:focus-visible::after {
-    outline: 2px solid #b9d8ed;
+    outline: 2px solid var(--project-accent);
     outline-offset: -2px;
   }
   img {

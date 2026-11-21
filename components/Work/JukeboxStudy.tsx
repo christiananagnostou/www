@@ -1,11 +1,13 @@
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
-import Link from 'next/link'
 import styled from 'styled-components'
 
 import type { ProjectType } from '../../lib/projects'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
+
+import ProjectsBackLink from './ProjectsBackLink'
+import { projectTheme } from './projectTheme'
 
 const controls = [
   ['/', 'Search'],
@@ -20,8 +22,14 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
   const [phone] = project.mobileImgs
   const [importing, keyboard, history, remote] = project.details
   return (
-    <Page initial={initial} animate="show" exit="exit" variants={pageAnimation}>
-      <Link href="/projects">/ Projects</Link>
+    <Page
+      style={projectTheme(project.themeColor)}
+      initial={initial}
+      animate="show"
+      exit="exit"
+      variants={pageAnimation}
+    >
+      <ProjectsBackLink />
       <header>
         <h1>{project.title}</h1>
         <p>{project.summary}</p>
@@ -92,15 +100,14 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
 }
 
 const Page = styled(m.main)`
-  --ink-blue: #a8c1eb;
   width: 100%;
   max-width: var(--max-w-screen);
   margin: auto;
   padding: 2rem 1rem 4rem;
   color: var(--text);
-  > a,
   footer {
     color: var(--text-dark);
+    margin-top: 2rem;
     font-size: 0.85rem;
   }
   header {
@@ -133,11 +140,8 @@ const Page = styled(m.main)`
     display: block;
   }
   a:focus-visible {
-    outline: 2px solid var(--ink-blue);
+    outline: 2px solid var(--project-color);
     outline-offset: 4px;
-  }
-  footer {
-    margin-top: 2rem;
   }
 `
 const Actions = styled.div`
@@ -147,13 +151,13 @@ const Actions = styled.div`
   margin-top: 1.25rem;
   font-size: 0.9rem;
   a {
-    color: var(--ink-blue);
+    color: var(--project-color);
     text-underline-offset: 0.25em;
   }
   a:first-child {
     padding: 0.65rem 1rem;
     border-radius: var(--border-radius-sm);
-    background: var(--ink-blue);
+    background: var(--project-color);
     color: #17171f;
     text-decoration: none;
   }
@@ -208,7 +212,7 @@ const Keys = styled.dl`
     border: 1px solid #424a5a;
     border-bottom-width: 2px;
     border-radius: 4px;
-    color: var(--ink-blue);
+    color: var(--project-color);
     font-size: 0.78rem;
   }
 `

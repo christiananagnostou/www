@@ -1,15 +1,15 @@
 import * as m from 'framer-motion/m'
 import dynamic from 'next/dynamic'
 import Image, { type StaticImageData } from 'next/image'
-import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
-import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
 import LiftClubStudy from '../../components/Work/LiftClubStudy'
 import JukeboxStudy from '../../components/Work/JukeboxStudy'
+import ProjectsBackLink from '../../components/Work/ProjectsBackLink'
+import { projectTheme } from '../../components/Work/projectTheme'
 import ProjectHead from '../../components/Work/ProjectHead'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
@@ -61,7 +61,6 @@ const DefaultProject = ({ project }: Props) => {
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
   const hasMedia = hasProjectMedia(project)
-  const accent = getProjectAccent(project.slug)
   const projectLinks = getProjectLinks(project)
   const projectDetails = getProjectDetails(project)
 
@@ -70,10 +69,10 @@ const DefaultProject = ({ project }: Props) => {
       animate="show"
       exit="exit"
       initial={pageTransitionInitial}
-      style={{ '--project-accent': accent } as CSSProperties}
+      style={projectTheme(project.themeColor)}
       variants={pageAnimation}
     >
-      <BackLink href="/projects">Projects</BackLink>
+      <ProjectsBackLink />
 
       <Hero variants={staggerFade}>
         <HeroCopy variants={fade}>
@@ -259,13 +258,6 @@ const hasProjectMedia = (project: ProjectType) => {
   return project.desktopImgs.length > 0 || project.mobileImgs.length > 0
 }
 
-const getProjectAccent = (slug: string) => {
-  const accents = ['#72c8b7', '#b8a266', '#8da1d9', '#d08a72', '#a4bd78'] as const
-  const index = slug.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % accents.length
-
-  return accents[index]
-}
-
 const Container = styled(m.main)`
   width: 100%;
   max-width: var(--max-w-screen);
@@ -274,26 +266,8 @@ const Container = styled(m.main)`
   color: var(--text);
 `
 
-const BackLink = styled(Link)`
-  display: inline-flex;
-  margin-bottom: 3.5rem;
-  font-size: 0.8rem;
-  color: var(--text-dark);
-  text-decoration: none;
-
-  &::before {
-    content: '/';
-    margin-right: 0.45rem;
-    color: var(--project-accent);
-  }
-
-  &:hover {
-    color: var(--heading);
-    text-decoration: none;
-  }
-`
-
 const Hero = styled(m.header)`
+  margin-top: 3.5rem;
   display: grid;
   padding-bottom: 1.25rem;
 `

@@ -1,28 +1,12 @@
 .instrument {
-  --instrument-bg: #202820;
+  --instrument-bg: color-mix(in srgb, var(--project-color) 15%, var(--dark-bg));
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   border-radius: inherit;
   background: var(--instrument-bg);
-  color: #bed1bb;
-}
-.instrument:is([data-instrument='liftclub'], [data-instrument='electriq-app']) {
-  --instrument-bg: #1c2430;
-  color: #a9c2ea;
-}
-.instrument:is([data-instrument='jukebox'], [data-instrument='awildchristian'], [data-instrument='neologos']) {
-  --instrument-bg: #2a241f;
-  color: #dbbd99;
-}
-.instrument:is([data-instrument='imgpress'], [data-instrument='soylent']) {
-  --instrument-bg: #1c2923;
-  color: #9dccac;
-}
-.instrument:is([data-instrument='qwikdraw'], [data-instrument='scentfill'], [data-instrument='lofiwaves']) {
-  --instrument-bg: #282332;
-  color: #cab5dc;
+  color: var(--project-accent);
 }
 .disc {
   transform-origin: 66px 44px;

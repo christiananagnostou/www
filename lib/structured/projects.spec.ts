@@ -5,6 +5,7 @@ import { getProjectsStructuredData, projectMetadata, projectsUrl } from './proje
 
 const project: ProjectType = {
   title: 'Lift Club',
+  themeColor: '#4361ee',
   slug: 'liftclub',
   summary: 'A workout log.',
   externalLink: 'https://www.liftclub.app/',
