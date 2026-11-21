@@ -257,7 +257,6 @@ const Result = styled.section`
     display: block;
     width: 100%;
     height: auto;
-    border-radius: var(--border-radius-md);
   }
   @media (width >= 620px) {
     grid-template-columns: 1fr 1fr;
