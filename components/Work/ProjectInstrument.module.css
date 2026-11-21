@@ -1,0 +1,88 @@
+.instrument {
+  --instrument-bg: color-mix(in srgb, var(--project-color) 10%, var(--dark-bg));
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--instrument-bg);
+  color: var(--project-accent);
+}
+.disc {
+  transform-origin: 66px 44px;
+}
+.compress {
+  transform-origin: 32px center;
+}
+.elapsed {
+  transform-origin: 40px 56px;
+}
+.cap {
+  transform-origin: 80px 18px;
+}
+.needle {
+  transform-origin: 80px 64px;
+  transform: rotate(-36deg);
+}
+.output {
+  opacity: 0.55;
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .instrument g[class],
+  .compress,
+  .elapsed {
+    transition:
+      transform 220ms var(--study-ease),
+      opacity 160ms ease;
+  }
+  a:hover .lift {
+    transform: translateY(-12px);
+  }
+  a:hover .disc {
+    transform: rotate(85deg);
+  }
+  a:hover .compress {
+    transform: scaleX(var(--output-ratio));
+  }
+  a:hover .output {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+  a:hover .lens {
+    transform: translate(-14px, 7px);
+  }
+  a:hover .selection {
+    transform: translate(12px, -5px);
+  }
+  a:hover .ticket {
+    transform: translate(38px, 12px);
+  }
+  a:hover .cap {
+    transform: translateY(-7px) rotate(-8deg);
+  }
+  a:hover .needle {
+    transform: rotate(36deg);
+  }
+  a:hover .globeBands {
+    animation: globe-turn 1.8s linear infinite;
+  }
+  a:hover .print {
+    transform: translateY(-1.5px);
+  }
+  a:hover .vote {
+    transform: translateY(-5px);
+  }
+  a:hover .elapsed {
+    transform: scaleX(2);
+  }
+  a:hover .playhead {
+    transform: translateX(24px);
+  }
+}
+
+/* One full repeat of the glyph pattern travels along each curved latitude. */
+@keyframes globe-turn {
+  to {
+    stroke-dashoffset: -20px;
+  }
+}

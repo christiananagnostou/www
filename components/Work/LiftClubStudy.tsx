@@ -1,11 +1,13 @@
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
-import Link from 'next/link'
 import styled from 'styled-components'
 
 import type { ProjectType } from '../../lib/projects'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
+
+import ProjectsBackLink from './ProjectsBackLink'
+import { projectTheme } from './projectTheme'
 
 const coverSizes = '(min-width: 800px) 615px, (min-width: 650px) calc(80vw - 25.6px), calc(100vw - 32px)'
 
@@ -17,8 +19,14 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
   const app = project.externalLink!
 
   return (
-    <Page initial={initial} variants={pageAnimation} animate="show" exit="exit">
-      <Back href="/projects">/ Projects</Back>
+    <Page
+      style={projectTheme(project.themeColor)}
+      initial={initial}
+      variants={pageAnimation}
+      animate="show"
+      exit="exit"
+    >
+      <ProjectsBackLink />
       <Intro>
         <div>
           <h1>{project.title}</h1>
@@ -93,7 +101,7 @@ const Page = styled(m.main)`
   p {
     line-height: 1.65;
   }
-  a {
+  header a {
     color: inherit;
     text-underline-offset: 0.25em;
   }
@@ -106,10 +114,6 @@ const Page = styled(m.main)`
     width: 100%;
     height: auto;
   }
-`
-const Back = styled(Link)`
-  font-size: 0.85rem;
-  text-decoration: none;
 `
 const Intro = styled.header`
   display: grid;
@@ -149,7 +153,7 @@ const Actions = styled.div`
   a:first-child {
     padding: 0.65rem 1rem;
     border-radius: var(--border-radius-sm);
-    background: #4361ee;
+    background: var(--project-color);
     color: #ffffff;
     text-decoration: none;
   }

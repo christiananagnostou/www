@@ -1,6 +1,6 @@
 /** @type {import('stylelint').Config} */
 export default {
-  customSyntax: 'postcss-styled-syntax',
+  overrides: [{ files: ['**/*.{tsx,js,ts}'], customSyntax: 'postcss-styled-syntax' }],
   extends: ['stylelint-config-recommended'],
   rules: {
     'at-rule-no-unknown': [true, { ignoreAtRules: ['extends'] }],
