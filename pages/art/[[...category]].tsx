@@ -2,7 +2,7 @@ import * as m from 'framer-motion/m'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation } from '../../components/animation'
@@ -40,6 +40,7 @@ export default function Art({ initialTag }: Props) {
   const structuredData = useMemo(() => JSON.stringify(getArtStructuredData(photos)), [photos])
   const ogImage = photos[0] && `${BASE_URL}${photos[0].image.src}`
   const [openPhoto, setOpenPhoto] = useState<ArtImage | null>(null)
+  const filters = useRef<HTMLDivElement>(null)
   const closeViewer = useCallback(() => setOpenPhoto(null), [])
   useEffect(() => {
     router.events.on('routeChangeStart', closeViewer)
@@ -47,12 +48,17 @@ export default function Art({ initialTag }: Props) {
   }, [router.events, closeViewer])
 
   const selectTag = useCallback(
-    (next: string | null, scroll = false) => {
+    async (next: string | null, fromPhoto = false) => {
       const selected = next === tag ? null : next
-      void router.push({ pathname: '/art', query: selected ? { tag: selected } : {} }, undefined, {
+      const changed = await router.push({ pathname: '/art', query: selected ? { tag: selected } : {} }, undefined, {
         shallow: true,
-        scroll,
+        scroll: false,
       })
+      if (changed && fromPhoto) {
+        filters.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus({ preventScroll: true })
+        // Smooth-scrolling through a newly filtered grid would request every photo on the way up.
+        window.scrollTo({ top: 0, behavior: 'instant' })
+      }
     },
     [router, tag]
   )
@@ -93,7 +99,7 @@ export default function Art({ initialTag }: Props) {
         </Heading>
 
         <m.div variants={fade}>
-          <Filters role="group" aria-label="Filter photographs">
+          <Filters ref={filters} role="group" aria-label="Filter photographs">
             {[null, ...photoTags].map((category) => (
               <button
                 key={category ?? 'All'}

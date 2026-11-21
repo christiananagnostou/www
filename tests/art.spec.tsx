@@ -59,6 +59,7 @@ describe('photography gallery', () => {
     expect(within(bridge).queryByRole('img')).toBeNull()
     intersect(true)
     expect(within(bridge).getByRole('img').getAttribute('srcset')).toBeTruthy()
+    expect(within(bridge).getByRole('img').getAttribute('loading')).toBe('eager')
     expect(unobserve).toHaveBeenCalledWith(bridge)
     fireEvent.click(bridge)
     expect(open).toHaveBeenCalledWith(photos[2])
@@ -69,7 +70,9 @@ describe('photography gallery', () => {
   it('still exposes every photo without IntersectionObserver', () => {
     vi.stubGlobal('IntersectionObserver', undefined)
     render(<PhotoGrid photos={photos} tag={null} onOpen={vi.fn()} onSelectTag={vi.fn()} />)
-    expect(screen.getAllByRole('img')).toHaveLength(photos.length)
+    const images = screen.getAllByRole('img')
+    expect(images).toHaveLength(photos.length)
+    expect(images.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true)
   })
 
   it('mounts a responsive viewer image immediately and wraps in both directions within the filtered set', () => {

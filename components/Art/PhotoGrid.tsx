@@ -13,12 +13,13 @@ type GridProps = {
   photos: ArtImage[]
   tag: string | null
   onOpen: (photo: ArtImage) => void
-  onSelectTag: (tag: string, scroll: boolean) => void
+  onSelectTag: (tag: string, fromPhoto: boolean) => void
 }
 
 export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProps) {
   const grid = useRef<HTMLElement>(null)
-  const [revealed, setRevealed] = useState(() => new Set<string>())
+  // null lets browsers without IntersectionObserver use native lazy loading for every photo.
+  const [revealed, setRevealed] = useState<Set<string> | null>(() => new Set())
   const columns = useMemo(() => {
     const pair: ArtImage[][] = [[], []]
     photos.forEach((photo, index) => pair[index % 2].push(photo))
@@ -30,7 +31,7 @@ export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProp
     const pending = grid.current.querySelectorAll<HTMLButtonElement>('[data-deferred-photo]')
     if (!pending.length) return
     if (typeof IntersectionObserver === 'undefined') {
-      setRevealed(new Set(photos.map((photo) => photo.id)))
+      setRevealed(null)
       return
     }
 
@@ -43,7 +44,7 @@ export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProp
           if (id) ids.push(id)
           observer.unobserve(entry.target)
         }
-        if (ids.length) setRevealed((previous) => new Set([...previous, ...ids]))
+        if (ids.length) setRevealed((previous) => new Set([...(previous ?? []), ...ids]))
       },
       { rootMargin: '80px 0px' }
     )
@@ -59,7 +60,7 @@ export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProp
           {column.map((photo, index) => (
             <PhotoCard
               key={photo.id}
-              active={index === 0 || revealed.has(photo.id)}
+              loading={revealed === null ? 'lazy' : index === 0 || revealed.has(photo.id) ? 'eager' : undefined}
               photo={photo}
               tag={tag}
               onOpen={onOpen}
@@ -74,26 +75,28 @@ export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProp
 
 const PhotoCard = memo(function PhotoCard({
   photo,
-  active,
+  loading,
   tag,
   onOpen,
   onSelectTag,
 }: Omit<GridProps, 'photos'> & {
   photo: ArtImage
-  active: boolean
+  loading?: 'eager' | 'lazy'
 }) {
-  const thumbnail = <Image alt={photo.title} placeholder="blur" sizes={THUMBNAIL_SIZES} src={photo.image} />
+  const thumbnail = (
+    <Image alt={photo.title} loading={loading ?? 'lazy'} placeholder="blur" sizes={THUMBNAIL_SIZES} src={photo.image} />
+  )
 
   return (
     <ImageWrapper>
       <PhotoButton
         type="button"
         aria-label={`Open full screen image: ${photo.title}`}
-        data-deferred-photo={active ? undefined : photo.id}
+        data-deferred-photo={loading ? undefined : photo.id}
         style={{ aspectRatio: `${photo.image.width} / ${photo.image.height}` }}
         onClick={() => onOpen(photo)}
       >
-        {active ? thumbnail : <noscript>{thumbnail}</noscript>}
+        {loading ? thumbnail : <noscript>{thumbnail}</noscript>}
       </PhotoButton>
       <HoverBox>
         <div className="title-date">
