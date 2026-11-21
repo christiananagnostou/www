@@ -1,6 +1,6 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
@@ -28,6 +28,27 @@ const date = new Intl.DateTimeFormat('en-US', {
 
 export default function FitnessActivities({ activities, totalCounts }: Props) {
   const [filter, setFilter] = useState<HomeActivityCategory | null>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  const fadeRef = useRef<HTMLSpanElement>(null)
+  useEffect(() => {
+    const list = listRef.current
+    const edge = fadeRef.current
+    if (!list || !edge) return
+
+    const updateFade = () => {
+      const range = list.scrollWidth - list.clientWidth
+      const remaining = range - list.scrollLeft
+      edge.style.opacity = range <= 0 || remaining <= 1 ? '0' : String(Math.min(1, remaining / (range * 0.1)))
+    }
+    updateFade()
+    const observer = new ResizeObserver(updateFade)
+    observer.observe(list)
+    list.addEventListener('scroll', updateFade, { passive: true })
+    return () => {
+      observer.disconnect()
+      list.removeEventListener('scroll', updateFade)
+    }
+  }, [activities, filter])
   if (!activities.length) return null
   const recent = (filter === null ? activities : activities.filter((a) => a.category === filter)).slice(
     0,
@@ -57,25 +78,28 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
         </div>
       </header>
       {recent.length === 0 && filter && <p>No {inlineLabel(filter)} activities recorded yet.</p>}
-      <ul key={filter} aria-label="Recent activities" tabIndex={0}>
-        {recent.map((activity) => {
-          const metric = (label: string) => activity.metrics.find((entry) => entry.label === label)
-          const distance = metric('Distance')
-          const sport = inlineLabel(activity.category)
-          const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
-          return (
-            <li key={activity.id}>
-              <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
-              <h3>
-                {distance ? `${distance.value} ${sport}` : labels[activity.category]}
-                {activity.distanceRank && <DistanceMedal rank={activity.distanceRank} sport={sport} />}
-              </h3>
-              {details.length > 0 && <p>{details.join(' · ')}</p>}
-            </li>
-          )
-        })}
-        <SeeAllActivitiesCard />
-      </ul>
+      <ScrollTrack>
+        <ul key={filter} ref={listRef} aria-label="Recent activities" tabIndex={0}>
+          {recent.map((activity) => {
+            const metric = (label: string) => activity.metrics.find((entry) => entry.label === label)
+            const distance = metric('Distance')
+            const sport = inlineLabel(activity.category)
+            const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
+            return (
+              <li key={activity.id}>
+                <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
+                <h3>
+                  {distance ? `${distance.value} ${sport}` : labels[activity.category]}
+                  {activity.distanceRank && <DistanceMedal rank={activity.distanceRank} sport={sport} />}
+                </h3>
+                {details.length > 0 && <p>{details.join(' · ')}</p>}
+              </li>
+            )
+          })}
+          <SeeAllActivitiesCard />
+        </ul>
+        <EdgeFade ref={fadeRef} aria-hidden="true" />
+      </ScrollTrack>
     </Log>
   )
 }
@@ -89,7 +113,7 @@ const Log = styled(m.section)`
 
   > header,
   > p,
-  > ul {
+  ul {
     padding-inline: 1rem;
   }
   header,
@@ -170,4 +194,17 @@ const Log = styled(m.section)`
   time {
     color: var(--text-dark);
   }
+`
+
+const ScrollTrack = styled.div`
+  position: relative;
+`
+
+const EdgeFade = styled.span`
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2rem;
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--dark-bg));
+  opacity: 0;
 `
