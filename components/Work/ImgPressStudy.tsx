@@ -5,17 +5,19 @@ import styled from 'styled-components'
 
 import type { ProjectType } from '../../lib/projects'
 import bayBike from '../../public/img/art/photography/bay_bike.jpg'
-import coit from '../../public/img/art/photography/coit.jpg'
 import goldenGate from '../../public/img/art/photography/golden_gate.jpg'
+import sonomaGrapes from '../../public/img/art/photography/sonoma_grapes_1.jpg'
+import sonomaTruck from '../../public/img/art/photography/sonoma_truck.jpg'
 import bayBikeExport from '../../public/img/projects/imgpress/bay-bike-export.jpg'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
 
-// Bytes on disk from one ImgPress batch: Shareable JPEG, 75% quality, 50% dimensions.
+// Bytes on disk using Shareable JPEG at 75% quality and 50% dimensions.
+const bikeSizes = { original: 177416, output: 64632 }
 const photos = [
-  { title: 'Bay Bike', image: bayBike, original: 177416, output: 64632 },
+  { title: 'Sonoma Truck', image: sonomaTruck, original: 208212, output: 74420 },
   { title: 'Golden Gate', image: goldenGate, original: 82211, output: 35465 },
-  { title: 'Coit', image: coit, original: 80417, output: 33968 },
+  { title: 'Sonoma Grapes 1', image: sonomaGrapes, original: 236723, output: 118177 },
 ]
 const kb = (bytes: number) => (bytes / 1000).toFixed(1) + ' kB'
 const total = photos.reduce(
@@ -47,11 +49,11 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
           <FileLabels>
             <div>
               <dt>Original</dt>
-              <dd>{kb(photos[0].original)}</dd>
+              <dd>{kb(bikeSizes.original)}</dd>
             </div>
             <div>
               <dt>Export</dt>
-              <dd>{kb(photos[0].output)}</dd>
+              <dd>{kb(bikeSizes.output)}</dd>
             </div>
           </FileLabels>
         </Comparison>
@@ -107,7 +109,7 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
         </div>
         <Image
           src={result}
-          alt="ImgPress reports that all three files converted, saving 206 kB, or 60.6%."
+          alt="ImgPress reports that all three files converted, saving 299 kB, or 56.7%."
           unoptimized
         />
       </Result>
