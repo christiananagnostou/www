@@ -1,16 +1,19 @@
 import * as m from 'framer-motion/m'
 import type { InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import type { CSSProperties } from 'react'
 
 import { fade, pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
+import ProjectCategoryNav from '../components/Work/ProjectCategoryNav'
 import ProjectInstrument from '../components/Work/ProjectInstrument'
 import { projectTheme } from '../components/Work/projectTheme'
 import ProjectHead from '../components/Work/ProjectHead'
 import styles from '../components/Work/ProjectsIndex.module.css'
 import { ProjectState } from '../lib/projects'
+import { getProjectCategory } from '../lib/projects/categories'
 import { getProjectsStructuredData, projectsDescription, projectsUrl } from '../lib/structured/projects'
 
 const featured = ['liftclub', 'jukebox']
@@ -43,10 +46,11 @@ export function getStaticProps() {
 
   return {
     props: {
-      projects: ordered.map(({ title, slug, date, summary, themeColor, meta }) => ({
+      projects: ordered.map(({ title, slug, date, summary, themeColor, meta, tags }) => ({
         title,
         slug,
         themeColor,
+        tags,
         medium: meta[0]?.value ?? '',
         year: date.replace(/^[A-Za-z]+ /, '').replace('-', '–'),
         description: shortDescriptions[slug] ?? summary,
@@ -58,6 +62,8 @@ export function getStaticProps() {
 
 export default function Projects({ projects, structured }: InferGetStaticPropsType<typeof getStaticProps>) {
   const pageTransitionInitial = usePageTransitionInitial()
+  const selected = getProjectCategory(useRouter().query.tag)
+  const visible = selected ? projects.filter(({ tags }) => tags.includes(selected)) : projects
   return (
     <>
       <ProjectHead
@@ -73,16 +79,17 @@ export default function Projects({ projects, structured }: InferGetStaticPropsTy
         initial={pageTransitionInitial}
         variants={pageAnimation}
       >
-        <Heading variants={fade}>
+        <Heading variants={fade} className={styles.heading}>
           <h1>Projects</h1>
           <p>
             The following showcase contains a selection of my work from freelance projects, past jobs, personal
             projects, and open-source. Carving and polishing this craft has been a passion of mine for over a decade and
             I&apos;ve had the pleasure of working with some amazing people and companies along the way.
           </p>
+          <ProjectCategoryNav selected={selected} />
         </Heading>
         <ul className={styles.list} aria-label="Projects">
-          {projects.map(({ title, slug, year, themeColor, description, medium }, index) => (
+          {visible.map(({ title, slug, year, themeColor, description, medium }, index) => (
             <li key={slug} style={{ ...projectTheme(themeColor), '--order': Math.min(index, 5) } as CSSProperties}>
               <Link className={styles.row} href={`/work/${slug}`} aria-labelledby={slug}>
                 <div className={styles.art}>

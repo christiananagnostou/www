@@ -1,4 +1,6 @@
 import type { StaticImageData } from 'next/image'
+
+import type { ProjectCategory } from './categories'
 // ImgPress
 import ImgPressPanel from '../../public/img/projects/imgpress/panel.webp'
 import ImgPressResult from '../../public/img/projects/imgpress/conversion.webp'
@@ -73,7 +75,7 @@ export interface ProjectType {
   title: string
   themeColor: `#${string}`
   date: string
-  tags: string[]
+  tags: ProjectCategory[]
   desktopImgs: StaticImageData[]
   mobileImgs: StaticImageData[]
   externalLink?: string
@@ -97,7 +99,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'npm',
     github: 'https://github.com/ChristianAnagnostou/skillbox',
     slug: 'skillbox',
-    themeColor: '#72c8b7',
+    themeColor: '#cf895d',
     summary: 'Local-first, agent-agnostic skills manager for AI coding agents',
     meta: [
       { label: 'Stack', value: 'TypeScript CLI' },

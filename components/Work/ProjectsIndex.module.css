@@ -6,6 +6,55 @@
   color: var(--text);
 }
 
+.heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+.heading p {
+  grid-column: 1 / -1;
+}
+.categories {
+  grid-area: 1 / 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.2rem;
+}
+.categories a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  line-height: 1.25;
+  text-decoration: none;
+}
+.categories a[aria-current] {
+  background: var(--accent);
+  color: var(--heading);
+}
+.categories a:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .categories a:hover {
+    background: var(--accent);
+    color: var(--heading);
+    text-decoration: none;
+  }
+}
+@media (width <= 600px) {
+  .categories {
+    grid-area: auto / 1 / auto / -1;
+    justify-content: flex-start;
+    margin-top: 1rem;
+  }
+}
+
 .list {
   list-style: none;
 }
