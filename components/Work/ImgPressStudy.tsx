@@ -1,23 +1,27 @@
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import type { ProjectType } from '../../lib/projects'
 import bayBike from '../../public/img/art/photography/bay_bike.jpg'
 import goldenGate from '../../public/img/art/photography/golden_gate.jpg'
-import sonomaGrapes from '../../public/img/art/photography/sonoma_grapes_1.jpg'
+import chess from '../../public/img/art/photography/hmb_chess.jpg'
 import sonomaTruck from '../../public/img/art/photography/sonoma_truck.jpg'
 import bayBikeExport from '../../public/img/projects/imgpress/bay-bike-export.jpg'
+import goldenGateExport from '../../public/img/projects/imgpress/golden_gate.jpg'
+import chessExport from '../../public/img/projects/imgpress/hmb_chess.jpg'
+import sonomaTruckExport from '../../public/img/projects/imgpress/sonoma_truck.jpg'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
 
 // Bytes on disk using Shareable JPEG at 75% quality and 50% dimensions.
-const bikeSizes = { original: 177416, output: 64632 }
+const featured = { title: 'Bay Bike', image: bayBike, exported: bayBikeExport, original: 177416, output: 64632 }
 const photos = [
-  { title: 'Sonoma Truck', image: sonomaTruck, original: 208212, output: 74420 },
-  { title: 'Golden Gate', image: goldenGate, original: 82211, output: 35465 },
-  { title: 'Sonoma Grapes 1', image: sonomaGrapes, original: 236723, output: 118177 },
+  { title: 'Sonoma Truck', image: sonomaTruck, exported: sonomaTruckExport, original: 208212, output: 74420 },
+  { title: 'Golden Gate', image: goldenGate, exported: goldenGateExport, original: 82211, output: 35465 },
+  { title: 'Half Moon Bay Chess', image: chess, exported: chessExport, original: 275977, output: 118433 },
 ]
 const kb = (bytes: number) => (bytes / 1000).toFixed(1) + ' kB'
 const total = photos.reduce(
@@ -27,6 +31,14 @@ const total = photos.reduce(
 
 export default function ImgPressStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
+  const [photo, setPhoto] = useState(featured)
+  const stage = useRef<HTMLElement>(null)
+  function compare(next: typeof featured) {
+    setPhoto(next)
+    stage.current?.focus({ preventScroll: true })
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    stage.current?.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'instant' : 'smooth' })
+  }
   const [panel, result] = project.desktopImgs
   const [batch, reflection] = project.details
   return (
@@ -37,23 +49,23 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
         <p>{project.summary}</p>
         <a href={project.github}>View source on GitHub</a>
       </header>
-      <Stage>
+      <Stage ref={stage} id="imgpress-comparison" tabIndex={-1} aria-label="Photo comparison">
         <Comparison>
           <Image
-            src={bayBike}
-            alt="Bay Bike at the waterfront, split between the original on the left and the ImgPress export on the right."
+            src={photo.image}
+            alt={`${photo.title}: original on the left, ImgPress export on the right.`}
             unoptimized
-            priority
+            priority={photo === featured}
           />
-          <Image src={bayBikeExport} alt="" className="export" unoptimized priority />
+          <Image src={photo.exported} alt="" className="export" unoptimized priority={photo === featured} />
           <FileLabels>
             <div>
               <dt>Original</dt>
-              <dd>{kb(bikeSizes.original)}</dd>
+              <dd>{kb(photo.original)}</dd>
             </div>
             <div>
               <dt>Export</dt>
-              <dd>{kb(bikeSizes.output)}</dd>
+              <dd>{kb(photo.output)}</dd>
             </div>
           </FileLabels>
         </Comparison>
@@ -66,6 +78,10 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
           />
         </a>
       </Stage>
+      <PhotoCaption>
+        <span aria-live="polite">{photo.title}</span>
+        {photo !== featured && <button onClick={() => compare(featured)}>Back to Bay Bike</button>}
+      </PhotoCaption>
       <section>
         <Copy>
           <h2>{batch.title}</h2>
@@ -80,16 +96,21 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
             </tr>
           </thead>
           <tbody>
-            {photos.map(({ title, image, original, output }) => (
-              <tr key={title}>
+            {photos.map((item) => (
+              <tr key={item.title}>
                 <th scope="row">
-                  <div>
-                    <Image src={image} alt="" width={50} height={50} />
-                    {title}
-                  </div>
+                  <button
+                    type="button"
+                    aria-pressed={item === photo}
+                    aria-controls="imgpress-comparison"
+                    onClick={() => compare(item)}
+                  >
+                    <Image src={item.image} alt="" width={50} height={50} />
+                    {item.title}
+                  </button>
                 </th>
-                <td>{kb(original)}</td>
-                <td>{kb(output)}</td>
+                <td>{kb(item.original)}</td>
+                <td>{kb(item.output)}</td>
               </tr>
             ))}
           </tbody>
@@ -109,7 +130,7 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
         </div>
         <Image
           src={result}
-          alt="ImgPress reports that all three files converted, saving 299 kB, or 56.7%."
+          alt="ImgPress reports that all three files converted, saving 338 kB, or 59.7%."
           unoptimized
         />
       </Result>
@@ -159,6 +180,14 @@ const Study = styled(m.article)`
     color: #b9d8ed;
     text-decoration-color: currentColor;
   }
+  button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
   a:focus-visible {
     outline: 2px solid #b9d8ed;
     outline-offset: 4px;
@@ -169,6 +198,7 @@ const Study = styled(m.article)`
 `
 
 const Stage = styled.figure`
+  scroll-margin-block: 1rem;
   --panel-width: min(48%, 17rem);
   --panel-inset: clamp(1rem, 5vw, 3rem);
   position: relative;
@@ -193,6 +223,18 @@ const Stage = styled.figure`
     height: auto;
     border-radius: var(--border-radius-md);
     box-shadow: 0 8px 24px #13384855;
+  }
+`
+const PhotoCaption = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-dark);
+  button {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 `
 const Comparison = styled.div`
@@ -265,12 +307,34 @@ const Files = styled.table`
   :where(th:first-child) {
     text-align: left;
   }
-  th div {
+  tbody tr {
+    position: relative;
+  }
+  th button {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: clamp(0.4rem, 2vw, 0.85rem);
+    text-align: left;
+    white-space: normal;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--text-dark);
+  }
+  th button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  th button:is(:hover, [aria-pressed='true']) {
+    color: #b9d8ed;
+    text-decoration-color: currentColor;
+  }
+  th button:focus-visible::after {
+    outline: 2px solid #b9d8ed;
+    outline-offset: -2px;
   }
   img {
+    flex-shrink: 0;
     display: block;
     width: 2.7rem;
     height: 2.7rem;

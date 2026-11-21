@@ -191,7 +191,7 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'Three photos from the Bay',
         description:
-          'I dropped these three photos from my gallery into ImgPress, picked Shareable JPEG, and set the resize slider to 50%. That kept the proportions and gave me smaller copies for sharing.',
+          'I ran these three gallery photos through Shareable JPEG at 50% dimensions. Pick a photo to see its original and export side by side.',
       },
       {
         title: 'Why show the sizes?',
