@@ -1,5 +1,5 @@
 .instrument {
-  --instrument-bg: color-mix(in srgb, var(--project-color) 15%, var(--dark-bg));
+  --instrument-bg: color-mix(in srgb, var(--project-color) 10%, var(--dark-bg));
   position: absolute;
   inset: 0;
   width: 100%;
