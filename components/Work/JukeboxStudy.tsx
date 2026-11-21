@@ -44,26 +44,10 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
           <span>Demo library</span>
         </figcaption>
       </Sleeve>
-      <Notes>
-        <section>
-          <h2>{importing.title}</h2>
-          <p>{importing.description}</p>
-        </section>
-        <section>
-          <h2>{keyboard.title}</h2>
-          <p>{keyboard.description}</p>
-          <Keys>
-            {controls.map(([key, action]) => (
-              <div key={key}>
-                <dt>
-                  <kbd>{key}</kbd>
-                </dt>
-                <dd>{action}</dd>
-              </div>
-            ))}
-          </Keys>
-        </section>
-      </Notes>
+      <Note>
+        <h2>{importing.title}</h2>
+        <p>{importing.description}</p>
+      </Note>
       <Listen>
         <div>
           <h2>{history.title}</h2>
@@ -75,6 +59,22 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
           alt="Most played in the demo library, with Side Two at the top of the list."
         />
       </Listen>
+      <Note>
+        <h2>{keyboard.title}</h2>
+        <div>
+          <p>{keyboard.description}</p>
+          <Keys>
+            {controls.map(([key, action]) => (
+              <div key={key}>
+                <dt>
+                  <kbd>{key}</kbd>
+                </dt>
+                <dd>{action}</dd>
+              </div>
+            ))}
+          </Keys>
+        </div>
+      </Note>
       <Remote>
         <div>
           <h2>{remote.title}</h2>
@@ -185,12 +185,15 @@ const Sleeve = styled.figure`
     font-size: 0.76rem;
   }
 `
-const Notes = styled.div`
+const Note = styled.section`
   display: grid;
-  gap: 2rem;
-  margin: clamp(2rem, 6vw, 3rem) 0;
+  gap: 0.7rem;
+  padding-block: clamp(2rem, 6vw, 3.25rem);
+  p {
+    margin: 0;
+  }
   @media (width >= 650px) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 13fr);
     gap: 2.5rem;
   }
 `
@@ -233,12 +236,7 @@ const Listen = styled.section`
     gap: 2rem;
   }
 `
-const Remote = styled.section`
-  display: grid;
-  align-items: center;
-  gap: 1.6rem;
-  padding: clamp(1.1rem, 4vw, 2rem);
-  margin-top: 1.5rem;
+const Remote = styled(Listen)`
   background: radial-gradient(ellipse at bottom right, #364554, #20252e 65%);
   border-radius: var(--border-radius-lg);
   figure {
@@ -248,8 +246,5 @@ const Remote = styled.section`
     border-radius: 22px;
     overflow: hidden;
     box-shadow: 0 12px 24px #11132066;
-  }
-  @media (width >= 650px) {
-    grid-template-columns: 1.1fr 1fr;
   }
 `
