@@ -1,5 +1,4 @@
 import * as m from 'framer-motion/m'
-import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -16,65 +15,59 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
   const app = project.externalLink!
 
   return (
-    <>
-      <Head>
-        <title>Lift Club | Christian Anagnostou</title>
-        <meta name="description" content={project.summary} />
-      </Head>
-      <Page initial={initial} variants={pageAnimation} animate="show" exit="exit">
-        <Back href="/projects">/ Projects</Back>
-        <Intro>
-          <h1>{project.title}</h1>
-          <p>{project.summary}</p>
-          <Actions>
-            <a href={app}>
-              Visit Lift Club <span aria-hidden="true">↗</span>
-            </a>
-            <a href={new URL('signup', app).href}>Sign up</a>
-          </Actions>
-        </Intro>
-        <Cover>
+    <Page initial={initial} variants={pageAnimation} animate="show" exit="exit">
+      <Back href="/projects">/ Projects</Back>
+      <Intro>
+        <h1>{project.title}</h1>
+        <p>{project.summary}</p>
+        <Actions>
+          <a href={app}>
+            Visit Lift Club <span aria-hidden="true">↗</span>
+          </a>
+          <a href={new URL('signup', app).href}>Sign up</a>
+        </Actions>
+      </Intro>
+      <Cover>
+        <Image
+          src={cover}
+          priority
+          sizes="(min-width: 800px) 768px, 95vw"
+          alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
+        />
+      </Cover>
+      <StoryNote {...origin} />
+      <Progress>
+        <div>
           <Image
-            src={cover}
-            priority
-            sizes="(min-width: 800px) 768px, 95vw"
-            alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
+            src={progress}
+            alt="Volume history for low cable crossover, with peaks and dips across sixteen months of training."
+            sizes="(min-width: 700px) 405px, 90vw"
           />
-        </Cover>
-        <Note>
-          <h2>{origin.title}</h2>
-          <p>{origin.description}</p>
-        </Note>
-        <Progress>
-          <div>
-            <Image
-              src={progress}
-              alt="Volume history for low cable crossover, with peaks and dips across sixteen months of training."
-              sizes="(min-width: 700px) 405px, 90vw"
-            />
-          </div>
-          <section>
-            <h2>{history.title}</h2>
-            <p>{history.description}</p>
-          </section>
-        </Progress>
-        <Note>
-          <h2>{community.title}</h2>
-          <p>{community.description}</p>
-        </Note>
-        <Cover>
-          <Image
-            src={communityCollage}
-            sizes="(min-width: 800px) 768px, 95vw"
-            alt="Two screens from the Lift Club demo: Christian follows George and Dobby, and George’s leg day opens in the workout feed."
-          />
-        </Cover>
-        <Note>
-          <h2>{today.title}</h2>
-          <p>{today.description}</p>
-        </Note>
-      </Page>
-    </>
+        </div>
+        <section>
+          <h2>{history.title}</h2>
+          <p>{history.description}</p>
+        </section>
+      </Progress>
+      <StoryNote {...community} />
+      <Cover>
+        <Image
+          src={communityCollage}
+          sizes="(min-width: 800px) 768px, 95vw"
+          alt="Two screens from the Lift Club demo: Christian follows George and Dobby, and George’s leg day opens in the workout feed."
+        />
+      </Cover>
+      <StoryNote {...today} />
+    </Page>
+  )
+}
+
+function StoryNote({ title, description }: ProjectType['details'][number]) {
+  return (
+    <Note>
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </Note>
   )
 }
 
@@ -135,9 +128,9 @@ const Actions = styled.div`
   font-size: 0.9rem;
   a:first-child {
     padding: 0.65rem 1rem;
-    border-radius: var(--border-radius-md);
-    background: var(--heading);
-    color: var(--body-bg);
+    border-radius: var(--border-radius-sm);
+    background: #4361ee;
+    color: #ffffff;
     text-decoration: none;
   }
 `
