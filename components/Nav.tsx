@@ -38,7 +38,8 @@ const NAV_LINKS: NavLinks = [
 
 const Nav: React.FC = () => {
   const router = useRouter()
-  const { pathname } = router
+  // Optional catch-all pages still belong to their index in the navigation and breadcrumbs.
+  const pathname = router.pathname.split('/[[...')[0]
 
   // Hide-on-scroll
   const [hidden, setHidden] = useState(false)

@@ -115,3 +115,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Verify photography share links before hydration
+        run: node --test tests/artRoutes.built.mjs

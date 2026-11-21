@@ -18,6 +18,23 @@ const getBaseUrl = () => {
 
 module.exports = {
   reactStrictMode: true,
+  images: {
+    // Keep Next's thumbnail widths and fill the gap between 384 and 640 on high-density phones.
+    imageSizes: [32, 48, 64, 96, 128, 256, 384, 544],
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/art',
+          has: [{ type: 'query', key: 'tag', value: '(?<photoCategory>[^/]+)' }],
+          destination: '/art/:photoCategory',
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    }
+  },
   env: {
     NEXT_PUBLIC_BASE_URL: getBaseUrl(), // available on client & server
   },

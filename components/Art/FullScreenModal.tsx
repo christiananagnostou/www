@@ -1,8 +1,9 @@
 import { AnimatePresence } from 'framer-motion'
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+
 import type { ArtImage } from '../../lib/art'
 import { formatPhotoDate } from '../../lib/art/formatPhotoDate'
 import LeftArrow from '../SVG/LeftArrow'
@@ -10,9 +11,8 @@ import RightArrow from '../SVG/RightArrow'
 
 interface FullscreenModalProps {
   images: ArtImage[]
-  currentIndex: number
+  initialIndex: number
   onClose: () => void
-  onNavigate: (newIndex: number) => void
 }
 
 const deltaX = 25
@@ -34,32 +34,39 @@ const imageVariants = {
   }),
 }
 
-const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex, onClose, onNavigate }) => {
+const FullscreenModal = ({ images, initialIndex, onClose }: FullscreenModalProps) => {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex)
   const image = images[currentIndex]
-  const formattedDate = formatPhotoDate(image.date) // e.g., "Jan '23"
+  const formattedDate = formatPhotoDate(image.date)
   const [direction, setDirection] = useState(0)
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowLeft') {
-        setDirection(-1)
-        onNavigate((currentIndex - 1 + images.length) % images.length)
-      } else if (e.key === 'ArrowRight') {
-        setDirection(1)
-        onNavigate((currentIndex + 1) % images.length)
-      }
-    },
-    [currentIndex, images.length, onClose, onNavigate]
-  )
+  const dialog = useRef<HTMLDialogElement>(null)
+  const navigate = (step: -1 | 1) => {
+    setDirection(step)
+    setCurrentIndex((current) => (current + step + images.length) % images.length)
+  }
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
+    const element = dialog.current
+    const opener = document.activeElement
+    element?.showModal()
+    return () => {
+      element?.close()
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true })
+    }
+  }, [])
 
   return (
-    <ModalOverlay>
+    <ModalOverlay
+      ref={dialog}
+      aria-label="Full screen photograph"
+      onCancel={onClose}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          event.preventDefault()
+          navigate(event.key === 'ArrowLeft' ? -1 : 1)
+        }
+      }}
+    >
       <AnimatePresence custom={direction} mode="wait">
         <MetadataArea
           key={currentIndex}
@@ -75,7 +82,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
       </AnimatePresence>
 
       <ImageArea>
-        <AnimatePresence custom={direction} mode="wait">
+        <AnimatePresence custom={direction}>
           <MotionImageContainer
             key={currentIndex}
             animate="animate"
@@ -87,24 +94,16 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
             <Image
               alt={`${image.title} - ${formattedDate}`}
               fill
-              quality={100}
-              sizes="100vw"
+              loading="eager"
+              sizes="(min-width: 800px) 800px, 100vw"
               src={image.image}
               style={{ objectFit: 'contain' }}
-              unoptimized
-              onClick={(e) => e.stopPropagation()}
             />
           </MotionImageContainer>
         </AnimatePresence>
       </ImageArea>
       <BottomBar>
-        <button
-          aria-label="Previous image"
-          onClick={() => {
-            setDirection(-1)
-            onNavigate((currentIndex - 1 + images.length) % images.length)
-          }}
-        >
+        <button aria-label="Previous image" onClick={() => navigate(-1)}>
           <LeftArrow />
         </button>
         <button aria-label="Close full screen view" onClick={onClose}>
@@ -120,13 +119,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
             <path d="m289.94 256 95-95A24 24 0 0 0 351 127l-95 95-95-95a24 24 0 0 0-34 34l95 95-95 95a24 24 0 1 0 34 34l95-95 95 95a24 24 0 0 0 34-34z" />
           </svg>
         </button>
-        <button
-          aria-label="Next image"
-          onClick={() => {
-            setDirection(1)
-            onNavigate((currentIndex + 1) % images.length)
-          }}
-        >
+        <button aria-label="Next image" onClick={() => navigate(1)}>
           <RightArrow />
         </button>
       </BottomBar>
@@ -136,13 +129,26 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({ images, currentIndex,
 
 export default FullscreenModal
 
-const ModalOverlay = styled.div`
+const ModalOverlay = styled.dialog`
   position: fixed;
-  z-index: 10000;
-  display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
   background: rgb(0 0 0 / 95%);
   inset: 0;
+
+  &[open] {
+    display: flex;
+  }
+
+  &::backdrop {
+    background: transparent;
+  }
 `
 
 const ImageArea = styled.div`

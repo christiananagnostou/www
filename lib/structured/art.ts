@@ -1,7 +1,7 @@
 import { SortedArtImages } from '../art'
 import { BASE_URL } from '../constants'
 
-export const getArtStructuredData = () => {
+export const getArtStructuredData = (images = SortedArtImages) => {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -10,7 +10,7 @@ export const getArtStructuredData = () => {
     url: `${BASE_URL}/art`,
     mainEntity: {
       '@type': 'ItemList',
-      itemListElement: SortedArtImages.map((img, index) => ({
+      itemListElement: images.map((img, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         item: {
