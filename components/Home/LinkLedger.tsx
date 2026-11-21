@@ -19,7 +19,9 @@ export default function LinkLedger() {
 const Ledger = styled(m.footer)`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  width: 100%;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
   background: var(--dark-bg);
@@ -27,10 +29,8 @@ const Ledger = styled(m.footer)`
     outline: 2px solid var(--text);
     outline-offset: -2px;
   }
-  @media (width > 1024px) {
-    align-self: center;
-    width: fit-content;
-    max-width: 100%;
+  @media (width < 390px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 `
 
@@ -39,12 +39,11 @@ const Profiles = styled.nav`
   place-items: center;
   padding: 0 0.5rem;
   border-left: 1px solid var(--accent);
-  ul {
-    flex-direction: column;
+  @media (width <= 480px) {
+    padding: 0;
   }
-  @media (width > 1024px) {
-    ul {
-      flex-direction: row;
-    }
+  @media (width < 390px) {
+    border-left: 0;
+    border-top: 1px solid var(--accent);
   }
 `

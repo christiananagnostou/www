@@ -131,40 +131,23 @@ const Log = styled(m.section)`
     color: var(--heading);
   }
   ul {
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.75rem;
     overflow-x: auto;
     list-style: none;
     margin: 0;
-    padding: 0.25rem 0.5rem 0.5rem 0;
+    padding: 0;
   }
   li {
-    flex: 0 0 10rem;
+    flex: 0 0 9rem;
   }
   h3 {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     margin: 0.35rem 0;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
-  }
-  @media (width <= 1024px) {
-    li:first-child h3 {
-      font-size: 1.15rem;
-    }
-  }
-  @media (width > 1024px) {
-    ul {
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0;
-    }
-    li {
-      flex-basis: 9rem;
-    }
-    h3 {
-      font-size: 0.95rem;
-    }
   }
   h3 svg {
     flex: none;

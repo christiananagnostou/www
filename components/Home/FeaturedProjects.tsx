@@ -64,30 +64,28 @@ export default function FeaturedProjects() {
 }
 
 const ProjectList = styled(m.nav)`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1.25rem;
   min-width: 0;
-  padding: 0 1rem;
+  padding: 0.25rem 1rem;
 
   a {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    min-height: 2.75rem;
+    min-height: max(44px, 2.75rem);
     font-size: 0.9rem;
     color: var(--heading);
     text-underline-offset: 0.22em;
   }
-  a + a {
-    border-top: 1px solid var(--accent);
-  }
-  @media (width > 1024px) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 1.25rem;
-    padding-block: 0.25rem;
-    a + a {
-      border-top: 0;
+  @media (width <= 480px) {
+    column-gap: 0.375rem;
+    padding-inline: 0.25rem;
+    a {
+      gap: 0.2rem;
     }
   }
   img,
