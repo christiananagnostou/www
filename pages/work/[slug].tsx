@@ -1,5 +1,4 @@
 import * as m from 'framer-motion/m'
-import Head from 'next/head'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
@@ -8,9 +7,12 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
+import LiftClubStudy from '../../components/Work/LiftClubStudy'
+import ProjectHead from '../../components/Work/ProjectHead'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
+import { projectMetadata } from '../../lib/structured/projects'
 
 interface Props {
   project: ProjectType
@@ -35,7 +37,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return { props: { project } }
 }
 
-const SingleProject = ({ project }: Props) => {
+const SingleProject = ({ project }: Props) => (
+  <>
+    <ProjectHead {...projectMetadata(project)} />
+    {project.slug === 'liftclub' ? <LiftClubStudy project={project} /> : <DefaultProject project={project} />}
+  </>
+)
+
+const DefaultProject = ({ project }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)
@@ -45,93 +54,85 @@ const SingleProject = ({ project }: Props) => {
   const projectDetails = getProjectDetails(project)
 
   return (
-    <>
-      <Head>
-        <title>{project.title} | Christian Anagnostou</title>
-        <meta content={project.summary} name="description" />
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-      </Head>
+    <Container
+      animate="show"
+      exit="exit"
+      initial={pageTransitionInitial}
+      style={{ '--project-accent': accent } as CSSProperties}
+      variants={pageAnimation}
+    >
+      <BackLink href="/projects">Projects</BackLink>
 
-      <Container
-        animate="show"
-        exit="exit"
-        initial={pageTransitionInitial}
-        style={{ '--project-accent': accent } as CSSProperties}
-        variants={pageAnimation}
-      >
-        <BackLink href="/projects">Projects</BackLink>
+      <Hero variants={staggerFade}>
+        <HeroCopy variants={fade}>
+          <ProjectKicker>
+            <span>{project.date}</span>
+          </ProjectKicker>
 
-        <Hero variants={staggerFade}>
-          <HeroCopy variants={fade}>
-            <ProjectKicker>
-              <span>{project.date}</span>
-            </ProjectKicker>
+          <h1>{project.title}</h1>
+          <p>{project.summary}</p>
 
-            <h1>{project.title}</h1>
-            <p>{project.summary}</p>
+          {projectLinks.length > 0 ? (
+            <ActionRow aria-label={`${project.title} links`}>
+              {projectLinks.map(({ href, label }) => (
+                <a key={label} href={href} rel="noreferrer" target="_blank">
+                  {label}
+                </a>
+              ))}
+            </ActionRow>
+          ) : null}
+        </HeroCopy>
+      </Hero>
 
-            {projectLinks.length > 0 ? (
-              <ActionRow aria-label={`${project.title} links`}>
-                {projectLinks.map(({ href, label }) => (
-                  <a key={label} href={href} rel="noreferrer" target="_blank">
-                    {label}
-                  </a>
-                ))}
-              </ActionRow>
-            ) : null}
-          </HeroCopy>
-        </Hero>
+      {primaryImage ? (
+        <FeaturedMedia variants={fade}>
+          <ProjectImage alt={`${project.title} project preview`} image={primaryImage} priority />
+        </FeaturedMedia>
+      ) : null}
 
-        {primaryImage ? (
-          <FeaturedMedia variants={fade}>
-            <ProjectImage alt={`${project.title} project preview`} image={primaryImage} priority />
-          </FeaturedMedia>
-        ) : null}
+      {project.showcase ? <CliShowcase showcase={project.showcase} /> : null}
 
-        {project.showcase ? <CliShowcase showcase={project.showcase} /> : null}
+      <BodyGrid $hasMedia={hasMedia}>
+        <Details variants={staggerFade}>
+          {projectDetails.map(({ title, description }) => (
+            <Detail key={title} description={description} title={title} />
+          ))}
+        </Details>
 
-        <BodyGrid $hasMedia={hasMedia}>
-          <Details variants={staggerFade}>
-            {projectDetails.map(({ title, description }) => (
-              <Detail key={title} description={description} title={title} />
-            ))}
-          </Details>
+        <ProjectMeta variants={fade}>
+          {project.meta.map(({ label, value }) => (
+            <MetaItem key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+            </MetaItem>
+          ))}
+        </ProjectMeta>
+      </BodyGrid>
 
-          <ProjectMeta variants={fade}>
-            {project.meta.map(({ label, value }) => (
-              <MetaItem key={label}>
-                <span>{label}</span>
-                <strong>{value}</strong>
-              </MetaItem>
-            ))}
-          </ProjectMeta>
-        </BodyGrid>
+      {hasMedia ? (
+        <MediaSection aria-label={`${project.title} screenshots`} variants={staggerFade}>
+          {supportingDesktopImages.length > 0 ? (
+            <WideGallery>
+              {supportingDesktopImages.map((image, i) => (
+                <GalleryImage key={image.src} variants={fade}>
+                  <ProjectImage alt={`${project.title} desktop screenshot ${i + 2}`} image={image} />
+                </GalleryImage>
+              ))}
+            </WideGallery>
+          ) : null}
 
-        {hasMedia ? (
-          <MediaSection aria-label={`${project.title} screenshots`} variants={staggerFade}>
-            {supportingDesktopImages.length > 0 ? (
-              <WideGallery>
-                {supportingDesktopImages.map((image, i) => (
-                  <GalleryImage key={image.src} variants={fade}>
-                    <ProjectImage alt={`${project.title} desktop screenshot ${i + 2}`} image={image} />
-                  </GalleryImage>
-                ))}
-              </WideGallery>
-            ) : null}
-
-            {project.mobileImgs.length > 0 ? (
-              <PhoneGallery>
-                {project.mobileImgs.map((image, i) => (
-                  <PhoneFrame key={image.src} variants={fade}>
-                    <ProjectImage alt={`${project.title} mobile screenshot ${i + 1}`} image={image} />
-                  </PhoneFrame>
-                ))}
-              </PhoneGallery>
-            ) : null}
-          </MediaSection>
-        ) : null}
-      </Container>
-    </>
+          {project.mobileImgs.length > 0 ? (
+            <PhoneGallery>
+              {project.mobileImgs.map((image, i) => (
+                <PhoneFrame key={image.src} variants={fade}>
+                  <ProjectImage alt={`${project.title} mobile screenshot ${i + 1}`} image={image} />
+                </PhoneFrame>
+              ))}
+            </PhoneGallery>
+          ) : null}
+        </MediaSection>
+      ) : null}
+    </Container>
   )
 }
 

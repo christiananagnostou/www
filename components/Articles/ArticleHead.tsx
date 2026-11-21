@@ -23,10 +23,10 @@ const ArticleHead = ({ post, prevArticle, nextArticle }: ArticleHeadProps) => {
       <link href={PageUrl} rel="canonical" />
 
       {/* Open Graph tags */}
-      <meta content="article" property="og:type" />
-      <meta content={PageUrl} property="og:url" />
-      <meta content={PageTitle} property="og:title" />
-      <meta content={summary} property="og:description" />
+      <meta key="og:type" content="article" property="og:type" />
+      <meta key="og:url" content={PageUrl} property="og:url" />
+      <meta key="og:title" content={PageTitle} property="og:title" />
+      <meta key="og:description" content={summary} property="og:description" />
       {coverImg ? <meta content={coverImg} property="og:image" /> : null}
 
       {dateCreated ? <meta content={dayjs(dateCreated).toISOString()} property="article:published_time" /> : null}

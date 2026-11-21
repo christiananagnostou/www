@@ -28,10 +28,9 @@ import SentfillWheel from '../../public/img/projects/scentfill/wheel.webp'
 import ElectriqHeroMain from '../../public/img/projects/electriq-home/hero-main.png'
 import ElectriqWebsite from '../../public/img/projects/electriq-home/homepage-composed.webp'
 // Lift Club
-import LiftClubMain from '../../public/img/projects/liftclub/liftclub-main.jpeg'
-import LiftClubPurpose from '../../public/img/projects/liftclub/liftclub-purpose.png'
-import LiftClubUserProfile from '../../public/img/projects/liftclub/user-profile.png'
-import LiftClubLog from '../../public/img/projects/liftclub/workout-log-2.png'
+import LiftClubMain from '../../public/img/projects/liftclub/hero.webp'
+import LiftClubCommunity from '../../public/img/projects/liftclub/community.webp'
+import LiftClubProgress from '../../public/img/projects/liftclub/progress.webp'
 // Photo Shop
 import PhotoDesktop1 from '../../public/img/projects/awildchristian/desktop1.jpg'
 import PhotoDesktop2 from '../../public/img/projects/awildchristian/desktop2.jpg'
@@ -442,37 +441,36 @@ export const ProjectState: ProjectType[] = [
     title: 'Lift Club',
     date: 'Apr 2021',
     tags: ['personal'],
-    desktopImgs: [LiftClubMain, LiftClubPurpose],
-    mobileImgs: [LiftClubUserProfile, LiftClubLog],
-    externalLink: 'https://liftclub.app/',
-    github: 'https://github.com/ChristianAnagnostou/liftclub',
+    desktopImgs: [LiftClubMain, LiftClubCommunity],
+    mobileImgs: [LiftClubProgress],
+    externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
-    summary: 'Track your workout progress with little effort and gain big insights',
+    summary:
+      'I started Lift Club in 2021 as a workout log for my cousin George and me. These days, more than 100 people use it, including a lot of our family and friends.',
     meta: [
-      { label: 'Stack', value: 'TypeScript / PWA' },
-      { label: 'Focus', value: 'Workout tracking' },
-      { label: 'Model', value: 'Social fitness app' },
+      { label: 'Format', value: 'Installable web app' },
+      { label: 'Focus', value: 'Strength training' },
     ],
     details: [
       {
-        title: 'Purpose',
+        title: 'Why I built it',
         description:
-          'Lift club is a social fitness app that gives you the power to find well structured workouts and track your progress as you improve.',
+          'I wanted to stop writing down every exercise by hand, so I built a log that remembered our last workout. George has pitched in along the way, from writing part of the workout guide to adding an option to see when an exercise was last saved.',
       },
       {
-        title: 'Join',
+        title: 'Looking back at a lift',
         description:
-          'Best experienced as a lightweight PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.',
+          'The log is still the part I built everything around. It shows my last set while I’m entering the next one. The chart gives me the longer view: I can look at a single exercise over a few months instead of flipping back through pages of notes.',
       },
       {
-        title: 'Features',
+        title: 'The club part',
         description:
-          'Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.',
+          'When George logs a workout, it shows up in my feed. I can open his leg day and see exactly what he did. That’s still my favorite part: recognizing the person behind a workout.',
       },
       {
-        title: 'Documentation',
+        title: 'Why I keep working on it',
         description:
-          'Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.',
+          'Lift Club is profitable now, which is pretty cool for something that started with the two of us. A few people have emailed me to say they like using it and ask if I could change one thing. I like getting those emails. They give me a reason to open the project back up and make it a little better for the people who use it.',
       },
     ],
   },

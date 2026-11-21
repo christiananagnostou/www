@@ -46,10 +46,10 @@ const Articles = ({ posts }: Props) => {
         <link href={PageUrl} rel="canonical" />
 
         {/* Open Graph / Facebook */}
-        <meta content={PageTitle} property="og:title" />
-        <meta content={PageDescription} property="og:description" />
-        <meta content={PageUrl} property="og:url" />
-        <meta content="website" property="og:type" />
+        <meta key="og:title" content={PageTitle} property="og:title" />
+        <meta key="og:description" content={PageDescription} property="og:description" />
+        <meta key="og:url" content={PageUrl} property="og:url" />
+        <meta key="og:type" content="website" property="og:type" />
         {/* <meta property="og:image" content={`${BASE_URL}/og-image.jpg`} /> */}
 
         {/* Twitter */}

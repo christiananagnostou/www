@@ -131,7 +131,9 @@ const Nav: React.FC = () => {
       {/* Structured Data for Navigation */}
       <script dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} type="application/ld+json" />
       {/* Breadcrumb structured data */}
-      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} type="application/ld+json" />
+      {breadcrumbData.itemListElement.length > 1 && (
+        <script dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} type="application/ld+json" />
+      )}
 
       <StyledNav
         aria-label="Main Navigation"

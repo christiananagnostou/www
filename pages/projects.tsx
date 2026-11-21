@@ -1,48 +1,26 @@
 import * as m from 'framer-motion/m'
-import Head from 'next/head'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
+import ProjectHead from '../components/Work/ProjectHead'
 import ProjectTile from '../components/Work/ProjectTile'
-import { BASE_URL } from '../lib/constants'
 import { ProjectState } from '../lib/projects'
-import { getProjectsStructuredData } from '../lib/structured/projects'
+import { getProjectsStructuredData, projectsUrl, projectsDescription } from '../lib/structured/projects'
 
 const PageTitle = 'Projects | Christian Anagnostou'
-const PageDescription = 'A showcase of freelance, personal, and open-source projects by Christian Anagnostou.'
 
 export default function Projects() {
   const pageTransitionInitial = usePageTransitionInitial()
 
   return (
     <>
-      <Head>
-        <title>{PageTitle}</title>
-        <meta content={PageDescription} name="description" />
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="index, follow" name="robots" />
-        <meta content="Christian Anagnostou" name="author" />
-        <meta content="projects, portfolio, freelance, personal, open-source, Christian Anagnostou" name="keywords" />
-        <link href={`${BASE_URL}/projects`} rel="canonical" />
-
-        {/* Open Graph */}
-        <meta content="website" property="og:type" />
-        <meta content={PageTitle} property="og:title" />
-        <meta content={PageDescription} property="og:description" />
-        <meta content={`${BASE_URL}/projects`} property="og:url" />
-
-        {/* Twitter Card */}
-        <meta content="summary_large_image" name="twitter:card" />
-        <meta content={PageTitle} name="twitter:title" />
-        <meta content={PageDescription} name="twitter:description" />
-
-        {/* Structured Data */}
-        <script
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(getProjectsStructuredData()) }}
-          type="application/ld+json"
-        />
-      </Head>
+      <ProjectHead
+        title={PageTitle}
+        description={projectsDescription}
+        url={projectsUrl}
+        structured={getProjectsStructuredData(ProjectState)}
+      />
 
       <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
         <Heading variants={fade}>

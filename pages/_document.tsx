@@ -1,7 +1,7 @@
 import type { DocumentContext } from 'next/document'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
-import { BASE_URL, X_HANDLE } from '../lib/constants'
+import { X_HANDLE } from '../lib/constants'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -44,13 +44,8 @@ class MyDocument extends Document {
 
           <meta content="Christian Anagnostou" property="og:site_name" />
           <meta content="en_US" property="og:locale" />
-          <meta content="website" property="og:type" />
-          <meta content="Christian Anagnostou" property="og:title" />
-          <meta content="Christian Anagnostou's personal website" property="og:description" />
-          <meta content={BASE_URL} property="og:url" />
 
           <meta content={X_HANDLE} name="twitter:site" />
-          <meta content="index,follow" name="robots" />
         </Head>
         <body>
           <Main />

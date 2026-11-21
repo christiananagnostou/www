@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { NavLinks } from '../../components/Nav'
-import { BASE_URL } from '../constants'
+import { SITE_ORIGIN } from '../constants'
 import { getBreadcrumbStructuredData } from './breadcrumbs'
 
 // Helper function to generate expected BreadcrumbList structured data
@@ -18,7 +18,7 @@ const getExpectedBreadcrumbList = (items: Array<{ name: string; item: string }>)
 // Mock data constants
 const HOME_ITEM = {
   name: 'Home',
-  item: `${BASE_URL}/`,
+  item: `${SITE_ORIGIN}/`,
 }
 
 const MOCK_NAV_LINKS: NavLinks = [
@@ -44,12 +44,12 @@ const breadcrumbTestCases = [
   {
     description: 'includes "Home" and the active top-level link for a matching pathname',
     pathname: '/about',
-    expectedItems: [HOME_ITEM, { name: 'About', item: `${BASE_URL}/about` }],
+    expectedItems: [HOME_ITEM, { name: 'About', item: `${SITE_ORIGIN}/about` }],
   },
   {
     description: 'includes "Home" and the active sublink for a matching sublink pathname',
     pathname: '/services/consulting',
-    expectedItems: [HOME_ITEM, { name: 'Consulting', item: `${BASE_URL}/services/consulting` }],
+    expectedItems: [HOME_ITEM, { name: 'Consulting', item: `${SITE_ORIGIN}/services/consulting` }],
   },
   {
     description: 'returns only "Home" when pathname does not match any navLinks or sublinks',
