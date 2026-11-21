@@ -504,6 +504,29 @@ const STYLESHEET = /*css*/ `
     if (existing) existing.remove()
   }
 
+  const renderItems = (entries) =>
+    entries
+      .map(
+        ({ item, index }) => /*html*/ `
+          <div class="tcdb-scout-item">
+            <div class="tcdb-scout-info">
+              <div class="tcdb-scout-title" title="${item.title}">
+                ${item.title}${item.serial ? `<span class="tcdb-scout-serial">${item.serial}</span>` : EMPTY_STRING}
+              </div>
+              ${item.variant ? `<div class="tcdb-scout-variant">${item.variant}</div>` : EMPTY_STRING}
+              <div class="tcdb-scout-status">
+                <span class="tcdb-scout-status-text">${item.status.label}</span>
+              </div>
+            </div>
+            <div class="tcdb-scout-actions">
+              <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
+              <button class="tcdb-scout-btn" data-action="open-sold" data-index="${index}">Sold</button>
+            </div>
+          </div>
+        `
+      )
+      .join('')
+
   const render = () => {
     removeOverlay()
     ensureStyles()
@@ -619,29 +642,6 @@ const STYLESHEET = /*css*/ `
       const extra = visibleCount === items.length ? '' : ` (of ${items.length} item${totalSuffix})`
       countLabel.textContent = `${visibleCount} item${suffix} found${extra}`
     }
-
-    const renderItems = (entries) =>
-      entries
-        .map(
-          ({ item, index }) => /*html*/ `
-            <div class="tcdb-scout-item">
-              <div class="tcdb-scout-info">
-                <div class="tcdb-scout-title" title="${item.title}">
-                  ${item.title}${item.serial ? `<span class="tcdb-scout-serial">${item.serial}</span>` : EMPTY_STRING}
-                </div>
-                ${item.variant ? `<div class="tcdb-scout-variant">${item.variant}</div>` : EMPTY_STRING}
-                <div class="tcdb-scout-status">
-                  <span class="tcdb-scout-status-text">${item.status.label}</span>
-                </div>
-              </div>
-              <div class="tcdb-scout-actions">
-                <button class="tcdb-scout-btn" data-action="open-active" data-index="${index}">Active</button>
-                <button class="tcdb-scout-btn" data-action="open-sold" data-index="${index}">Sold</button>
-              </div>
-            </div>
-          `
-        )
-        .join('')
 
     const updateList = (entries, query, status) => {
       currentEntries = entries

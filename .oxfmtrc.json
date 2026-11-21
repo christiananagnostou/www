@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["next-env.d.ts"],
   "printWidth": 120,
   "tabWidth": 2,
   "useTabs": false,
