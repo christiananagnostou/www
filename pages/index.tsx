@@ -89,11 +89,6 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           <LinkLedger />
 
-          {/* <FlexWrap>
-            <LabLink />
-            <Signature />
-          </FlexWrap> */}
-
           {/* <TVBar onBarFilled={setShowRevealBar} /> */}
         </div>
       </Container>
