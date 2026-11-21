@@ -45,7 +45,7 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
         </div>
         <Image
           src={progress}
-          alt="Volume history for low cable crossover, with peaks and dips across sixteen months of training."
+          alt="Low cable crossover training volume trends upward across 37 sessions, peaking at 1,620 kg."
           sizes="(min-width: 650px) 405px, calc(100vw - 64px)"
         />
       </Progress>
@@ -186,7 +186,7 @@ const Progress = styled.section`
   padding: clamp(1rem, 3vw, 1.6rem);
   border-radius: var(--border-radius-lg);
   img {
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
   }
   p {
     margin-top: 0.8rem;
