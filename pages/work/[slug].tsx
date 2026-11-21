@@ -1,5 +1,4 @@
 import * as m from 'framer-motion/m'
-import Head from 'next/head'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
@@ -9,9 +8,11 @@ import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
 import LiftClubStudy from '../../components/Work/LiftClubStudy'
+import ProjectHead from '../../components/Work/ProjectHead'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
+import { projectMetadata } from '../../lib/structured/projects'
 
 interface Props {
   project: ProjectType
@@ -38,11 +39,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const SingleProject = ({ project }: Props) => (
   <>
-    <Head>
-      <title>{project.title} | Christian Anagnostou</title>
-      <meta content={project.summary} name="description" />
-      <meta content="width=device-width, initial-scale=1" name="viewport" />
-    </Head>
+    <ProjectHead {...projectMetadata(project)} />
     {project.slug === 'liftclub' ? <LiftClubStudy project={project} /> : <DefaultProject project={project} />}
   </>
 )

@@ -55,10 +55,10 @@ const Art = () => {
         <meta content="index, follow" name="robots" />
         <meta content="art, photography, gallery, Christian Anagnostou" name="keywords" />
         {/* Open Graph */}
-        <meta content="website" property="og:type" />
-        <meta content={PageTitle} property="og:title" />
-        <meta content={PageDescription} property="og:description" />
-        <meta content={PageUrl} property="og:url" />
+        <meta key="og:type" content="website" property="og:type" />
+        <meta key="og:title" content={PageTitle} property="og:title" />
+        <meta key="og:description" content={PageDescription} property="og:description" />
+        <meta key="og:url" content={PageUrl} property="og:url" />
         {ogImage ? <meta content={ogImage} property="og:image" /> : null}
         {/* Twitter Card */}
         <meta content="summary_large_image" name="twitter:card" />

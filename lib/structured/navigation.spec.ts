@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { NavLinks } from '../../components/Nav'
-import { BASE_URL } from '../constants'
+import { SITE_ORIGIN } from '../constants'
 import { getSiteNavigationStructuredData } from './navigation'
 
 const BASE_STRUCTURE = {
@@ -19,7 +19,7 @@ describe('getSiteNavigationStructuredData', () => {
         {
           '@type': 'WebPage',
           name: 'Home',
-          url: `${BASE_URL}/`,
+          url: `${SITE_ORIGIN}/`,
         },
       ],
     })
@@ -38,7 +38,7 @@ describe('getSiteNavigationStructuredData', () => {
             {
               '@type': 'WebPage',
               name: 'Product 1',
-              url: `${BASE_URL}/products/1`,
+              url: `${SITE_ORIGIN}/products/1`,
             },
           ],
         },
@@ -59,7 +59,7 @@ describe('getSiteNavigationStructuredData', () => {
             {
               '@type': 'WebPage',
               name: 'Post 1',
-              url: `${BASE_URL}/blog/1`,
+              url: `${SITE_ORIGIN}/blog/1`,
             },
           ],
         },
@@ -105,7 +105,7 @@ describe('getSiteNavigationStructuredData', () => {
         {
           '@type': 'WebPage',
           name: 'Home',
-          url: `${BASE_URL}/`,
+          url: `${SITE_ORIGIN}/`,
         },
         {
           '@type': 'WebPage',
@@ -114,19 +114,19 @@ describe('getSiteNavigationStructuredData', () => {
             {
               '@type': 'WebPage',
               name: 'Product 1',
-              url: `${BASE_URL}/products/1`,
+              url: `${SITE_ORIGIN}/products/1`,
             },
             {
               '@type': 'WebPage',
               name: 'Product 2',
-              url: `${BASE_URL}/products/2`,
+              url: `${SITE_ORIGIN}/products/2`,
             },
           ],
         },
         {
           '@type': 'WebPage',
           name: 'About',
-          url: `${BASE_URL}/about`,
+          url: `${SITE_ORIGIN}/about`,
         },
       ],
     })

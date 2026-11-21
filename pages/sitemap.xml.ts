@@ -2,8 +2,7 @@ import dayjs from 'dayjs'
 import type { GetServerSideProps } from 'next'
 import type { ArticleType } from '../lib/articles'
 import { getAllPosts } from '../lib/articles'
-import { BASE_URL } from '../lib/constants'
-import type { ProjectType } from '../lib/projects'
+import { SITE_ORIGIN } from '../lib/constants'
 import { ProjectState } from '../lib/projects'
 
 /**
@@ -11,11 +10,9 @@ import { ProjectState } from '../lib/projects'
  */
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let articles: ArticleType[] = []
-  let projects: ProjectType[] = []
 
   try {
     articles = getAllPosts({ allowNoList: true })
-    projects = ProjectState
   } catch (err) {
     console.error('Failed to build sitemap:', err)
   }
@@ -37,15 +34,18 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     lastmod: a.dateCreated ? dayjs(a.dateCreated).toISOString() : now,
   }))
 
-  const projectRoutes = projects.map((p) => ({
+  const projectRoutes = ProjectState.map((p) => ({
     path: `/work/${p.slug}`,
-    lastmod: p.date ? dayjs(p.date).toISOString() : now,
+    lastmod: undefined,
   }))
 
   const allRoutes = [...staticRoutes, ...articleRoutes, ...projectRoutes]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${allRoutes
-    .map((r) => `  <url>\n    <loc>${BASE_URL}${r.path}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n  </url>`)
+    .map(
+      (r) =>
+        `  <url>\n    <loc>${SITE_ORIGIN}${r.path}</loc>${r.lastmod ? `\n    <lastmod>${r.lastmod}</lastmod>` : ''}\n  </url>`
+    )
     .join('\n')}\n</urlset>`
 
   res.setHeader('Content-Type', 'application/xml')

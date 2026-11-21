@@ -59,10 +59,10 @@ const Home = ({ posts, fitnessActivities }: Props) => {
         />
 
         {/* Open Graph */}
-        <meta content="website" property="og:type" />
-        <meta content="Christian Anagnostou" property="og:title" />
-        <meta content="Christian Anagnostou's Web Portfolio" property="og:description" />
-        <meta content={BASE_URL} property="og:url" />
+        <meta key="og:type" content="website" property="og:type" />
+        <meta key="og:title" content="Christian Anagnostou" property="og:title" />
+        <meta key="og:description" content="Christian Anagnostou's Web Portfolio" property="og:description" />
+        <meta key="og:url" content={BASE_URL} property="og:url" />
 
         {/* Twitter Card */}
         <meta content="summary_large_image" name="twitter:card" />

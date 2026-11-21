@@ -1,5 +1,5 @@
 import type { NavLinks } from '../../components/Nav'
-import { BASE_URL } from '../constants'
+import { SITE_ORIGIN } from '../constants'
 
 export const getSiteNavigationStructuredData = (links: NavLinks) => {
   return {
@@ -16,7 +16,7 @@ export const getSiteNavigationStructuredData = (links: NavLinks) => {
             hasPart: cat.subLinks.map((sub) => ({
               '@type': 'WebPage',
               name: sub.title,
-              url: BASE_URL + sub.href,
+              url: SITE_ORIGIN + sub.href,
             })),
           }
         }
@@ -25,7 +25,7 @@ export const getSiteNavigationStructuredData = (links: NavLinks) => {
           return {
             '@type': 'WebPage',
             name: cat.title,
-            url: BASE_URL + cat.href,
+            url: SITE_ORIGIN + cat.href,
           }
         }
         return null

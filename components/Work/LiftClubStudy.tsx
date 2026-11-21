@@ -37,17 +37,15 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
       </Cover>
       <StoryNote {...origin} />
       <Progress>
-        <div>
-          <Image
-            src={progress}
-            alt="Volume history for low cable crossover, with peaks and dips across sixteen months of training."
-            sizes="(min-width: 700px) 405px, 90vw"
-          />
-        </div>
-        <section>
+        <div className="progress-copy">
           <h2>{history.title}</h2>
           <p>{history.description}</p>
-        </section>
+        </div>
+        <Image
+          src={progress}
+          alt="Volume history for low cable crossover, with peaks and dips across sixteen months of training."
+          sizes="(min-width: 650px) 405px, calc(100vw - 64px)"
+        />
       </Progress>
       <StoryNote {...community} />
       <Cover>
@@ -148,10 +146,10 @@ const Note = styled.section`
     grid-template-columns: 0.95fr 1.25fr;
   }
 `
-const Progress = styled.div`
+const Progress = styled.section`
   display: grid;
   align-items: center;
-  gap: 1.7rem;
+  gap: 1rem;
   background: var(--dark-bg);
   padding: clamp(1rem, 3vw, 1.6rem);
   border-radius: var(--border-radius-lg);
@@ -163,5 +161,9 @@ const Progress = styled.div`
   }
   @media (width >= 650px) {
     grid-template-columns: 1.3fr 1fr;
+    gap: 1.7rem;
+    .progress-copy {
+      grid-area: 1 / 2;
+    }
   }
 `
