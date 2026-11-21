@@ -56,6 +56,7 @@ const ArticlesContainer = styled(HomepageBox)`
         text-decoration: none;
 
         .recent-article__title {
+          font-weight: normal;
           text-decoration: underline solid var(--accent);
           transition: all 0.2s ease;
           text-underline-offset: 3px;
@@ -70,6 +71,7 @@ const ArticlesContainer = styled(HomepageBox)`
 
       .recent-article__summary {
         margin-top: 0.25rem;
+        font-weight: normal;
         font-size: 0.8rem;
         color: var(--text-dark);
         text-decoration: none;

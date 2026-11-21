@@ -94,6 +94,9 @@ const Log = styled.section`
   button {
     font-size: 0.85rem;
   }
+  header a {
+    color: var(--text);
+  }
   [role='group'] {
     gap: 0.75rem;
     flex-wrap: wrap;

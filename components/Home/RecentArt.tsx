@@ -32,6 +32,7 @@ const PhotoLink = styled(Link)`
 
   img {
     object-fit: cover;
+    object-position: center 80%;
   }
   h2,
   figcaption {
