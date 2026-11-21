@@ -27,14 +27,8 @@ const formatDuration = (seconds: number) => {
   const hours = Math.floor(total / 3600)
   const minutes = Math.floor((total % 3600) / 60)
   const remaining = total % 60
-  return [hours, minutes, remaining].map((part) => part.toString().padStart(2, '0')).join(':')
-}
-
-const formatPace = (durationSeconds: number, miles: number) => {
-  const secondsPerMile = Math.round(durationSeconds / miles)
-  const minutes = Math.floor(secondsPerMile / 60)
-  const seconds = secondsPerMile % 60
-  return `${minutes}:${seconds.toString().padStart(2, '0')} /mi`
+  const tail = remaining.toString().padStart(2, '0')
+  return hours ? `${hours}:${minutes.toString().padStart(2, '0')}:${tail}` : `${minutes}:${tail}`
 }
 
 const getCategory = (activity: FitnessActivity): HomeActivityCategory | null => {
@@ -60,7 +54,10 @@ export const createHomeActivities = (activities: FitnessActivity[]): HomeActivit
     if (miles > 0 && activity.durationSeconds > 0 && (activity.kind === 'run' || activity.kind === 'swim')) {
       metrics.push({
         label: 'Pace',
-        value: formatPace(activity.durationSeconds, miles),
+        value:
+          activity.kind === 'swim'
+            ? `${formatDuration((activity.durationSeconds * 100) / activity.distanceMeters)}/100m`
+            : `${formatDuration(activity.durationSeconds / miles)}/mi`,
         highlight: false,
         score: activity.durationSeconds / miles,
         lowerIsBetter: true,

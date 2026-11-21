@@ -23,7 +23,7 @@ describe('createHomeActivities', () => {
         category: 'indoorCycle',
         startedAt: '2026-08-02T14:30:00.000Z',
         metrics: [
-          { label: 'Time', value: '01:00:00', highlight: false },
+          { label: 'Time', value: '1:00:00', highlight: false },
           { label: 'Distance', value: '10.00 mi', highlight: true },
           { label: 'Avg Speed', value: '10.00 mph', highlight: true },
           { label: 'Elevation Gain', value: '1640.42 ft', highlight: true },
@@ -37,6 +37,11 @@ describe('createHomeActivities', () => {
     const preview = getHomeActivityPreview([...rides, { ...activity, id: 'run', kind: 'run' }])
     expect(preview.recent.map(({ id }) => id)).toEqual(['0', '1', '2', '3', '4', 'run'])
     expect(preview.totalCounts).toEqual({ indoorCycle: 7, run: 1, swim: 0, cycle: 0 })
+  })
+
+  it('shows swim pace per 100 meters', () => {
+    const [swim] = createHomeActivities([{ ...activity, kind: 'swim', distanceMeters: 500, durationSeconds: 600 }])
+    expect(swim.metrics.find((metric) => metric.label === 'Pace')?.value).toBe('2:00/100m')
   })
 
   it('omits activity kinds that are not shown on the homepage', () => {

@@ -17,11 +17,11 @@ export default function RecentArticles({ posts }: ArticlesProps) {
       </Title>
 
       <ul>
-        {posts.slice(0, 3).map((article) => (
+        {posts.slice(0, 3).map((article, index) => (
           <m.li key={article.slug} variants={fade}>
             <Link href={`/article/${article.slug}`}>
               <p className="recent-article__title">{article.title}</p>
-              <p className="recent-article__summary">{article.summary}</p>
+              {index === 0 && <p className="recent-article__summary">{article.summary}</p>}
             </Link>
           </m.li>
         ))}
@@ -41,15 +41,15 @@ const Title = styled(m.h2)`
 
 const ArticlesContainer = styled(HomepageBox)`
   flex: 1;
-  min-width: 70%;
+  min-width: 0;
   color: var(--text);
 
   ul {
-    padding-left: 1rem;
-    list-style-type: circle;
+    padding: 0;
+    list-style: none;
 
     li {
-      margin-bottom: 0.5rem;
+      margin-top: 0.75rem;
 
       a {
         display: block;
@@ -73,9 +73,7 @@ const ArticlesContainer = styled(HomepageBox)`
         font-size: 0.8rem;
         color: var(--text-dark);
         text-decoration: none;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
+        line-height: 1.5;
       }
     }
   }
