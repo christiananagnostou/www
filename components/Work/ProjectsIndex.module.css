@@ -1,0 +1,188 @@
+.page {
+  max-width: var(--max-w-screen);
+  margin: auto;
+  padding: clamp(2rem, 6vw, 3.75rem) 1rem 4rem;
+}
+
+.page h1,
+.page h2,
+.page h3 {
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.page h1 {
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  letter-spacing: -0.055em;
+  margin-bottom: 1.8rem;
+}
+
+.page a {
+  text-decoration: none;
+}
+
+.page a:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.page a:is(:hover, :focus-visible) :is(h2, h3) {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  text-decoration-thickness: 1px;
+}
+
+.lead,
+.feature {
+  display: grid;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+}
+
+.lead {
+  background: #141820;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  margin-bottom: 1.25rem;
+}
+
+.lead > div:first-child {
+  padding: 1.5rem 0 1.5rem 1.5rem;
+}
+
+.lead h2 {
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+  letter-spacing: -0.045em;
+}
+
+.page p {
+  line-height: 1.5;
+}
+
+.lead p,
+.feature p {
+  margin-top: 0.5rem;
+  max-width: 29rem;
+}
+
+.read {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #c1cced;
+  text-decoration: underline;
+  text-underline-offset: 0.23em;
+}
+
+.art {
+  overflow: hidden;
+}
+
+.art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.liftclub {
+  align-self: center;
+}
+
+.feature {
+  grid-template-columns: 1fr clamp(6rem, 18vw, 9rem);
+  border-bottom: 1px solid var(--accent);
+  padding: 1rem 0;
+}
+
+.feature h2,
+.archive > h2 {
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+}
+
+.feature .art {
+  height: 6.25rem;
+  border-radius: var(--border-radius-md);
+}
+
+.jukebox {
+  display: grid;
+  justify-items: center;
+  padding-top: 0.5rem;
+  background: #31445a;
+}
+
+.jukebox img {
+  width: 4.3rem;
+  border-radius: 0.35rem;
+}
+
+.imgpress img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+}
+
+.archive {
+  margin-top: 3rem;
+}
+
+.archive ul {
+  margin-top: 1rem;
+  list-style: none;
+}
+
+.archive li {
+  border-top: 1px solid var(--accent);
+}
+
+.archive a {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.7fr) 1.4fr 5rem;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0.95rem 0;
+}
+
+.archive h3 {
+  font-size: 1rem;
+}
+
+.archive p,
+.archive span {
+  color: var(--text-dark);
+  font-size: 0.88rem;
+}
+
+.archive span {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+@media (width <= 600px) {
+  .lead {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .liftclub {
+    grid-row: 1;
+  }
+
+  .lead > div:first-child {
+    padding: 1.25rem;
+  }
+
+  .archive a {
+    grid-template-columns: 1fr auto;
+    gap: 0.3rem 0.75rem;
+  }
+
+  .archive p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
