@@ -11,7 +11,7 @@ This repo houses my personal site, www.christiancodes.co. It’s a straightforwa
 
 ## Setup and Running
 
-It’s a standard Next.js setup—clone it, install deps, run it. Figure it out; you’ve seen one, you’ve seen ‘em all.
+Use Node 24 LTS (24.15 or newer in the 24.x line). Run `npm ci` to install from the lockfile, then `npm run dev`. To check the deployable build locally, run `npm run build` followed by `npm start`.
 
 Configure `NEXT_PUBLIC_BASE_URL` and the three `NEXT_PUBLIC_EMAILJS_*` variables for the site. Fitness sync requires `REDIS_URL`, `INTERVALS_ICU_API_KEY`, and a long random `CRON_SECRET`. Vercel calls `/api/fitness/sync` daily using the configured cron secret.
 

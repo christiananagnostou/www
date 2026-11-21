@@ -149,10 +149,10 @@ const Knob = styled.div`
   --knob-border-width: 1px;
   --knob-size: 24px;
   --s: rgb(58 59 65);
-  --s1: rgb(42 44 50);
+  --s1: 42 44 50;
   --s2: rgb(54 56 60);
   --s3: rgb(30 31 34);
-  --s4: rgb(24 26 32);
+  --s4: 24 26 32;
   position: relative;
   width: var(--knob-size);
   height: var(--knob-size);
@@ -177,19 +177,19 @@ const Knob = styled.div`
     background: linear-gradient(
       90deg,
       var(--s2) 10%,
-      var(--s4) 40.8%,
+      rgb(var(--s4)) 40.8%,
       var(--s) 42%,
       var(--s) 58%,
-      var(--s1) 59.2%,
+      rgb(var(--s1)) 59.2%,
       var(--s2) 90%
     );
     box-shadow:
-      0 0.1em 0.2em 0 rgb(var(--s1), 0.9) inset,
-      0 -0.1em 0.3em 0 rgb(var(--s1), 0.3) inset,
-      0 0.08em 0.3em 0 rgba(#000011, 0.3),
-      0.5em 0 1em 0 rgb(var(--s1), 0.5) inset,
-      -0.5em 0 1em 0 rgb(var(--s4), 0.3) inset,
-      0 4em 1em -3.5em rgba(#000022, 0.3);
+      0 0.1em 0.2em 0 rgb(var(--s1) / 90%) inset,
+      0 -0.1em 0.3em 0 rgb(var(--s1) / 30%) inset,
+      0 0.08em 0.3em 0 rgb(0 0 17 / 30%),
+      0.5em 0 1em 0 rgb(var(--s1) / 50%) inset,
+      -0.5em 0 1em 0 rgb(var(--s4) / 30%) inset,
+      0 4em 1em -3.5em rgb(0 0 34 / 30%);
     transform: translateZ(0) scale(1, 1);
 
     /* Prevent 1px shift */

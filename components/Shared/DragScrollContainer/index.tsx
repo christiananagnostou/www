@@ -93,13 +93,13 @@ const DragScrollContainer = ({
     if (!pressed && started) processEnd()
   }, SCROLL_END_DEBOUNCE)
 
-  const processClick = (clientX: number, clientY: number) => {
+  const processClick = (pointerX: number, pointerY: number) => {
     const container = containerRef.current
     if (!container) return
     setScrollLeft(container.scrollLeft)
     setScrollTop(container.scrollTop)
-    setClientX(clientX)
-    setClientY(clientY)
+    setClientX(pointerX)
+    setClientY(pointerY)
     setPressed(true)
   }
 
