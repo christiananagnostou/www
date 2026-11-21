@@ -1,9 +1,7 @@
 import type { StaticImageData } from 'next/image'
 // Jukebox
-import JukeboxArtists from '../../public/img/projects/jukebox/artists.webp'
-import JukeboxCollage from '../../public/img/projects/jukebox/collage.webp'
-import JukeboxLibrary from '../../public/img/projects/jukebox/library.webp'
-import JukeboxShortcuts from '../../public/img/projects/jukebox/shortcuts.webp'
+import JukeboxLibrary from '../../public/img/projects/jukebox/library-study.webp'
+import JukeboxListen from '../../public/img/projects/jukebox/listen-study.webp'
 // QwikDraw
 import QwikDesignHero from '../../public/img/projects/qwikdraw/design-hero.webp'
 // Electriq Dashboard
@@ -241,13 +239,14 @@ export const ProjectState: ProjectType[] = [
     title: 'Jukebox',
     date: 'Jun 2023',
     tags: ['personal'],
-    desktopImgs: [JukeboxCollage, JukeboxLibrary, JukeboxArtists, JukeboxShortcuts],
+    desktopImgs: [JukeboxLibrary, JukeboxListen],
     mobileImgs: [],
     externalLink: 'https://github.com/christiananagnostou/jukebox/releases',
     externalLinkLabel: 'Releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
     slug: 'jukebox',
-    summary: 'Keyboard-centric desktop music player made with Tauri + Qwik',
+    summary:
+      'A desktop player for the music on your hard drive. I built Jukebox around two things: a local collection and a keyboard.',
     meta: [
       { label: 'Stack', value: 'Tauri / Qwik / Rust' },
       { label: 'Platform', value: 'macOS, Windows, Linux' },
@@ -255,24 +254,19 @@ export const ProjectState: ProjectType[] = [
     ],
     details: [
       {
-        title: 'Purpose',
+        title: 'From folder to library',
         description:
-          'Jukebox is a desktop music player for managing and playing local digital music collections without giving up the keyboard-first feel of a developer tool.',
+          'Drop in a folder and Jukebox reads the tracks, artists, albums, and cover art. I kept the folder view, too. Sometimes I remember where I put a record before I remember what it was called.',
       },
       {
-        title: 'Library',
+        title: 'Picking the next song',
         description:
-          'The app supports bulk music import, dedicated library views for tracks, artists, and albums, and advanced search so larger collections stay browsable.',
+          'I wanted picking a song to feel closer to moving around a text editor. Search for an artist, move down a few tracks, then play one or add it to the queue without reaching for the mouse.',
       },
       {
-        title: 'Controls',
+        title: 'Back in rotation',
         description:
-          'Keyboard shortcuts are a core part of the interaction model, making common playback and navigation flows fast without relying on pointer-heavy UI.',
-      },
-      {
-        title: 'Shell',
-        description:
-          'Built with Tauri, Qwik, TypeScript, and Rust to keep the desktop wrapper lightweight while still using a web UI for the music library experience.',
+          'The Listen view puts three lists next to each other: what I played recently, what I keep coming back to, and what I haven’t played yet. They all come from the same library, but each gives me a different place to start.',
       },
     ],
   },
