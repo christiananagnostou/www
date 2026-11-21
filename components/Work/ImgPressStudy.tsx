@@ -176,6 +176,9 @@ const Stage = styled.figure`
     width: min(48%, 17rem);
     margin: clamp(1rem, 3vw, 1.7rem) clamp(1rem, 5vw, 3rem) clamp(1rem, 3vw, 1.7rem) 0;
   }
+  a:focus-visible {
+    outline-color: #183545;
+  }
   a img {
     display: block;
     width: 100%;
