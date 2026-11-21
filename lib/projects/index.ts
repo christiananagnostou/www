@@ -1,4 +1,7 @@
 import type { StaticImageData } from 'next/image'
+// ImgPress
+import ImgPressPanel from '../../public/img/projects/imgpress/panel.webp'
+import ImgPressResult from '../../public/img/projects/imgpress/conversion.webp'
 // Jukebox
 import JukeboxLibrary from '../../public/img/projects/jukebox/library-study.webp'
 import JukeboxListen from '../../public/img/projects/jukebox/listen-study.webp'
@@ -172,13 +175,13 @@ export const ProjectState: ProjectType[] = [
     title: 'ImgPress',
     date: 'Nov 2025',
     tags: ['personal', 'open-source'],
-    desktopImgs: [],
+    desktopImgs: [ImgPressPanel, ImgPressResult],
     mobileImgs: [],
     externalLink: 'https://github.com/ChristianAnagnostou/imgpress#readme',
     externalLinkLabel: 'Readme',
     github: 'https://github.com/ChristianAnagnostou/imgpress',
     slug: 'imgpress',
-    summary: 'Lightweight macOS menu bar app for batch image conversion and optimization',
+    summary: 'A little Mac menu bar app I built to get a folder of photos ready to share without opening an editor.',
     meta: [
       { label: 'Stack', value: 'Swift / SwiftUI' },
       { label: 'Platform', value: 'macOS menu bar' },
@@ -186,19 +189,14 @@ export const ProjectState: ProjectType[] = [
     ],
     details: [
       {
-        title: 'Purpose',
+        title: 'Three photos from the Bay',
         description:
-          'ImgPress is a native menu bar utility for dragging in images or folders, choosing output formats, and running repeatable conversion workflows without opening a heavier editor.',
+          'I dropped these three photos from my gallery into ImgPress, picked Shareable JPEG, and set the resize slider to 50%. That kept the proportions and gave me smaller copies for sharing.',
       },
       {
-        title: 'Features',
+        title: 'Why show the sizes?',
         description:
-          'It supports JPEG, PNG, WebP, AVIF, and RAW inputs, with batch processing, conversion progress, size comparisons, pause/resume controls, quick presets, and custom saved presets.',
-      },
-      {
-        title: 'Implementation',
-        description:
-          "Built with Swift, SwiftUI, and Apple's ImageIO framework for a macOS-first workflow that stays close to the platform instead of wrapping a web app.",
+          'At full dimensions, the same preset actually made these JPEGs bigger. That’s why I like having the result right in the panel: I can see what changed before I reach for the files in Finder.',
       },
     ],
   },
