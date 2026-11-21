@@ -73,6 +73,7 @@
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  font-weight: 400;
 }
 
 @media (width <= 600px) {
