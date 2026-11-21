@@ -1,0 +1,242 @@
+.preview {
+  margin-bottom: 4rem;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-lg);
+  background: var(--dark-bg);
+}
+.preview button {
+  font: inherit;
+  color: var(--text-dark);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+.tabs button {
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+  border-radius: var(--border-radius-md);
+}
+.tabs [aria-selected='true'],
+.picker [aria-pressed='true'] {
+  background: #343434;
+  color: var(--heading);
+}
+.preview :is(a, button, [role='tabpanel']):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+.preview strong,
+.preview h2 {
+  color: var(--heading);
+  font-weight: 500;
+}
+.preview p,
+.preview small {
+  color: var(--text-dark);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.preview small {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.art {
+  position: relative;
+  overflow: hidden;
+  background: var(--dark-bg);
+  border-radius: var(--border-radius-md);
+  aspect-ratio: 16 / 9;
+}
+.art img {
+  object-fit: cover;
+}
+.art code {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 0.75em;
+  color: #afc7b4;
+}
+.row,
+.plate,
+.preview :is(.row, .plate):is(:hover, :focus-visible) {
+  text-decoration: none;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0.6rem;
+  border-radius: var(--border-radius-md);
+}
+.row small {
+  margin-left: auto;
+  align-self: flex-start;
+}
+.row p,
+.plate p,
+.screen p {
+  margin-top: 0.25rem;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.7rem, 3vw, 1.5rem);
+  padding-bottom: 1.4rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--accent);
+}
+.plate strong {
+  display: block;
+  font-size: 1.15rem;
+  margin-top: 0.75rem;
+}
+.illustrated .row + .row {
+  border-top: 1px solid var(--accent);
+}
+.illustrated .row {
+  padding-block: 1rem;
+}
+.illustrated .art {
+  flex: 0 0 clamp(5rem, 16vw, 8rem);
+}
+.illustrated .art code {
+  font-size: 0.52rem;
+}
+.era {
+  display: grid;
+  grid-template-columns: 25% 1fr;
+  border-top: 1px solid var(--accent);
+  padding-block: 1rem;
+}
+.era h2 {
+  font-size: clamp(1.4rem, 4vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  padding-top: 0.6rem;
+}
+.era small {
+  display: none;
+}
+.collection {
+  margin-bottom: 1.75rem;
+}
+.collection header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  background: var(--dark-bg);
+}
+.collection header .art {
+  width: 38%;
+  height: 5.5rem;
+  border-radius: 0;
+}
+.collection h2 {
+  font-size: 1.2rem;
+  padding: 1rem;
+}
+.collection > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
+}
+.viewer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12rem;
+  align-items: start;
+  gap: 1.25rem;
+}
+.screen {
+  background: var(--dark-bg);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+.screen .art {
+  border-radius: 0;
+  aspect-ratio: 1.8;
+}
+.screen .art img {
+  object-fit: contain;
+}
+.screen > div:last-child {
+  padding: 1.1rem;
+}
+.screen h2 {
+  font-size: 1.2rem;
+}
+.screen a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.picker button {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  font-size: 0.88rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .row:hover,
+  .preview button:hover {
+    background: #292929;
+    color: var(--heading);
+  }
+  .plate:hover .art {
+    outline: 1px solid var(--text-dark);
+  }
+}
+@media (width <= 600px) {
+  .tabs {
+    width: 100%;
+    justify-content: center;
+  }
+  .tabs button {
+    padding-inline: 0.65rem;
+  }
+  .row {
+    gap: 0.6rem;
+  }
+  .illustrated .row {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 0.2rem 0.75rem;
+  }
+  .illustrated .art {
+    grid-row: span 2;
+  }
+  .illustrated small {
+    margin-left: 0;
+  }
+  .era {
+    grid-template-columns: 4.4rem 1fr;
+  }
+  .collection > div,
+  .viewer {
+    grid-template-columns: 1fr;
+  }
+  .picker {
+    flex-flow: row wrap;
+  }
+  .picker button {
+    min-height: 2.75rem;
+  }
+}

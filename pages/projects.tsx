@@ -6,6 +6,7 @@ import type { CSSProperties } from 'react'
 
 import { pageAnimation } from '../components/animation'
 import { Heading } from '../components/Shared/Heading'
+import ProjectDesigns from '../components/Work/ProjectDesigns'
 import ProjectHead from '../components/Work/ProjectHead'
 import styles from '../components/Work/ProjectsIndex.module.css'
 import { ProjectState } from '../lib/projects'
@@ -46,10 +47,17 @@ export function getStaticProps() {
 
   return {
     props: {
-      projects: ordered.map(({ title, slug, date, summary }) => ({
+      compare: process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development',
+      projects: ordered.map(({ title, slug, date, summary, desktopImgs, tags }) => ({
         title,
         slug,
         icon: selected.get(slug) ?? null,
+        image: desktopImgs[0]?.src ?? null,
+        collection: tags.includes('commercial')
+          ? 'Client work'
+          : tags.includes('open-source')
+            ? 'Open source'
+            : 'Personal apps',
         year: date.replace(/^[A-Za-z]+ /, '').replace('-', '–'),
         description: shortDescriptions[slug] ?? summary,
       })),
@@ -58,7 +66,7 @@ export function getStaticProps() {
   }
 }
 
-export default function Projects({ projects, structured }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Projects({ projects, structured, compare }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <ProjectHead
@@ -72,20 +80,24 @@ export default function Projects({ projects, structured }: InferGetStaticPropsTy
           <h1>Projects</h1>
           <p>A selection of personal projects, open-source tools, and work I’ve done with other teams.</p>
         </Heading>
-        <ul className={styles.list} aria-label="Projects">
-          {projects.map(({ title, slug, year, description, icon }, index) => (
-            <li key={slug} style={{ '--order': index } as CSSProperties}>
-              <Link href={`/work/${slug}`} aria-labelledby={slug}>
-                <h2 id={slug}>
-                  {icon && <Image src={icon} alt="" width={18} height={18} />}
-                  {title}
-                </h2>
-                <p>{description}</p>
-                <span>{year}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {compare ? (
+          <ProjectDesigns projects={projects} />
+        ) : (
+          <ul className={styles.list} aria-label="Projects">
+            {projects.map(({ title, slug, year, description, icon }, index) => (
+              <li key={slug} style={{ '--order': index } as CSSProperties}>
+                <Link href={`/work/${slug}`} aria-labelledby={slug}>
+                  <h2 id={slug}>
+                    {icon && <Image src={icon} alt="" width={18} height={18} />}
+                    {title}
+                  </h2>
+                  <p>{description}</p>
+                  <span>{year}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </m.div>
     </>
   )
