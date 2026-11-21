@@ -32,7 +32,7 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
           <Image
             src={cover}
             priority
-            sizes="(min-width: 1200px) 442px, (min-width: 800px) 768px, 95vw"
+            sizes="(min-width: 1200px) 400px, (min-width: 800px) 768px, 95vw"
             alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
           />
         </Cover>
@@ -72,6 +72,8 @@ function StoryNote({ title, description }: ProjectType['details'][number]) {
 }
 
 const Page = styled(m.main)`
+  --story-columns: minmax(0, 9fr) minmax(0, 11fr);
+  --story-gutter: 2.5rem;
   width: 100%;
   max-width: var(--max-w-screen);
   margin: auto;
@@ -123,14 +125,18 @@ const Intro = styled.header`
     font-size: clamp(1.05rem, 2.5vw, 1.2rem);
   }
   @media (width >= 1200px) {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-columns: var(--story-columns);
     align-items: center;
-    gap: 2rem;
+    gap: var(--story-gutter);
+    margin-top: 2.25rem;
     h1 {
-      font-size: 4rem;
+      font-size: 3.75rem;
     }
     p {
+      margin: 0.75rem 0 1.25rem;
       font-size: 1.05rem;
+      line-height: 1.5;
+      text-wrap: pretty;
     }
   }
 `
@@ -159,6 +165,11 @@ const Note = styled.section`
   padding: clamp(2rem, 6vw, 3.5rem) 0;
   @media (width >= 650px) {
     grid-template-columns: 0.95fr 1.25fr;
+  }
+  @media (width >= 1200px) {
+    grid-template-columns: var(--story-columns);
+    column-gap: var(--story-gutter);
+    padding-block: 3rem;
   }
 `
 const Progress = styled.section`
