@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import type { CSSProperties } from 'react'
 
 import s from './ProjectDesigns.module.css'
 
@@ -11,87 +11,115 @@ type Project = {
   year: string
   description: string
   image: string | null
-  collection: string
+  detail: string | null
+  medium: string
 }
 
 const designs = [
-  ['pairings', 'Pairings'],
-  ['index', 'Illustrated index'],
-  ['timeline', 'Timeline'],
-  ['collections', 'Collections'],
-  ['viewfinder', 'Viewfinder'],
+  ['workbench', 'Workbench'],
+  ['plates', 'Plates'],
+  ['loupe', 'Loupe'],
+  ['index', 'Original'],
 ] as const
+type Design = (typeof designs)[number][0]
 
-function Art({ project, sizes }: { project: Project; sizes: string }) {
+function Sample({ project, design }: { project: Project; design: Design }) {
+  const sizes = {
+    index: '(max-width:600px) 80px, 128px',
+    workbench: '(max-width:600px) 100px, 160px',
+    plates: '(max-width:600px) 90vw, 320px',
+    loupe: '(max-width:600px) 85px, 230px',
+  }
+  const second = design === 'plates' && project.detail
+  if (design === 'workbench' && project.slug === 'jukebox') {
+    return (
+      <div className={`${s.art} ${s.record}`} aria-hidden="true">
+        <i />
+        <div>
+          <small>Now playing</small>
+          <b>Room Tone</b>
+        </div>
+      </div>
+    )
+  }
+  if (design === 'workbench' && project.slug === 'imgpress') {
+    return (
+      <div className={`${s.art} ${s.compression}`} aria-hidden="true">
+        <small>Original</small>
+        <i />
+        <small>Export</small>
+        <i />
+      </div>
+    )
+  }
   return (
-    <div className={s.art}>
+    <div className={s.art} aria-hidden="true" data-paired={Boolean(second)} data-slug={project.slug}>
       {project.image ? (
-        <Image src={project.image} fill sizes={sizes} alt="" />
+        <>
+          <div className={s.primary}>
+            <Image src={project.image} fill sizes={sizes[design]} alt="" />
+          </div>
+          {second && (
+            <div className={s.secondary}>
+              <Image src={second} fill sizes="100px" alt="" />
+            </div>
+          )}
+        </>
       ) : (
-        <code>{project.slug === 'skillbox' ? 'skillbox list' : 'knip-html-reporter'}</code>
+        <div className={s.specimen}>
+          {project.slug === 'skillbox' ? (
+            <>
+              <code>$ skillbox list</code>
+              {design !== 'index' && <small>Global Skills</small>}
+            </>
+          ) : (
+            <>
+              <code>knip-html-reporter</code>
+              {design !== 'index' && <small>Files · Exports · Dependencies</small>}
+            </>
+          )}
+        </div>
       )}
     </div>
   )
 }
 
-function Row({ project, illustrated = false }: { project: Project; illustrated?: boolean }) {
-  return (
-    <Link className={s.row} href={`/work/${project.slug}`}>
-      {illustrated && <Art project={project} sizes="(max-width: 600px) 80px, 128px" />}
-      <div>
-        <strong>{project.title}</strong>
-        <p>{project.description}</p>
-      </div>
-      <small>{project.year}</small>
-    </Link>
-  )
-}
-
-function Plate({ project }: { project: Project }) {
-  return (
-    <Link className={s.plate} href={`/work/${project.slug}`}>
-      <Art project={project} sizes="(max-width: 800px) 50vw, 380px" />
-      <strong>{project.title}</strong>
-      <p>{project.description}</p>
-    </Link>
-  )
-}
-
-function Viewfinder({ projects }: { projects: Project[] }) {
-  const [active, setActive] = useState(projects[0])
-  return (
-    <div className={s.viewer}>
-      <div className={s.screen}>
-        <Art project={active} sizes="(max-width: 600px) 90vw, 480px" />
-        <div aria-live="polite">
-          <h2>{active.title}</h2>
-          <p>{active.description}</p>
-          <Link href={`/work/${active.slug}`}>View project</Link>
+function Detail({ project }: { project: Project }) {
+  switch (project.slug) {
+    case 'liftclub':
+      return (
+        <div className={s.detail}>
+          <span>Workout log</span>
+          <b>Bench press</b>
         </div>
-      </div>
-      <div className={s.picker} role="group" aria-label="Choose a project to preview">
-        {projects.map((p) => (
-          <button key={p.slug} type="button" aria-pressed={p.slug === active.slug} onClick={() => setActive(p)}>
-            {p.title}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
+      )
+    case 'jukebox':
+      return (
+        <div className={s.detail}>
+          <kbd>/</kbd> Search <kbd>q</kbd> Queue track
+        </div>
+      )
+    case 'imgpress':
+      return (
+        <div className={s.detail}>
+          <span>3 JPEGs</span>
+          <b>566 kB → 228 kB</b>
+        </div>
+      )
+    default:
+      return <div className={s.detail}>{project.medium}</div>
+  }
 }
 
 export default function ProjectDesigns({ projects }: { projects: Project[] }) {
   const router = useRouter()
-  const selected = designs.find(([id]) => id === router.query.design)?.[0] ?? 'pairings'
+  const selected = designs.find(([id]) => id === router.query.design)?.[0] ?? 'workbench'
   const select = (design: string) => {
     void router.replace({ pathname: router.pathname, query: { ...router.query, design } }, undefined, {
       shallow: true,
       scroll: false,
     })
   }
-  const rows = (items: Project[], illustrated = false) =>
-    items.map((p) => <Row key={p.slug} project={p} illustrated={illustrated} />)
-  const startYear = (p: Project) => p.year.slice(0, 4)
 
   return (
     <div className={s.preview}>
@@ -122,41 +150,21 @@ export default function ProjectDesigns({ projects }: { projects: Project[] }) {
         ))}
       </div>
       <div id="design-panel" role="tabpanel" aria-labelledby={'design-' + selected} tabIndex={0}>
-        {selected === 'pairings' && (
-          <>
-            <div className={s.pair}>
-              {projects.slice(0, 2).map((p) => (
-                <Plate key={p.slug} project={p} />
-              ))}
-            </div>
-            {rows(projects.slice(2))}
-          </>
-        )}
-        {selected === 'index' && <div className={s.illustrated}>{rows(projects, true)}</div>}
-        {selected === 'timeline' &&
-          [...new Set(projects.map(startYear))]
-            .toSorted((a, b) => Number(b) - Number(a))
-            .map((year) => (
-              <section key={year} className={s.era}>
-                <h2>{year}</h2>
-                <div>{rows(projects.filter((p) => startYear(p) === year))}</div>
-              </section>
-            ))}
-        {selected === 'collections' &&
-          ['Personal apps', 'Open source', 'Client work'].map((name) => {
-            const items = projects.filter((p) => p.collection === name)
-            const cover = items.find((p) => p.image)
-            return (
-              <section className={s.collection} key={name}>
-                <header>
-                  {cover && <Art project={cover} sizes="(max-width: 600px) 180px, 240px" />}
-                  <h2>{name}</h2>
-                </header>
-                <div>{rows(items)}</div>
-              </section>
-            )
-          })}
-        {selected === 'viewfinder' && <Viewfinder projects={projects} />}
+        <ul className={s.list} data-design={selected} key={selected}>
+          {projects.map((p, index) => (
+            <li key={p.slug} style={{ '--order': Math.min(index, 5) } as CSSProperties}>
+              <Link className={s.row} href={`/work/${p.slug}`} aria-labelledby={'project-' + p.slug}>
+                <Sample project={p} design={selected} />
+                <div className={s.copy}>
+                  <h2 id={'project-' + p.slug}>{p.title}</h2>
+                  <p>{p.description}</p>
+                  {selected === 'workbench' && <Detail project={p} />}
+                </div>
+                <small className={s.year}>{p.year}</small>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

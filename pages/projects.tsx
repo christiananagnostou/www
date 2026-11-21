@@ -48,16 +48,13 @@ export function getStaticProps() {
   return {
     props: {
       compare: process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development',
-      projects: ordered.map(({ title, slug, date, summary, desktopImgs, tags }) => ({
+      projects: ordered.map(({ title, slug, date, summary, desktopImgs, mobileImgs, meta }) => ({
         title,
         slug,
         icon: selected.get(slug) ?? null,
         image: desktopImgs[0]?.src ?? null,
-        collection: tags.includes('commercial')
-          ? 'Client work'
-          : tags.includes('open-source')
-            ? 'Open source'
-            : 'Personal apps',
+        detail: (mobileImgs[0] ?? desktopImgs[1])?.src ?? null,
+        medium: meta[0]?.value ?? '',
         year: date.replace(/^[A-Za-z]+ /, '').replace('-', '–'),
         description: shortDescriptions[slug] ?? summary,
       })),
