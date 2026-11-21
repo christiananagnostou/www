@@ -39,10 +39,6 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
             alt="Jukebox Songs view with a local track list and the current track, Room Tone, in the playback sidebar."
           />
         </a>
-        <figcaption>
-          <span>Songs / Desktop player</span>
-          <span>Demo library</span>
-        </figcaption>
       </Sleeve>
       <Note>
         <h2>{importing.title}</h2>
@@ -56,7 +52,7 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
         <Image
           src={listen}
           sizes="(min-width: 800px) 335px, (min-width: 650px) 44vw, 90vw"
-          alt="Most played in the demo library, with Side Two at the top of the list."
+          alt="Most played tracks, with Side Two at the top of the list."
         />
       </Listen>
       <Note>
@@ -84,7 +80,7 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
           <Image
             src={phone}
             sizes="(min-width: 380px) 232px, 64vw"
-            alt="Jukebox on a phone, playing Room Tone from Field Notes, with queue and Save offline controls."
+            alt="Jukebox on a phone, playing Room Tone with queue and Save offline controls."
           />
         </figure>
       </Remote>
@@ -175,14 +171,6 @@ const Sleeve = styled.figure`
   img {
     border-radius: var(--border-radius-sm);
     box-shadow: 0 8px 24px #11132066;
-  }
-  figcaption {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.6rem;
-    margin-top: 0.85rem;
-    color: #e2e8f0;
-    font-size: 0.76rem;
   }
 `
 const Note = styled.section`
