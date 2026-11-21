@@ -18,23 +18,25 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
     <Page initial={initial} variants={pageAnimation} animate="show" exit="exit">
       <Back href="/projects">/ Projects</Back>
       <Intro>
-        <h1>{project.title}</h1>
-        <p>{project.summary}</p>
-        <Actions>
-          <a href={app}>
-            Visit Lift Club <span aria-hidden="true">↗</span>
-          </a>
-          <a href={new URL('signup', app).href}>Sign up</a>
-        </Actions>
+        <div>
+          <h1>{project.title}</h1>
+          <p>{project.summary}</p>
+          <Actions>
+            <a href={app}>
+              Visit Lift Club <span aria-hidden="true">↗</span>
+            </a>
+            <a href={new URL('signup', app).href}>Sign up</a>
+          </Actions>
+        </div>
+        <Cover>
+          <Image
+            src={cover}
+            priority
+            sizes="(min-width: 1200px) 442px, (min-width: 800px) 768px, 95vw"
+            alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
+          />
+        </Cover>
       </Intro>
-      <HeroCover>
-        <Image
-          src={cover}
-          priority
-          sizes="(min-width: 1200px) 640px, (min-width: 800px) 768px, 95vw"
-          alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
-        />
-      </HeroCover>
       <StoryNote {...origin} />
       <Progress>
         <div className="progress-copy">
@@ -107,7 +109,9 @@ const Back = styled(Link)`
   text-decoration: none;
 `
 const Intro = styled.header`
-  margin: 2.8rem 0 1.6rem;
+  display: grid;
+  gap: 1.6rem;
+  margin-top: 2.8rem;
   h1 {
     font-size: clamp(3.4rem, 9vw, 5.3rem);
     line-height: 1;
@@ -117,6 +121,17 @@ const Intro = styled.header`
     max-width: 34rem;
     margin: 0.9rem 0 1.25rem;
     font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+  }
+  @media (width >= 1200px) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: center;
+    gap: 2rem;
+    h1 {
+      font-size: 4rem;
+    }
+    p {
+      font-size: 1.05rem;
+    }
   }
 `
 const Actions = styled.div`
@@ -135,12 +150,6 @@ const Actions = styled.div`
 const Cover = styled.figure`
   img {
     border-radius: var(--border-radius-lg);
-  }
-`
-const HeroCover = styled(Cover)`
-  @media (width >= 1200px) {
-    max-width: 640px;
-    margin-inline: 0 auto;
   }
 `
 const Note = styled.section`
