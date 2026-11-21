@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
 import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
+import DistanceMedal from './DistanceMedal'
 import SeeAllActivitiesCard from './SeeAllActivitiesCard'
 
 interface Props {
@@ -65,9 +66,11 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
           return (
             <li key={activity.id}>
               <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
-              <h3>{distance ? `${distance.value} ${sport}` : labels[activity.category]}</h3>
+              <h3>
+                {distance ? `${distance.value} ${sport}` : labels[activity.category]}
+                {activity.distanceRank && <DistanceMedal rank={activity.distanceRank} sport={sport} />}
+              </h3>
               {details.length > 0 && <p>{details.join(' · ')}</p>}
-              {distance?.highlight && <small>Longest {sport} on record</small>}
             </li>
           )
         })}
@@ -138,6 +141,9 @@ const Log = styled(m.section)`
     flex: 0 0 10rem;
   }
   h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
     margin: 0.35rem 0;
     font-size: 1rem;
     font-weight: 500;
@@ -145,8 +151,10 @@ const Log = styled(m.section)`
   li:first-child h3 {
     font-size: 1.15rem;
   }
-  time,
-  small {
+  h3 svg {
+    flex: none;
+  }
+  time {
     font-size: 0.75rem;
   }
   p,

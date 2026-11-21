@@ -2,12 +2,14 @@ import type { FitnessActivity } from './activity'
 import { metersToFeet, metersToMiles } from './units'
 
 export type HomeActivityCategory = 'swim' | 'cycle' | 'indoorCycle' | 'run'
+export type DistanceRank = 1 | 2 | 3
 
 export interface HomeActivity {
   id: string
   category: HomeActivityCategory
   startedAt: string
-  metrics: Array<{ label: string; value: string; highlight: boolean }>
+  distanceRank: DistanceRank | null
+  metrics: Array<{ label: string; value: string }>
 }
 
 export const HOME_ACTIVITY_LIMIT = 5
@@ -19,8 +21,6 @@ export function getHomeActivityPreview(activities: FitnessActivity[]) {
   )
   return { recent, totalCounts }
 }
-
-type HomeMetric = HomeActivity['metrics'][number] & { score?: number; lowerIsBetter?: boolean }
 
 const formatDuration = (seconds: number) => {
   const total = Math.round(seconds)
@@ -38,18 +38,28 @@ const getCategory = (activity: FitnessActivity): HomeActivityCategory | null => 
 }
 
 export const createHomeActivities = (activities: FitnessActivity[]): HomeActivity[] => {
-  const homeActivities = activities.flatMap((activity) => {
+  const podium: Record<HomeActivityCategory, number[]> = { swim: [], cycle: [], indoorCycle: [], run: [] }
+  for (const activity of activities) {
+    const category = getCategory(activity)
+    if (!category || !Number.isFinite(activity.distanceMeters) || activity.distanceMeters <= 0) continue
+    const top = podium[category]
+    top.push(activity.distanceMeters)
+    top.sort((a, b) => b - a)
+    if (top.length > 3) top.pop()
+  }
+
+  return activities.flatMap((activity) => {
     const category = getCategory(activity)
     if (!category) return []
 
     const miles = metersToMiles(activity.distanceMeters)
     const elevationFeet = metersToFeet(activity.elevationGainMeters)
-    const metrics: HomeMetric[] = []
+    const metrics: HomeActivity['metrics'] = []
     if (activity.durationSeconds > 0) {
-      metrics.push({ label: 'Time', value: formatDuration(activity.durationSeconds), highlight: false })
+      metrics.push({ label: 'Time', value: formatDuration(activity.durationSeconds) })
     }
     if (miles > 0) {
-      metrics.push({ label: 'Distance', value: `${miles.toFixed(2)} mi`, highlight: false, score: miles })
+      metrics.push({ label: 'Distance', value: `${miles.toFixed(2)} mi` })
     }
     if (miles > 0 && activity.durationSeconds > 0 && (activity.kind === 'run' || activity.kind === 'swim')) {
       metrics.push({
@@ -58,44 +68,21 @@ export const createHomeActivities = (activities: FitnessActivity[]): HomeActivit
           activity.kind === 'swim'
             ? `${formatDuration((activity.durationSeconds * 100) / activity.distanceMeters)}/100m`
             : `${formatDuration(activity.durationSeconds / miles)}/mi`,
-        highlight: false,
-        score: activity.durationSeconds / miles,
-        lowerIsBetter: true,
       })
     }
     if (miles > 0 && activity.kind === 'cycle' && activity.durationSeconds > 0) {
       const speed = miles / (activity.durationSeconds / 3600)
-      metrics.push({ label: 'Avg Speed', value: `${speed.toFixed(2)} mph`, highlight: false, score: speed })
+      metrics.push({ label: 'Avg Speed', value: `${speed.toFixed(2)} mph` })
     }
     if (elevationFeet > 0) {
       metrics.push({
         label: 'Elevation Gain',
         value: `${elevationFeet.toFixed(2)} ft`,
-        highlight: false,
-        score: elevationFeet,
       })
     }
 
-    return [{ id: activity.id, category, startedAt: activity.startedAt, metrics }]
+    const rank = podium[category].indexOf(activity.distanceMeters) + 1
+    const distanceRank = rank === 1 || rank === 2 || rank === 3 ? rank : null
+    return [{ id: activity.id, category, startedAt: activity.startedAt, metrics, distanceRank }]
   })
-
-  const bestScores = new Map<string, number>()
-  for (const activity of homeActivities) {
-    for (const metric of activity.metrics) {
-      if (metric.score === undefined) continue
-      const key = `${activity.category}:${metric.label}`
-      const bestScore = bestScores.get(key)
-      if (bestScore === undefined || (metric.lowerIsBetter ? metric.score < bestScore : metric.score > bestScore)) {
-        bestScores.set(key, metric.score)
-      }
-    }
-  }
-
-  return homeActivities.map((activity) => ({
-    ...activity,
-    metrics: activity.metrics.map(({ score, lowerIsBetter: _, ...metric }) => ({
-      ...metric,
-      highlight: score === undefined ? false : score === bestScores.get(`${activity.category}:${metric.label}`),
-    })),
-  }))
 }
