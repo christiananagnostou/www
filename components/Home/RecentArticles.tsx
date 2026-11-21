@@ -44,6 +44,10 @@ const ArticlesContainer = styled(HomepageBox)`
   min-width: 0;
   color: var(--text);
 
+  @media (width > 768px) {
+    min-width: 70%;
+  }
+
   ul {
     padding: 0;
     list-style: none;
