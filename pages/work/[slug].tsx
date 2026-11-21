@@ -8,12 +8,14 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
+import LiftClubStudy from '../../components/Work/LiftClubStudy'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
 import { ProjectState } from '../../lib/projects'
 
 interface Props {
   project: ProjectType
+  compare?: boolean
 }
 
 type ProjectLinkType = { href: string; label: string }
@@ -32,10 +34,23 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
 
-  return { props: { project } }
+  return {
+    props: {
+      project,
+      compare:
+        project.slug === 'liftclub' && (process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development'),
+    },
+  }
 }
 
-const SingleProject = ({ project }: Props) => {
+const SingleProject = ({ project, compare }: Props) =>
+  project.slug === 'liftclub' ? (
+    <LiftClubStudy project={project} compare={compare} />
+  ) : (
+    <DefaultProject project={project} />
+  )
+
+const DefaultProject = ({ project }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
   const primaryImage = project.desktopImgs[0]
   const supportingDesktopImages = project.desktopImgs.slice(1)

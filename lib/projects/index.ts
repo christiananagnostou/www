@@ -28,10 +28,9 @@ import SentfillWheel from '../../public/img/projects/scentfill/wheel.webp'
 import ElectriqHeroMain from '../../public/img/projects/electriq-home/hero-main.png'
 import ElectriqWebsite from '../../public/img/projects/electriq-home/homepage-composed.webp'
 // Lift Club
-import LiftClubMain from '../../public/img/projects/liftclub/liftclub-main.jpeg'
-import LiftClubPurpose from '../../public/img/projects/liftclub/liftclub-purpose.png'
-import LiftClubUserProfile from '../../public/img/projects/liftclub/user-profile.png'
-import LiftClubLog from '../../public/img/projects/liftclub/workout-log-2.png'
+import LiftClubMain from '../../public/img/projects/liftclub/hero.webp'
+import LiftClubLog from '../../public/img/projects/liftclub/log.webp'
+import LiftClubProgress from '../../public/img/projects/liftclub/progress.webp'
 // Photo Shop
 import PhotoDesktop1 from '../../public/img/projects/awildchristian/desktop1.jpg'
 import PhotoDesktop2 from '../../public/img/projects/awildchristian/desktop2.jpg'
@@ -442,37 +441,26 @@ export const ProjectState: ProjectType[] = [
     title: 'Lift Club',
     date: 'Apr 2021',
     tags: ['personal'],
-    desktopImgs: [LiftClubMain, LiftClubPurpose],
-    mobileImgs: [LiftClubUserProfile, LiftClubLog],
-    externalLink: 'https://liftclub.app/',
-    github: 'https://github.com/ChristianAnagnostou/liftclub',
+    desktopImgs: [LiftClubMain],
+    mobileImgs: [LiftClubLog, LiftClubProgress],
+    externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
-    summary: 'Track your workout progress with little effort and gain big insights',
+    summary:
+      'A workout log for lifters. Record your sets, see what you lifted last time, and follow your progress from session to session.',
     meta: [
-      { label: 'Stack', value: 'TypeScript / PWA' },
-      { label: 'Focus', value: 'Workout tracking' },
-      { label: 'Model', value: 'Social fitness app' },
+      { label: 'Format', value: 'Installable web app' },
+      { label: 'Focus', value: 'Strength training' },
     ],
     details: [
       {
-        title: 'Purpose',
+        title: 'Under the bar',
         description:
-          'Lift club is a social fitness app that gives you the power to find well structured workouts and track your progress as you improve.',
+          'Was that last set eight reps or ten? The logger keeps the previous session beside the one in progress. You can match it, add a rep, or change the weight without leaving the exercise.',
       },
       {
-        title: 'Join',
+        title: 'Between sessions',
         description:
-          'Best experienced as a lightweight PWA, meaning that there is no download required. By adding the web page to your home screen, users can access Lift Club and have a native-like app experience.',
-      },
-      {
-        title: 'Features',
-        description:
-          'Build workouts from an extensive list of default exercises, create your own exercises, organize workouts on a calendar to create a schedule to follow, and assemble teams where others can follow your routine, and more.',
-      },
-      {
-        title: 'Documentation',
-        description:
-          'Check out the README.md file in the Github repository for up-to-date documentation on how to install and use the app.',
+          'One heavy day tells only part of the story. Pick an exercise and follow its volume or estimated one-rep max over time. The sessions behind the curve are right there when you want a closer look.',
       },
     ],
   },
