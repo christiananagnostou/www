@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
 import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
+import SeeAllActivitiesCard from './SeeAllActivitiesCard'
 
 interface Props {
   activities: HomeActivity[]
@@ -49,26 +50,24 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
           ))}
         </div>
       </header>
-      {recent.length ? (
-        <ul key={filter} aria-label="Recent activities" tabIndex={0}>
-          {recent.map((activity) => {
-            const metric = (label: string) => activity.metrics.find((m) => m.label === label)
-            const distance = metric('Distance')
-            const sport = labels[activity.category]
-            const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
-            return (
-              <li key={activity.id}>
-                <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
-                <h3>{distance ? `${distance.value} ${sport.toLowerCase()}` : sport}</h3>
-                {details.length > 0 && <p>{details.join(' · ')}</p>}
-                {distance?.highlight && <small>Longest {sport.toLowerCase()} on record</small>}
-              </li>
-            )
-          })}
-        </ul>
-      ) : (
-        <p>No {filter && labels[filter].toLowerCase()} activities recorded yet.</p>
-      )}
+      {recent.length === 0 && filter && <p>No {labels[filter].toLowerCase()} activities recorded yet.</p>}
+      <ul key={filter} aria-label="Recent activities" tabIndex={0}>
+        {recent.map((activity) => {
+          const metric = (label: string) => activity.metrics.find((m) => m.label === label)
+          const distance = metric('Distance')
+          const sport = labels[activity.category]
+          const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
+          return (
+            <li key={activity.id}>
+              <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
+              <h3>{distance ? `${distance.value} ${sport.toLowerCase()}` : sport}</h3>
+              {details.length > 0 && <p>{details.join(' · ')}</p>}
+              {distance?.highlight && <small>Longest {sport.toLowerCase()} on record</small>}
+            </li>
+          )
+        })}
+        <SeeAllActivitiesCard />
+      </ul>
     </Log>
   )
 }
