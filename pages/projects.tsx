@@ -10,18 +10,14 @@ import styles from '../components/Work/ProjectsIndex.module.css'
 import { ProjectState } from '../lib/projects'
 import { getProjectsStructuredData, projectsDescription, projectsUrl } from '../lib/structured/projects'
 import conversion from '../public/img/projects/imgpress/conversion.webp'
-import library from '../public/img/projects/jukebox/collage.webp'
-import workout from '../public/img/projects/liftclub/hero.webp'
 
 const features = [
   {
     slug: 'liftclub',
-    image: workout,
     copy: 'I built a workout log so my cousin George and I could pick up where we left off at the gym.',
   },
   {
     slug: 'jukebox',
-    image: library,
     copy: 'A desktop player for my own music library. I can queue a record with the keyboard or listen from my phone.',
   },
   {
@@ -53,7 +49,12 @@ export function getStaticProps() {
   const others = ProjectState.filter((entry) => !selected.includes(entry))
   return {
     props: {
-      featured: selected.map(({ title, slug }, i) => ({ ...features[i], title, slug })),
+      featured: selected.map(({ title, slug, desktopImgs }, i) => ({
+        ...features[i],
+        title,
+        slug,
+        image: features[i].image ?? desktopImgs[0],
+      })),
       archive: others.map(({ title, slug, date, summary }) => ({
         title,
         slug,

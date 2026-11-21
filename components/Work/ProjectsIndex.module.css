@@ -1,4 +1,6 @@
 .page {
+  --row-inset: clamp(0.75rem, 2vw, 1.25rem);
+  --row-hover: #242628;
   animation: page-in 200ms ease-out;
   max-width: var(--max-w-screen);
   margin: auto;
@@ -19,7 +21,9 @@
 }
 
 .page a {
-  transition: background-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
   text-decoration: none;
 }
 
@@ -29,12 +33,17 @@
 
 .page a:focus-visible {
   outline: 2px solid var(--text);
-  outline-offset: 3px;
+  outline-offset: -2px;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .page a:hover {
-    background-color: #25272a;
+    background-color: var(--row-hover);
+  }
+
+  .page .lead:hover {
+    background-color: #1b202a;
+    box-shadow: inset 0 0 0 1px #414a5b;
   }
 }
 
@@ -50,7 +59,7 @@
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .lead > div:first-child {
@@ -96,8 +105,12 @@
 
 .feature {
   grid-template-columns: minmax(0, 1fr) clamp(7rem, 32vw, 16rem);
-  border-bottom: 1px solid var(--accent);
-  padding: 1rem 0;
+  padding: var(--row-inset);
+  border-radius: var(--border-radius-lg);
+}
+
+.feature + .feature {
+  margin-top: 0.25rem;
 }
 
 .feature h2,
@@ -116,15 +129,22 @@
 }
 
 .archive {
-  margin-top: 3rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
 }
 
 .archive ul {
   margin-top: 1rem;
   list-style: none;
+  border: 1px solid var(--accent);
+  background: var(--dark-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 0.25rem;
 }
 
-.archive li {
+.archive li + li::before {
+  content: '';
+  display: block;
+  margin-inline: var(--row-inset);
   border-top: 1px solid var(--accent);
 }
 
@@ -133,7 +153,9 @@
   grid-template-columns: minmax(9rem, 0.7fr) 1.4fr 5.75rem;
   align-items: baseline;
   gap: 1.25rem;
-  padding: 0.95rem 0;
+  margin-block: 0.2rem;
+  padding: 0.8rem var(--row-inset);
+  border-radius: var(--border-radius-md);
 }
 
 .archive h3 {
