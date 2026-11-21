@@ -49,11 +49,15 @@ const Item = styled.li`
 
 const SeeAllContent = styled(Link)`
   position: relative;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template:
+    'top-left . top-right' 1fr
+    'label label label' auto
+    'bottom-left . bottom-right' 1fr / auto 1fr auto;
   align-items: center;
+  row-gap: 0.25rem;
+  padding: 0.5rem 0.85rem;
   width: 100%;
-  height: 100%;
   border-radius: var(--border-radius-xl);
   color: inherit;
   overflow: hidden;
@@ -81,11 +85,15 @@ const SeeAllContent = styled(Link)`
   &:hover,
   &[data-in-view='true'] {
     border-color: rgb(255 255 255 / 15%);
-    box-shadow: 0 8px 32px -12px rgb(0 0 0 / 40%);
+    box-shadow: inset 0 0 0 1px var(--accent);
 
     &::before {
       rotate: 40deg;
     }
+  }
+
+  &:focus-visible {
+    outline-offset: -3px;
   }
 `
 
@@ -94,7 +102,9 @@ const FloatingIcon = styled.div<{
   $rotation: number
   $delay: number
 }>`
-  position: absolute;
+  grid-area: ${(props) => props.$position};
+  display: grid;
+  place-items: center;
   z-index: 1;
   opacity: 0;
   pointer-events: none;
@@ -102,24 +112,9 @@ const FloatingIcon = styled.div<{
   transition: all 0.4s ease;
   transition-delay: ${(props) => props.$delay}s;
 
-  ${(props) => {
-    switch (props.$position) {
-      case 'top-left':
-        return 'top: 15%; left: 15%;'
-      case 'top-right':
-        return 'top: 20%; right: 15%;'
-      case 'bottom-left':
-        return 'bottom: 20%; left: 20%;'
-      case 'bottom-right':
-        return 'bottom: 15%; right: 20%;'
-      default:
-        return ''
-    }
-  }}
-
   svg {
-    width: 24px;
-    height: 24px;
+    width: 1.125rem;
+    height: 1.125rem;
     filter: blur(0.5px);
     color: rgb(255 255 255 / 15%);
   }
@@ -133,6 +128,8 @@ const FloatingIcon = styled.div<{
 `
 
 const SeeAllText = styled.span`
+  grid-area: label;
+  justify-self: center;
   position: relative;
   z-index: 2;
   display: flex;

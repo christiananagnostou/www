@@ -127,7 +127,7 @@ const Log = styled.section`
     overflow-x: auto;
     list-style: none;
     margin: 0;
-    padding: 0 0 0.5rem;
+    padding: 0.25rem 0.5rem 0.5rem 0;
   }
   li {
     flex: 1 0 12.5rem;
