@@ -1,5 +1,6 @@
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
 
 import JukeboxLogo from '../../public/logo-jukebox.webp'
@@ -31,26 +32,32 @@ const projects = [
   { name: 'Vuori', href: 'https://vuoriclothing.com/', icon: <VuoriLogo /> },
   {
     name: 'Lift Club',
-    href: 'https://www.liftclub.app/',
+    href: '/work/liftclub',
     icon: <Image alt="" loading="eager" src={LiftClubLogo} />,
   },
   {
     name: 'Jukebox',
-    href: 'https://github.com/christiananagnostou/jukebox',
+    href: '/work/jukebox',
     icon: <Image alt="" className="darker" loading="eager" src={JukeboxLogo} />,
   },
 ]
 
 const entrance = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } }
+const ProjectLink = m.create(Link)
 
 export default function FeaturedProjects() {
   return (
     <ProjectList aria-label="Selected projects" variants={entrance}>
       {projects.map(({ name, href, icon }) => (
-        <m.a key={name} href={href} target="_blank" rel="noreferrer" variants={fade}>
+        <ProjectLink
+          key={name}
+          href={href}
+          {...(href.startsWith('https:') ? { target: '_blank', rel: 'noreferrer' } : {})}
+          variants={fade}
+        >
           {icon}
           {name}
-        </m.a>
+        </ProjectLink>
       ))}
     </ProjectList>
   )
