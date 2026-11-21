@@ -88,7 +88,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
           <LinkDirectory>
             <FeaturedProjects />
             <nav aria-label="Social profiles">
-              <SocialLinks showLabels />
+              <SocialLinks stacked />
             </nav>
           </LinkDirectory>
 

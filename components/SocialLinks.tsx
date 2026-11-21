@@ -5,32 +5,29 @@ import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
 import Twitter from './SVG/Twitter'
 
-function SocialLinks({ showLabels = false }: { showLabels?: boolean }) {
+function SocialLinks({ stacked = false }: { stacked?: boolean }) {
   return (
-    <SocialLinkList $labeled={showLabels} variants={fade}>
+    <SocialLinkList $stacked={stacked} variants={fade}>
       <li>
         <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
-          {showLabels && 'GitHub'}
         </a>
       </li>
       <li>
         <a aria-label="LinkedIn" href="https://linkedin.com/in/ChristianAnagnostou/" rel="noreferrer" target="_blank">
           <LinkedIn />
-          {showLabels && 'LinkedIn'}
         </a>
       </li>
       <li>
         <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           <Twitter />
-          {showLabels && 'X'}
         </a>
       </li>
     </SocialLinkList>
   )
 }
 
-const SocialLinkList = styled(m.ul)<{ $labeled: boolean }>`
+const SocialLinkList = styled(m.ul)<{ $stacked: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,11 +61,11 @@ const SocialLinkList = styled(m.ul)<{ $labeled: boolean }>`
     }
   }
 
-  ${({ $labeled }) =>
-    $labeled &&
+  ${({ $stacked }) =>
+    $stacked &&
     `
     display: grid;
-    width: 100%;
+    margin-inline-start: auto;
     gap: 0;
     padding: 0;
     border: none;
@@ -77,11 +74,9 @@ const SocialLinkList = styled(m.ul)<{ $labeled: boolean }>`
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 0.4rem;
+      min-width: 2.75rem;
       min-height: 2.75rem;
       padding: 0;
-      text-align: right;
-      font-size: 0.95rem;
       cursor: pointer;
     }
   `}
