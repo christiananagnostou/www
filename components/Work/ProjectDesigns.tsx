@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import type { CSSProperties } from 'react'
 
 import s from './ProjectDesigns.module.css'
+import renderInstrument from './ProjectInstrument'
 
 type Project = {
   slug: string
@@ -17,20 +18,29 @@ type Project = {
 
 const designs = [
   ['workbench', 'Workbench'],
-  ['plates', 'Plates'],
   ['loupe', 'Loupe'],
-  ['index', 'Original'],
+  ['instruments', 'Instruments'],
+  ['contact-sheet', 'Contact sheet'],
+  ['filmstrip', 'Filmstrip'],
 ] as const
 type Design = (typeof designs)[number][0]
 
 function Sample({ project, design }: { project: Project; design: Design }) {
   const sizes = {
-    index: '(max-width:600px) 80px, 128px',
     workbench: '(max-width:600px) 100px, 160px',
-    plates: '(max-width:600px) 90vw, 320px',
+    'contact-sheet': '(max-width:600px) 85vw, 320px',
+    instruments: '(max-width:600px) 100px, 180px',
+    filmstrip: '(max-width:600px) 95vw, 360px',
     loupe: '(max-width:600px) 85px, 230px',
   }
-  const second = design === 'plates' && project.detail
+  const second = design === 'contact-sheet' && project.detail
+  const instrument = design === 'instruments' ? renderInstrument(project.slug) : null
+  if (instrument)
+    return (
+      <div className={s.art} data-slug={project.slug}>
+        {instrument}
+      </div>
+    )
   if (design === 'workbench' && project.slug === 'jukebox') {
     return (
       <div className={`${s.art} ${s.record}`} aria-hidden="true">
@@ -70,16 +80,17 @@ function Sample({ project, design }: { project: Project; design: Design }) {
           {project.slug === 'skillbox' ? (
             <>
               <code>$ skillbox list</code>
-              {design !== 'index' && <small>Global Skills</small>}
+              <small>Global Skills</small>
             </>
           ) : (
             <>
               <code>knip-html-reporter</code>
-              {design !== 'index' && <small>Files · Exports · Dependencies</small>}
+              <small>Files · Exports · Dependencies</small>
             </>
           )}
         </div>
       )}
+      {design === 'contact-sheet' && !second && <div className={s.proofNote}>{project.medium}</div>}
     </div>
   )
 }
@@ -158,7 +169,7 @@ export default function ProjectDesigns({ projects }: { projects: Project[] }) {
                 <div className={s.copy}>
                   <h2 id={'project-' + p.slug}>{p.title}</h2>
                   <p>{p.description}</p>
-                  {selected === 'workbench' && <Detail project={p} />}
+                  {(selected === 'workbench' || selected === 'instruments') && <Detail project={p} />}
                 </div>
                 <small className={s.year}>{p.year}</small>
               </Link>

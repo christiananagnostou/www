@@ -1,4 +1,5 @@
 .preview {
+  --study-ease: cubic-bezier(0.23, 1, 0.32, 1);
   margin-bottom: 4rem;
 }
 .tabs {
@@ -199,43 +200,43 @@
   margin-left: 0.35rem;
 }
 
-.list[data-design='plates'] .row {
+.list[data-design='contact-sheet'] .row {
   grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
   column-gap: clamp(1.2rem, 4vw, 2rem);
   row-gap: 0.4rem;
   padding: 1.25rem 0;
 }
-.list[data-design='plates'] .art {
+.list[data-design='contact-sheet'] .art {
   grid-row: 1 / 3;
   aspect-ratio: 1.94;
   background: #20272b;
   overflow: hidden;
 }
-.list[data-design='plates'] .art[data-slug='liftclub'] {
+.list[data-design='contact-sheet'] .art[data-slug='liftclub'] {
   background: #212936;
 }
-.list[data-design='plates'] .art[data-slug='jukebox'] {
+.list[data-design='contact-sheet'] .art[data-slug='jukebox'] {
   background: #302e31;
 }
-.list[data-design='plates'] .primary {
+.list[data-design='contact-sheet'] .primary {
   inset: 9%;
   border-radius: 4px;
 }
-.list[data-design='plates'] .primary img,
+.list[data-design='contact-sheet'] .primary img,
 .secondary img {
   object-fit: contain;
 }
-.list[data-design='plates'] .art[data-paired='true'] .primary {
+.list[data-design='contact-sheet'] .art[data-paired='true'] .primary {
   inset: 7% 20% 9% 4%;
 }
 .secondary {
   inset: 26% 4% 4% 63%;
   filter: drop-shadow(0 3px 4px #00000060);
 }
-.list[data-design='plates'] .copy {
+.list[data-design='contact-sheet'] .copy {
   align-self: end;
 }
-.list[data-design='plates'] .year {
+.list[data-design='contact-sheet'] .year {
   grid-column: 2;
 }
 
@@ -321,21 +322,183 @@
   .list[data-design='workbench'] .year {
     grid-column: 1;
   }
-  .list[data-design='plates'] .row {
+  .list[data-design='contact-sheet'] .row {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.75rem;
     padding: 1.2rem 0;
   }
-  .list[data-design='plates'] .art {
+  .list[data-design='contact-sheet'] .art {
     grid-area: 1 / 1 / 2 / -1;
   }
-  .list[data-design='plates'] .copy {
+  .list[data-design='contact-sheet'] .copy {
     grid-area: 2 / 1;
   }
-  .list[data-design='plates'] .year {
+  .list[data-design='contact-sheet'] .year {
     grid-area: 2 / 2;
   }
   .specimen small {
     font-size: 0.56rem;
+  }
+}
+
+.list[data-design='instruments'] .row {
+  grid-template-columns: minmax(8rem, 24%) minmax(0, 1fr) auto;
+}
+.instrument {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  color: #bed1bb;
+  background: #202820;
+}
+.instrument[data-instrument='liftclub'] {
+  color: #a9c2ea;
+  background: #1c2430;
+}
+.instrument[data-instrument='jukebox'] {
+  color: #dbbd99;
+  background: #2a241f;
+}
+.instrument[data-instrument='imgpress'] {
+  color: #9dccac;
+  background: #1c2923;
+}
+.disc {
+  transform-origin: 66px 44px;
+}
+.compress {
+  transform-origin: 32px center;
+}
+.output {
+  opacity: 0.55;
+}
+.proofNote {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  background: var(--dark-bg);
+  border: 1px solid var(--accent);
+  padding: 0.25rem 0.45rem;
+  font-size: 0.72rem;
+  border-radius: var(--border-radius-sm);
+}
+.list[data-design='contact-sheet'] .primary {
+  transform: rotate(-2deg);
+}
+.list[data-design='contact-sheet'] .secondary {
+  transform: rotate(4deg);
+}
+.list[data-design='filmstrip'] {
+  counter-reset: frame;
+}
+.list[data-design='filmstrip'] li {
+  counter-increment: frame;
+}
+.list[data-design='filmstrip'] .row {
+  grid-template-columns: minmax(0, 1fr) 44%;
+  gap: 0.35rem 1.5rem;
+  padding: 1.25rem 0.5rem;
+}
+.list[data-design='filmstrip'] .art {
+  grid-area: 1 / 2 / 3 / 3;
+  overflow: hidden;
+  aspect-ratio: 2.7;
+  border-radius: 2px;
+  border-block: 0.3rem solid #111111;
+}
+.list[data-design='filmstrip'] .copy {
+  grid-area: 1 / 1;
+  align-self: end;
+}
+.list[data-design='filmstrip'] .year {
+  grid-area: 2 / 1;
+}
+.list[data-design='filmstrip'] .art::after {
+  content: counter(frame, decimal-leading-zero);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.1rem 0.35rem;
+  font: 0.65rem monospace;
+  color: #e8ddbb;
+  background: #161616;
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .instrument g,
+  .instrument .compress,
+  .list[data-design='contact-sheet'] :is(.primary, .secondary, .proofNote),
+  .list[data-design='instruments'] .primary img {
+    transition:
+      transform 220ms var(--study-ease),
+      opacity 160ms ease;
+  }
+  .row:hover .lift {
+    transform: translateY(-12px);
+  }
+  .row:hover .disc {
+    transform: rotate(85deg);
+  }
+  .row:hover .compress {
+    transform: scaleX(0.403);
+  }
+  .row:hover .output {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+  .list[data-design='instruments'] .row:hover .primary img {
+    transform: scale(1.08);
+  }
+  .list[data-design='contact-sheet'] .row:hover .primary {
+    transform: translateX(-3%) rotate(-5deg);
+  }
+  .list[data-design='contact-sheet'] .row:hover .secondary {
+    transform: translate(6%, -6%) rotate(8deg) scale(1.1);
+  }
+  .list[data-design='contact-sheet'] .row:hover .proofNote {
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .list[data-design='filmstrip'] .row {
+      view-timeline-name: --project-frame;
+    }
+    .list[data-design='filmstrip'] .art > div {
+      animation: develop linear both;
+      animation-timeline: --project-frame;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+@keyframes develop {
+  from {
+    transform: scale(1.12) translateY(3%);
+    opacity: 0.66;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (width <= 600px) {
+  .list[data-design='instruments'] .row {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+  }
+  .list[data-design='filmstrip'] .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.6rem 1rem;
+  }
+  .list[data-design='filmstrip'] .art {
+    grid-area: 1 / 1 / 2 / -1;
+    aspect-ratio: 3;
+  }
+  .list[data-design='filmstrip'] .copy {
+    grid-area: 2 / 1;
+  }
+  .list[data-design='filmstrip'] .year {
+    grid-area: 2 / 2;
   }
 }
