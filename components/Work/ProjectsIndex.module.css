@@ -1,4 +1,5 @@
 .page {
+  animation: page-in 200ms ease-out;
   max-width: var(--max-w-screen);
   margin: auto;
   padding: clamp(2rem, 6vw, 3.75rem) 1rem 4rem;
@@ -18,8 +19,12 @@
 }
 
 .page a {
+  transition: background-color 160ms ease;
   text-decoration: none;
-  transition: color 0.2s ease;
+}
+
+.page a:is(:hover, :active, :focus-visible) {
+  text-decoration: none;
 }
 
 .page a:focus-visible {
@@ -27,10 +32,10 @@
   outline-offset: 3px;
 }
 
-.page a:is(:hover, :focus-visible) :is(h2, h3) {
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
-  text-decoration-thickness: 1px;
+@media (hover: hover) and (pointer: fine) {
+  .page a:hover {
+    background-color: #25272a;
+  }
 }
 
 .lead,
@@ -73,8 +78,6 @@
   font-size: 0.86rem;
   font-weight: 500;
   color: #c1cced;
-  text-decoration: underline;
-  text-underline-offset: 0.23em;
 }
 
 .art {
@@ -87,12 +90,12 @@
   height: auto;
 }
 
-.liftclub {
+.lead .art {
   align-self: center;
 }
 
 .feature {
-  grid-template-columns: 1fr clamp(6rem, 18vw, 9rem);
+  grid-template-columns: minmax(0, 1fr) clamp(7rem, 32vw, 16rem);
   border-bottom: 1px solid var(--accent);
   padding: 1rem 0;
 }
@@ -104,26 +107,12 @@
 }
 
 .feature .art {
-  height: 6.25rem;
   border-radius: var(--border-radius-md);
 }
 
-.jukebox {
-  display: grid;
-  place-items: center;
-  background: #31445a;
-}
-
-.jukebox img {
-  width: auto;
-  height: 5.75rem;
-  border-radius: 0.35rem;
-}
-
-.imgpress img {
-  height: 100%;
-  object-fit: cover;
-  object-position: center 70%;
+.art[data-project='imgpress'] {
+  background: #232b2b;
+  padding: clamp(0.4rem, 1.5vw, 0.85rem);
 }
 
 .archive {
@@ -157,6 +146,38 @@
   font-size: 0.88rem;
 }
 
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page h1,
+  .lead,
+  .feature,
+  .archive > h2,
+  .archive li {
+    animation: row-in 300ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+    animation-delay: calc(var(--order, 0) * 40ms);
+  }
+
+  .archive > h2 {
+    --order: 4;
+  }
+}
+
 .archive span {
   text-align: right;
   white-space: nowrap;
@@ -170,7 +191,7 @@
     gap: 0;
   }
 
-  .liftclub {
+  .lead .art {
     grid-row: 1;
   }
 

@@ -2,15 +2,15 @@ import * as m from 'framer-motion/m'
 import type { InferGetStaticPropsType } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import type { CSSProperties } from 'react'
 
 import { pageAnimation } from '../components/animation'
-import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import ProjectHead from '../components/Work/ProjectHead'
 import styles from '../components/Work/ProjectsIndex.module.css'
 import { ProjectState } from '../lib/projects'
 import { getProjectsStructuredData, projectsDescription, projectsUrl } from '../lib/structured/projects'
-import bike from '../public/img/projects/imgpress/bay-bike-export.jpg'
-import phone from '../public/img/projects/jukebox/remote-study.webp'
+import conversion from '../public/img/projects/imgpress/conversion.webp'
+import library from '../public/img/projects/jukebox/collage.webp'
 import workout from '../public/img/projects/liftclub/hero.webp'
 
 const features = [
@@ -21,13 +21,13 @@ const features = [
   },
   {
     slug: 'jukebox',
-    image: phone,
-    copy: 'My records live on my desktop. Jukebox lets me listen to the same library on my phone.',
+    image: library,
+    copy: 'A desktop player for my own music library. I can queue a record with the keyboard or listen from my phone.',
   },
   {
     slug: 'imgpress',
-    image: bike,
-    copy: 'A Mac menu bar app for getting photos ready to share. This bike photo went from 177.4 kB to 64.6 kB.',
+    image: conversion,
+    copy: 'I use this Mac menu bar app to get photos ready to share. One batch of three went from 566 kB to 228 kB.',
   },
 ]
 
@@ -66,7 +66,6 @@ export function getStaticProps() {
 }
 
 export default function Projects({ featured, archive, structured }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const initial = usePageTransitionInitial()
   return (
     <>
       <ProjectHead
@@ -75,52 +74,53 @@ export default function Projects({ featured, archive, structured }: InferGetStat
         url={projectsUrl}
         structured={structured}
       />
-      <m.div className={styles.page} initial={initial} animate="show" exit="exit" variants={pageAnimation}>
-        <h1>Projects</h1>
-        <section aria-label="Featured projects">
-          {featured.map(({ slug, title, image, copy }, index) => (
-            <Link
-              key={slug}
-              href={`/work/${slug}`}
-              className={index === 0 ? styles.lead : styles.feature}
-              aria-labelledby={slug}
-            >
-              <div>
-                <h2 id={slug}>{title}</h2>
-                <p>{copy}</p>
-                {index === 0 && <span className={styles.read}>Read the case study</span>}
-              </div>
-              <div className={`${styles.art} ${styles[slug]}`}>
-                <Image
-                  src={image}
-                  alt=""
-                  priority={index === 0}
-                  sizes={
-                    index === 0
-                      ? '(min-width: 801px) 410px, (min-width: 601px) 53vw, 100vw'
-                      : slug === 'jukebox'
-                        ? '70px'
-                        : '144px'
-                  }
-                />
-              </div>
-            </Link>
-          ))}
-        </section>
-        <section className={styles.archive} aria-labelledby="more-projects">
-          <h2 id="more-projects">More projects</h2>
-          <ul>
-            {archive.map(({ title, slug, year, description }) => (
-              <li key={slug}>
-                <Link href={`/work/${slug}`} aria-labelledby={slug}>
-                  <h3 id={slug}>{title}</h3>
-                  <p>{description}</p>
-                  <span>{year}</span>
-                </Link>
-              </li>
+      <m.div exit={pageAnimation.exit}>
+        <div className={styles.page}>
+          <h1>Projects</h1>
+          <section aria-label="Featured projects">
+            {featured.map(({ slug, title, image, copy }, index) => (
+              <Link
+                key={slug}
+                href={`/work/${slug}`}
+                className={index === 0 ? styles.lead : styles.feature}
+                style={{ '--order': index + 1 } as CSSProperties}
+                aria-labelledby={slug}
+              >
+                <div>
+                  <h2 id={slug}>{title}</h2>
+                  <p>{copy}</p>
+                  {index === 0 && <span className={styles.read}>View project</span>}
+                </div>
+                <div className={styles.art} data-project={slug}>
+                  <Image
+                    src={image}
+                    alt=""
+                    priority={index === 0}
+                    sizes={
+                      index === 0
+                        ? '(min-width: 801px) 410px, (min-width: 601px) 53vw, 100vw'
+                        : '(min-width: 800px) 256px, 32vw'
+                    }
+                  />
+                </div>
+              </Link>
             ))}
-          </ul>
-        </section>
+          </section>
+          <section className={styles.archive} aria-labelledby="more-projects">
+            <h2 id="more-projects">More projects</h2>
+            <ul>
+              {archive.map(({ title, slug, year, description }, index) => (
+                <li key={slug} style={{ '--order': index + 5 } as CSSProperties}>
+                  <Link href={`/work/${slug}`} aria-labelledby={slug}>
+                    <h3 id={slug}>{title}</h3>
+                    <p>{description}</p>
+                    <span>{year}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       </m.div>
     </>
   )
