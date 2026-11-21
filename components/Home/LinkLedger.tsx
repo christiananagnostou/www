@@ -29,8 +29,8 @@ const Ledger = styled(m.footer)`
     outline: 2px solid var(--text);
     outline-offset: -2px;
   }
-  @media (width < 390px) {
-    grid-template-columns: minmax(0, 1fr);
+  @media (width < 768px) {
+    width: 100%;
   }
 `
 
@@ -39,11 +39,9 @@ const Profiles = styled.nav`
   place-items: center;
   padding: 0 0.5rem;
   border-left: 1px solid var(--accent);
-  @media (width <= 480px) {
-    padding: 0;
-  }
-  @media (width < 390px) {
-    border-left: 0;
-    border-top: 1px solid var(--accent);
+  @media (width < 768px) {
+    ul {
+      flex-direction: column;
+    }
   }
 `

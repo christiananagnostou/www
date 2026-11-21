@@ -81,11 +81,12 @@ const ProjectList = styled(m.nav)`
     color: var(--heading);
     text-underline-offset: 0.22em;
   }
-  @media (width <= 480px) {
-    column-gap: 0.25rem;
-    padding-inline: 0.25rem;
-    a {
-      gap: 0.2rem;
+  @media (width < 768px) {
+    display: grid;
+    justify-content: stretch;
+    padding-block: 0;
+    a + a {
+      border-top: 1px solid var(--accent);
     }
   }
   img,
