@@ -1,4 +1,5 @@
 import * as m from 'framer-motion/m'
+import dynamic from 'next/dynamic'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next/types'
@@ -18,6 +19,8 @@ import { projectMetadata } from '../../lib/structured/projects'
 interface Props {
   project: ProjectType
 }
+
+const ImgPressStudy = dynamic(() => import('../../components/Work/ImgPressStudy'))
 
 type ProjectLinkType = { href: string; label: string }
 type ProjectDetailType = ProjectType['details'][number]
@@ -45,6 +48,8 @@ const SingleProject = ({ project }: Props) => (
       <LiftClubStudy project={project} />
     ) : project.slug === 'jukebox' ? (
       <JukeboxStudy project={project} />
+    ) : project.slug === 'imgpress' ? (
+      <ImgPressStudy project={project} />
     ) : (
       <DefaultProject project={project} />
     )}
