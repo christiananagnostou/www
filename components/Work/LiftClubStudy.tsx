@@ -46,7 +46,7 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
         <Image
           src={progress}
           alt="Low cable crossover training volume trends upward across 37 sessions, peaking at 1,620 kg."
-          sizes="(min-width: 650px) 405px, calc(100vw - 64px)"
+          sizes="(min-width: 800px) 242px, (min-width: 650px) calc(35vw - 36px), calc(100vw - 64px)"
         />
       </Progress>
       <StoryNote {...community} />
@@ -184,7 +184,7 @@ const Progress = styled.section`
     margin-top: 0.8rem;
   }
   @media (width >= 650px) {
-    grid-template-columns: 1.3fr 1fr;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 13fr);
     gap: 1.7rem;
     .progress-copy {
       grid-area: 1 / 2;
