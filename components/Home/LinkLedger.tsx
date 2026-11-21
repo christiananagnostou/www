@@ -27,6 +27,11 @@ const Ledger = styled(m.footer)`
     outline: 2px solid var(--text);
     outline-offset: -2px;
   }
+  @media (width > 1024px) {
+    align-self: center;
+    width: fit-content;
+    max-width: 100%;
+  }
 `
 
 const Profiles = styled.nav`
@@ -36,5 +41,10 @@ const Profiles = styled.nav`
   border-left: 1px solid var(--accent);
   ul {
     flex-direction: column;
+  }
+  @media (width > 1024px) {
+    ul {
+      flex-direction: row;
+    }
   }
 `

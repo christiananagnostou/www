@@ -148,8 +148,23 @@ const Log = styled(m.section)`
     font-size: 1rem;
     font-weight: 500;
   }
-  li:first-child h3 {
-    font-size: 1.15rem;
+  @media (width <= 1024px) {
+    li:first-child h3 {
+      font-size: 1.15rem;
+    }
+  }
+  @media (width > 1024px) {
+    ul {
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0;
+    }
+    li {
+      flex-basis: 9rem;
+    }
+    h3 {
+      font-size: 0.95rem;
+    }
   }
   h3 svg {
     flex: none;

@@ -80,6 +80,16 @@ const ProjectList = styled(m.nav)`
   a + a {
     border-top: 1px solid var(--accent);
   }
+  @media (width > 1024px) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1.25rem;
+    padding-block: 0.25rem;
+    a + a {
+      border-top: 0;
+    }
+  }
   img,
   svg {
     flex: none;
