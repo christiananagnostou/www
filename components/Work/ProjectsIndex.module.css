@@ -136,9 +136,6 @@
   color: var(--project-accent);
 }
 @media (hover: hover) and (pointer: fine) {
-  .row:hover {
-    background: #252628;
-  }
   .row:hover h2 {
     color: var(--project-accent);
   }
@@ -160,6 +157,10 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
+  .row h2 {
+    transition: color 160ms ease;
+  }
+
   .list li {
     animation: page-in 240ms ease-out backwards;
     animation-delay: calc(var(--order) * 35ms);
