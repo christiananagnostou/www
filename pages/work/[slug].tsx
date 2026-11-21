@@ -15,7 +15,6 @@ import { ProjectState } from '../../lib/projects'
 
 interface Props {
   project: ProjectType
-  compare?: boolean
 }
 
 type ProjectLinkType = { href: string; label: string }
@@ -34,21 +33,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
 
-  return {
-    props: {
-      project,
-      compare:
-        project.slug === 'liftclub' && (process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development'),
-    },
-  }
+  return { props: { project } }
 }
 
-const SingleProject = ({ project, compare }: Props) =>
-  project.slug === 'liftclub' ? (
-    <LiftClubStudy project={project} compare={compare} />
-  ) : (
-    <DefaultProject project={project} />
-  )
+const SingleProject = ({ project }: Props) =>
+  project.slug === 'liftclub' ? <LiftClubStudy project={project} /> : <DefaultProject project={project} />
 
 const DefaultProject = ({ project }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()

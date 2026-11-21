@@ -445,22 +445,21 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [LiftClubLog, LiftClubProgress],
     externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
-    summary:
-      'A workout log for lifters. Record your sets, see what you lifted last time, and follow your progress from session to session.',
+    summary: 'A training log that remembers what you lifted last time, so you can decide what goes on the bar today.',
     meta: [
       { label: 'Format', value: 'Installable web app' },
       { label: 'Focus', value: 'Strength training' },
     ],
     details: [
       {
-        title: 'Under the bar',
+        title: 'One more rep than last time.',
         description:
-          'Was that last set eight reps or ten? The logger keeps the previous session beside the one in progress. You can match it, add a rep, or change the weight without leaving the exercise.',
+          'Ten reps at 27.5 kg last session. Ten at 30 today. Lift Club puts those numbers on the same line, right where you enter your set.',
       },
       {
-        title: 'Between sessions',
+        title: 'See the work add up.',
         description:
-          'One heavy day tells only part of the story. Pick an exercise and follow its volume or estimated one-rep max over time. The sessions behind the curve are right there when you want a closer look.',
+          'A single workout can feel ordinary. String a few months together and the change is easier to see. Follow an exercise by training volume or estimated one-rep max, then look back at the sessions behind the curve.',
       },
     ],
   },
