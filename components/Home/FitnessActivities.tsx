@@ -3,14 +3,16 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
+import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
 
 interface Props {
   activities: HomeActivity[]
   totalCounts: Record<HomeActivityCategory, number>
 }
 
-const filters = ['all', 'run', 'cycle', 'indoorCycle', 'swim'] as const
-const labels = { all: 'All', run: 'Run', cycle: 'Ride', indoorCycle: 'Indoor ride', swim: 'Swim' }
+const filters = ['swim', 'cycle', 'run', 'indoorCycle'] as const
+const icons = { swim: swim(), cycle: ride(), run: run(), indoorCycle: indoorCycle() }
+const labels = { run: 'Run', cycle: 'Ride', indoorCycle: 'Indoor ride', swim: 'Swim' }
 const date = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
   month: 'short',
@@ -19,9 +21,9 @@ const date = new Intl.DateTimeFormat('en-US', {
 })
 
 export default function FitnessActivities({ activities, totalCounts }: Props) {
-  const [filter, setFilter] = useState<(typeof filters)[number]>('all')
+  const [filter, setFilter] = useState<HomeActivityCategory | null>(null)
   if (!activities.length) return null
-  const recent = (filter === 'all' ? activities : activities.filter((a) => a.category === filter)).slice(
+  const recent = (filter === null ? activities : activities.filter((a) => a.category === filter)).slice(
     0,
     HOME_ACTIVITY_LIMIT
   )
@@ -29,22 +31,24 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
   return (
     <Log aria-labelledby="training-title">
       <header>
-        <h2 id="training-title">Recent training</h2>
-        <Link href="/fitness">View training</Link>
+        <h2 id="training-title">
+          <Link href="/fitness">Fitness</Link>
+        </h2>
+        <div role="group" aria-label="Filter training by sport">
+          {filters.map((key) => (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={filter === key}
+              aria-label={`${labels[key]} (${totalCounts[key]} recorded)`}
+              title={labels[key]}
+              onClick={() => setFilter((current) => (current === key ? null : key))}
+            >
+              {icons[key]}
+            </button>
+          ))}
+        </div>
       </header>
-      <div role="group" aria-label="Filter training by sport">
-        {filters.map((key) => (
-          <button
-            key={key}
-            type="button"
-            aria-pressed={filter === key}
-            aria-label={key === 'all' ? 'All sports' : `${labels[key]} (${totalCounts[key]} recorded)`}
-            onClick={() => setFilter(key)}
-          >
-            {labels[key]}
-          </button>
-        ))}
-      </div>
       {recent.length ? (
         <ul key={filter} aria-label="Recent activities" tabIndex={0}>
           {recent.map((activity) => {
@@ -63,7 +67,7 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
           })}
         </ul>
       ) : (
-        <p>No {labels[filter].toLowerCase()} activities recorded yet.</p>
+        <p>No {filter && labels[filter].toLowerCase()} activities recorded yet.</p>
       )}
     </Log>
   )
@@ -72,7 +76,8 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
 const Log = styled.section`
   width: 100%;
   padding: 1rem;
-  border-block: 1px solid var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
   background: var(--dark-bg);
 
   header,
@@ -83,13 +88,14 @@ const Log = styled.section`
   }
   header {
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
     gap: 1rem;
   }
   h2 {
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 200;
   }
-  header a,
   p,
   button {
     font-size: 0.85rem;
@@ -98,20 +104,23 @@ const Log = styled.section`
     color: var(--text);
   }
   [role='group'] {
-    gap: 0.75rem;
+    gap: 0.25rem;
     flex-wrap: wrap;
-    margin: 0.5rem 0 1rem;
   }
   button {
     background: none;
     color: var(--text);
-    border: 0;
-    padding: 0.5rem 0;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    padding: 0.25rem;
+    display: grid;
+    place-items: center;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
     cursor: pointer;
   }
   button[aria-pressed='true'] {
-    text-decoration: underline;
-    text-underline-offset: 0.35em;
+    background: var(--accent);
     color: var(--heading);
   }
   ul {
@@ -122,7 +131,7 @@ const Log = styled.section`
     padding: 0 0 0.5rem;
   }
   li {
-    flex: 1 0 8.5rem;
+    flex: 1 0 12.5rem;
   }
   h3 {
     margin: 0.35rem 0;
