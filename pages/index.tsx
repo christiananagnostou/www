@@ -85,10 +85,13 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
-          <FlexWrap>
+          <LinkDirectory>
             <FeaturedProjects />
-            <SocialLinks />
-          </FlexWrap>
+            <nav aria-labelledby="profile-links">
+              <h2 id="profile-links">Elsewhere</h2>
+              <SocialLinks showLabels />
+            </nav>
+          </LinkDirectory>
 
           {/* <FlexWrap>
             <LabLink />
@@ -123,13 +126,20 @@ const Container = styled(m.div)`
   }
 `
 
-const FlexWrap = styled.section`
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+const LinkDirectory = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem 3rem;
   width: 100%;
+  padding: 1rem 0;
+  h2 {
+    margin-bottom: 0.35rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 const MiddleSection = styled.section`

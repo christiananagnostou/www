@@ -3,37 +3,34 @@ import styled from 'styled-components'
 import { fade } from './animation'
 import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
-import Readcv from './SVG/Readcv'
 import Twitter from './SVG/Twitter'
 
-function SocialLinks() {
+function SocialLinks({ showLabels = false }: { showLabels?: boolean }) {
   return (
-    <SocialLinkList variants={fade}>
+    <SocialLinkList $labeled={showLabels} variants={fade}>
       <li>
         <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
+          {showLabels && 'GitHub'}
         </a>
       </li>
       <li>
         <a aria-label="LinkedIn" href="https://linkedin.com/in/ChristianAnagnostou/" rel="noreferrer" target="_blank">
           <LinkedIn />
-        </a>
-      </li>
-      <li>
-        <a aria-label="Read my CV" href="https://read.cv/christian.a" rel="noreferrer" target="_blank">
-          <Readcv />
+          {showLabels && 'LinkedIn'}
         </a>
       </li>
       <li>
         <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           <Twitter />
+          {showLabels && 'X'}
         </a>
       </li>
     </SocialLinkList>
   )
 }
 
-const SocialLinkList = styled(m.ul)`
+const SocialLinkList = styled(m.ul)<{ $labeled: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,6 +63,27 @@ const SocialLinkList = styled(m.ul)`
       }
     }
   }
+
+  ${({ $labeled }) =>
+    $labeled &&
+    `
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0 1rem;
+    padding: 0;
+    border: none;
+    background: none;
+    li { flex: none; }
+    li a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 2.75rem;
+      padding: 0;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+  `}
 `
 
 export default SocialLinks
