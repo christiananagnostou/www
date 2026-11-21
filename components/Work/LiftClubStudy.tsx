@@ -72,7 +72,6 @@ function StoryNote({ title, description }: ProjectType['details'][number]) {
 }
 
 const Page = styled(m.main)`
-  --story-columns: minmax(0, 9fr) minmax(0, 11fr);
   --story-gutter: 2.5rem;
   width: 100%;
   max-width: var(--max-w-screen);
@@ -125,7 +124,7 @@ const Intro = styled.header`
     font-size: clamp(1.05rem, 2.5vw, 1.2rem);
   }
   @media (width >= 1200px) {
-    grid-template-columns: var(--story-columns);
+    grid-template-columns: minmax(0, 9fr) minmax(0, 11fr);
     align-items: center;
     gap: var(--story-gutter);
     margin-top: 2.25rem;
@@ -164,18 +163,11 @@ const Note = styled.section`
   align-items: start;
   padding: clamp(2rem, 6vw, 3.5rem) 0;
   @media (width >= 650px) {
-    grid-template-columns: 0.95fr 1.25fr;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 13fr);
   }
   @media (width >= 1200px) {
-    grid-template-columns: var(--story-columns);
     column-gap: var(--story-gutter);
     padding-block: 3rem;
-
-    ${Intro} + & {
-      grid-template-columns: minmax(0, 38rem);
-      gap: 0.6rem;
-      padding-block: 2.75rem 2.25rem;
-    }
   }
 `
 const Progress = styled.section`
