@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import Bio from '../components/Home/Bio'
-import FooterDesigns from '../components/Home/FooterDesigns'
+import LinkLedger from '../components/Home/LinkLedger'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
 import FitnessActivities from '../components/Home/FitnessActivities'
@@ -18,7 +18,6 @@ import { getAllActivities } from '../lib/fitness/server/activityRepository'
 import { getHomeStructuredData } from '../lib/structured/home'
 
 interface Props {
-  compareFooters: boolean
   posts: ArticleSummary[]
   fitnessActivities: ReturnType<typeof getHomeActivityPreview>
 }
@@ -38,13 +37,12 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       posts,
       fitnessActivities,
-      compareFooters: process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development',
     },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
 
-const Home = ({ posts, fitnessActivities, compareFooters }: Props) => {
+const Home = ({ posts, fitnessActivities }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
 
   return (
@@ -89,7 +87,7 @@ const Home = ({ posts, fitnessActivities, compareFooters }: Props) => {
 
           <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
-          <FooterDesigns compare={compareFooters} />
+          <LinkLedger />
 
           {/* <FlexWrap>
             <LabLink />

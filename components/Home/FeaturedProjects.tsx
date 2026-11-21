@@ -9,6 +9,7 @@ import { fade } from '../animation'
 const VuoriLogo = () => (
   <svg
     aria-hidden="true"
+    className="darker"
     fill="currentColor"
     height="18"
     viewBox="0 0 457.89 457.89"
@@ -31,12 +32,12 @@ const projects = [
   {
     name: 'Lift Club',
     href: 'https://www.liftclub.app/',
-    icon: <Image alt="" width={18} height={18} src={LiftClubLogo} />,
+    icon: <Image alt="" loading="eager" src={LiftClubLogo} />,
   },
   {
     name: 'Jukebox',
     href: 'https://github.com/christiananagnostou/jukebox',
-    icon: <Image alt="" width={18} height={18} src={JukeboxLogo} />,
+    icon: <Image alt="" className="darker" loading="eager" src={JukeboxLogo} />,
   },
 ]
 
@@ -56,9 +57,9 @@ export default function FeaturedProjects() {
 }
 
 const ProjectList = styled(m.nav)`
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 1rem;
+  display: grid;
+  min-width: 0;
+  padding: 0 1rem;
 
   a {
     display: flex;
@@ -66,6 +67,25 @@ const ProjectList = styled(m.nav)`
     gap: 0.4rem;
     min-height: 2.75rem;
     font-size: 0.9rem;
+    color: var(--heading);
     text-underline-offset: 0.22em;
+  }
+  a + a {
+    border-top: 1px solid var(--accent);
+  }
+  img,
+  svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: grayscale(1);
+    transition: filter 0.2s ease;
+    &.darker {
+      filter: grayscale(1) brightness(0.7);
+    }
+  }
+  a:is(:hover, :focus-visible) :is(img, svg) {
+    filter: none;
   }
 `
