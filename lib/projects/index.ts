@@ -29,6 +29,7 @@ import ElectriqHeroMain from '../../public/img/projects/electriq-home/hero-main.
 import ElectriqWebsite from '../../public/img/projects/electriq-home/homepage-composed.webp'
 // Lift Club
 import LiftClubMain from '../../public/img/projects/liftclub/hero.webp'
+import LiftClubCommunity from '../../public/img/projects/liftclub/community.webp'
 import LiftClubProgress from '../../public/img/projects/liftclub/progress.webp'
 // Photo Shop
 import PhotoDesktop1 from '../../public/img/projects/awildchristian/desktop1.jpg'
@@ -440,7 +441,7 @@ export const ProjectState: ProjectType[] = [
     title: 'Lift Club',
     date: 'Apr 2021',
     tags: ['personal'],
-    desktopImgs: [LiftClubMain],
+    desktopImgs: [LiftClubMain, LiftClubCommunity],
     mobileImgs: [LiftClubProgress],
     externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
@@ -454,7 +455,7 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'Why I built it',
         description:
-          'I wanted to stop writing down every exercise by hand. George helped me build a log where we could save a workout and pull it up again the next time we went to the gym, with our last sets already there.',
+          'I wanted to stop writing down every exercise by hand, so I built a log that remembered our last workout. George has pitched in along the way, from writing part of the workout guide to adding an option to see when an exercise was last saved.',
       },
       {
         title: 'Looking back at a lift',
@@ -464,7 +465,12 @@ export const ProjectState: ProjectType[] = [
       {
         title: 'The club part',
         description:
-          'There’s a feed now where we can follow each other’s workouts, and a leaderboard that counts things like how many sessions we’ve finished. My favorite part is seeing a familiar name pop up. George and I are pretty proud of how far it’s come.',
+          'When George logs a workout, it shows up in my feed. I can open his leg day and see exactly what he did. That’s still my favorite part: recognizing the person behind a workout.',
+      },
+      {
+        title: 'Why I keep working on it',
+        description:
+          'Lift Club is profitable now, which is pretty cool for something that started with the two of us. A few people have emailed me to say they like using it and ask if I could change one thing. I like getting those emails. They give me a reason to open the project back up and make it a little better for the people who use it.',
       },
     ],
   },

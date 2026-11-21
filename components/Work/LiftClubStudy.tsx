@@ -10,9 +10,9 @@ import { usePageTransitionInitial } from '../animation/MotionProvider'
 
 export default function LiftClubStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
-  const [cover] = project.desktopImgs
+  const [cover, communityCollage] = project.desktopImgs
   const [progress] = project.mobileImgs
-  const [origin, history, community] = project.details
+  const [origin, history, community, today] = project.details
   const app = project.externalLink!
 
   return (
@@ -61,6 +61,17 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
         <Note>
           <h2>{community.title}</h2>
           <p>{community.description}</p>
+        </Note>
+        <Cover>
+          <Image
+            src={communityCollage}
+            sizes="(min-width: 800px) 768px, 95vw"
+            alt="Two screens from the Lift Club demo: Christian follows George and Dobby, and George’s leg day opens in the workout feed."
+          />
+        </Cover>
+        <Note>
+          <h2>{today.title}</h2>
+          <p>{today.description}</p>
         </Note>
       </Page>
     </>
