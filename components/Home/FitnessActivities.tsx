@@ -13,7 +13,9 @@ interface Props {
 
 const filters = ['swim', 'cycle', 'run', 'indoorCycle'] as const
 const icons = { swim: swim(), cycle: ride(), run: run(), indoorCycle: indoorCycle() }
-const labels = { run: 'Run', cycle: 'Ride', indoorCycle: 'Indoor ride', swim: 'Swim' }
+const labels = { run: 'Run', cycle: 'Ride', indoorCycle: 'Zwift', swim: 'Swim' }
+const inlineLabel = (category: HomeActivityCategory) =>
+  category === 'indoorCycle' ? labels[category] : labels[category].toLowerCase()
 const date = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
   month: 'short',
@@ -50,19 +52,19 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
           ))}
         </div>
       </header>
-      {recent.length === 0 && filter && <p>No {labels[filter].toLowerCase()} activities recorded yet.</p>}
+      {recent.length === 0 && filter && <p>No {inlineLabel(filter)} activities recorded yet.</p>}
       <ul key={filter} aria-label="Recent activities" tabIndex={0}>
         {recent.map((activity) => {
           const metric = (label: string) => activity.metrics.find((m) => m.label === label)
           const distance = metric('Distance')
-          const sport = labels[activity.category]
+          const sport = inlineLabel(activity.category)
           const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
           return (
             <li key={activity.id}>
               <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
-              <h3>{distance ? `${distance.value} ${sport.toLowerCase()}` : sport}</h3>
+              <h3>{distance ? `${distance.value} ${sport}` : labels[activity.category]}</h3>
               {details.length > 0 && <p>{details.join(' · ')}</p>}
-              {distance?.highlight && <small>Longest {sport.toLowerCase()} on record</small>}
+              {distance?.highlight && <small>Longest {sport} on record</small>}
             </li>
           )
         })}
@@ -123,14 +125,14 @@ const Log = styled.section`
     color: var(--heading);
   }
   ul {
-    gap: 1rem;
+    gap: 0.5rem;
     overflow-x: auto;
     list-style: none;
     margin: 0;
     padding: 0.25rem 0.5rem 0.5rem 0;
   }
   li {
-    flex: 1 0 12.5rem;
+    flex: 0 0 10rem;
   }
   h3 {
     margin: 0.35rem 0;
