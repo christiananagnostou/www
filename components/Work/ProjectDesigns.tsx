@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import type { CSSProperties } from 'react'
 
 import s from './ProjectDesigns.module.css'
-import renderInstrument from './ProjectInstrument'
+import ProjectInstrument from './ProjectInstrument'
 
 type Project = {
   slug: string
@@ -17,11 +17,9 @@ type Project = {
 }
 
 const designs = [
-  ['workbench', 'Workbench'],
-  ['loupe', 'Loupe'],
   ['instruments', 'Instruments'],
+  ['workbench', 'Workbench'],
   ['contact-sheet', 'Contact sheet'],
-  ['filmstrip', 'Filmstrip'],
 ] as const
 type Design = (typeof designs)[number][0]
 
@@ -29,16 +27,12 @@ function Sample({ project, design }: { project: Project; design: Design }) {
   const sizes = {
     workbench: '(max-width:600px) 100px, 160px',
     'contact-sheet': '(max-width:600px) 85vw, 320px',
-    instruments: '(max-width:600px) 100px, 180px',
-    filmstrip: '(max-width:600px) 95vw, 360px',
-    loupe: '(max-width:600px) 85px, 230px',
   }
   const second = design === 'contact-sheet' && project.detail
-  const instrument = design === 'instruments' ? renderInstrument(project.slug) : null
-  if (instrument)
+  if (design === 'instruments')
     return (
       <div className={s.art} data-slug={project.slug}>
-        {instrument}
+        <ProjectInstrument slug={project.slug} />
       </div>
     )
   if (design === 'workbench' && project.slug === 'jukebox') {
@@ -124,7 +118,7 @@ function Detail({ project }: { project: Project }) {
 
 export default function ProjectDesigns({ projects }: { projects: Project[] }) {
   const router = useRouter()
-  const selected = designs.find(([id]) => id === router.query.design)?.[0] ?? 'workbench'
+  const selected = designs.find(([id]) => id === router.query.design)?.[0] ?? designs[0][0]
   const select = (design: string) => {
     void router.replace({ pathname: router.pathname, query: { ...router.query, design } }, undefined, {
       shallow: true,
