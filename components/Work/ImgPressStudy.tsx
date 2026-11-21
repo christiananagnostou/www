@@ -95,7 +95,7 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
         <Image
           src={result}
           alt="ImgPress reports that all three files converted, saving 206 kB, or 60.6%."
-          sizes="(min-width: 800px) 360px, (min-width: 620px) 43vw, 88vw"
+          unoptimized
         />
       </Result>
       <footer>
