@@ -3,12 +3,11 @@ import styled from 'styled-components'
 import { fade } from './animation'
 import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
-import Readcv from './SVG/Readcv'
 import Twitter from './SVG/Twitter'
 
-function SocialLinks() {
+function SocialLinks({ unboxed = false }: { unboxed?: boolean }) {
   return (
-    <SocialLinkList variants={fade}>
+    <SocialLinkList $unboxed={unboxed} variants={fade}>
       <li>
         <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
@@ -20,11 +19,6 @@ function SocialLinks() {
         </a>
       </li>
       <li>
-        <a aria-label="Read my CV" href="https://read.cv/christian.a" rel="noreferrer" target="_blank">
-          <Readcv />
-        </a>
-      </li>
-      <li>
         <a aria-label="X" href="https://x.com/javascramble" rel="noreferrer" target="_blank">
           <Twitter />
         </a>
@@ -33,7 +27,7 @@ function SocialLinks() {
   )
 }
 
-const SocialLinkList = styled(m.ul)`
+const SocialLinkList = styled(m.ul)<{ $unboxed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,6 +60,24 @@ const SocialLinkList = styled(m.ul)`
       }
     }
   }
+
+  ${({ $unboxed }) =>
+    $unboxed &&
+    `
+    gap: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    li a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+      padding: 0;
+      cursor: pointer;
+    }
+  `}
 `
 
 export default SocialLinks

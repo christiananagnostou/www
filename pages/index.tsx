@@ -6,11 +6,10 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import Bio from '../components/Home/Bio'
-import FeaturedProjects from '../components/Home/FeaturedProjects'
+import LinkLedger from '../components/Home/LinkLedger'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
 import FitnessActivities from '../components/Home/FitnessActivities'
-import SocialLinks from '../components/SocialLinks'
 import type { ArticleSummary } from '../lib/articles'
 import { getArticleSummaries } from '../lib/articles'
 import { BASE_URL } from '../lib/constants'
@@ -35,7 +34,10 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   return {
-    props: { posts, fitnessActivities },
+    props: {
+      posts,
+      fitnessActivities,
+    },
     revalidate: 60 * 60 * 12, // 12 hours
   }
 }
@@ -85,15 +87,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
-          <FlexWrap>
-            <FeaturedProjects />
-            <SocialLinks />
-          </FlexWrap>
-
-          {/* <FlexWrap>
-            <LabLink />
-            <Signature />
-          </FlexWrap> */}
+          <LinkLedger />
 
           {/* <TVBar onBarFilled={setShowRevealBar} /> */}
         </div>
@@ -121,15 +115,6 @@ const Container = styled(m.div)`
     border-radius: 14px;
     position: relative;
   }
-`
-
-const FlexWrap = styled.section`
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  width: 100%;
 `
 
 const MiddleSection = styled.section`

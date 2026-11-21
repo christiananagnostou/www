@@ -2,17 +2,14 @@ import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
+
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
 import { fade } from '../animation'
 
-const featuredProjectsAnimation = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-}
-
 const VuoriLogo = () => (
   <svg
+    aria-hidden="true"
     className="darker"
     fill="currentColor"
     height="18"
@@ -31,81 +28,71 @@ const VuoriLogo = () => (
   </svg>
 )
 
-const FeaturedProjects = () => (
-  <Container variants={featuredProjectsAnimation}>
-    <ProjectLink
-      href="https://vuoriclothing.com/"
-      target="_blank"
-      title="Vuori - your new favorite clothing"
-      variants={fade}
-    >
-      <VuoriLogo />
-      Vuori
-    </ProjectLink>
+const projects = [
+  { name: 'Vuori', href: 'https://vuoriclothing.com/', icon: <VuoriLogo /> },
+  {
+    name: 'Lift Club',
+    href: '/work/liftclub',
+    icon: <Image alt="" loading="eager" src={LiftClubLogo} />,
+  },
+  {
+    name: 'Jukebox',
+    href: '/work/jukebox',
+    icon: <Image alt="" className="darker" loading="eager" src={JukeboxLogo} />,
+  },
+]
 
-    <ProjectLink
-      href="https://www.liftclub.app/"
-      target="_blank"
-      title="Lift Club - your new favorite workout app"
-      variants={fade}
-    >
-      <Image alt="Lift Club logo" loading="eager" src={LiftClubLogo} />
-      Lift Club
-    </ProjectLink>
+const entrance = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } }
+const ProjectLink = m.create(Link)
 
-    <ProjectLink
-      href="https://github.com/christiananagnostou/jukebox"
-      target="_blank"
-      title="Jukebox - your new favorite desktop music player"
-      variants={fade}
-    >
-      <Image alt="Jukebox logo" className="darker" loading="eager" src={JukeboxLogo} />
-      Jukebox
-    </ProjectLink>
-  </Container>
-)
+export default function FeaturedProjects() {
+  return (
+    <ProjectList aria-label="Selected projects" variants={entrance}>
+      {projects.map(({ name, href, icon }) => (
+        <ProjectLink
+          key={name}
+          href={href}
+          {...(href.startsWith('https:') ? { target: '_blank', rel: 'noreferrer' } : {})}
+          variants={fade}
+        >
+          {icon}
+          {name}
+        </ProjectLink>
+      ))}
+    </ProjectList>
+  )
+}
 
-export default FeaturedProjects
+const ProjectList = styled(m.nav)`
+  display: grid;
+  min-width: 0;
+  padding: 0 1rem;
 
-const Container = styled(m.section)`
-  display: flex;
-  flex: 1;
-  flex-wrap: wrap;
-  gap: 1rem;
-  color: var(--text);
-`
-
-const ProjectLink = styled(m.create(Link))`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: max-content;
-  padding: 0.5rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-sm);
-  background: var(--dark-bg);
-  font-size: 0.85rem;
-  letter-spacing: 0.03em;
-  transition:
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
-  cursor: alias;
-
-  svg,
-  img {
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    color: var(--heading);
+    text-underline-offset: 0.22em;
+  }
+  a + a {
+    border-top: 1px solid var(--accent);
+  }
+  img,
+  svg {
+    flex: none;
     width: 18px;
     height: 18px;
+    object-fit: contain;
     filter: grayscale(1);
     transition: filter 0.2s ease;
-    object-fit: contain;
-
     &.darker {
       filter: grayscale(1) brightness(0.7);
     }
   }
-
-  &:hover svg,
-  &:hover img {
+  a:is(:hover, :focus-visible) :is(img, svg) {
     filter: none;
   }
 `
