@@ -8,6 +8,7 @@ import styled from 'styled-components'
 
 import { fade, pageAnimation, staggerFade } from '../../components/animation'
 import LiftClubStudy from '../../components/Work/LiftClubStudy'
+import JukeboxStudy from '../../components/Work/JukeboxStudy'
 import ProjectHead from '../../components/Work/ProjectHead'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import type { ProjectShowcaseType, ProjectType } from '../../lib/projects'
@@ -40,7 +41,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const SingleProject = ({ project }: Props) => (
   <>
     <ProjectHead {...projectMetadata(project)} />
-    {project.slug === 'liftclub' ? <LiftClubStudy project={project} /> : <DefaultProject project={project} />}
+    {project.slug === 'liftclub' ? (
+      <LiftClubStudy project={project} />
+    ) : project.slug === 'jukebox' ? (
+      <JukeboxStudy project={project} />
+    ) : (
+      <DefaultProject project={project} />
+    )}
   </>
 )
 
