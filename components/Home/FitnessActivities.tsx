@@ -134,9 +134,13 @@ const Log = styled(m.section)`
     align-items: center;
     gap: 0.75rem;
     overflow-x: auto;
+    scrollbar-width: none;
     list-style: none;
     margin: 0;
     padding: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   li {
     flex: 0 0 9rem;
