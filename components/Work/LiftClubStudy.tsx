@@ -7,6 +7,8 @@ import type { ProjectType } from '../../lib/projects'
 import { pageAnimation } from '../animation'
 import { usePageTransitionInitial } from '../animation/MotionProvider'
 
+const coverSizes = '(min-width: 800px) 615px, (min-width: 650px) calc(80vw - 25.6px), calc(100vw - 32px)'
+
 export default function LiftClubStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
   const [cover, communityCollage] = project.desktopImgs
@@ -32,7 +34,7 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
           <Image
             src={cover}
             priority
-            sizes="(min-width: 1200px) 400px, (min-width: 800px) 768px, 95vw"
+            sizes={`(min-width: 1200px) 400px, ${coverSizes}`}
             alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
           />
         </Cover>
@@ -46,17 +48,17 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
         <Image
           src={progress}
           alt="Low cable crossover training volume trends upward across 37 sessions, peaking at 1,620 kg."
-          sizes="(min-width: 800px) 242px, (min-width: 650px) calc(35vw - 36px), calc(100vw - 64px)"
+          sizes="(min-width: 800px) 278px, (min-width: 650px) calc(40vw - 40px), calc(100vw - 64px)"
         />
       </Progress>
       <StoryNote {...community} />
-      <CommunityCover>
+      <Cover>
         <Image
           src={communityCollage}
-          sizes="(min-width: 800px) 576px, (min-width: 650px) calc(75vw - 24px), calc(100vw - 32px)"
+          sizes={coverSizes}
           alt="Two screens from the Lift Club demo: Christian follows George and Dobby, and George’s leg day opens in the workout feed."
         />
-      </CommunityCover>
+      </Cover>
       <StoryNote {...today} />
     </Page>
   )
@@ -156,11 +158,14 @@ const Cover = styled.figure`
   img {
     border-radius: var(--border-radius-lg);
   }
-`
-const CommunityCover = styled(Cover)`
   @media (width >= 650px) {
-    width: 75%;
+    width: 80%;
     margin-inline: auto;
+  }
+  @media (width >= 1200px) {
+    ${Intro} > & {
+      width: 100%;
+    }
   }
 `
 const Note = styled.section`
@@ -190,7 +195,7 @@ const Progress = styled.section`
     margin-top: 0.8rem;
   }
   @media (width >= 650px) {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 13fr);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 1.7rem;
     .progress-copy {
       grid-area: 1 / 2;
