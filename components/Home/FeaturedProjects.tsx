@@ -82,7 +82,7 @@ const ProjectList = styled(m.nav)`
     text-underline-offset: 0.22em;
   }
   @media (width <= 480px) {
-    column-gap: 0.375rem;
+    column-gap: 0.25rem;
     padding-inline: 0.25rem;
     a {
       gap: 0.2rem;
