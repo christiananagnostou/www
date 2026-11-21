@@ -67,20 +67,21 @@ const SocialLinkList = styled(m.ul)<{ $labeled: boolean }>`
   ${({ $labeled }) =>
     $labeled &&
     `
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 0 1rem;
+    display: grid;
+    width: 100%;
+    gap: 0;
     padding: 0;
     border: none;
     background: none;
-    li { flex: none; }
     li a {
-      display: inline-flex;
+      display: flex;
+      justify-content: flex-end;
       align-items: center;
       gap: 0.4rem;
       min-height: 2.75rem;
       padding: 0;
-      font-size: 0.85rem;
+      text-align: right;
+      font-size: 0.95rem;
       cursor: pointer;
     }
   `}

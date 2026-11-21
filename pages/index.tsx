@@ -87,8 +87,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           <LinkDirectory>
             <FeaturedProjects />
-            <nav aria-labelledby="profile-links">
-              <h2 id="profile-links">Elsewhere</h2>
+            <nav aria-label="Social profiles">
               <SocialLinks showLabels />
             </nav>
           </LinkDirectory>
@@ -128,18 +127,9 @@ const Container = styled(m.div)`
 
 const LinkDirectory = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 1.5rem 3rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
   width: 100%;
-  padding: 1rem 0;
-  h2 {
-    margin-bottom: 0.35rem;
-    font-size: 1rem;
-    font-weight: 500;
-  }
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
 `
 
 const MiddleSection = styled.section`

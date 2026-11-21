@@ -32,51 +32,40 @@ const VuoriLogo = () => (
 )
 
 const FeaturedProjects = () => (
-  <Container aria-labelledby="selected-projects" variants={featuredProjectsAnimation}>
-    <h2 id="selected-projects">Selected projects</h2>
+  <Container aria-label="Selected projects" variants={featuredProjectsAnimation}>
     <ProjectLink href="https://vuoriclothing.com/" target="_blank" rel="noreferrer" variants={fade}>
-      <VuoriLogo />
       <span>Vuori</span>
-      <small>Performance apparel</small>
+      <VuoriLogo />
     </ProjectLink>
 
     <ProjectLink href="https://www.liftclub.app/" target="_blank" rel="noreferrer" variants={fade}>
-      <Image alt="" width={18} height={18} src={LiftClubLogo} />
       <span>Lift Club</span>
-      <small>Workout app</small>
+      <Image alt="" width={18} height={18} src={LiftClubLogo} />
     </ProjectLink>
 
     <ProjectLink href="https://github.com/christiananagnostou/jukebox" target="_blank" rel="noreferrer" variants={fade}>
-      <Image alt="" width={18} height={18} src={JukeboxLogo} />
       <span>Jukebox</span>
-      <small>Desktop music player</small>
+      <Image alt="" width={18} height={18} src={JukeboxLogo} />
     </ProjectLink>
   </Container>
 )
 
 export default FeaturedProjects
 
-const Container = styled(m.section)`
+const Container = styled(m.nav)`
   min-width: 0;
   color: var(--text);
 `
 
 const ProjectLink = styled(m.create(Link))`
-  display: grid;
-  grid-template-columns: 18px auto 1fr;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  border-bottom: 1px solid var(--accent);
   font-size: 0.95rem;
   text-decoration: none;
   span {
     font-weight: 500;
-  }
-  small {
-    text-align: right;
-    color: var(--text-dark);
-    font-size: 0.8rem;
   }
   &:hover {
     text-decoration: none;
