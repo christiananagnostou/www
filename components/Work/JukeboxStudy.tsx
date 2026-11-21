@@ -17,7 +17,8 @@ const controls = [
 export default function JukeboxStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
   const [library, listen] = project.desktopImgs
-  const [importing, keyboard, history] = project.details
+  const [phone] = project.mobileImgs
+  const [importing, keyboard, history, remote] = project.details
   return (
     <Page initial={initial} animate="show" exit="exit" variants={pageAnimation}>
       <Link href="/projects">/ Projects</Link>
@@ -74,6 +75,19 @@ export default function JukeboxStudy({ project }: { project: ProjectType }) {
           alt="Most played in the demo library, with Side Two at the top of the list."
         />
       </Listen>
+      <Remote>
+        <div>
+          <h2>{remote.title}</h2>
+          <p>{remote.description}</p>
+        </div>
+        <figure>
+          <Image
+            src={phone}
+            sizes="(min-width: 380px) 232px, 64vw"
+            alt="Jukebox on a phone, playing Room Tone from Field Notes, with queue and Save offline controls."
+          />
+        </figure>
+      </Remote>
       <footer>
         {project.meta[0].value} <span aria-hidden="true">·</span> {project.meta[1].value}
       </footer>
@@ -217,5 +231,25 @@ const Listen = styled.section`
   @media (width >= 650px) {
     grid-template-columns: 1.1fr 1fr;
     gap: 2rem;
+  }
+`
+const Remote = styled.section`
+  display: grid;
+  align-items: center;
+  gap: 1.6rem;
+  padding: clamp(1.1rem, 4vw, 2rem);
+  margin-top: 1.5rem;
+  background: radial-gradient(ellipse at bottom right, #364554, #20252e 65%);
+  border-radius: var(--border-radius-lg);
+  figure {
+    margin: 0 auto;
+    width: min(100%, 14.5rem);
+    border: 5px solid #101115;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px #11132066;
+  }
+  @media (width >= 650px) {
+    grid-template-columns: 1.1fr 1fr;
   }
 `

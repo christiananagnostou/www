@@ -2,6 +2,7 @@ import type { StaticImageData } from 'next/image'
 // Jukebox
 import JukeboxLibrary from '../../public/img/projects/jukebox/library-study.webp'
 import JukeboxListen from '../../public/img/projects/jukebox/listen-study.webp'
+import JukeboxRemote from '../../public/img/projects/jukebox/remote-study.webp'
 // QwikDraw
 import QwikDesignHero from '../../public/img/projects/qwikdraw/design-hero.webp'
 // Electriq Dashboard
@@ -240,7 +241,7 @@ export const ProjectState: ProjectType[] = [
     date: 'Jun 2023',
     tags: ['personal'],
     desktopImgs: [JukeboxLibrary, JukeboxListen],
-    mobileImgs: [],
+    mobileImgs: [JukeboxRemote],
     externalLink: 'https://github.com/christiananagnostou/jukebox/releases',
     externalLinkLabel: 'Releases',
     github: 'https://github.com/ChristianAnagnostou/jukebox',
@@ -267,6 +268,11 @@ export const ProjectState: ProjectType[] = [
         title: 'Back in rotation',
         description:
           'The Listen view puts three lists next to each other: what I played recently, what I keep coming back to, and what I haven’t played yet. They all come from the same library, but each gives me a different place to start.',
+      },
+      {
+        title: 'Away from the desk',
+        description:
+          'I wanted the same records on my phone without keeping a second library. With remote listening turned on, my desktop serves the music and my phone plays it in the browser over my private Tailscale network. I can browse albums, queue the next track, or save a song for when I’m offline.',
       },
     ],
   },
