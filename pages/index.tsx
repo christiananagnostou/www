@@ -88,7 +88,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
           <LinkDirectory>
             <FeaturedProjects />
             <nav aria-label="Social profiles">
-              <SocialLinks stacked />
+              <SocialLinks unboxed />
             </nav>
           </LinkDirectory>
 
@@ -125,11 +125,19 @@ const Container = styled(m.div)`
   }
 `
 
-const LinkDirectory = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+const LinkDirectory = styled.footer`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   column-gap: 1rem;
   width: 100%;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--accent);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `
 
 const MiddleSection = styled.section`

@@ -5,9 +5,9 @@ import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
 import Twitter from './SVG/Twitter'
 
-function SocialLinks({ stacked = false }: { stacked?: boolean }) {
+function SocialLinks({ unboxed = false }: { unboxed?: boolean }) {
   return (
-    <SocialLinkList $stacked={stacked} variants={fade}>
+    <SocialLinkList $unboxed={unboxed} variants={fade}>
       <li>
         <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
@@ -27,7 +27,7 @@ function SocialLinks({ stacked = false }: { stacked?: boolean }) {
   )
 }
 
-const SocialLinkList = styled(m.ul)<{ $stacked: boolean }>`
+const SocialLinkList = styled(m.ul)<{ $unboxed: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,18 +61,16 @@ const SocialLinkList = styled(m.ul)<{ $stacked: boolean }>`
     }
   }
 
-  ${({ $stacked }) =>
-    $stacked &&
+  ${({ $unboxed }) =>
+    $unboxed &&
     `
-    display: grid;
-    margin-inline-start: auto;
     gap: 0;
     padding: 0;
     border: none;
     background: none;
     li a {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       align-items: center;
       min-width: 2.75rem;
       min-height: 2.75rem;
