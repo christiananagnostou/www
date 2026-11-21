@@ -19,6 +19,7 @@
 
 .page a {
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .page a:focus-visible {
@@ -109,13 +110,13 @@
 
 .jukebox {
   display: grid;
-  justify-items: center;
-  padding-top: 0.5rem;
+  place-items: center;
   background: #31445a;
 }
 
 .jukebox img {
-  width: 4.3rem;
+  width: auto;
+  height: 5.75rem;
   border-radius: 0.35rem;
 }
 
@@ -140,7 +141,7 @@
 
 .archive a {
   display: grid;
-  grid-template-columns: minmax(9rem, 0.7fr) 1.4fr 5rem;
+  grid-template-columns: minmax(9rem, 0.7fr) 1.4fr 5.75rem;
   align-items: baseline;
   gap: 1.25rem;
   padding: 0.95rem 0;
@@ -158,6 +159,7 @@
 
 .archive span {
   text-align: right;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   font-weight: 400;
 }
