@@ -29,7 +29,6 @@ import ElectriqHeroMain from '../../public/img/projects/electriq-home/hero-main.
 import ElectriqWebsite from '../../public/img/projects/electriq-home/homepage-composed.webp'
 // Lift Club
 import LiftClubMain from '../../public/img/projects/liftclub/hero.webp'
-import LiftClubLog from '../../public/img/projects/liftclub/log.webp'
 import LiftClubProgress from '../../public/img/projects/liftclub/progress.webp'
 // Photo Shop
 import PhotoDesktop1 from '../../public/img/projects/awildchristian/desktop1.jpg'
@@ -442,24 +441,30 @@ export const ProjectState: ProjectType[] = [
     date: 'Apr 2021',
     tags: ['personal'],
     desktopImgs: [LiftClubMain],
-    mobileImgs: [LiftClubLog, LiftClubProgress],
+    mobileImgs: [LiftClubProgress],
     externalLink: 'https://www.liftclub.app/',
     slug: 'liftclub',
-    summary: 'A training log that remembers what you lifted last time, so you can decide what goes on the bar today.',
+    summary:
+      'I started Lift Club in 2021 as a workout log for my cousin George and me. These days, more than 100 people use it, including a lot of our family and friends.',
     meta: [
       { label: 'Format', value: 'Installable web app' },
       { label: 'Focus', value: 'Strength training' },
     ],
     details: [
       {
-        title: 'One more rep than last time.',
+        title: 'Why I built it',
         description:
-          'Last time: ten reps at 100. Today: twelve at 110. Lift Club puts both sets on the same line, so you can see what changed before you rack the bar.',
+          'I wanted to stop writing down every exercise by hand. George helped me build a log where we could save a workout and pull it up again the next time we went to the gym, with our last sets already there.',
       },
       {
-        title: 'See the work add up.',
+        title: 'Looking back at a lift',
         description:
-          'A single workout can feel ordinary. String a few months together and the change is easier to see. Follow an exercise by training volume or estimated one-rep max, then look back at the sessions behind the curve.',
+          'The log is still the part I built everything around. It shows my last set while I’m entering the next one. The chart gives me the longer view: I can look at a single exercise over a few months instead of flipping back through pages of notes.',
+      },
+      {
+        title: 'The club part',
+        description:
+          'There’s a feed now where we can follow each other’s workouts, and a leaderboard that counts things like how many sessions we’ve finished. My favorite part is seeing a familiar name pop up. George and I are pretty proud of how far it’s come.',
       },
     ],
   },

@@ -11,8 +11,8 @@ import { usePageTransitionInitial } from '../animation/MotionProvider'
 export default function LiftClubStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
   const [cover] = project.desktopImgs
-  const [set, progress] = project.mobileImgs
-  const [session, history] = project.details
+  const [progress] = project.mobileImgs
+  const [origin, history, community] = project.details
   const app = project.externalLink!
 
   return (
@@ -28,7 +28,7 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
           <p>{project.summary}</p>
           <Actions>
             <a href={app}>
-              Explore Lift Club <span aria-hidden="true">↗</span>
+              Visit Lift Club <span aria-hidden="true">↗</span>
             </a>
             <a href={new URL('signup', app).href}>Sign up</a>
           </Actions>
@@ -40,14 +40,10 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
             sizes="(min-width: 800px) 768px, 95vw"
             alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
           />
-          <figcaption>
-            <span>Bench press in Lift Club</span>
-            <a href={set.src}>See a sample workout</a>
-          </figcaption>
         </Cover>
         <Note>
-          <h2>{session.title}</h2>
-          <p>{session.description}</p>
+          <h2>{origin.title}</h2>
+          <p>{origin.description}</p>
         </Note>
         <Progress>
           <div>
@@ -62,15 +58,10 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
             <p>{history.description}</p>
           </section>
         </Progress>
-        <Footer>
-          <div>
-            <h2>Take it to the gym.</h2>
-            <p>Add Lift Club to your home screen and open it between sets.</p>
-          </div>
-          <a href={new URL('install', app).href}>
-            Install Lift Club <span aria-hidden="true">↗</span>
-          </a>
-        </Footer>
+        <Note>
+          <h2>{community.title}</h2>
+          <p>{community.description}</p>
+        </Note>
       </Page>
     </>
   )
@@ -143,14 +134,6 @@ const Cover = styled.figure`
   img {
     border-radius: var(--border-radius-lg);
   }
-  figcaption {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-top: 0.65rem;
-    font-size: 0.8rem;
-    color: var(--text-dark);
-  }
 `
 const Note = styled.section`
   display: grid;
@@ -176,20 +159,5 @@ const Progress = styled.div`
   }
   @media (width >= 650px) {
     grid-template-columns: 1.3fr 1fr;
-  }
-`
-const Footer = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2.5rem;
-  p {
-    margin-top: 0.45rem;
-    color: var(--text-dark);
-  }
-  a {
-    font-size: 0.9rem;
   }
 `
