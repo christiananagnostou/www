@@ -111,10 +111,6 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .page {
-    animation: page-in 200ms ease-out;
-  }
-
   .list li {
     animation: page-in 240ms ease-out backwards;
     animation-delay: calc(var(--order) * 35ms);

@@ -3,7 +3,8 @@ import type { InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 
-import { pageAnimation } from '../components/animation'
+import { fade, pageAnimation } from '../components/animation'
+import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
 import ProjectInstrument from '../components/Work/ProjectInstrument'
 import { projectTheme } from '../components/Work/projectTheme'
@@ -56,6 +57,7 @@ export function getStaticProps() {
 }
 
 export default function Projects({ projects, structured }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const pageTransitionInitial = usePageTransitionInitial()
   return (
     <>
       <ProjectHead
@@ -64,10 +66,20 @@ export default function Projects({ projects, structured }: InferGetStaticPropsTy
         url={projectsUrl}
         structured={structured}
       />
-      <m.div className={styles.page} exit={pageAnimation.exit}>
-        <Heading>
+      <m.div
+        className={styles.page}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
+        <Heading variants={fade}>
           <h1>Projects</h1>
-          <p>A selection of personal projects, open-source tools, and work I’ve done with other teams.</p>
+          <p>
+            The following showcase contains a selection of my work from freelance projects, past jobs, personal
+            projects, and open-source. Carving and polishing this craft has been a passion of mine for over a decade and
+            I&apos;ve had the pleasure of working with some amazing people and companies along the way.
+          </p>
         </Heading>
         <ul className={styles.list} aria-label="Projects">
           {projects.map(({ title, slug, year, themeColor, description, medium }, index) => (

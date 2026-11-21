@@ -183,7 +183,7 @@ export const ProjectState: ProjectType[] = [
     externalLinkLabel: 'Readme',
     github: 'https://github.com/ChristianAnagnostou/imgpress',
     slug: 'imgpress',
-    themeColor: '#b9d8ed',
+    themeColor: '#46bfa4',
     summary: 'A little Mac menu bar app I built to get a folder of photos ready to share without opening an editor.',
     meta: [
       { label: 'Stack', value: 'Swift / SwiftUI' },
@@ -322,7 +322,7 @@ export const ProjectState: ProjectType[] = [
     mobileImgs: [Calendar],
     externalLink: 'https://electriq.app/',
     slug: 'electriq-app',
-    themeColor: '#e3b342',
+    themeColor: '#527ba8',
     summary: 'Visualize and manage Linear projects with timelines, kanbans, calendars, and much more',
     meta: [
       { label: 'Stack', value: 'React app' },

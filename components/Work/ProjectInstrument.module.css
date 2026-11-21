@@ -14,18 +14,23 @@
 .compress {
   transform-origin: 32px center;
 }
-.levels {
-  transform-origin: center 51px;
+.elapsed {
+  transform-origin: 40px 56px;
 }
-.print {
-  transform-origin: 74px 65px;
+.cap {
+  transform-origin: 80px 18px;
+}
+.needle {
+  transform-origin: 80px 64px;
+  transform: rotate(-36deg);
 }
 .output {
   opacity: 0.55;
 }
 @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
   .instrument g[class],
-  .compress {
+  .compress,
+  .elapsed {
     transition:
       transform 220ms var(--study-ease),
       opacity 160ms ease;
@@ -52,23 +57,32 @@
   a:hover .ticket {
     transform: translate(38px, 12px);
   }
-  a:hover .bottle {
-    transform: translateX(13px);
+  a:hover .cap {
+    transform: translateY(-7px) rotate(-8deg);
   }
-  a:hover .plume {
-    transform: translate(2px, -6px);
-    opacity: 0.65;
+  a:hover .needle {
+    transform: rotate(36deg);
   }
-  a:hover .swatches {
-    transform: rotate(18deg);
+  a:hover .globeBands {
+    animation: globe-turn 1.8s linear infinite;
   }
   a:hover .print {
-    transform: translate(-4px, -2px) rotate(-6deg);
+    transform: translateY(-1.5px);
   }
   a:hover .vote {
     transform: translateY(-5px);
   }
-  a:hover .levels {
-    transform: scaleY(1.24);
+  a:hover .elapsed {
+    transform: scaleX(2);
+  }
+  a:hover .playhead {
+    transform: translateX(24px);
+  }
+}
+
+/* One full repeat of the glyph pattern travels along each curved latitude. */
+@keyframes globe-turn {
+  to {
+    stroke-dashoffset: -20px;
   }
 }

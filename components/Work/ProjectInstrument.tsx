@@ -104,57 +104,70 @@ function instrumentDrawing(slug: string) {
     case 'soylent':
       return (
         <>
-          <path d="M24 71h110m-22-43h16l5 7v22h-21z" opacity=".4" />
-          <g className={s.bottle}>
-            <path d="M54 16h17v9l7 8q3 3 3 8v26q0 4-4 4H48q-4 0-4-4V41q0-5 3-8l7-8z" fill="var(--instrument-bg)" />
-            <path d="M54 21h17M45 43h35m-35 17h35m-27-9h14" />
-            <circle cx="62" cy="51" r="4" fill="currentColor" />
+          <path
+            d="M74 21v4c0 5-6 12-6 23v24q0 4 4 4h16q4 0 4-4V48c0-11-6-18-6-23v-4z"
+            fill="currentColor"
+            fillOpacity=".1"
+          />
+          <path d="M69 44q11 2 22 0m-22 25q11 2 22 0" opacity=".45" />
+          <rect x="72" y="51" width="16" height="8" rx="1" />
+          <path d="M76 55h8m-9 8h6" opacity=".65" />
+          <g className={s.cap}>
+            <rect x="73" y="14" width="14" height="8" rx="2" fill="var(--instrument-bg)" />
+            <path d="M76 16v3m4-3v3m4-3v3" opacity=".5" />
           </g>
-          <path d="m92 44 6 0m-3-3v6" opacity=".6" />
         </>
       )
     case 'scentfill':
       return (
         <>
-          <path d="M60 52h40l-2 16q-1 5-6 5H68q-5 0-6-5zM68 52V42h24v10m-20-5h16" />
-          <g className={s.plume}>
-            <path d="M74 36c-12-9 10-13-2-23m12 21c-5-7 13-12 6-22" />
-            <path d="M94 37c4-6 11-7 11-15" opacity=".5" />
+          {[
+            'M77 35q0-6 6-5 1 6-6 5z',
+            'M77 32l3-3 3 3-3 4z',
+            'M80 36q-6-4-2-6l2 2 2-2q4 2-2 6z',
+            'M76 34q3-6 8-4-1 6-8 4z',
+            'M77 33q3-6 6 0-3 5-6 0z',
+          ].map((petal, i) => (
+            <g key={petal} transform={`rotate(${(i - 2) * 36} 80 64)`}>
+              <path
+                d="M68 26a40 40 0 0 1 24 0l-6 18a21 21 0 0 0-12 0z"
+                fill="currentColor"
+                fillOpacity={0.08 + i * 0.06}
+              />
+              <path d={petal} />
+            </g>
+          ))}
+          <g className={s.needle}>
+            <path d="m78 62 2-15 2 15z" fill="currentColor" />
           </g>
+          <circle cx="80" cy="64" r="3" fill="var(--instrument-bg)" />
         </>
       )
     case 'electriq-home':
       return (
         <>
-          <rect x="29" y="20" width="100" height="54" rx="3" opacity=".5" />
-          <path d="M30 32h98m-89-6h3m4 0h3m4 0h3M39 45h27m-27 8h18m-18 10h25" opacity=".6" />
-          <g transform="translate(84 59)">
-            <g className={s.swatches}>
-              {[
-                [-18, '.25'],
-                [0, '.55'],
-                [18, '1'],
-              ].map(([angle, opacity]) => (
-                <g key={angle} transform={`rotate(${angle})`}>
-                  <rect x="-4" y="-29" width="11" height="32" rx="2" fill="var(--instrument-bg)" />
-                  <path d="M-1-25h5v10h-5z" fill="currentColor" opacity={opacity} />
-                </g>
-              ))}
+          <g transform="rotate(-10 80 44)">
+            <circle cx="80" cy="44" r="32" opacity=".32" />
+            <g className={s.globeBands} strokeWidth="3.5" strokeLinecap="butt" strokeDasharray="2 2 1 2 3 2 2 6">
+              <path d="M61 20q18 11 38 0m-50 16q31 19 62 0m-62 17q31 21 62 0m-53 13q22 13 44 0" />
+              <path d="M48 44q32 20 64 0" strokeWidth="2" strokeDasharray="1 3 1 3 1 3 4 4" opacity=".65" />
             </g>
+            <path d="M54 27q26 17 52 0m-55 32q29 20 58 0" opacity=".35" strokeDasharray="1 3" />
           </g>
         </>
       )
     case 'awildchristian':
       return (
         <>
-          <path d="M43 19h81v53H43z" opacity=".35" />
+          <path d="M55 10h50v68H55z" fill="currentColor" fillOpacity=".08" />
+          <path d="M59 14h42v60H59z" opacity=".4" />
           <g className={s.print}>
-            <path d="M34 13h79v53H34z" fill="var(--instrument-bg)" />
-            <path d="M40 19h67v35H40z" />
-            <path d="m42 51 18-18 14 13 10-8 20 13" />
-            <circle cx="88" cy="29" r="4" />
-            <path d="m83 60 7-3-2 5 8-4 6 1" />
+            <path d="M62 17h36v49H62z" fill="var(--instrument-bg)" />
+            <path d="M67 19v34m25-34v27M63 60l34-10" opacity=".3" />
+            <path d="M68 37q8-18 24-6l-3 1-2 2-3-1-2 3-4-1-2 3-3-1z" fill="currentColor" fillOpacity=".5" />
+            <path d="m80 34 2 9m-3-3-3 14 9-2-3-13m-4 16v6m4-7 2 5" />
           </g>
+          <path d="m82 70 4-2-1 3 6-2" opacity=".7" />
         </>
       )
     case 'neologos':
@@ -170,14 +183,16 @@ function instrumentDrawing(slug: string) {
     case 'lofiwaves':
       return (
         <>
-          <rect x="26" y="17" width="108" height="54" rx="6" />
-          <path d="M37 58h86" opacity=".45" />
-          <g className={s.levels}>
-            {[11, 21, 16, 28, 12, 23, 16, 9, 20].map((h, i) => (
-              <rect key={i} x={39 + i * 9} y={51 - h} width="4" height={h} rx="1" fill="currentColor" />
-            ))}
+          <circle cx="80" cy="29" r="17" fill="currentColor" fillOpacity=".1" />
+          <path d="m65 36 9-12 8 9 5-7 9 8" />
+          <circle cx="86" cy="20" r="2" fill="currentColor" />
+          <path d="M40 56h80" opacity=".4" />
+          <path className={s.elapsed} d="M40 56h24" />
+          <g className={s.playhead}>
+            <circle cx="64" cy="56" r="3" fill="currentColor" />
           </g>
-          <circle cx="69" cy="58" r="3" fill="currentColor" />
+          <path d="m63 68-4 3 4 3m34-6 4 3-4 3" opacity=".65" />
+          <path d="m78 67 6 4-6 4z" fill="currentColor" />
         </>
       )
     default:
