@@ -27,14 +27,14 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
           <a href={new URL('signup', app).href}>Sign up</a>
         </Actions>
       </Intro>
-      <Cover>
+      <HeroCover>
         <Image
           src={cover}
           priority
-          sizes="(min-width: 800px) 768px, 95vw"
+          sizes="(min-width: 1200px) 640px, (min-width: 800px) 768px, 95vw"
           alt="A tilted Lift Club bench press log showing today's reps and weight beside the previous session."
         />
-      </Cover>
+      </HeroCover>
       <StoryNote {...origin} />
       <Progress>
         <div className="progress-copy">
@@ -135,6 +135,12 @@ const Actions = styled.div`
 const Cover = styled.figure`
   img {
     border-radius: var(--border-radius-lg);
+  }
+`
+const HeroCover = styled(Cover)`
+  @media (width >= 1200px) {
+    max-width: 640px;
+    margin-inline: 0 auto;
   }
 `
 const Note = styled.section`
