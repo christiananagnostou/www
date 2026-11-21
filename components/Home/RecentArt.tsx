@@ -1,54 +1,120 @@
+import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
-
-import photo from '../../public/img/art/photography/bike_white_bg.webp'
+import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
+import { fade, photoAnim, staggerFade } from '../animation'
+import { HomepageBox } from './styles'
 
 export default function RecentArt() {
   return (
-    <PhotoLink href="/art">
-      <h2>Photos</h2>
-      <figure>
-        <Image
-          alt="A bicycle at Byxbee Park"
-          placeholder="blur"
-          sizes="(max-width: 768px) 95vw, 340px"
-          src={photo}
-          fill
-        />
-        <figcaption>Byxbee Park · March 2025</figcaption>
-      </figure>
-    </PhotoLink>
+    <ArtContainer variants={staggerFade}>
+      <Title variants={fade}>
+        <Link href="/art">Photos</Link>
+      </Title>
+
+      <Link href="/art">
+        <div className="recent-art__hover-box">
+          <p>
+            Through the lens,
+            <br />
+            reality becomes art.
+          </p>
+        </div>
+
+        <RecentImage key={StairShadow.src} variants={photoAnim}>
+          <Image
+            alt=""
+            blurDataURL={StairShadow.blurDataURL}
+            loading="eager"
+            placeholder="blur"
+            src={StairShadow}
+            width={300}
+          />
+        </RecentImage>
+      </Link>
+    </ArtContainer>
   )
 }
 
-const PhotoLink = styled(Link)`
-  position: relative;
-  flex: 1;
-  min-height: 13rem;
+const ArtContainer = styled(HomepageBox)`
   overflow: hidden;
-  border-radius: var(--border-radius-md);
-  color: #ffffff;
+
+  .recent-art__hover-box {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    transition: bottom 0.25s ease-in-out;
+
+    p {
+      padding-bottom: 3px;
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      transition: scale 0.25s ease-in-out;
+      scale: 0.8;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 20%, #171717);
+    pointer-events: none;
+    transition: top 0.28s ease-in-out;
+  }
+
+  &:hover {
+    &::after {
+      top: 0;
+    }
+
+    .recent-art__hover-box {
+      bottom: 0;
+
+      p {
+        scale: 1;
+      }
+    }
+  }
+`
+
+const Title = styled(m.h2)`
+  position: relative;
+  z-index: 1;
+  margin: 0 0 1rem;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+`
+
+const RecentImage = styled(m.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  filter: brightness(0.25);
 
   img {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
     object-fit: cover;
-    object-position: center 80%;
-  }
-  h2,
-  figcaption {
-    position: absolute;
-    z-index: 1;
-    left: 1rem;
-    padding: 0.25rem 0.5rem;
-    background: #171717;
-  }
-  h2 {
-    top: 1rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-  figcaption {
-    bottom: 1rem;
-    font-size: 0.8rem;
   }
 `

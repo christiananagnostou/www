@@ -9,15 +9,15 @@ function Bio() {
       <m.h1 variants={fade}>Christian Anagnostou</m.h1>
 
       <m.p variants={fade}>
-        I’m a lead software engineer at{' '}
+        Creating web experiences that <em>inspire</em>. Currently working as a lead software engineer at{' '}
         <a aria-label="Visit Vuori website" href="https://vuoriclothing.com/" rel="noreferrer" target="_blank">
           <em>Vuori</em>
         </a>
-        . Away from the keyboard, I take photos and train for triathlons.
+        .
       </m.p>
 
       <m.p variants={fade}>
-        I’m also a fan of the{' '}
+        Among other things, I&apos;m a huge fan of the{' '}
         <GiantsSlotContainer animate="rest" initial="rest" whileHover="hover">
           <Slot>
             <TextSlot variants={textSlotVariants}>SF</TextSlot>
@@ -27,7 +27,12 @@ function Bio() {
           </Slot>
           <span> Giants</span>
         </GiantsSlotContainer>{' '}
-        — if baseball is your thing too, let’s catch a game.
+        and baseball in general. If baseball is your thing too, hit me up and maybe we can catch a game together.
+      </m.p>
+
+      <m.p variants={fade}>
+        As for this site, it&apos;s a place where I can share my thoughts, projects, and experiences. No matter how you
+        stumbled upon this site or what you&apos;re looking for, I hope you find something that resonates with you.
       </m.p>
     </Description>
   )
@@ -84,9 +89,11 @@ const Description = styled(m.section)`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-self: start;
-  max-width: 37rem;
-  padding: 1rem 0 1.5rem;
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
   text-align: left;
 
   em {
@@ -96,9 +103,9 @@ const Description = styled(m.section)`
   }
 
   h1 {
-    margin: 0 0 1rem;
-    font-weight: 500;
-    font-size: 1.75rem;
+    margin: 0 0 2rem;
+    font-weight: 200;
+    font-size: 1.1rem;
   }
 
   hr {
