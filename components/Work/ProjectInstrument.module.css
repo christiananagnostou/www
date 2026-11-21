@@ -42,7 +42,7 @@
     transform: rotate(85deg);
   }
   a:hover .compress {
-    transform: scaleX(0.403);
+    transform: scaleX(var(--output-ratio));
   }
   a:hover .output {
     transform: translateX(4px);

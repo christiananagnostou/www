@@ -18,6 +18,7 @@ export default function ProjectCategoryNav({ selected }: { selected?: ProjectCat
           key={category}
           href={category === 'all' ? '/projects' : { pathname: '/projects', query: { tag: category } }}
           aria-current={(selected ?? 'all') === category ? 'page' : undefined}
+          prefetch={false}
           shallow
           scroll={false}
         >

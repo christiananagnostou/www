@@ -69,7 +69,7 @@
   padding: 1rem 0.6rem;
   border-radius: var(--border-radius-md);
 }
-.list .row:is(:link, :visited, :hover, :focus-visible) {
+.row:any-link {
   text-decoration: none;
 }
 .row h2 {
@@ -85,7 +85,7 @@
 }
 .row p {
   margin-top: 0.25rem;
-  max-width: 48ch;
+  max-width: 30.25em;
 }
 .year {
   white-space: nowrap;

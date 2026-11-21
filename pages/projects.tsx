@@ -14,6 +14,7 @@ import ProjectHead from '../components/Work/ProjectHead'
 import styles from '../components/Work/ProjectsIndex.module.css'
 import { ProjectState } from '../lib/projects'
 import { getProjectCategory } from '../lib/projects/categories'
+import { formatKilobytes, IMG_PRESS_BATCH } from '../lib/projects/imgPressBatch'
 import { getProjectsStructuredData, projectsDescription, projectsUrl } from '../lib/structured/projects'
 
 const featured = ['liftclub', 'jukebox']
@@ -128,8 +129,10 @@ function InstrumentDetail({ slug, medium }: { slug: string; medium: string }) {
     case 'imgpress':
       return (
         <div className={styles.detail}>
-          <span>3 JPEGs</span>
-          <b>566 kB → 228 kB</b>
+          <span>{IMG_PRESS_BATCH.count} JPEGs</span>
+          <b>
+            {formatKilobytes(IMG_PRESS_BATCH.original, 0)} → {formatKilobytes(IMG_PRESS_BATCH.output, 0)}
+          </b>
         </div>
       )
     default:

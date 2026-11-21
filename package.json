@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "oxlint .",
-    "lint:css": "stylelint './**/*.{tsx,js,ts}'",
+    "lint:css": "stylelint './**/*.{css,tsx,js,ts}'",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "test": "vitest",

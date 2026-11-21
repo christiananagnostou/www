@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import type { ProjectType } from '../../lib/projects'
+import { formatKilobytes, IMG_PRESS_BATCH, IMG_PRESS_SAMPLES } from '../../lib/projects/imgPressBatch'
 import bayBike from '../../public/img/art/photography/bay_bike.jpg'
 import goldenGate from '../../public/img/art/photography/golden_gate.jpg'
 import chess from '../../public/img/art/photography/hmb_chess.jpg'
@@ -19,18 +20,13 @@ import { usePageTransitionInitial } from '../animation/MotionProvider'
 import ProjectsBackLink from './ProjectsBackLink'
 import { projectTheme } from './projectTheme'
 
-// Bytes on disk using Shareable JPEG at 75% quality and 50% dimensions.
 const featured = { title: 'Bay Bike', image: bayBike, exported: bayBikeExport, original: 177416, output: 64632 }
-const photos = [
-  { title: 'Sonoma Truck', image: sonomaTruck, exported: sonomaTruckExport, original: 208212, output: 74420 },
-  { title: 'Golden Gate', image: goldenGate, exported: goldenGateExport, original: 82211, output: 35465 },
-  { title: 'Half Moon Bay Chess', image: chess, exported: chessExport, original: 275977, output: 118433 },
-]
-const kb = (bytes: number) => (bytes / 1000).toFixed(1) + ' kB'
-const total = photos.reduce(
-  (sum, photo) => ({ original: sum.original + photo.original, output: sum.output + photo.output }),
-  { original: 0, output: 0 }
-)
+const images = {
+  'sonoma_truck.jpg': { image: sonomaTruck, exported: sonomaTruckExport },
+  'golden_gate.jpg': { image: goldenGate, exported: goldenGateExport },
+  'hmb_chess.jpg': { image: chess, exported: chessExport },
+}
+const photos = IMG_PRESS_SAMPLES.map(({ file, ...sample }) => ({ ...sample, ...images[file] }))
 
 export default function ImgPressStudy({ project }: { project: ProjectType }) {
   const initial = usePageTransitionInitial()
@@ -70,11 +66,11 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
           <FileLabels>
             <div>
               <dt>Original</dt>
-              <dd>{kb(photo.original)}</dd>
+              <dd>{formatKilobytes(photo.original)}</dd>
             </div>
             <div>
               <dt>Export</dt>
-              <dd>{kb(photo.output)}</dd>
+              <dd>{formatKilobytes(photo.output)}</dd>
             </div>
           </FileLabels>
         </Comparison>
@@ -92,7 +88,7 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
           <h2>{batch.title}</h2>
           <p>{batch.description}</p>
         </Copy>
-        <Files aria-label="Measured JPEG file sizes for the three photos">
+        <Files aria-label="Measured JPEG file sizes">
           <thead>
             <tr>
               <th scope="col">Photograph</th>
@@ -114,16 +110,16 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
                     {item.title}
                   </button>
                 </th>
-                <td>{kb(item.original)}</td>
-                <td>{kb(item.output)}</td>
+                <td>{formatKilobytes(item.original)}</td>
+                <td>{formatKilobytes(item.output)}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
               <th scope="row">Batch total</th>
-              <td>{kb(total.original)}</td>
-              <td>{kb(total.output)}</td>
+              <td>{formatKilobytes(IMG_PRESS_BATCH.original)}</td>
+              <td>{formatKilobytes(IMG_PRESS_BATCH.output)}</td>
             </tr>
           </tfoot>
         </Files>

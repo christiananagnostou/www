@@ -1,4 +1,10 @@
+import type { CSSProperties } from 'react'
+
+import { IMG_PRESS_BATCH } from '../../lib/projects/imgPressBatch'
+
 import s from './ProjectInstrument.module.css'
+
+const compressionStyle = { '--output-ratio': IMG_PRESS_BATCH.output / IMG_PRESS_BATCH.original } as CSSProperties
 
 // Each glyph has a legible resting pose; the one moving group explains the instrument.
 export default function ProjectInstrument({ slug }: { slug: string }) {
@@ -45,7 +51,17 @@ function instrumentDrawing(slug: string) {
         <>
           <path d="M26 20v47m105-47v47" opacity=".4" />
           <rect x="32" y="27" width="92" height="9" rx="2" opacity=".4" fill="currentColor" stroke="none" />
-          <rect className={s.compress} x="32" y="49" width="92" height="9" rx="2" fill="currentColor" stroke="none" />
+          <rect
+            className={s.compress}
+            style={compressionStyle}
+            x="32"
+            y="49"
+            width="92"
+            height="9"
+            rx="2"
+            fill="currentColor"
+            stroke="none"
+          />
         </>
       )
     case 'skillbox':
