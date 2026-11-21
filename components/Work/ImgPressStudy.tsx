@@ -78,10 +78,6 @@ export default function ImgPressStudy({ project }: { project: ProjectType }) {
           />
         </a>
       </Stage>
-      <PhotoCaption>
-        <span aria-live="polite">{photo.title}</span>
-        {photo !== featured && <button onClick={() => compare(featured)}>Back to Bay Bike</button>}
-      </PhotoCaption>
       <section>
         <Copy>
           <h2>{batch.title}</h2>
@@ -180,14 +176,6 @@ const Study = styled(m.article)`
     color: #b9d8ed;
     text-decoration-color: currentColor;
   }
-  button {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-  }
   a:focus-visible {
     outline: 2px solid #b9d8ed;
     outline-offset: 4px;
@@ -223,18 +211,6 @@ const Stage = styled.figure`
     height: auto;
     border-radius: var(--border-radius-md);
     box-shadow: 0 8px 24px #13384855;
-  }
-`
-const PhotoCaption = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-  font-size: 0.88rem;
-  color: var(--text-dark);
-  button {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
   }
 `
 const Comparison = styled.div`
@@ -311,6 +287,12 @@ const Files = styled.table`
     position: relative;
   }
   th button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: clamp(0.4rem, 2vw, 0.85rem);
