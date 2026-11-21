@@ -50,13 +50,13 @@ export default function LiftClubStudy({ project }: { project: ProjectType }) {
         />
       </Progress>
       <StoryNote {...community} />
-      <Cover>
+      <CommunityCover>
         <Image
           src={communityCollage}
-          sizes="(min-width: 800px) 768px, 95vw"
+          sizes="(min-width: 800px) 576px, (min-width: 650px) calc(75vw - 24px), calc(100vw - 32px)"
           alt="Two screens from the Lift Club demo: Christian follows George and Dobby, and George’s leg day opens in the workout feed."
         />
-      </Cover>
+      </CommunityCover>
       <StoryNote {...today} />
     </Page>
   )
@@ -155,6 +155,12 @@ const Actions = styled.div`
 const Cover = styled.figure`
   img {
     border-radius: var(--border-radius-lg);
+  }
+`
+const CommunityCover = styled(Cover)`
+  @media (width >= 650px) {
+    width: 75%;
+    margin-inline: auto;
   }
 `
 const Note = styled.section`
