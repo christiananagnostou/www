@@ -114,10 +114,16 @@ jobs:
           node-version-file: 'package.json'
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build the site and install Firefox in parallel
+        run: |
+          npx --no-install playwright-core install --with-deps firefox &
+          firefox_pid=$!
+
+          prep_exit=0
+          npm run build || prep_exit=$?
+          wait "$firefox_pid" || prep_exit=$?
+          exit "$prep_exit"
       - name: Verify photography share links before hydration
         run: node --test tests/artRoutes.built.mjs
-      - name: Install Firefox for the homepage motion check
-        run: npx --no-install playwright-core install --with-deps firefox
       - name: Verify the homepage link entrance in Firefox
         run: node --test tests/homeLinks.built.mjs
