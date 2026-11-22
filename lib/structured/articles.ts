@@ -1,14 +1,18 @@
 import type { ArticleSummary } from '../articles'
 import { BASE_URL } from '../constants'
 
-export const getArticlesListStructuredData = (posts: ArticleSummary[], PageDescription: string, PageUrl: string) => {
+export const articlesTitle = 'Articles | Christian Anagnostou'
+export const articlesDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
+export const articlesUrl = `${BASE_URL}/articles`
+
+export const getArticlesListStructuredData = (posts: ArticleSummary[]) => {
   return {
     __html: JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: 'Articles',
-      description: PageDescription,
-      url: PageUrl,
+      description: articlesDescription,
+      url: articlesUrl,
       itemListElement: posts.map((post, index) => ({
         '@type': 'ListItem',
         position: index + 1,

@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAllPosts } from '../../lib/articles'
 import { BASE_URL } from '../../lib/constants'
-import { PageDescription, PageTitle } from '../articles'
+import { articlesDescription, articlesTitle } from '../../lib/structured/articles'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const posts = getAllPosts()
@@ -25,9 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const rssXml = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title><![CDATA[${PageTitle}]]></title>
+    <title><![CDATA[${articlesTitle}]]></title>
     <link>${BASE_URL}</link>
-    <description><![CDATA[${PageDescription}]]></description>
+    <description><![CDATA[${articlesDescription}]]></description>
     ${rssItemsXml}
   </channel>
 </rss>
