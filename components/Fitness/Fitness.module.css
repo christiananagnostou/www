@@ -1,0 +1,482 @@
+.page {
+  --sport-swim: #8dbfc9;
+  --sport-bike: #acc294;
+  --sport-run: #de9f84;
+  --sport-other: #b5a9bb;
+  max-width: var(--max-w-screen);
+  margin: 2rem auto 4rem;
+  padding: 0 1rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.page span {
+  font-weight: inherit;
+}
+.page button {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.page :is(button, summary, .tableScroll):focus-visible,
+:where(.plot:has(input:focus-visible)) {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.page h2 {
+  font-size: 1.05rem;
+  font-weight: 550;
+  line-height: 1.3;
+}
+.heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+.heading p {
+  grid-column: 1 / -1;
+  text-wrap: pretty;
+}
+.periods {
+  grid-area: 1 / 2;
+  display: flex;
+}
+.periods button,
+.unitSwitch button {
+  position: relative;
+  isolation: isolate;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-dark);
+  font-size: 0.82rem;
+}
+.periods button::before,
+.unitSwitch button::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 7px 1px;
+  border-radius: inherit;
+}
+.page button[aria-pressed='true'] {
+  color: var(--heading);
+}
+.page button[aria-pressed='true']::before {
+  background: var(--accent);
+}
+.volume,
+.empty {
+  padding: clamp(1.15rem, 3vw, 2rem);
+  background: var(--dark-bg);
+  border-radius: var(--border-radius-xl);
+}
+.panelHeader,
+.listHeading,
+.chartNote {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+.panelHeader p,
+.empty p {
+  margin-top: 0.35rem;
+  color: var(--text-dark);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.unitSwitch {
+  display: flex;
+  align-self: flex-start;
+  margin: -7px -0.4rem 0 0;
+}
+.unitSwitch button {
+  min-width: 3.05rem;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  list-style: none;
+  margin-top: 1.4rem;
+}
+.legend li,
+.averageKey {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+}
+.legend li,
+.chartNote,
+.scale,
+.ticks {
+  color: var(--text-dark);
+  font-size: 0.75rem;
+}
+.legend i {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 2px;
+}
+.volumePlot {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr);
+  margin: 1.25rem 0;
+}
+.scale,
+.gridLines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.scale {
+  padding-right: 0.55rem;
+  align-items: flex-end;
+  line-height: 1;
+  margin: -0.36rem 0;
+}
+.plot {
+  height: 9.75rem;
+  position: relative;
+  border-radius: 2px;
+}
+.ink,
+.gridLines,
+.explorer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.gridLines i {
+  width: 100%;
+  border-top: 1px dashed var(--accent);
+}
+.gridLines i:where(:last-child) {
+  border-top-style: solid;
+}
+.average {
+  stroke: var(--heading);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  fill: none;
+  stroke-linecap: round;
+}
+.explorer {
+  margin: 0;
+  opacity: 0;
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+.cursor {
+  position: absolute;
+  inset-block: 0;
+  border-left: 1px solid var(--heading);
+  pointer-events: none;
+}
+.ticks {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.2rem;
+  padding-top: 0.5rem;
+}
+.chartNote {
+  grid-column: 1 / -1;
+  min-height: 1.25rem;
+  margin-top: 0.85rem;
+  font-size: 0.77rem;
+}
+.averageKey {
+  flex-shrink: 0;
+}
+.averageKey::before {
+  content: '';
+  width: 1rem;
+  border-top: 1.5px dashed var(--text);
+}
+.totals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--accent);
+  padding-top: 1.25rem;
+}
+.totals div + div {
+  border-left: 1px solid var(--accent);
+  padding-left: clamp(0.8rem, 3vw, 1.75rem);
+}
+.totals dt,
+.trends dt,
+.measurements dt {
+  font-size: 0.78rem;
+  color: var(--text-dark);
+}
+.totals dd {
+  margin-top: 0.24rem;
+  color: var(--heading);
+  font-size: clamp(1.15rem, 2.5vw, 1.52rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+.totals small {
+  font-size: 0.78rem;
+  letter-spacing: normal;
+  color: var(--text-dark);
+}
+.disciplines {
+  margin-top: 2.7rem;
+}
+.listHeading {
+  padding-bottom: 0.82rem;
+}
+.listHeading span {
+  font-size: 0.78rem;
+  color: var(--text-dark);
+}
+.sportList {
+  list-style: none;
+}
+.sportList > li {
+  border-top: 1px solid var(--accent);
+}
+.sportList > li:last-child {
+  border-bottom: 1px solid var(--accent);
+}
+.sportRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 6.75rem minmax(0, 1fr) 6rem 7.75rem 1rem;
+  gap: 1.1rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-radius: var(--border-radius-sm);
+  text-align: left;
+}
+.instrument {
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--border-radius-md);
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 9%, var(--dark-bg));
+}
+.instrument svg {
+  display: block;
+  width: 100%;
+}
+.sportTitle {
+  font-size: 1rem;
+  color: var(--heading);
+  line-height: 1.3;
+}
+.sportList h3 {
+  font-weight: 500;
+}
+.sportTitle small {
+  display: block;
+  padding-top: 0.2rem;
+  font-size: 0.78rem;
+}
+.sportRow small,
+.chevron {
+  color: var(--text-dark);
+  font-weight: normal;
+}
+:where(.sportRow) .distance,
+:where(.sportRow) .share {
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: normal;
+}
+.distance {
+  text-align: right;
+}
+.share {
+  display: grid;
+  justify-items: end;
+  gap: 0.38rem;
+}
+.share small,
+.distance small {
+  font-size: 0.76rem;
+}
+.share i {
+  width: 5.7rem;
+  max-width: 100%;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.share b {
+  display: block;
+  height: 100%;
+  background: var(--tone);
+}
+.mobileDistance {
+  display: none;
+}
+.chevron {
+  justify-self: end;
+}
+.sportRow[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+.detail,
+.noSessions {
+  margin: 0.15rem 0 1.2rem 7.85rem;
+}
+.noSessions {
+  font-size: 0.875rem;
+  color: var(--text-dark);
+}
+.trends {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.trends dd,
+.measurements dd {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+}
+.spark {
+  border-bottom: 1px solid var(--accent);
+  color: var(--tone);
+}
+.spark svg {
+  display: block;
+  width: 100%;
+  height: 1.65rem;
+}
+.measurements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  padding: 1rem 0 0.5rem;
+}
+.readings {
+  font-size: 0.82rem;
+  color: var(--text-dark);
+}
+.readings summary {
+  width: fit-content;
+  padding: 0.75rem 0;
+  cursor: pointer;
+}
+.tableScroll {
+  max-height: 14rem;
+  overflow: auto;
+}
+.tableScroll table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tableScroll :is(th, td) {
+  padding: 0.45rem 0.24rem;
+  border-bottom: 1px solid var(--accent);
+  text-align: right;
+  font-weight: normal;
+}
+.tableScroll th:where(:first-child) {
+  text-align: left;
+}
+.tableScroll thead th {
+  position: sticky;
+  top: 0;
+  background: var(--body-bg);
+  color: var(--heading);
+}
+@media (hover: hover) and (pointer: fine) {
+  .periods button:hover,
+  .unitSwitch button:hover,
+  .readings summary:hover {
+    color: var(--heading);
+  }
+  .sportRow:hover .sportTitle,
+  .sportRow:hover .chevron {
+    color: var(--tone);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chevron {
+    transition: transform 160ms ease-out;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .instrument svg {
+      transition: transform 210ms ease-out;
+    }
+    .sportRow:hover .instrument svg {
+      transform: translateX(2px);
+    }
+  }
+}
+@media (width <= 600px) {
+  .page .heading {
+    grid-template-columns: 1fr;
+    margin-bottom: 1.6rem;
+  }
+  .periods {
+    grid-area: auto;
+    margin-top: 0.8rem;
+  }
+  .sportRow {
+    grid-template-columns: 4.4rem minmax(0, 1fr) auto 1rem;
+    gap: 0.65rem;
+  }
+  .distance {
+    display: none;
+  }
+  .mobileDistance {
+    display: inline;
+  }
+  .detail,
+  .noSessions {
+    margin-left: 0;
+  }
+}
+@media (width <= 460px) {
+  .volume {
+    padding: 1.15rem;
+  }
+  .panelHeader {
+    align-items: flex-start;
+  }
+  .volumePlot {
+    grid-template-columns: 1.45rem minmax(0, 1fr);
+  }
+  .plot {
+    height: 8.4rem;
+  }
+  .chartNote {
+    align-items: flex-start;
+  }
+  .totals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem 0;
+  }
+  .totals div:nth-child(3) {
+    border: none;
+    padding: 0;
+  }
+  .totals div:nth-child(even) {
+    padding-left: 1.15rem;
+  }
+  .disciplines {
+    margin-top: 2rem;
+  }
+  .share i {
+    width: 4rem;
+  }
+  .sportRow {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto 0.8rem;
+    gap: 0.5rem;
+  }
+  .trends {
+    gap: 0.65rem;
+  }
+}
