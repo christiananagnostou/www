@@ -7,6 +7,8 @@ import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import 'uplot/dist/uPlot.min.css'
+
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ride, run, swim } from '../components/SVG/fitness/icons'

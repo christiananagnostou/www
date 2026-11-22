@@ -6,7 +6,6 @@ import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import { useRouter } from 'next/router'
 
-import 'uplot/dist/uPlot.min.css'
 import GlobalStyle from '../components/GlobalStyle'
 import Layout from '../components/Layout'
 import MotionProvider from '../components/animation/MotionProvider'
