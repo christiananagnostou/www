@@ -3,7 +3,10 @@
     {
       "src": "^/$",
       "continue": true,
-      "transforms": [{ "type": "response.headers", "op": "append", "target": { "key": "Vary" }, "args": "Accept" }]
+      "transforms": [
+        { "type": "response.headers", "op": "delete", "target": { "key": "Vary" }, "args": "Accept" },
+        { "type": "response.headers", "op": "append", "target": { "key": "Vary" }, "args": "Accept" }
+      ]
     }
   ],
   "crons": [{ "path": "/api/fitness/sync", "schedule": "0 13 * * *" }]

@@ -17,7 +17,10 @@ const documentAt = async (path) => {
   assert.equal(response.status, 200, path)
   return new JSDOM(await response.text()).window.document
 }
-const varies = (res) => assert.match(res.headers.get('vary') ?? '', /(?:^|,)\s*accept\s*(?:,|$)/i)
+const varies = (res) => {
+  const fields = (res.headers.get('vary') ?? '').toLowerCase().split(/\s*,\s*/)
+  assert.equal(fields.filter((name) => name === 'accept').length, 1, `Vary: ${fields.join(', ')}`)
+}
 const postings = (doc) => {
   const items = []
   for (const script of doc.querySelectorAll('script[type="application/ld+json"]')) {
@@ -37,6 +40,7 @@ it('negotiates the same homepage URL without mixing cached variants', async () =
     ['text/markdown', 'text/markdown'],
     ['text/html', 'text/html'],
     ['text/html;q=0.4, text/markdown;q=0.9', 'text/markdown'],
+    ['text/markdown;q=0.2, text/html;q=0.9', 'text/html'],
     ['text/markdown;q=0, */*', 'text/html'],
     ['*/*', 'text/html'],
     ['text/markdown; charset=utf-8', 'text/markdown'],
@@ -157,6 +161,7 @@ it('publishes the canonical identity, an actual share image and named BlogPostin
     for (const post of posts) {
       assert.ok(post.name?.trim())
       assert.equal(post.name, post.headline)
+      if (post.mainEntityOfPage) assert.equal(post.mainEntityOfPage['@id'], post.url)
     }
   }
   const buildId = JSON.parse(home.querySelector('#__NEXT_DATA__').textContent).buildId
