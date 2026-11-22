@@ -8,14 +8,14 @@ import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
-import type { ArticleSummary } from '../lib/articles'
-import { getArticleSummaries } from '../lib/articles'
-import { BASE_URL, X_HANDLE } from '../lib/constants'
-import { getArticlesListStructuredData } from '../lib/structured/articles'
-
-export const PageTitle = 'Articles | Christian Anagnostou'
-export const PageDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
-const PageUrl = `${BASE_URL}/articles`
+import { type ArticleSummary, getArticleSummaries } from '../lib/articles'
+import { X_HANDLE } from '../lib/constants'
+import {
+  articlesDescription,
+  articlesTitle,
+  articlesUrl,
+  getArticlesListStructuredData,
+} from '../lib/structured/articles'
 
 interface Props {
   posts: ArticleSummary[]
@@ -36,34 +36,29 @@ const Articles = ({ posts }: Props) => {
     <>
       <Head>
         {/* Primary SEO */}
-        <title>{PageTitle}</title>
-        <meta content={PageDescription} name="description" />
+        <title>{articlesTitle}</title>
+        <meta content={articlesDescription} name="description" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="index, follow" name="robots" />
         <meta content="Christian Anagnostou" name="author" />
         <meta content="Christian Anagnostou" name="publisher" />
-        <meta content={PageDescription} name="keywords" />
-        <link href={PageUrl} rel="canonical" />
+        <meta content={articlesDescription} name="keywords" />
+        <link href={articlesUrl} rel="canonical" />
 
         {/* Open Graph / Facebook */}
-        <meta key="og:title" content={PageTitle} property="og:title" />
-        <meta key="og:description" content={PageDescription} property="og:description" />
-        <meta key="og:url" content={PageUrl} property="og:url" />
+        <meta key="og:title" content={articlesTitle} property="og:title" />
+        <meta key="og:description" content={articlesDescription} property="og:description" />
+        <meta key="og:url" content={articlesUrl} property="og:url" />
         <meta key="og:type" content="website" property="og:type" />
-        {/* <meta property="og:image" content={`${BASE_URL}/og-image.jpg`} /> */}
 
         {/* Twitter */}
         <meta content="summary_large_image" name="twitter:card" />
-        <meta content={PageTitle} name="twitter:title" />
-        <meta content={PageDescription} name="twitter:description" />
-        {/* <meta name="twitter:image" content={`${BASE_URL}/og-image.jpg`} /> */}
+        <meta content={articlesTitle} name="twitter:title" />
+        <meta content={articlesDescription} name="twitter:description" />
         <meta content={X_HANDLE} name="twitter:site" />
 
         {/* Structured Data */}
-        <script
-          dangerouslySetInnerHTML={getArticlesListStructuredData(posts, PageDescription, PageUrl)}
-          type="application/ld+json"
-        />
+        <script dangerouslySetInnerHTML={getArticlesListStructuredData(posts)} type="application/ld+json" />
       </Head>
 
       <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
