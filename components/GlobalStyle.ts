@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle<{ $fontFamily: string }>`
   :root {
+    --instrument-transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease;
     --accent: #303030;
     --text: #d6d6d6;
     --text-dark: #a8a8a8;

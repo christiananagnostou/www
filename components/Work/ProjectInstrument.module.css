@@ -31,9 +31,7 @@
   .instrument g[class],
   .compress,
   .elapsed {
-    transition:
-      transform 220ms var(--study-ease),
-      opacity 160ms ease;
+    transition: var(--instrument-transition);
   }
   a:hover .lift {
     transform: translateY(-12px);

@@ -406,13 +406,33 @@
   .chevron {
     transition: transform 160ms ease-out;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .instrument svg {
-      transition: transform 210ms ease-out;
-    }
-    .sportRow:hover .instrument svg {
-      transform: translateX(2px);
-    }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  :is(.swimmer, .crank, .runner, .waypointRing) {
+    transition: var(--instrument-transition);
+  }
+  .sportRow:hover .swimmer {
+    transform: translateX(13px);
+  }
+  .crank {
+    transform-origin: 76px 27px;
+  }
+  .sportRow:hover .crank {
+    transform: rotate(60deg);
+  }
+  .runner {
+    transform-origin: 76px 28px;
+  }
+  .sportRow:hover .runner {
+    transform: rotate(50deg);
+  }
+  .waypointRing {
+    transform: scale(0.6);
+    transform-origin: 95px 12px;
+  }
+  .sportRow:hover .waypointRing {
+    transform: scale(1);
+    opacity: 0.75;
   }
 }
 @media (width <= 600px) {
