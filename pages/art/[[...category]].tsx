@@ -43,6 +43,16 @@ export default function Art({ initialTag }: Props) {
   const filters = useRef<HTMLDivElement>(null)
   const closeViewer = useCallback(() => setOpenPhoto(null), [])
   useEffect(() => {
+    const row = filters.current
+    const selected = row?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')
+    if (!row || !selected || row.scrollWidth <= row.clientWidth) return
+    const bounds = row.getBoundingClientRect()
+    const button = selected.getBoundingClientRect()
+    const left = Math.min(0, button.left - bounds.left) + Math.max(0, button.right - bounds.right)
+    if (left) row.scrollBy({ left, behavior: 'instant' })
+  }, [tag])
+
+  useEffect(() => {
     router.events.on('routeChangeStart', closeViewer)
     return () => router.events.off('routeChangeStart', closeViewer)
   }, [router.events, closeViewer])
