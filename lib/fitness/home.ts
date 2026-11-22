@@ -14,14 +14,6 @@ export interface HomeActivity {
 
 export const HOME_ACTIVITY_LIMIT = 5
 
-export function getHomeActivityPreview(activities: FitnessActivity[]) {
-  const totalCounts: Record<HomeActivityCategory, number> = { swim: 0, cycle: 0, indoorCycle: 0, run: 0 }
-  const recent = createHomeActivities(activities).filter(
-    ({ category }) => ++totalCounts[category] <= HOME_ACTIVITY_LIMIT
-  )
-  return { recent, totalCounts }
-}
-
 const formatDuration = (seconds: number) => {
   const total = Math.round(seconds)
   const hours = Math.floor(total / 3600)
@@ -37,7 +29,7 @@ const getCategory = (activity: FitnessActivity): HomeActivityCategory | null => 
   return null
 }
 
-export const createHomeActivities = (activities: FitnessActivity[]): HomeActivity[] => {
+export function getHomeActivityPreview(activities: FitnessActivity[]) {
   const podium: Record<HomeActivityCategory, number[]> = { swim: [], cycle: [], indoorCycle: [], run: [] }
   for (const activity of activities) {
     const category = getCategory(activity)
@@ -48,9 +40,13 @@ export const createHomeActivities = (activities: FitnessActivity[]): HomeActivit
     if (top.length > 3) top.pop()
   }
 
-  return activities.flatMap((activity) => {
+  const totalCounts: Record<HomeActivityCategory, number> = { swim: 0, cycle: 0, indoorCycle: 0, run: 0 }
+  const recent: HomeActivity[] = []
+  for (const activity of activities) {
     const category = getCategory(activity)
-    if (!category) return []
+    if (!category) continue
+    totalCounts[category] += 1
+    if (totalCounts[category] > HOME_ACTIVITY_LIMIT) continue
 
     const miles = metersToMiles(activity.distanceMeters)
     const elevationFeet = metersToFeet(activity.elevationGainMeters)
@@ -83,6 +79,7 @@ export const createHomeActivities = (activities: FitnessActivity[]): HomeActivit
 
     const rank = podium[category].indexOf(activity.distanceMeters) + 1
     const distanceRank = rank === 1 || rank === 2 || rank === 3 ? rank : null
-    return [{ id: activity.id, category, startedAt: activity.startedAt, metrics, distanceRank }]
-  })
+    recent.push({ id: activity.id, category, startedAt: activity.startedAt, metrics, distanceRank })
+  }
+  return { recent, totalCounts }
 }
