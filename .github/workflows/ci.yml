@@ -125,5 +125,7 @@ jobs:
           exit "$prep_exit"
       - name: Verify photography share links before hydration
         run: node --test tests/artRoutes.built.mjs
+      - name: Verify concurrent article likes against Redis
+        run: npm test -- --run lib/articles/likes.spec.ts
       - name: Verify the homepage link entrance in Firefox
         run: node --test tests/homeLinks.built.mjs
