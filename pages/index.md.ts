@@ -3,7 +3,7 @@ import type { GetServerSideProps } from 'next'
 import { SITE_ORIGIN } from '../lib/constants'
 import { formatHomeActivityDate, HOME_ACTIVITY_LABELS, HOME_ACTIVITY_LIMIT } from '../lib/fitness/home'
 import { getHomeContent, HOME_REVALIDATE_SECONDS } from '../lib/home/content'
-import { MARKDOWN } from '../lib/http/pageFormat'
+import { HOME_VARY, MARKDOWN } from '../lib/http/pageFormat'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -13,6 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: {} }
   }
   res.setHeader('Content-Type', MARKDOWN)
+  if (HOME_VARY) res.setHeader('Vary', HOME_VARY)
   res.setHeader('Cache-Control', `public, max-age=0, s-maxage=${HOME_REVALIDATE_SECONDS}, stale-while-revalidate=60`)
   const { posts, fitnessActivities } = await getHomeContent()
   const recent = fitnessActivities.recent.slice(0, HOME_ACTIVITY_LIMIT)
