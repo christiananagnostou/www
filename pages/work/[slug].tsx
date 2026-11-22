@@ -32,13 +32,24 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
+// These pages render full images without blur placeholders.
+const projectImageProps = ({ src, width, height }: StaticImageData) => ({ src, width, height })
+
 export const getStaticProps: GetStaticProps = async (context) => {
   const project = ProjectState.find((proj) => proj.slug === context.params?.slug)
   if (!project) {
     return { notFound: true }
   }
 
-  return { props: { project } }
+  return {
+    props: {
+      project: {
+        ...project,
+        desktopImgs: project.desktopImgs.map(projectImageProps),
+        mobileImgs: project.mobileImgs.map(projectImageProps),
+      },
+    },
+  }
 }
 
 const SingleProject = ({ project }: Props) => (
