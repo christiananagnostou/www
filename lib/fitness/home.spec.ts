@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import type { FitnessActivity } from './activity'
-import { createHomeActivities, getHomeActivityPreview } from './home'
+import { getHomeActivityPreview } from './home'
 
 const activity: FitnessActivity = {
   id: 'cycle-1',
@@ -15,9 +15,9 @@ const activity: FitnessActivity = {
   averagePowerWatts: 200,
 }
 
-describe('createHomeActivities', () => {
+describe('getHomeActivityPreview', () => {
   it('formats canonical measurements only at the presentation boundary', () => {
-    expect(createHomeActivities([activity])).toEqual([
+    expect(getHomeActivityPreview([activity]).recent).toEqual([
       {
         id: 'cycle-1',
         category: 'indoorCycle',
@@ -33,15 +33,25 @@ describe('createHomeActivities', () => {
     ])
   })
 
-  it('keeps five recent activities per sport and counts the full history', () => {
-    const rides = Array.from({ length: 7 }, (_, index) => ({ ...activity, id: String(index) }))
+  it('counts the full history but only formats five activities per sport', () => {
+    const readElevation = vi.fn(() => activity.elevationGainMeters)
+    const rides = Array.from({ length: 7 }, (_, index) => ({
+      ...activity,
+      id: String(index),
+      get elevationGainMeters() {
+        return readElevation()
+      },
+    }))
     const preview = getHomeActivityPreview([...rides, { ...activity, id: 'run', kind: 'run' }])
     expect(preview.recent.map(({ id }) => id)).toEqual(['0', '1', '2', '3', '4', 'run'])
     expect(preview.totalCounts).toEqual({ indoorCycle: 7, run: 1, swim: 0, cycle: 0 })
+    expect(readElevation).toHaveBeenCalledTimes(5)
   })
 
   it('shows swim pace per 100 meters', () => {
-    const [swim] = createHomeActivities([{ ...activity, kind: 'swim', distanceMeters: 500, durationSeconds: 600 }])
+    const [swim] = getHomeActivityPreview([
+      { ...activity, kind: 'swim', distanceMeters: 500, durationSeconds: 600 },
+    ]).recent
     expect(swim.metrics.find((metric) => metric.label === 'Pace')?.value).toBe('2:00/100m')
   })
 
@@ -62,15 +72,15 @@ describe('createHomeActivities', () => {
       id: String(i),
       distanceMeters,
     }))
-    expect(createHomeActivities(runs).map((a) => a.distanceRank)).toEqual([1, 1, 3, null])
+    expect(getHomeActivityPreview(runs).recent.map((a) => a.distanceRank)).toEqual([1, 1, 3, null])
   })
 
   it('omits activity kinds that are not shown on the homepage', () => {
-    expect(createHomeActivities([{ ...activity, kind: 'strength' }])).toEqual([])
+    expect(getHomeActivityPreview([{ ...activity, kind: 'strength' }]).recent).toEqual([])
   })
 
   it('does not show pace for a zero-duration activity', () => {
-    const [homeActivity] = createHomeActivities([{ ...activity, kind: 'run', durationSeconds: 0 }])
+    const [homeActivity] = getHomeActivityPreview([{ ...activity, kind: 'run', durationSeconds: 0 }]).recent
     expect(homeActivity.metrics.map((metric) => metric.label)).toEqual(['Distance', 'Elevation Gain'])
   })
 })
