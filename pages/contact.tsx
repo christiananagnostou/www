@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
-import { InfoCopy } from '../components/Shared/InfoPage'
 import SocialLinks from '../components/SocialLinks'
 import { BASE_URL } from '../lib/constants'
 import { getContactStructuredData } from '../lib/structured/contact'
@@ -144,6 +143,7 @@ const Contact = () => {
             </FormGroup>
           </m.div>
         </StyledForm>
+        <PrivacyLink href="/privacy">Privacy</PrivacyLink>
 
         <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
           Sent successfully. You&apos;ll hear from me soon!
@@ -155,19 +155,6 @@ const Contact = () => {
         <m.div variants={fade}>
           <SocialLinks />
         </m.div>
-        <InfoCopy>
-          <h2>What to include</h2>
-          <p>
-            If you’re writing about a project, tell me which one you tried and what you were hoping to do. A link to the
-            page or a short example is especially helpful for a bug or a correction. For a question about an article or
-            photograph, its title is a good place to start.
-          </p>
-          <p>
-            Only your name is required. Include an email address if you’d like me to reply; it won’t appear on the site.
-            You can read <Link href="/about">more about me</Link> or see{' '}
-            <Link href="/privacy">how the form handles your message</Link> before sending it.
-          </p>
-        </InfoCopy>
       </ContactStyle>
     </>
   )
@@ -203,7 +190,15 @@ const ContactStyle = styled(m.div)`
 const StyledForm = styled(m.form)`
   width: 100%;
   margin-top: -1rem;
-  margin-bottom: 2rem;
+`
+
+const PrivacyLink = styled(Link)`
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+  text-decoration-color: currentcolor;
 `
 
 const FormGroup = styled.div`

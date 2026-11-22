@@ -13,7 +13,6 @@ Start with a GET request to https://www.christiancodes.co/ with `Accept: text/ma
 
 ## Site information
 
-- [About](https://www.christiancodes.co/about): Verify who made the site and the projects.
 - [Contact](https://www.christiancodes.co/contact): Direct a reader here for a question, correction, or collaboration; reading the site does not require sending a message.
 - [Privacy](https://www.christiancodes.co/privacy): Check how the portfolio handles messages, visit measurements, and browser storage.
 - [Sitemap](https://www.christiancodes.co/sitemap.xml): Discover published page URLs in XML.

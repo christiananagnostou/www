@@ -53,6 +53,7 @@ it('negotiates the same homepage URL without mixing cached variants', async () =
     if (type === 'text/html') assert.match(body, /<!doctype html>/i)
     else {
       assert.match(body, /^# Christian Anagnostou\n/)
+      assert.ok(!body.includes(`](${canonical}/about)`))
       for (const title of titles) assert.ok(body.includes(title), title)
       for (const time of doc.querySelectorAll('#main-content time')) assert.ok(body.includes(time.textContent))
       assert.doesNotMatch(body, /<html|<script/i)
@@ -78,6 +79,7 @@ it('negotiates the same homepage URL without mixing cached variants', async () =
 
 it('keeps genuine 404 status and provides recovery links in the requested format', async () => {
   for (const path of [
+    '/about',
     '/no-such-agent-page',
     '/nested/no-such-page',
     '/work/no-such-page',
@@ -106,7 +108,7 @@ it('keeps genuine 404 status and provides recovery links in the requested format
   assert.equal(await head.text(), '')
 })
 
-it('publishes a usable llms.txt, sitemap and trust pages in initial HTML', async () => {
+it('publishes a usable llms.txt and a sitemap for the pages that exist', async () => {
   const guide = await request('/llms.txt', '*/*')
   assert.equal(guide.status, 200)
   assert.match(guide.headers.get('content-type'), /^text\/plain/)
@@ -125,17 +127,23 @@ it('publishes a usable llms.txt, sitemap and trust pages in initial HTML', async
   assert.match(sitemap.headers.get('content-type'), /xml/)
   const xml = new JSDOM(await sitemap.text(), { contentType: 'text/xml' }).window.document
   const locations = Array.from(xml.querySelectorAll('loc'), (loc) => loc.textContent)
-  for (const route of ['/about', '/contact', '/privacy']) {
-    assert.ok(locations.includes(canonical + route), route)
-    const main = (await documentAt(route)).querySelector('main')
-    assert.equal(main.querySelector('h1').textContent.toLowerCase(), route.slice(1))
-    assert.ok(
-      Array.from(main.querySelectorAll('p'))
-        .map((p) => p.textContent)
-        .join(' ').length >= 500,
-      route
-    )
-  }
+  assert.ok(!locations.includes(canonical + '/about'))
+  for (const route of ['/contact', '/privacy']) assert.ok(locations.includes(canonical + route), route)
+})
+
+it('puts one Privacy link directly below the original contact form', async () => {
+  const contact = (await documentAt('/contact')).querySelector('main')
+  assert.equal(contact.querySelector('h1').textContent, 'Contact')
+  const links = contact.querySelectorAll('a[href="/privacy"]')
+  assert.equal(links.length, 1)
+  assert.equal(contact.querySelector('form').nextElementSibling, links[0])
+  assert.equal(links[0].textContent, 'Privacy')
+  assert.equal(contact.querySelector('a[href="/about"]'), null)
+
+  const privacy = (await documentAt('/privacy')).querySelector('main')
+  assert.equal(privacy.querySelector('h1').textContent, 'Privacy')
+  const paragraphs = Array.from(privacy.querySelectorAll('p'), (p) => p.textContent)
+  assert.ok(paragraphs.join(' ').length >= 500)
 })
 
 it('publishes the canonical identity, an actual share image and named BlogPosting entities', async () => {

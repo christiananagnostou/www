@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         `- ${formatHomeActivityDate(a.startedAt)} · ${HOME_ACTIVITY_LABELS[a.category]} · ${a.metrics.map((m) => m.label + ': ' + m.value).join(' · ')}`
     ),
     '',
-    `[Photography](${SITE_ORIGIN}/art) · [About](${SITE_ORIGIN}/about) · [Contact](${SITE_ORIGIN}/contact) · [Guide for agents](${SITE_ORIGIN}/llms.txt)`,
+    `[Photography](${SITE_ORIGIN}/art) · [Contact](${SITE_ORIGIN}/contact) · [Guide for agents](${SITE_ORIGIN}/llms.txt)`,
     '',
   ]
   res.end(rows.join('\n'))

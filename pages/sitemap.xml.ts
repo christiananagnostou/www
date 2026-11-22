@@ -21,7 +21,6 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 
   const staticRoutes = [
     { path: '/', lastmod: now },
-    { path: '/about', lastmod: now },
     { path: '/art', lastmod: now },
     { path: '/articles', lastmod: now },
     { path: '/bookmarklets', lastmod: now },
