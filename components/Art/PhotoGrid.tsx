@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import type { ArtImage } from '../../lib/art'
 import { formatPhotoDate } from '../../lib/art/formatPhotoDate'
 import { fade } from '../animation'
+import { PhotoTags } from './PhotoFilters'
 
 const THUMBNAIL_SIZES = '(min-width: 800px) 376px, calc(50vw - 1rem - 8.5px)'
 
@@ -13,7 +14,7 @@ type GridProps = {
   photos: ArtImage[]
   tag: string | null
   onOpen: (photo: ArtImage) => void
-  onSelectTag: (tag: string, fromPhoto: boolean) => void
+  onSelectTag: (tag: string | null) => void
 }
 
 export default function PhotoGrid({ photos, tag, onOpen, onSelectTag }: GridProps) {
@@ -104,17 +105,7 @@ const PhotoCard = memo(function PhotoCard({
           <p className="date">{formatPhotoDate(photo.date)}</p>
         </div>
         <div className="tags">
-          {photo.tags.map((category) => (
-            <button
-              type="button"
-              key={category}
-              className={tag === category ? 'selected' : ''}
-              aria-pressed={tag === category}
-              onClick={() => onSelectTag(category, true)}
-            >
-              {category}
-            </button>
-          ))}
+          <PhotoTags tags={photo.tags} activeTag={tag} onSelect={onSelectTag} />
         </div>
       </HoverBox>
     </ImageWrapper>
@@ -130,7 +121,7 @@ const Column = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 17px;
+  gap: inherit;
   min-width: 0;
 `
 
@@ -189,21 +180,11 @@ const HoverBox = styled.div`
   .tags button {
     padding: 2px 5px;
     font-size: 0.7rem;
-    background: var(--border);
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);
-    color: var(--text);
     cursor: pointer;
-    transition:
-      background-color 100ms ease,
-      color 100ms ease;
     text-transform: capitalize;
     min-width: max-content;
-
-    &.selected {
-      background: var(--accent);
-      color: #ffffff;
-    }
   }
 `
 const ImageWrapper = styled.div`

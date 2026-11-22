@@ -8,11 +8,11 @@ import styled from 'styled-components'
 import { fade, pageAnimation } from '../../components/animation'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import FullscreenModal from '../../components/Art/FullScreenModal'
+import PhotoFilters, { photoTagStyles } from '../../components/Art/PhotoFilters'
 import PhotoGrid from '../../components/Art/PhotoGrid'
-import { ButtonRow } from '../../components/Shared/ButtonRow'
 import { Heading } from '../../components/Shared/Heading'
 import type { ArtImage } from '../../lib/art'
-import { photoTags, photosForTag } from '../../lib/art/gallery'
+import { photoFilters, photosForTag } from '../../lib/art/gallery'
 import { BASE_URL } from '../../lib/constants'
 import { getArtStructuredData } from '../../lib/structured/art'
 
@@ -20,7 +20,7 @@ type Props = { initialTag: string | null }
 type Params = { category?: string[] }
 
 export const getStaticPaths: GetStaticPaths<Params> = () => ({
-  paths: [[], ...photoTags.map((tag) => [tag])].map((category) => ({ params: { category } })),
+  paths: photoFilters.map((tag) => ({ params: { category: tag ? [tag] : [] } })),
   fallback: false,
 })
 
@@ -40,17 +40,8 @@ export default function Art({ initialTag }: Props) {
   const structuredData = useMemo(() => JSON.stringify(getArtStructuredData(photos)), [photos])
   const ogImage = photos[0] && `${BASE_URL}${photos[0].image.src}`
   const [openPhoto, setOpenPhoto] = useState<ArtImage | null>(null)
-  const filters = useRef<HTMLDivElement>(null)
+  const activeButton = useRef<HTMLButtonElement>(null)
   const closeViewer = useCallback(() => setOpenPhoto(null), [])
-  useEffect(() => {
-    const row = filters.current
-    const selected = row?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')
-    if (!row || !selected || row.scrollWidth <= row.clientWidth) return
-    const bounds = row.getBoundingClientRect()
-    const button = selected.getBoundingClientRect()
-    const left = Math.min(0, button.left - bounds.left) + Math.max(0, button.right - bounds.right)
-    if (left) row.scrollBy({ left, behavior: 'instant' })
-  }, [tag])
 
   useEffect(() => {
     router.events.on('routeChangeStart', closeViewer)
@@ -58,19 +49,21 @@ export default function Art({ initialTag }: Props) {
   }, [router.events, closeViewer])
 
   const selectTag = useCallback(
-    async (next: string | null, fromPhoto = false) => {
-      const selected = next === tag ? null : next
-      const changed = await router.push({ pathname: '/art', query: selected ? { tag: selected } : {} }, undefined, {
+    (next: string | null) =>
+      router.push({ pathname: '/art', query: next ? { tag: next } : {} }, undefined, {
         shallow: true,
         scroll: false,
-      })
-      if (changed && fromPhoto) {
-        filters.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus({ preventScroll: true })
-        // Smooth-scrolling through a newly filtered grid would request every photo on the way up.
-        window.scrollTo({ top: 0, behavior: 'instant' })
-      }
+      }),
+    [router]
+  )
+  const selectPhotoTag = useCallback(
+    async (next: string | null) => {
+      if (!(await selectTag(next))) return
+      activeButton.current?.focus({ preventScroll: true })
+      // Smooth-scrolling through a newly filtered grid would request every photo on the way up.
+      window.scrollTo({ top: 0, behavior: 'instant' })
     },
-    [router, tag]
+    [selectTag]
   )
 
   const index = openPhoto ? photos.indexOf(openPhoto) : -1
@@ -108,23 +101,8 @@ export default function Art({ initialTag }: Props) {
           </p>
         </Heading>
 
-        <m.div variants={fade}>
-          <Filters ref={filters} role="group" aria-label="Filter photographs">
-            {[null, ...photoTags].map((category) => (
-              <button
-                key={category ?? 'All'}
-                type="button"
-                aria-pressed={tag === category}
-                className={tag === category ? 'selected' : ''}
-                onClick={() => selectTag(category)}
-              >
-                {category ?? 'All'}
-              </button>
-            ))}
-          </Filters>
-        </m.div>
-
-        <PhotoGrid photos={photos} tag={tag} onOpen={setOpenPhoto} onSelectTag={selectTag} />
+        <PhotoFilters activeTag={tag} activeButtonRef={activeButton} onSelect={selectTag} />
+        <PhotoGrid photos={photos} tag={tag} onOpen={setOpenPhoto} onSelectTag={selectPhotoTag} />
       </Container>
 
       {index !== -1 && <FullscreenModal initialIndex={index} images={photos} onClose={closeViewer} />}
@@ -138,18 +116,6 @@ const Container = styled(m.section)`
   max-width: var(--max-w-screen);
   padding: 0 1rem;
   margin: 2rem auto;
-`
 
-const Filters = styled(ButtonRow)`
-  button {
-    transition:
-      background-color 100ms ease,
-      color 100ms ease;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    button {
-      transition: none;
-    }
-  }
+  ${photoTagStyles}
 `

@@ -16,17 +16,19 @@ interface FullscreenModalProps {
 
 type View = { requested: number; displayed: number | null; previous: number | null; direction?: 'next' | 'previous' }
 
+const adjacentIndex = (index: number, step: -1 | 1, count: number) => (index + step + count) % count
+
 export default function FullscreenModal({ images, initialIndex, onClose }: FullscreenModalProps) {
   const dialog = useRef<HTMLDialogElement>(null)
   const [view, setView] = useState<View>({ requested: initialIndex, displayed: null, previous: null })
   const visible = view.displayed ?? view.requested
   const photo = images[visible]
   const count = images.length
+  const canNavigate = count > 1
+  const pending = view.displayed !== view.requested
   const allowLookahead =
-    view.displayed === view.requested &&
-    count > 1 &&
-    !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
-  const target = allowLookahead ? (visible + 1) % count : view.requested
+    canNavigate && !pending && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+  const target = allowLookahead ? adjacentIndex(visible, 1, count) : view.requested
   // Retain the last frame and one target. Stable DOM order lets a mid-transition reversal continue in place.
   const frames = [...new Set([view.previous, visible, target])]
     .filter((index) => index !== null)
@@ -41,10 +43,10 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
   }, [])
 
   const navigate = (step: -1 | 1, repeat = false) => {
-    if (count < 2) return
+    if (!canNavigate) return
     setView((current) => ({
       ...current,
-      requested: (current.requested + step + count) % count,
+      requested: adjacentIndex(current.requested, step, count),
       direction: repeat ? undefined : step === 1 ? 'next' : 'previous',
     }))
   }
@@ -78,7 +80,7 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
           {visible + 1} of {count}
         </span>
       </Metadata>
-      <Stage aria-busy={view.displayed !== view.requested} data-direction={view.direction}>
+      <Stage aria-busy={pending} data-direction={view.direction}>
         {frames.map((index) => (
           <ViewerPhoto
             key={images[index].id}
@@ -91,13 +93,13 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
         ))}
       </Stage>
       <Controls>
-        <button type="button" aria-label="Previous image" disabled={count < 2} onClick={() => navigate(-1)}>
+        <button type="button" aria-label="Previous image" disabled={!canNavigate} onClick={() => navigate(-1)}>
           <LeftArrow />
         </button>
         <button type="button" aria-label="Close full screen view" onClick={onClose}>
           <X />
         </button>
-        <button type="button" aria-label="Next image" disabled={count < 2} onClick={() => navigate(1)}>
+        <button type="button" aria-label="Next image" disabled={!canNavigate} onClick={() => navigate(1)}>
           <RightArrow />
         </button>
       </Controls>
@@ -125,6 +127,11 @@ const ModalOverlay = styled.dialog`
     display: flex;
   }
 
+  > * {
+    width: 100%;
+    max-width: var(--max-w-screen);
+  }
+
   &::backdrop {
     background: transparent;
   }
@@ -149,8 +156,6 @@ const Metadata = styled.div`
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  width: 100%;
-  max-width: var(--max-w-screen);
   padding: 0.75rem 1rem;
   color: var(--text-dark);
   font-size: 0.85rem;
@@ -180,8 +185,6 @@ const Stage = styled.div`
   position: relative;
   flex: 1;
   min-height: 0;
-  width: 100%;
-  max-width: var(--max-w-screen);
   overflow: clip;
 
   &[data-direction='previous'] {
@@ -192,8 +195,6 @@ const Stage = styled.div`
 const Controls = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  max-width: var(--max-w-screen);
   padding: 0.375rem 0.5rem;
 
   button {

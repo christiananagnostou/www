@@ -1,7 +1,7 @@
-import { SortedArtImages } from '../art'
+import type { ArtImage } from '../art'
 import { BASE_URL } from '../constants'
 
-export const getArtStructuredData = (images = SortedArtImages) => {
+export const getArtStructuredData = (images: readonly ArtImage[]) => {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',

@@ -59,7 +59,7 @@ describe('full screen photography viewer', () => {
     const first = viewer.visible()
     expect(viewer.frames()).toEqual([first])
     await load(first)
-    const [, next] = viewer.frames()
+    const next = viewer.standby()
     expect(next.getAttribute('loading')).toBe('eager')
     expect(next.getAttribute('fetchpriority')).toBe('low')
     expect(next.sizes).toBe(first.sizes)
@@ -80,12 +80,12 @@ describe('full screen photography viewer', () => {
     const viewer = openViewer()
     const first = viewer.visible()
     await load(first)
-    const [, skipped] = viewer.frames()
+    const skipped = viewer.standby()
     viewer.next()
     expect(viewer.visible()).toBe(first)
     expect(screen.getByRole('status').textContent).toContain('1 of 4')
     viewer.next()
-    const target = viewer.frames().at(-1)!
+    const target = viewer.standby()
     let release!: () => void
     target.decode = () =>
       new Promise<void>((resolve) => {
@@ -145,7 +145,7 @@ describe('full screen photography viewer', () => {
     await load(first)
     expect(viewer.frames()).toEqual([first])
     viewer.next()
-    const [, next] = viewer.frames()
+    const next = viewer.standby()
     expect(next.getAttribute('fetchpriority')).toBe('high')
     await load(next)
     expect(viewer.visible()).toBe(next)
@@ -155,7 +155,7 @@ describe('full screen photography viewer', () => {
   it('does not expose a failed standby photo and lets the user retry when they reach it', async () => {
     const viewer = openViewer()
     await load(viewer.visible())
-    fireEvent.error(viewer.frames()[1])
+    fireEvent.error(viewer.standby())
     expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull()
     viewer.next()
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
