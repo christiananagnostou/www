@@ -1,13 +1,12 @@
-import { AnimatePresence } from 'framer-motion'
-import * as m from 'framer-motion/m'
-import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import type { ArtImage } from '../../lib/art'
 import { formatPhotoDate } from '../../lib/art/formatPhotoDate'
 import LeftArrow from '../SVG/LeftArrow'
 import RightArrow from '../SVG/RightArrow'
+import X from '../SVG/X'
+import ViewerPhoto from './ViewerPhoto'
 
 interface FullscreenModalProps {
   images: ArtImage[]
@@ -15,34 +14,32 @@ interface FullscreenModalProps {
   onClose: () => void
 }
 
-const deltaX = 25
-const duration = 0.25
-const imageVariants = {
-  initial: (direction: number) => ({
-    x: direction ? direction * deltaX : 0,
-    opacity: 0,
-  }),
-  animate: {
-    x: 0,
-    opacity: 1,
-    transition: { duration },
-  },
-  exit: (direction: number) => ({
-    x: direction ? direction * -deltaX : 0,
-    opacity: 0,
-    transition: { duration },
-  }),
-}
+type View = { requested: number; displayed: number | null; previous: number | null }
 
-const FullscreenModal = ({ images, initialIndex, onClose }: FullscreenModalProps) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex)
-  const image = images[currentIndex]
-  const formattedDate = formatPhotoDate(image.date)
-  const [direction, setDirection] = useState(0)
+export default function FullscreenModal({ images, initialIndex, onClose }: FullscreenModalProps) {
   const dialog = useRef<HTMLDialogElement>(null)
+  const [view, setView] = useState<View>({ requested: initialIndex, displayed: null, previous: null })
+  const visible = view.displayed ?? view.requested
+  const photo = images[visible]
+  const count = images.length
+  const allowLookahead =
+    view.displayed === view.requested &&
+    count > 1 &&
+    !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+  const target = allowLookahead ? (visible + 1) % count : view.requested
+  // Keep the last displayed frame for the fade/back button. Only the forward neighbor is speculative.
+  const frames = [...new Set([view.previous, visible, target])].filter((index) => index !== null)
+
+  const present = useCallback((index: number) => {
+    setView((current) =>
+      current.requested !== index || current.displayed === index
+        ? current
+        : { ...current, previous: current.displayed, displayed: index }
+    )
+  }, [])
+
   const navigate = (step: -1 | 1) => {
-    setDirection(step)
-    setCurrentIndex((current) => (current + step + images.length) % images.length)
+    if (count > 1) setView((current) => ({ ...current, requested: (current.requested + step + count) % count }))
   }
 
   useEffect(() => {
@@ -67,133 +64,139 @@ const FullscreenModal = ({ images, initialIndex, onClose }: FullscreenModalProps
         }
       }}
     >
-      <AnimatePresence custom={direction} mode="wait">
-        <MetadataArea
-          key={currentIndex}
-          animate="animate"
-          custom={direction}
-          exit="exit"
-          initial="initial"
-          variants={imageVariants}
-        >
-          <p>{image.title}</p>
-          <p>{formattedDate}</p>
-        </MetadataArea>
-      </AnimatePresence>
-
-      <ImageArea>
-        <AnimatePresence custom={direction}>
-          <MotionImageContainer
-            key={currentIndex}
-            animate="animate"
-            custom={direction}
-            exit="exit"
-            initial="initial"
-            variants={imageVariants}
-          >
-            <Image
-              alt={`${image.title} - ${formattedDate}`}
-              fill
-              loading="eager"
-              sizes="(min-width: 800px) 800px, 100vw"
-              src={image.image}
-              style={{ objectFit: 'contain' }}
-            />
-          </MotionImageContainer>
-        </AnimatePresence>
-      </ImageArea>
-      <BottomBar>
-        <button aria-label="Previous image" onClick={() => navigate(-1)}>
+      <Metadata role="status" aria-atomic="true">
+        <strong>{photo.title}</strong>
+        <time dateTime={photo.date}>{formatPhotoDate(photo.date)}</time>
+        <span>
+          {visible + 1} of {count}
+        </span>
+      </Metadata>
+      <Stage aria-busy={view.displayed !== view.requested}>
+        {frames.map((index) => (
+          <ViewerPhoto
+            key={images[index].id}
+            index={index}
+            photo={images[index]}
+            requested={index === view.requested}
+            visible={index === visible}
+            onPresent={present}
+          />
+        ))}
+      </Stage>
+      <Controls>
+        <button type="button" aria-label="Previous image" disabled={count < 2} onClick={() => navigate(-1)}>
           <LeftArrow />
         </button>
-        <button aria-label="Close full screen view" onClick={onClose}>
-          <svg
-            fill="currentColor"
-            height="1em"
-            stroke="currentColor"
-            strokeWidth="0"
-            viewBox="0 0 512 512"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="m289.94 256 95-95A24 24 0 0 0 351 127l-95 95-95-95a24 24 0 0 0-34 34l95 95-95 95a24 24 0 1 0 34 34l95-95 95 95a24 24 0 0 0 34-34z" />
-          </svg>
+        <button type="button" aria-label="Close full screen view" onClick={onClose}>
+          <X />
         </button>
-        <button aria-label="Next image" onClick={() => navigate(1)}>
+        <button type="button" aria-label="Next image" disabled={count < 2} onClick={() => navigate(1)}>
           <RightArrow />
         </button>
-      </BottomBar>
+      </Controls>
     </ModalOverlay>
   )
 }
 
-export default FullscreenModal
-
 const ModalOverlay = styled.dialog`
   position: fixed;
+  inset: 0;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
   max-width: none;
   max-height: none;
   margin: 0;
-  padding: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   border: 0;
-  background: rgb(0 0 0 / 95%);
-  inset: 0;
+  background: var(--dark-bg);
+  color: var(--text);
 
   &[open] {
     display: flex;
   }
 
   &::backdrop {
-    background: transparent;
+    background: var(--dark-bg);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: -2px;
   }
 `
 
-const ImageArea = styled.div`
+const Metadata = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: var(--max-w-screen);
+  padding: 0.75rem 1rem;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    margin-right: auto;
+    color: var(--heading);
+    overflow-wrap: anywhere;
+  }
+
+  time,
+  span {
+    white-space: nowrap;
+  }
+
+  span {
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--accent);
+    font-weight: normal;
+  }
+`
+
+const Stage = styled.div`
   position: relative;
   flex: 1;
-`
-
-const MotionImageContainer = styled(m.div)`
-  position: absolute;
+  min-height: 0;
   width: 100%;
-  max-width: 800px;
-  height: 100%;
-  margin: auto;
-  inset: 0;
+  max-width: var(--max-w-screen);
 `
 
-const MetadataArea = styled(m.div)`
+const Controls = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: end;
   width: 100%;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  p {
-    color: var(--text-dark);
-  }
-`
-
-const BottomBar = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  height: 120px;
-  padding: 0 1rem;
-  border-top: 1px solid var(--accent);
-  background: rgb(0 0 0 / 80%);
+  max-width: var(--max-w-screen);
+  padding: 0.375rem 0.5rem;
 
   button {
-    flex: 1;
-    height: 100%;
-    border: none;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    min-height: 44px;
+    border: 0;
+    border-radius: var(--border-radius-md);
     background: transparent;
-    font-size: 1.5rem;
-    color: var(--text-dark);
+    color: var(--text);
     cursor: pointer;
+  }
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  @media (hover: hover) {
+    button:enabled:hover {
+      background: var(--accent);
+      color: var(--heading);
+    }
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
   }
 `

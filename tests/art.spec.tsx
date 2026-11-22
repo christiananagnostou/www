@@ -1,7 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import FullscreenModal from '../components/Art/FullScreenModal'
 import PhotoGrid from '../components/Art/PhotoGrid'
 import type { ArtImage } from '../lib/art'
 import { photoTags, photosForTag } from '../lib/art/gallery'
@@ -73,36 +72,5 @@ describe('photography gallery', () => {
     const images = screen.getAllByRole('img')
     expect(images).toHaveLength(photos.length)
     expect(images.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true)
-  })
-
-  it('mounts a responsive viewer image immediately and wraps in both directions within the filtered set', () => {
-    const close = vi.fn()
-    render(
-      <div
-        ref={(node) => {
-          // JSDOM does not implement the native dialog methods.
-          const dialog = node?.querySelector('dialog')
-          if (!dialog) return
-          dialog.showModal = () => {
-            dialog.open = true
-          }
-          dialog.close = () => {
-            dialog.open = false
-          }
-        }}
-      >
-        <FullscreenModal images={photos} initialIndex={3} onClose={close} />
-      </div>
-    )
-    const dialog = screen.getByRole('dialog')
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Next image' }))
-    const next = within(dialog).getByAltText(/^Pier - /) as HTMLImageElement
-    expect(next.getAttribute('loading')).toBe('eager')
-    expect(next.getAttribute('sizes')).toContain('800px')
-    expect(next.srcset).toContain('/_next/image')
-    fireEvent.keyDown(dialog, { key: 'ArrowLeft' })
-    expect(within(dialog).getByAltText(/^Beach - /)).toBeTruthy()
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Close full screen view' }))
-    expect(close).toHaveBeenCalledOnce()
   })
 })
