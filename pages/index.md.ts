@@ -13,7 +13,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: {} }
   }
   res.setHeader('Content-Type', MARKDOWN)
-  res.setHeader('Vary', 'Accept')
   res.setHeader('Cache-Control', `public, max-age=0, s-maxage=${HOME_REVALIDATE_SECONDS}, stale-while-revalidate=60`)
   const { posts, fitnessActivities } = await getHomeContent()
   const recent = fitnessActivities.recent.slice(0, HOME_ACTIVITY_LIMIT)

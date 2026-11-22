@@ -1,8 +1,7 @@
 {
   "routes": [
-    { "handle": "hit" },
     {
-      "src": "^/(?:index(?:\\.html)?)?$",
+      "src": "^/$",
       "continue": true,
       "transforms": [{ "type": "response.headers", "op": "append", "target": { "key": "Vary" }, "args": "Accept" }]
     }
