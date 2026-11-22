@@ -117,3 +117,7 @@ jobs:
       - run: npm run build
       - name: Verify photography share links before hydration
         run: node --test tests/artRoutes.built.mjs
+      - name: Install Firefox for the homepage motion check
+        run: npx --no-install playwright-core install --with-deps firefox
+      - name: Verify the homepage link entrance in Firefox
+        run: node --test tests/homeLinks.built.mjs
