@@ -14,7 +14,7 @@ interface FullscreenModalProps {
   onClose: () => void
 }
 
-type View = { requested: number; displayed: number | null; previous: number | null }
+type View = { requested: number; displayed: number | null; previous: number | null; direction?: 'next' | 'previous' }
 
 export default function FullscreenModal({ images, initialIndex, onClose }: FullscreenModalProps) {
   const dialog = useRef<HTMLDialogElement>(null)
@@ -27,8 +27,10 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
     count > 1 &&
     !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
   const target = allowLookahead ? (visible + 1) % count : view.requested
-  // Keep the last displayed frame for the fade/back button. Only the forward neighbor is speculative.
-  const frames = [...new Set([view.previous, visible, target])].filter((index) => index !== null)
+  // Retain the last frame and one target. Stable DOM order lets a mid-transition reversal continue in place.
+  const frames = [...new Set([view.previous, visible, target])]
+    .filter((index) => index !== null)
+    .toSorted((a, b) => a - b)
 
   const present = useCallback((index: number) => {
     setView((current) =>
@@ -38,8 +40,13 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
     )
   }, [])
 
-  const navigate = (step: -1 | 1) => {
-    if (count > 1) setView((current) => ({ ...current, requested: (current.requested + step + count) % count }))
+  const navigate = (step: -1 | 1, repeat = false) => {
+    if (count < 2) return
+    setView((current) => ({
+      ...current,
+      requested: (current.requested + step + count) % count,
+      direction: repeat ? undefined : step === 1 ? 'next' : 'previous',
+    }))
   }
 
   useEffect(() => {
@@ -60,7 +67,7 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
       onKeyDown={(event) => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
           event.preventDefault()
-          navigate(event.key === 'ArrowLeft' ? -1 : 1)
+          navigate(event.key === 'ArrowLeft' ? -1 : 1, event.repeat)
         }
       }}
     >
@@ -71,7 +78,7 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
           {visible + 1} of {count}
         </span>
       </Metadata>
-      <Stage aria-busy={view.displayed !== view.requested}>
+      <Stage aria-busy={view.displayed !== view.requested} data-direction={view.direction}>
         {frames.map((index) => (
           <ViewerPhoto
             key={images[index].id}
@@ -99,6 +106,7 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
 }
 
 const ModalOverlay = styled.dialog`
+  --viewer-ease: cubic-bezier(0.23, 1, 0.32, 1);
   position: fixed;
   inset: 0;
   flex-direction: column;
@@ -118,7 +126,17 @@ const ModalOverlay = styled.dialog`
   }
 
   &::backdrop {
-    background: var(--dark-bg);
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[open] {
+      transition: opacity 200ms var(--viewer-ease);
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
   }
 
   button:focus-visible {
@@ -157,11 +175,18 @@ const Metadata = styled.div`
 `
 
 const Stage = styled.div`
+  --travel: clamp(1.5rem, 5vw, 3rem);
+  --entry-x: var(--travel);
   position: relative;
   flex: 1;
   min-height: 0;
   width: 100%;
   max-width: var(--max-w-screen);
+  overflow: clip;
+
+  &[data-direction='previous'] {
+    --entry-x: calc(0px - var(--travel));
+  }
 `
 
 const Controls = styled.div`

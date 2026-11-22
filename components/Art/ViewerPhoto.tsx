@@ -50,18 +50,32 @@ export default function ViewerPhoto({ index, photo, requested, visible, onPresen
 const Frame = styled.div`
   position: absolute;
   inset: 0;
-  display: grid;
+  display: none;
   place-items: center;
   opacity: 0;
 
   &[aria-hidden='false'] {
+    display: grid;
     z-index: 1;
     opacity: 1;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    dialog:not(:has(:focus-visible)) & {
-      transition: opacity 150ms cubic-bezier(0.23, 1, 0.32, 1);
+    [data-direction] > & {
+      transform: translateX(calc(0px - var(--entry-x)));
+      transition:
+        opacity 240ms ease,
+        transform 260ms var(--viewer-ease),
+        display 260ms allow-discrete;
+
+      &[aria-hidden='false'] {
+        transform: none;
+
+        @starting-style {
+          opacity: 0;
+          transform: translateX(var(--entry-x));
+        }
+      }
     }
   }
 

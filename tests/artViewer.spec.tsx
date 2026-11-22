@@ -36,6 +36,7 @@ function openViewer(images = photos, initialIndex = 0) {
   return {
     frames: () => [...dialog.querySelectorAll('img')],
     visible: () => screen.getByRole('img') as HTMLImageElement,
+    standby: () => dialog.querySelector<HTMLImageElement>('[aria-hidden="true"] img')!,
     next: () => fireEvent.click(screen.getByRole('button', { name: 'Next image' })),
     previous: () => fireEvent.keyDown(dialog, { key: 'ArrowLeft' }),
     close,
@@ -102,15 +103,39 @@ describe('full screen photography viewer', () => {
   it('wraps within a filtered set without duplicates and keeps the close control', async () => {
     const viewer = openViewer(photos.slice(2), 1)
     await load(viewer.visible())
-    const [, first] = viewer.frames()
+    const pair = viewer.frames()
+    const first = viewer.standby()
     await load(first)
     viewer.next()
     expect(viewer.visible().alt).toBe('Beach')
-    expect(viewer.frames()).toHaveLength(2)
+    expect(viewer.frames()).toEqual(pair)
     viewer.previous()
     expect(viewer.visible().alt).toBe('Bridge')
+    expect(viewer.frames()).toEqual(pair)
     fireEvent.click(screen.getByRole('button', { name: 'Close full screen view' }))
     expect(viewer.close).toHaveBeenCalledOnce()
+  })
+
+  it('uses the direction of the input across wraparound, but skips motion for a held arrow', async () => {
+    const viewer = openViewer(photos.slice(0, 2), 1)
+    const dialog = screen.getByRole('dialog')
+    await load(viewer.visible())
+    await load(viewer.standby())
+    const stage = dialog.querySelector('[aria-busy]')!
+    expect(stage.hasAttribute('data-direction')).toBe(false)
+
+    viewer.next()
+    expect(viewer.visible().alt).toBe('Pier')
+    expect(stage.getAttribute('data-direction')).toBe('next')
+    viewer.previous()
+    expect(viewer.visible().alt).toBe('Tower')
+    expect(stage.getAttribute('data-direction')).toBe('previous')
+    fireEvent.keyDown(dialog, { key: 'ArrowLeft', repeat: true })
+    expect(viewer.visible().alt).toBe('Pier')
+    expect(stage.hasAttribute('data-direction')).toBe(false)
+    fireEvent.keyDown(dialog, { key: 'ArrowRight' })
+    expect(viewer.visible().alt).toBe('Tower')
+    expect(stage.getAttribute('data-direction')).toBe('next')
   })
 
   it('only fetches on demand with Data Saver and does not warm another photo after the switch', async () => {
