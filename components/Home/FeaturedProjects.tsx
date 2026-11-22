@@ -80,6 +80,8 @@ const ProjectList = styled(m.nav)`
     font-size: 0.9rem;
     color: var(--heading);
     text-underline-offset: 0.22em;
+    /* Motion owns opacity; letting link CSS transition it replays the entrance in Firefox. */
+    transition-property: color, text-decoration-color;
   }
   @media (width < 768px) {
     display: grid;
