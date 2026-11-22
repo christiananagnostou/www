@@ -10,8 +10,8 @@ export default function Signature() {
 }
 
 const SignOff = styled.picture`
-  align-self: flex-start;
-  width: 6.75rem;
+  align-self: flex-end;
+  width: 6rem;
   max-width: 100%;
   margin-top: 0.5rem;
 
