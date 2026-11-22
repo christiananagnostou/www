@@ -8,7 +8,7 @@ vi.mock('../../lib/fitness/server/activityRepository', () => ({ getActivitiesSin
 afterEach(cleanup)
 
 const entry: TrainingEntry = {
-  day: '2025-06-12',
+  day: Date.UTC(2025, 5, 12) / 86_400_000,
   sport: 'bike',
   indoor: true,
   seconds: 7200,
@@ -41,6 +41,7 @@ it('discloses actual bike readings and the road/Zwift split only on demand', asy
   expect(screen.queryByText('Ride time')).toBeNull()
   fireEvent.click(bike)
   expect(screen.getByText('0 h road · 2 h Zwift')).toBeTruthy()
+  expect(screen.queryByRole('table', { hidden: true })).toBeNull()
   fireEvent.click(screen.getByText('Weekly readings'))
   const table = await screen.findByRole('table', { name: 'Bike training measurements' })
   expect(

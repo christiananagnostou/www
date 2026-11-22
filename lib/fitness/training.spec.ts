@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { heartRate, pace, power, toTrainingEntry, trainingLog, type TrainingEntry } from './training'
+import { toTrainingEntry, trainingDates } from './server/trainingEntries'
+import { heartRate, pace, power, trainingLog, type TrainingEntry } from './training'
 import { METERS_PER_MILE } from './units'
 
+const day = (isoDate: string) => Date.parse(isoDate) / 86_400_000
+
 const ride: TrainingEntry = {
-  day: '2025-03-09',
+  day: day('2025-03-09'),
   sport: 'bike',
   indoor: false,
   seconds: 3600,
@@ -27,7 +30,7 @@ describe('training log', () => {
       averagePowerWatts: null,
     }
     expect(toTrainingEntry({ ...activity, startedAt: '2025-11-02T06:59:59Z' })).toEqual({
-      day: '2025-11-01',
+      day: day('2025-11-01'),
       sport: 'bike',
       indoor: true,
       seconds: 3600,
@@ -36,13 +39,20 @@ describe('training log', () => {
       bpm: null,
       watts: null,
     })
-    expect(toTrainingEntry({ ...activity, startedAt: '2025-11-02T07:00:00Z' }).day).toBe('2025-11-02')
+    expect(toTrainingEntry({ ...activity, startedAt: '2025-11-02T07:00:00Z' }).day).toBe(day('2025-11-02'))
+  })
+
+  it('starts the storage query at local midnight even when its UTC offset differs from today', () => {
+    expect(trainingDates(new Date('2025-03-10T06:59:59Z'))).toEqual({
+      endDay: '2025-03-09',
+      since: new Date('2023-03-09T08:00:00Z'),
+    })
   })
 
   it('counts both boundary days once across DST and excludes records on either side', () => {
     const days = ['2025-03-04', '2025-03-05', '2025-03-09', '2025-03-11', '2025-03-12']
     const log = trainingLog(
-      days.map((day) => ({ ...ride, day })),
+      days.map((date) => ({ ...ride, day: day(date) })),
       '2025-03-11',
       '1w'
     )
@@ -56,8 +66,8 @@ describe('training log', () => {
       [
         ride,
         { ...ride, indoor: true, seconds: 7200, bpm: 150, watts: 0 },
-        { ...ride, day: '2025-03-10', bpm: null, watts: null },
-        { ...ride, sport: 'other', day: '2025-03-10', watts: null },
+        { ...ride, day: day('2025-03-10'), bpm: null, watts: null },
+        { ...ride, sport: 'other', day: day('2025-03-10'), watts: null },
       ],
       '2025-03-11',
       '1w'

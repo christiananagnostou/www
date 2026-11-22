@@ -28,29 +28,66 @@ function trendPath(values: Array<number | null>) {
 
 const measured = (value: number | null, suffix = '') => (value === null ? '—' : number(value) + suffix)
 
-function DisciplineDetail({ sport, log }: { sport: Sport; log: TrainingLog }) {
+type DisciplineProps = { sport: Sport; log: TrainingLog }
+
+function Readings({ sport, log }: DisciplineProps) {
   const [showReadings, setShowReadings] = useState(false)
+  const name = SPORT_NAMES[sport]
+  return (
+    <details className={styles.readings} onToggle={(e) => setShowReadings(e.currentTarget.open)}>
+      <summary>{log.daily ? 'Daily' : 'Weekly'} readings</summary>
+      {showReadings && (
+        <div className={styles.tableScroll} tabIndex={0} role="region" aria-label={`${name} readings`}>
+          <table aria-label={`${name} training measurements`}>
+            <thead>
+              <tr>
+                {['Period', 'Miles', 'BPM', 'Watts'].map((label) => (
+                  <th scope="col" key={label}>
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {log.buckets.map(({ label, sports }) => {
+                const stats = sports[sport]
+                if (!stats.sessions) return null
+                return (
+                  <tr key={label}>
+                    <th scope="row">{label}</th>
+                    <td>{number(stats.miles, 1)}</td>
+                    <td>{measured(heartRate(stats))}</td>
+                    <td>{measured(power(stats))}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </details>
+  )
+}
+
+function distanceEquivalent(sport: Sport, miles: number, feet: number) {
+  if (sport === 'bike') return `${number(miles / 112, 1)} Ironman bike legs`
+  if (sport === 'swim') return `${number(miles / metersToMiles(50))} lengths of a 50 m pool`
+  if (sport === 'run') return `${number(feet / 29029, 2)} × Everest`
+  return null
+}
+
+function DisciplineDetail({ sport, log }: DisciplineProps) {
   const stats = log.sports[sport]
-  const data = log.buckets.map(({ sports, label }) => ({ ...sports[sport], label }))
-  const rate = heartRate(stats)
-  const watts = power(stats)
-  const equivalent =
-    sport === 'bike'
-      ? `${number(stats.miles / 112, 1)} Ironman bike legs`
-      : sport === 'swim'
-        ? `${number(stats.miles / metersToMiles(50))} lengths of a 50 m pool`
-        : sport === 'run'
-          ? `${number(stats.feet / 29029, 2)} × Everest`
-          : null
-  if (!stats.sessions)
-    return <p className={styles.noSessions}>No {SPORT_NAMES[sport].toLowerCase()} sessions in this period.</p>
+  if (!stats.sessions) return <p className={styles.noSessions}>No {sport} sessions in this period.</p>
+  const data = log.buckets.map(({ sports }) => sports[sport])
+  const equivalent = distanceEquivalent(sport, stats.miles, stats.feet)
   return (
     <div className={styles.detail}>
       <dl className={styles.trends}>
         {[
           { name: 'Distance', value: `${number(stats.miles, 1)} mi`, points: data.map((d) => d.miles) },
-          { name: 'Avg. heart rate', value: measured(rate, ' bpm'), points: data.map(heartRate) },
-          { name: 'Avg. power', value: measured(watts, ' W'), points: data.map(power) },
+          { name: 'Avg. heart rate', value: measured(heartRate(stats), ' bpm'), points: data.map(heartRate) },
+          { name: 'Avg. power', value: measured(power(stats), ' W'), points: data.map(power) },
         ].map(({ name, value, points }) => (
           <div key={name}>
             <dt>{name}</dt>
@@ -91,35 +128,7 @@ function DisciplineDetail({ sport, log }: { sport: Sport; log: TrainingLog }) {
           </div>
         )}
       </dl>
-      <details className={styles.readings} onToggle={(e) => setShowReadings(e.currentTarget.open)}>
-        <summary>{log.daily ? 'Daily' : 'Weekly'} readings</summary>
-        {showReadings && (
-          <div className={styles.tableScroll} tabIndex={0} role="region" aria-label={`${SPORT_NAMES[sport]} readings`}>
-            <table aria-label={`${SPORT_NAMES[sport]} training measurements`}>
-              <thead>
-                <tr>
-                  <th scope="col">Period</th>
-                  <th scope="col">Miles</th>
-                  <th scope="col">BPM</th>
-                  <th scope="col">Watts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data
-                  .filter((d) => d.sessions)
-                  .map((d) => (
-                    <tr key={d.label}>
-                      <th scope="row">{d.label}</th>
-                      <td>{number(d.miles, 1)}</td>
-                      <td>{measured(heartRate(d))}</td>
-                      <td>{measured(power(d))}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </details>
+      <Readings sport={sport} log={log} />
     </div>
   )
 }

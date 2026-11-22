@@ -1,7 +1,6 @@
-import dayjs from 'dayjs'
 import * as m from 'framer-motion/m'
-import Head from 'next/head'
 import type { GetStaticProps } from 'next'
+import Head from 'next/head'
 import { useMemo, useState } from 'react'
 
 import { fade, pageAnimation } from '../components/animation'
@@ -12,22 +11,15 @@ import TrainingVolume from '../components/Fitness/TrainingVolume'
 import { Heading } from '../components/Shared/Heading'
 import { BASE_URL } from '../lib/constants'
 import { getActivitiesSince } from '../lib/fitness/server/activityRepository'
-import {
-  PERIODS,
-  TRAINING_ZONE,
-  toTrainingEntry,
-  trainingLog,
-  type Period,
-  type TrainingEntry,
-} from '../lib/fitness/training'
+import { toTrainingEntry, trainingDates } from '../lib/fitness/server/trainingEntries'
+import { PERIODS, trainingLog, type Period, type TrainingEntry } from '../lib/fitness/training'
 
 type Props = { entries: TrainingEntry[]; endDay: string; error?: string }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const end = dayjs().tz(TRAINING_ZONE).endOf('day')
-  const endDay = end.format('YYYY-MM-DD')
+  const { endDay, since } = trainingDates()
   try {
-    const activities = await getActivitiesSince(end.subtract(24, 'month').startOf('day').toDate())
+    const activities = await getActivitiesSince(since)
     return { props: { entries: activities.map(toTrainingEntry), endDay }, revalidate: 60 * 60 * 12 }
   } catch (error) {
     console.error('Failed to load fitness activities', error instanceof Error ? error.message : 'Unknown error')

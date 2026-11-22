@@ -1,45 +1,29 @@
 import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-import type { FitnessActivity } from './activity'
 import { metersToFeet, metersToMiles } from './units'
 
 dayjs.extend(utc)
-dayjs.extend(timezone)
 
-export const TRAINING_ZONE = 'America/Los_Angeles'
 export const PERIODS = ['1w', '1m', '3m', '6m', '12m', '24m'] as const
 export type Period = (typeof PERIODS)[number]
 export const SPORTS = ['swim', 'bike', 'run', 'other'] as const
 export type Sport = (typeof SPORTS)[number]
 export const SPORT_NAMES: Record<Sport, string> = { swim: 'Swim', bike: 'Bike', run: 'Run', other: 'Other' }
 
-// The public page needs calendar days and measurements, not activity IDs or individual start times.
-export function toTrainingEntry(activity: FitnessActivity) {
-  const {
-    kind,
-    startedAt,
-    durationSeconds,
-    distanceMeters,
-    elevationGainMeters,
-    averageHeartRateBpm,
-    averagePowerWatts,
-  } = activity
-  const sport: Sport = kind === 'cycle' ? 'bike' : kind === 'run' || kind === 'swim' ? kind : 'other'
-  return {
-    day: dayjs(startedAt).tz(TRAINING_ZONE).format('YYYY-MM-DD'),
-    sport,
-    seconds: durationSeconds,
-    meters: distanceMeters,
-    climb: elevationGainMeters,
-    bpm: averageHeartRateBpm,
-    watts: averagePowerWatts,
-    indoor: sport === 'bike' && activity.indoor,
-  }
+export type TrainingEntry = {
+  day: number
+  sport: Sport
+  seconds: number
+  meters: number
+  climb: number
+  bpm: number | null
+  watts: number | null
+  indoor: boolean
 }
 
-export type TrainingEntry = ReturnType<typeof toTrainingEntry>
+// Number the calendar date, not the instant: Pacific days can be 23 or 25 hours long.
+export const dayNumber = (date: dayjs.Dayjs) => Date.UTC(date.year(), date.month(), date.date()) / 86_400_000
 
 const measures = () => ({
   miles: 0,
@@ -53,7 +37,7 @@ const measures = () => ({
   powerSeconds: 0,
 })
 const sportMeasures = () => ({ swim: measures(), bike: measures(), run: measures(), other: measures() })
-export type Measures = ReturnType<typeof measures>
+type Measures = ReturnType<typeof measures>
 
 function add(target: Measures, entry: TrainingEntry) {
   const hours = entry.seconds / 3600
@@ -76,32 +60,33 @@ export const heartRate = (m: Measures) => (m.heartSeconds ? m.beats / m.heartSec
 export const power = (m: Measures) => (m.powerSeconds ? m.wattSeconds / m.powerSeconds : null)
 // ICU uses different range punctuation across Node and browsers. Keep the prerender and hydration identical.
 function dateRange(start: dayjs.Dayjs, end: dayjs.Dayjs) {
-  if (start.isSame(end, 'day')) return start.format('MMM D, YYYY')
-  if (start.isSame(end, 'month')) return `${start.format('MMM D')}–${end.format('D, YYYY')}`
-  return `${start.format(start.isSame(end, 'year') ? 'MMM D' : 'MMM D, YYYY')} – ${end.format('MMM D, YYYY')}`
+  if (start.valueOf() === end.valueOf()) return start.format('MMM D, YYYY')
+  const sameYear = start.year() === end.year()
+  if (sameYear && start.month() === end.month()) return `${start.format('MMM D')}–${end.format('D, YYYY')}`
+  return `${start.format(sameYear ? 'MMM D' : 'MMM D, YYYY')} – ${end.format('MMM D, YYYY')}`
 }
 
 export function trainingLog(entries: TrainingEntry[], endDay: string, period: Period) {
-  // Calendar arithmetic on date-only values avoids 23/25-hour buckets across Pacific DST changes.
   const end = dayjs.utc(endDay)
   const start = period === '1w' ? end.subtract(6, 'day') : end.subtract(parseInt(period, 10), 'month')
   const daily = period === '1w' || period === '1m'
   const step = daily ? 1 : 7
-  const buckets = Array.from({ length: Math.floor(end.diff(start, 'day') / step) + 1 }, (_, i) => {
+  const firstDay = dayNumber(start)
+  const lastDay = dayNumber(end)
+  const buckets = Array.from({ length: Math.floor((lastDay - firstDay) / step) + 1 }, (_, i) => {
     const first = start.add(i * step, 'day')
-    const last = first.add(step - 1, 'day')
+    const last = daily ? first : first.add(6, 'day')
     return {
-      label: dateRange(first, last.isAfter(end) ? end : last),
+      label: dateRange(first, last.valueOf() > end.valueOf() ? end : last),
       tick: first.format(period === '1w' ? 'ddd' : daily || period === '3m' ? 'MMM D' : 'MMM ’YY'),
       sports: sportMeasures(),
     }
   })
   const sports = sportMeasures()
   const total = measures()
-  const firstDay = start.format('YYYY-MM-DD')
   for (const entry of entries) {
-    if (entry.day < firstDay || entry.day > endDay) continue
-    const index = Math.floor(dayjs.utc(entry.day).diff(start, 'day') / step)
+    if (entry.day < firstDay || entry.day > lastDay) continue
+    const index = Math.floor((entry.day - firstDay) / step)
     add(buckets[index].sports[entry.sport], entry)
     add(sports[entry.sport], entry)
     add(total, entry)
