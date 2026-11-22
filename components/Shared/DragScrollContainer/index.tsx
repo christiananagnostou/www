@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
 const SCROLL_END_DEBOUNCE = 300
-const LEFT_BUTTON = 0
+const DEFAULT_BUTTONS = [0]
 
 const debounce = <T extends (...args: unknown[]) => unknown>(callback: T, wait: number) => {
   let timeoutId: number
@@ -62,22 +62,20 @@ const DragScrollContainer = ({
   component: Component = 'div',
   innerRef,
   stopPropagation = false,
-  buttons = [LEFT_BUTTON],
+  buttons = DEFAULT_BUTTONS,
 }: Props) => {
   const containerRef = useRef<HTMLElement>(null)
   const [pressed, setPressed] = useState(false)
   const [started, setStarted] = useState(false)
   const [scrolling, setScrolling] = useState(false)
   const [internal, setInternal] = useState(false)
-  const [clientX, setClientX] = useState<number>()
-  const [clientY, setClientY] = useState<number>()
-  const [scrollLeft, setScrollLeft] = useState<number>()
-  const [scrollTop, setScrollTop] = useState<number>()
+  const drag = useRef<{ x: number; y: number; left: number; top: number } | null>(null)
   const [isMobile, setIsMobile] = useState(false)
 
   const handleScroll = () => {
     const container = containerRef.current
-    if (!container || (container.scrollLeft === scrollLeft && container.scrollTop === scrollTop)) return
+    const last = drag.current
+    if (!container || (last && container.scrollLeft === last.left && container.scrollTop === last.top)) return
 
     setScrolling(true)
     if (started) {
@@ -96,10 +94,7 @@ const DragScrollContainer = ({
   const processClick = (pointerX: number, pointerY: number) => {
     const container = containerRef.current
     if (!container) return
-    setScrollLeft(container.scrollLeft)
-    setScrollTop(container.scrollTop)
-    setClientX(pointerX)
-    setClientY(pointerY)
+    drag.current = { x: pointerX, y: pointerY, left: container.scrollLeft, top: container.scrollTop }
     setPressed(true)
   }
 
@@ -115,32 +110,30 @@ const DragScrollContainer = ({
   const processMove = useCallback(
     (newClientX: number, newClientY: number) => {
       const container = containerRef.current
-      if (!container || clientX === undefined || clientY === undefined) return
+      const last = drag.current
+      if (!container || !last) return
 
-      const deltaX = newClientX - clientX
-      const deltaY = newClientY - clientY
+      const deltaX = newClientX - last.x
+      const deltaY = newClientY - last.y
 
       if (!started) {
         const activateHorizontal = horizontal && Math.abs(deltaX) > activationDistance
         const activateVertical = vertical && Math.abs(deltaY) > activationDistance
 
-        if (activateHorizontal || activateVertical) {
-          setClientX(newClientX)
-          setClientY(newClientY)
-          processStart()
-        }
+        if (!activateHorizontal && !activateVertical) return
+        processStart()
       } else {
         if (horizontal) container.scrollLeft -= deltaX
         if (vertical) container.scrollTop -= deltaY
         onScroll?.({ external: !internal })
 
-        setClientX(newClientX)
-        setClientY(newClientY)
-        setScrollLeft(container.scrollLeft)
-        setScrollTop(container.scrollTop)
+        last.left = container.scrollLeft
+        last.top = container.scrollTop
       }
+      last.x = newClientX
+      last.y = newClientY
     },
-    [activationDistance, clientX, clientY, horizontal, internal, onScroll, processStart, started, vertical]
+    [activationDistance, horizontal, internal, onScroll, processStart, started, vertical]
   )
 
   const processEnd = useCallback(() => {
