@@ -1,5 +1,6 @@
 import type { ArticleSummary } from '../articles'
 import { BASE_URL } from '../constants'
+import { blogPosting } from './blogPosting'
 
 export const articlesTitle = 'Articles | Christian Anagnostou'
 export const articlesDescription = 'Explore articles on technology, innovative ideas, and inspiration.'
@@ -17,15 +18,12 @@ export const getArticlesListStructuredData = (posts: ArticleSummary[]) => {
         '@type': 'ListItem',
         position: index + 1,
         item: {
-          '@type': 'BlogPosting',
-          headline: post.title,
-          datePublished: post.dateCreated,
+          ...blogPosting(post),
           author: {
             '@type': 'Person',
             name: 'Christian Anagnostou',
           },
           description: post.summary || '',
-          url: `${BASE_URL}/article/${post.slug}`,
           keywords: Array.isArray(post.categories) ? post.categories.join(', ') : '',
         },
       })),

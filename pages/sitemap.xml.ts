@@ -21,11 +21,14 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 
   const staticRoutes = [
     { path: '/', lastmod: now },
+    { path: '/about', lastmod: now },
     { path: '/art', lastmod: now },
     { path: '/articles', lastmod: now },
     { path: '/bookmarklets', lastmod: now },
     { path: '/contact', lastmod: now },
+    { path: '/fitness', lastmod: now },
     { path: '/lab', lastmod: now },
+    { path: '/privacy', lastmod: now },
     { path: '/projects', lastmod: now },
   ]
 

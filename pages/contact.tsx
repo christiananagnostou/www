@@ -1,11 +1,13 @@
 import emailjs from '@emailjs/browser'
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
+import { InfoCopy } from '../components/Shared/InfoPage'
 import SocialLinks from '../components/SocialLinks'
 import { BASE_URL } from '../lib/constants'
 import { getContactStructuredData } from '../lib/structured/contact'
@@ -153,6 +155,19 @@ const Contact = () => {
         <m.div variants={fade}>
           <SocialLinks />
         </m.div>
+        <InfoCopy>
+          <h2>What to include</h2>
+          <p>
+            If you’re writing about a project, tell me which one you tried and what you were hoping to do. A link to the
+            page or a short example is especially helpful for a bug or a correction. For a question about an article or
+            photograph, its title is a good place to start.
+          </p>
+          <p>
+            Only your name is required. Include an email address if you’d like me to reply; it won’t appear on the site.
+            You can read <Link href="/about">more about me</Link> or see{' '}
+            <Link href="/privacy">how the form handles your message</Link> before sending it.
+          </p>
+        </InfoCopy>
       </ContactStyle>
     </>
   )

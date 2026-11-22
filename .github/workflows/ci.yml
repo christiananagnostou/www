@@ -123,8 +123,8 @@ jobs:
           npm run build || prep_exit=$?
           wait "$firefox_pid" || prep_exit=$?
           exit "$prep_exit"
-      - name: Verify photography share links before hydration
-        run: node --test tests/artRoutes.built.mjs
+      - name: Verify public HTTP representations and photography share links
+        run: node --test tests/agentReadiness.built.mjs tests/artRoutes.built.mjs
       - name: Verify concurrent article likes against Redis
         run: npm test -- --run lib/articles/likes.spec.ts
       - name: Verify the homepage link entrance in Firefox

@@ -28,7 +28,7 @@ type ProjectDetailType = ProjectType['details'][number]
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: ProjectState.map((project) => ({ params: { slug: project.slug } })),
-    fallback: 'blocking',
+    fallback: false,
   }
 }
 

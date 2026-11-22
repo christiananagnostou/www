@@ -10,37 +10,18 @@ import LinkLedger from '../components/Home/LinkLedger'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
 import FitnessActivities from '../components/Home/FitnessActivities'
-import type { ArticleSummary } from '../lib/articles'
-import { getArticleSummaries } from '../lib/articles'
-import { BASE_URL } from '../lib/constants'
-import { getHomeActivityPreview } from '../lib/fitness/home'
-import { getAllActivities } from '../lib/fitness/server/activityRepository'
+import { SITE_ORIGIN } from '../lib/constants'
+import { getHomeContent, HOME_REVALIDATE_SECONDS } from '../lib/home/content'
 import { getHomeStructuredData } from '../lib/structured/home'
 
-interface Props {
-  posts: ArticleSummary[]
-  fitnessActivities: ReturnType<typeof getHomeActivityPreview>
-}
+type Props = Awaited<ReturnType<typeof getHomeContent>>
 
-export const getStaticProps: GetStaticProps = async () => {
-  const posts = getArticleSummaries().slice(0, 3)
+export const getStaticProps: GetStaticProps<Props> = async () => ({
+  props: await getHomeContent(),
+  revalidate: HOME_REVALIDATE_SECONDS,
+})
 
-  let fitnessActivities = getHomeActivityPreview([])
-  try {
-    fitnessActivities = getHomeActivityPreview(await getAllActivities())
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown fitness homepage error'
-    console.error('Failed to load homepage fitness activities', message)
-  }
-
-  return {
-    props: {
-      posts,
-      fitnessActivities,
-    },
-    revalidate: 60 * 60 * 12, // 12 hours
-  }
-}
+const shareImage = `${SITE_ORIGIN}/A-square.png`
 
 const Home = ({ posts, fitnessActivities }: Props) => {
   const pageTransitionInitial = usePageTransitionInitial()
@@ -51,7 +32,8 @@ const Home = ({ posts, fitnessActivities }: Props) => {
         <title>Christian Anagnostou</title>
         <meta content="Christian Anagnostou's Web Portfolio" name="description" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <link href={BASE_URL} rel="canonical" />
+        <link href={SITE_ORIGIN} rel="canonical" />
+        <link href="/index.md" rel="alternate" type="text/markdown" />
         <meta content="index, follow" name="robots" />
         <meta
           content="software engineer, web developer, programmer, portfolio, articles, art, projects, fitness, Christian Anagnostou"
@@ -62,12 +44,15 @@ const Home = ({ posts, fitnessActivities }: Props) => {
         <meta key="og:type" content="website" property="og:type" />
         <meta key="og:title" content="Christian Anagnostou" property="og:title" />
         <meta key="og:description" content="Christian Anagnostou's Web Portfolio" property="og:description" />
-        <meta key="og:url" content={BASE_URL} property="og:url" />
+        <meta key="og:url" content={SITE_ORIGIN} property="og:url" />
+        <meta property="og:image" content={shareImage} />
+        <meta property="og:image:alt" content="Christian Anagnostou’s monogram" />
 
         {/* Twitter Card */}
         <meta content="summary_large_image" name="twitter:card" />
         <meta content="Christian Anagnostou" name="twitter:title" />
         <meta content="Christian Anagnostou's Web Portfolio" name="twitter:description" />
+        <meta content={shareImage} name="twitter:image" />
 
         {/* Structured Data */}
         <script

@@ -13,6 +13,14 @@ export interface HomeActivity {
 }
 
 export const HOME_ACTIVITY_LIMIT = 5
+export const HOME_ACTIVITY_LABELS = { run: 'Run', cycle: 'Ride', indoorCycle: 'Zwift', swim: 'Swim' } as const
+const date = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'America/Los_Angeles',
+})
+export const formatHomeActivityDate = (startedAt: string) => date.format(new Date(startedAt))
 
 const formatDuration = (seconds: number) => {
   const total = Math.round(seconds)
