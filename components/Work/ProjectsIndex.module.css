@@ -1,5 +1,4 @@
 .page {
-  --study-ease: cubic-bezier(0.23, 1, 0.32, 1);
   max-width: var(--max-w-screen);
   margin: 2rem auto 4rem;
   padding: 0 1rem;
