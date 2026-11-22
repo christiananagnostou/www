@@ -1,19 +1,23 @@
-import Image from 'next/image'
 import styled from 'styled-components'
 
-const Signature = () => {
-  return <StyledImage alt="Signature of Christian Anagnostou" height={74} src="/signature.png" width={128} />
+export default function Signature() {
+  return (
+    <SignOff>
+      <source media="(prefers-reduced-motion: reduce)" srcSet="/signature.svg#still" />
+      <img alt="" height={320} src="/signature.svg" width={556} />
+    </SignOff>
+  )
 }
 
-export default Signature
+const SignOff = styled.picture`
+  align-self: flex-start;
+  width: 6.75rem;
+  max-width: 100%;
+  margin-top: 0.5rem;
 
-const StyledImage = styled(Image)`
-  display: block;
-  width: 100px;
-  height: 45px;
-  pointer-events: none;
-  user-select: none;
-  transform: translateY(0.5rem) scale(0.9);
-  transform-origin: center center;
-  align-self: center;
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 `

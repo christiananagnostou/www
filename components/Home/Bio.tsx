@@ -2,6 +2,7 @@ import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
 import Giants from '../SVG/Giants'
+import Signature from './Signature'
 
 function Bio() {
   return (
@@ -34,6 +35,7 @@ function Bio() {
         As for this site, it&apos;s a place where I can share my thoughts, projects, and experiences. No matter how you
         stumbled upon this site or what you&apos;re looking for, I hope you find something that resonates with you.
       </m.p>
+      <Signature />
     </Description>
   )
 }
@@ -120,7 +122,7 @@ const Description = styled(m.section)`
     font-size: 0.95rem;
     line-height: 1.5rem;
 
-    &:last-child {
+    &:last-of-type {
       margin: 0;
     }
   }
