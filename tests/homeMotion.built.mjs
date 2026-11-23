@@ -4,7 +4,7 @@ import { firefox } from 'playwright-core'
 
 import { startBuiltApp } from './helpers/builtApp.mjs'
 
-// Runs in Firefox, starting on Contact so we see the very first frame of the Home entrance.
+// Start on Contact so the browser sees the very first frame of the Home entrance.
 function observeHomeEntrance() {
   const peak = new Map()
   const fading = new Set()
@@ -46,7 +46,7 @@ function observeHomeEntrance() {
   })
 }
 
-it('reveals the project and social links once on navigation to Home in Firefox', { timeout: 30_000 }, async (t) => {
+it('preserves homepage motion after client navigation in Firefox', { timeout: 30_000 }, async (t) => {
   const site = await startBuiltApp()
   t.after(() => site.close())
   const browser = await firefox.launch()
@@ -63,7 +63,32 @@ it('reveals the project and social links once on navigation to Home in Firefox',
       .first()
       .click(),
   ])
-  assert.deepEqual(entry.replayed, [], 'No link should grow fainter again during its entrance')
-  assert.deepEqual(entry.cssOpacity, [], 'Link hover CSS must not take over entrance opacity from Motion')
-  assert.deepEqual(entry.neverFaded, [], 'Every link should still participate in the entrance')
+  await t.test('reveals the project and social links only once', () => {
+    assert.deepEqual(entry.replayed, [], 'No link should grow fainter again during its entrance')
+    assert.deepEqual(entry.cssOpacity, [], 'Link hover CSS must not take over entrance opacity from Motion')
+    assert.deepEqual(entry.neverFaded, [], 'Every link should still participate in the entrance')
+  })
+
+  await t.test('interpolates the letter contours instead of swapping images', async () => {
+    const name = page.getByRole('button', { name: 'Christian Anagnostou', exact: true })
+    const bounds = await name.boundingBox()
+    await name.hover()
+    const drawing = await page.waitForFunction(() =>
+      document
+        .querySelector('h1 rect')
+        ?.getAnimations()
+        .find((a) => a.transitionProperty === 'clip-path')
+    )
+    const shapes = await drawing.evaluate((animation) => {
+      animation.pause()
+      const { duration, delay } = animation.effect.getTiming()
+      return [0, 0.5, 1].map((progress) => {
+        animation.currentTime = delay + progress * duration
+        return getComputedStyle(animation.effect.target).clipPath
+      })
+    })
+    assert.ok(shapes.every((shape) => shape.startsWith('path(')))
+    assert.equal(new Set(shapes).size, 3, 'Midway the letter must be a third shape, not either endpoint')
+    assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
+  })
 })

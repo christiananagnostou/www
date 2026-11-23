@@ -127,5 +127,5 @@ jobs:
         run: node --test tests/agentReadiness.built.mjs tests/artRoutes.built.mjs
       - name: Verify concurrent article likes against Redis
         run: npm test -- --run lib/articles/likes.spec.ts
-      - name: Verify the homepage link entrance in Firefox
-        run: node --test tests/homeLinks.built.mjs
+      - name: Verify homepage motion in Firefox
+        run: node --test tests/homeMotion.built.mjs

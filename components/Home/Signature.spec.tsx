@@ -1,8 +1,8 @@
-import { readFileSync } from 'node:fs'
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 
 import Bio from './Bio'
+import { LETTERFORMS } from './signature/letterforms'
 
 afterEach(() => {
   cleanup()
@@ -15,26 +15,36 @@ function openBio() {
   return { heading, name: within(heading).getByRole('button', { name: 'Christian Anagnostou' }) }
 }
 
-it('keeps the real name in the heading, with decorative ink from the traced SVG', () => {
+const topology = (path: string) =>
+  path
+    .split('z')
+    .filter(Boolean)
+    .map((ring) => ring.match(/-?\d+/g)?.length)
+
+it('keeps the real heading readable and requests decorative lettering only on interaction', async () => {
   const { name } = openBio()
   expect(name.hasAttribute('data-ink')).toBe(false)
-  const strokes = name.querySelectorAll('[aria-hidden="true"] use')
-  const svg = new DOMParser().parseFromString(readFileSync('public/signature.svg', 'utf8'), 'image/svg+xml')
-  expect(strokes.length).toBeGreaterThan(0)
-  for (const stroke of strokes) {
-    const [asset, id] = stroke.getAttribute('href')!.split('#')
-    expect(asset).toBe('/signature.svg')
-    expect(svg.getElementById(id)).not.toBeNull()
+  expect(name.querySelector('svg')).toBeNull()
+  fireEvent.focus(name)
+  await waitFor(() => expect(name.querySelectorAll('[aria-hidden="true"] rect')).toHaveLength(19))
+  expect(screen.getByRole('heading', { name: 'Christian Anagnostou' })).toBeTruthy()
+})
+
+it('matches the contours and vertices of each printed letter to its signature counterpart', () => {
+  for (const [print, ink] of LETTERFORMS) {
+    expect(print).not.toBe(ink)
+    expect(topology(print)).toEqual(topology(ink))
   }
 })
 
-it('reverses on pointer exit and returns to print after a tap', () => {
-  vi.useFakeTimers()
+it('reverses on pointer exit and returns to print after a tap', async () => {
   const { name } = openBio()
   fireEvent.pointerEnter(name, { pointerType: 'mouse' })
+  await waitFor(() => expect(name.querySelector('svg')).not.toBeNull())
   expect(name.hasAttribute('data-ink')).toBe(true)
   fireEvent.pointerLeave(name, { pointerType: 'mouse' })
   expect(name.hasAttribute('data-ink')).toBe(false)
+  vi.useFakeTimers()
   fireEvent.click(name)
   expect(name.hasAttribute('data-ink')).toBe(true)
   act(() => vi.advanceTimersByTime(2100))

@@ -1,75 +1,46 @@
 import * as m from 'framer-motion/m'
-import { useEffect, useId, useRef, useState } from 'react'
-import type { CSSProperties, PointerEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ComponentType, PointerEvent } from 'react'
 import styled from 'styled-components'
 
 import { fade } from '../animation'
 
-// The three outlines are the real signature. The guides underneath reveal them in pen order.
-const LETTERING = [
-  {
-    id: 'initial',
-    strokes: [{ guide: 'M171 79 C157 -17 53 -4 24 101 S29 304 97 310 Q152 318 173 258', width: 48, ms: 235 }],
-  },
-  { id: 'given', strokes: [{ guide: 'M110 185 H274', width: 142, ms: 155 }] },
-  {
-    id: 'surname',
-    strokes: [
-      { guide: 'M220 328 Q288 290 310 9', width: 70, ms: 110 },
-      { guide: 'M309 8 Q317 229 364 310', width: 54, ms: 100 },
-      { guide: 'M261 202 Q292 172 339 179', width: 32, ms: 45 },
-      { guide: 'M332 237 H565', width: 172, ms: 185 },
-    ],
-  },
-] as const
-
-function Handwriting() {
-  const prefix = useId()
-  let delay = 0
-
-  return (
-    <span aria-hidden="true" className="ink">
-      <svg fill="currentColor" focusable="false" viewBox="7 8 556 320">
-        {LETTERING.map(({ id, strokes }) => {
-          const mask = `${prefix}-${id}`
-          return (
-            <g key={id}>
-              <mask height="320" id={mask} maskUnits="userSpaceOnUse" width="556" x="7" y="8">
-                {strokes.map(({ guide, width, ms }) => {
-                  const timing = { '--draw': `${ms}ms`, '--start': `${delay}ms` } as CSSProperties
-                  delay += ms
-                  return (
-                    <path
-                      d={guide}
-                      fill="none"
-                      key={guide}
-                      pathLength="1"
-                      stroke="#ffffff"
-                      strokeWidth={width}
-                      style={timing}
-                    />
-                  )
-                })}
-              </mask>
-              <use href={`/signature.svg#${id}`} mask={`url(#${mask})`} />
-            </g>
-          )
-        })}
-      </svg>
-    </span>
-  )
-}
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 
 export default function Signature() {
-  const [ink, setInk] = useState<'rest' | 'hover' | 'touch'>('rest')
+  const [ink, setInk] = useState<'unseen' | 'rest' | 'hover' | 'touch'>('unseen')
+  const [Lettering, setLettering] = useState<ComponentType | null>()
+  const discovered = ink !== 'unseen'
   const name = useRef<HTMLButtonElement>(null)
   const touch = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
+    if (!discovered) return
+    let mounted = true
+    const preference = window.matchMedia?.(REDUCED_MOTION)
+    const load = () =>
+      import('./signature/Lettering').then(
+        ({ default: art }) => {
+          if (mounted) setLettering(() => art)
+        },
+        () => {
+          if (mounted) setLettering(null) // An unavailable illustration must never hide the name.
+        }
+      )
+    if (preference?.matches) preference.addEventListener('change', load, { once: true })
+    else void load()
+    return () => {
+      mounted = false
+      preference?.removeEventListener('change', load)
+    }
+  }, [discovered])
+
+  useEffect(() => {
     if (ink !== 'touch') return
+    if (Lettering === undefined && !window.matchMedia?.(REDUCED_MOTION).matches) return
     const timer = window.setTimeout(() => setInk('rest'), 2000)
     return () => window.clearTimeout(timer)
-  }, [ink])
+  }, [ink, Lettering])
 
   function brush(event: PointerEvent<HTMLHeadingElement>) {
     if (!touch.current || event.pointerType !== 'touch' || !event.isPrimary) return
@@ -106,8 +77,9 @@ export default function Signature() {
     >
       <Name
         aria-description="Reveal my handwritten signature"
-        data-ink={ink !== 'rest' || undefined}
+        data-ink={ink === 'hover' || ink === 'touch' || undefined}
         onClick={() => setInk((current) => (current === 'hover' ? current : 'touch'))}
+        onFocus={() => setInk((current) => (current === 'unseen' ? 'rest' : current))}
         onPointerEnter={(event) => {
           if (event.pointerType !== 'touch') setInk('hover')
         }}
@@ -117,8 +89,8 @@ export default function Signature() {
         ref={name}
         type="button"
       >
+        {Lettering && <Lettering />}
         <span className="print">Christian Anagnostou</span>
-        <Handwriting />
       </Name>
     </Title>
   )
@@ -151,64 +123,25 @@ const Name = styled.button`
     outline-offset: 0.4rem;
   }
 
-  .print,
-  .ink {
-    display: block;
+  .print {
     font-weight: inherit;
-    pointer-events: none;
   }
 
-  .ink {
-    position: absolute;
-    top: -0.45em;
-    left: 0;
-    height: 2.7em;
-    aspect-ratio: 556 / 320;
-    opacity: 0;
-  }
-
-  svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  @media screen {
+  @media screen and (prefers-reduced-motion: reduce) {
     &:is([data-ink], :focus-visible) {
       .print {
         opacity: 0;
       }
-      .ink {
-        opacity: 1;
-      }
-    }
-  }
-
-  @media screen and (prefers-reduced-motion: no-preference) {
-    .print {
-      mask-image: linear-gradient(to right, transparent 40%, #000000 60%);
-      mask-position: 100% 0;
-      mask-size: 250% 100%;
-      transition:
-        mask-position 180ms ease,
-        opacity 180ms ease;
-    }
-    .ink {
-      transition: opacity 140ms ease;
-    }
-    path {
-      stroke-dasharray: 1 1;
-      stroke-dashoffset: 1;
-      transition: stroke-dashoffset 140ms ease;
-    }
-    &:is([data-ink], :focus-visible) {
-      .print {
-        mask-position: 0 0;
-        transition-duration: 340ms;
-      }
-      path {
-        stroke-dashoffset: 0;
-        transition: stroke-dashoffset var(--draw) linear var(--start);
+      &::after {
+        position: absolute;
+        top: -0.45em;
+        left: 0;
+        height: 2.7em;
+        aspect-ratio: 556 / 320;
+        background: currentColor;
+        mask: url('/signature.svg') center / contain no-repeat;
+        pointer-events: none;
+        content: '';
       }
     }
   }
