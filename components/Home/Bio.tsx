@@ -7,7 +7,7 @@ import Signature from './Signature'
 function Bio() {
   return (
     <Description className="max-w-screen" variants={staggerFade}>
-      <m.h1 variants={fade}>Christian Anagnostou</m.h1>
+      <Signature />
 
       <m.p variants={fade}>
         Creating web experiences that <em>inspire</em>. Currently working as a lead software engineer at{' '}
@@ -35,7 +35,6 @@ function Bio() {
         As for this site, it&apos;s a place where I can share my thoughts, projects, and experiences. No matter how you
         stumbled upon this site or what you&apos;re looking for, I hope you find something that resonates with you.
       </m.p>
-      <Signature />
     </Description>
   )
 }
