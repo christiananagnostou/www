@@ -3,7 +3,13 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { HOME_ACTIVITY_LIMIT, type HomeActivity, type HomeActivityCategory } from '../../lib/fitness/home'
+import {
+  formatHomeActivityDate,
+  HOME_ACTIVITY_LABELS as labels,
+  HOME_ACTIVITY_LIMIT,
+  type HomeActivity,
+  type HomeActivityCategory,
+} from '../../lib/fitness/home'
 import { fade, staggerFade } from '../animation'
 import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
 import DistanceMedal from './DistanceMedal'
@@ -16,15 +22,8 @@ interface Props {
 
 const filters = ['swim', 'cycle', 'run', 'indoorCycle'] as const
 const icons = { swim: swim(), cycle: ride(), run: run(), indoorCycle: indoorCycle() }
-const labels = { run: 'Run', cycle: 'Ride', indoorCycle: 'Zwift', swim: 'Swim' }
 const inlineLabel = (category: HomeActivityCategory) =>
   category === 'indoorCycle' ? labels[category] : labels[category].toLowerCase()
-const date = new Intl.DateTimeFormat('en-US', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  timeZone: 'America/Los_Angeles',
-})
 
 export default function FitnessActivities({ activities, totalCounts }: Props) {
   const [filter, setFilter] = useState<HomeActivityCategory | null>(null)
@@ -87,7 +86,7 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
             const details = [metric('Time')?.value, metric('Pace')?.value ?? metric('Avg Speed')?.value].filter(Boolean)
             return (
               <li key={activity.id}>
-                <time dateTime={activity.startedAt}>{date.format(new Date(activity.startedAt))}</time>
+                <time dateTime={activity.startedAt}>{formatHomeActivityDate(activity.startedAt)}</time>
                 <h3>
                   {distance ? `${distance.value} ${sport}` : labels[activity.category]}
                   {activity.distanceRank && <DistanceMedal rank={activity.distanceRank} sport={sport} />}

@@ -32,7 +32,8 @@ module.exports = {
         },
       ],
       afterFiles: [],
-      fallback: [],
+      // Only after real pages and files have had a chance to match.
+      fallback: [{ source: '/:path((?!_next(?:/|$)).*)', destination: '/404.md' }],
     }
   },
   env: {

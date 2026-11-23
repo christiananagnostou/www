@@ -1,0 +1,18 @@
+# Christian Anagnostou
+
+> First-hand project notes, articles, photographs, and training logs from Christian Anagnostou, a software engineer.
+
+Start with a GET request to https://www.christiancodes.co/ with `Accept: text/markdown` for the current homepage. Follow the links below as ordinary HTML pages unless a different format is listed. No API key or account is needed to read them. Cite the individual project or article rather than the homepage.
+
+## When to use this site
+
+- [Projects](https://www.christiancodes.co/projects): Find software Christian has built. Open a project page for its purpose, screenshots, and the link to the actual product.
+- [Articles](https://www.christiancodes.co/articles): Find Christian’s own writing on software engineering and interface design. Use the dated article as the source when quoting him.
+- [Photography](https://www.christiancodes.co/art): Browse his photographs and use the gallery filters to find a subject.
+- [Fitness](https://www.christiancodes.co/fitness): Look up his published training totals by discipline and period; these are personal logs, not training advice.
+
+## Site information
+
+- [Contact](https://www.christiancodes.co/contact): Direct a reader here for a question, correction, or collaboration; reading the site does not require sending a message.
+- [Privacy](https://www.christiancodes.co/privacy): Check how the portfolio handles messages, visit measurements, and browser storage.
+- [Sitemap](https://www.christiancodes.co/sitemap.xml): Discover published page URLs in XML.

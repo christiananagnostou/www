@@ -1,19 +1,21 @@
+import { fork } from 'node:child_process'
 import { once } from 'node:events'
-import { createServer } from 'node:http'
-import next from 'next'
 
 export async function startBuiltApp() {
-  const hostname = '127.0.0.1'
-  const app = next({ dev: false, hostname })
-  await app.prepare()
-  const server = createServer(app.getRequestHandler()).listen(0, hostname)
-  await once(server, 'listening')
-
+  // Isolate the real server, including any long-lived database connections.
+  const child = fork(new URL('./serveBuilt.mjs', import.meta.url), [], { execArgv: [] })
+  const exit = once(child, 'exit')
+  const [origin] = await Promise.race([
+    once(child, 'message'),
+    exit.then(([code]) => {
+      throw new Error(`Built app exited before startup (${code})`)
+    }),
+  ])
   return {
-    origin: `http://${hostname}:${server.address().port}`,
-    async close() {
-      await new Promise((resolve) => server.close(resolve))
-      await app.close()
+    origin,
+    close: async () => {
+      child.kill()
+      await exit
     },
   }
 }

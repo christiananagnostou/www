@@ -25,7 +25,9 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     { path: '/articles', lastmod: now },
     { path: '/bookmarklets', lastmod: now },
     { path: '/contact', lastmod: now },
+    { path: '/fitness', lastmod: now },
     { path: '/lab', lastmod: now },
+    { path: '/privacy', lastmod: now },
     { path: '/projects', lastmod: now },
   ]
 

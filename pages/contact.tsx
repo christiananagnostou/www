@@ -1,6 +1,7 @@
 import emailjs from '@emailjs/browser'
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { fade, pageAnimation, staggerFade } from '../components/animation'
@@ -142,6 +143,7 @@ const Contact = () => {
             </FormGroup>
           </m.div>
         </StyledForm>
+        <PrivacyLink href="/privacy">Privacy</PrivacyLink>
 
         <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
           Sent successfully. You&apos;ll hear from me soon!
@@ -188,7 +190,15 @@ const ContactStyle = styled(m.div)`
 const StyledForm = styled(m.form)`
   width: 100%;
   margin-top: -1rem;
-  margin-bottom: 2rem;
+`
+
+const PrivacyLink = styled(Link)`
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+  text-decoration-color: currentcolor;
 `
 
 const FormGroup = styled.div`

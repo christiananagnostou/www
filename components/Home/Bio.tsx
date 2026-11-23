@@ -2,11 +2,12 @@ import * as m from 'framer-motion/m'
 import styled from 'styled-components'
 import { fade, staggerFade } from '../animation'
 import Giants from '../SVG/Giants'
+import Signature from './Signature'
 
 function Bio() {
   return (
     <Description className="max-w-screen" variants={staggerFade}>
-      <m.h1 variants={fade}>Christian Anagnostou</m.h1>
+      <Signature />
 
       <m.p variants={fade}>
         Creating web experiences that <em>inspire</em>. Currently working as a lead software engineer at{' '}
@@ -90,7 +91,7 @@ const Description = styled(m.section)`
   flex-direction: column;
   justify-content: space-evenly;
   margin: auto;
-  padding: 1rem;
+  padding: 0.75rem 1rem 1rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
   background: var(--dark-bg);
@@ -103,7 +104,7 @@ const Description = styled(m.section)`
   }
 
   h1 {
-    margin: 0 0 2rem;
+    margin: 0 0 0.75rem;
     font-weight: 200;
     font-size: 1.1rem;
   }
@@ -120,7 +121,7 @@ const Description = styled(m.section)`
     font-size: 0.95rem;
     line-height: 1.5rem;
 
-    &:last-child {
+    &:last-of-type {
       margin: 0;
     }
   }

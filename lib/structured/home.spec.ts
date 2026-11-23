@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ArticleType } from '../articles'
-import { BASE_URL } from '../constants'
+import { SITE_ORIGIN } from '../constants'
 import { getHomeStructuredData } from './home'
 
 // Reusable Mock Articles
@@ -41,8 +41,9 @@ const getExpectedItemListElement = (articles: ArticleType[]) =>
     position: index + 1,
     item: {
       '@type': 'BlogPosting',
+      name: post.title,
       headline: post.title,
-      url: `${BASE_URL}/article/${post.slug}`,
+      url: `${SITE_ORIGIN}/article/${post.slug}`,
       datePublished: post.dateCreated,
       description: post.summary,
     },
@@ -53,14 +54,14 @@ const commonStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Christian Anagnostou',
-  url: `${BASE_URL}`,
+  url: SITE_ORIGIN,
   description: "Christian Anagnostou's Web Portfolio",
 }
 
 const personEntity = {
   '@type': 'Person',
   name: 'Christian Anagnostou',
-  url: `${BASE_URL}`,
+  url: SITE_ORIGIN,
   sameAs: ['https://twitter.com/javascramble', 'https://github.com/ChristianAnagnostou'],
 }
 
@@ -112,7 +113,8 @@ describe('getHomeStructuredData', () => {
     const listItem = result.mainEntity[0].itemListElement[0]
 
     expect(listItem.item.headline).toBe(testArticle.title)
-    expect(listItem.item.url).toBe(`${BASE_URL}/article/${testArticle.slug}`)
+    expect(listItem.item.name).toBe(testArticle.title)
+    expect(listItem.item.url).toBe(`${SITE_ORIGIN}/article/${testArticle.slug}`)
     expect(listItem.item.datePublished).toBe(testArticle.dateCreated)
     expect(listItem.item.description).toBe(testArticle.summary)
   })

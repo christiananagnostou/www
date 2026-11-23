@@ -1,12 +1,13 @@
 import type { ArticleSummary } from '../articles'
-import { BASE_URL } from '../constants'
+import { SITE_ORIGIN } from '../constants'
+import { blogPosting } from './blogPosting'
 
 export const getHomeStructuredData = (posts: ArticleSummary[]) =>
   ({
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Christian Anagnostou',
-    url: `${BASE_URL}`,
+    url: SITE_ORIGIN,
     description: "Christian Anagnostou's Web Portfolio",
     mainEntity: [
       {
@@ -15,19 +16,13 @@ export const getHomeStructuredData = (posts: ArticleSummary[]) =>
         itemListElement: posts.slice(0, 3).map((post, index) => ({
           '@type': 'ListItem',
           position: index + 1,
-          item: {
-            '@type': 'BlogPosting',
-            headline: post.title,
-            url: `${BASE_URL}/article/${post.slug}`,
-            datePublished: post.dateCreated,
-            description: post.summary,
-          },
+          item: blogPosting(post),
         })),
       },
       {
         '@type': 'Person',
         name: 'Christian Anagnostou',
-        url: `${BASE_URL}`,
+        url: SITE_ORIGIN,
         sameAs: ['https://twitter.com/javascramble', 'https://github.com/ChristianAnagnostou'],
       },
     ],
