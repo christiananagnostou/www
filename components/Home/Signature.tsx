@@ -102,25 +102,23 @@ const Title = styled(m.h1)`
 
 const Name = styled.button`
   position: relative;
-  display: inline-block;
-  padding: 0;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  /* The 2.7em writing area has more room above the lowercase ink for the tall C and A. */
+  padding: 1.05em 0 0.4em;
   border: 0;
   background: none;
   color: inherit;
   font: inherit;
+  line-height: 1.25;
   letter-spacing: inherit;
   text-align: start;
   cursor: pointer;
 
-  &::before {
-    position: absolute;
-    inset: -0.55em 0 -1.15em;
-    content: '';
-  }
-
   &:focus-visible {
     outline: 1px solid currentColor;
-    outline-offset: 0.4rem;
+    outline-offset: 0.25rem;
   }
 
   .print {
@@ -134,9 +132,9 @@ const Name = styled.button`
       }
       &::after {
         position: absolute;
-        top: -0.45em;
+        top: 0;
         left: 0;
-        height: 2.7em;
+        height: 100%;
         aspect-ratio: 556 / 320;
         background: currentColor;
         mask: url('/signature.svg') center / contain no-repeat;

@@ -91,7 +91,7 @@ const Description = styled(m.section)`
   flex-direction: column;
   justify-content: space-evenly;
   margin: auto;
-  padding: 1rem;
+  padding: 0.75rem 1rem 1rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
   background: var(--dark-bg);
@@ -104,7 +104,7 @@ const Description = styled(m.section)`
   }
 
   h1 {
-    margin: 0 0 2rem;
+    margin: 0 0 0.75rem;
     font-weight: 200;
     font-size: 1.1rem;
   }

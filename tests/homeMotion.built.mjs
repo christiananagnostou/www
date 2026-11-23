@@ -69,26 +69,40 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(entry.neverFaded, [], 'Every link should still participate in the entrance')
   })
 
-  await t.test('interpolates the letter contours instead of swapping images', async () => {
+  await t.test('interpolates the letter contours on the same writing line', async () => {
     const name = page.getByRole('button', { name: 'Christian Anagnostou', exact: true })
+    await page.evaluate(() => document.fonts.ready.then(() => true))
     const bounds = await name.boundingBox()
+    const print = await name.locator('.print').boundingBox()
     await name.hover()
-    const drawing = await page.waitForFunction(() =>
-      document
-        .querySelector('h1 rect')
-        ?.getAnimations()
-        .find((a) => a.transitionProperty === 'clip-path')
-    )
-    const shapes = await drawing.evaluate((animation) => {
-      animation.pause()
-      const { duration, delay } = animation.effect.getTiming()
-      return [0, 0.5, 1].map((progress) => {
-        animation.currentTime = delay + progress * duration
-        return getComputedStyle(animation.effect.target).clipPath
-      })
+    // The first lowercase o marks the writing line without an ascender or descender.
+    const drawing = await page.waitForFunction(() => {
+      const o = document.querySelectorAll('h1 rect')[14]
+      if (o?.getAnimations().some((a) => a.transitionProperty === 'clip-path')) return o
     })
-    assert.ok(shapes.every((shape) => shape.startsWith('path(')))
-    assert.equal(new Set(shapes).size, 3, 'Midway the letter must be a third shape, not either endpoint')
+    const frames = await drawing.evaluate((letter) => {
+      const moves = letter.parentNode.getAnimations({ subtree: true })
+      moves.forEach((a) => a.pause())
+      const outline = document.createElementNS(letter.namespaceURI, 'path')
+      letter.ownerSVGElement.append(outline)
+      const samples = [0, 0.5, 1].map((progress) => {
+        for (const a of moves) {
+          const { delay, duration } = a.effect.getTiming()
+          a.currentTime = delay + progress * duration
+        }
+        const shape = getComputedStyle(letter).clipPath
+        outline.setAttribute('d', shape.split('"')[1])
+        const { y, height } = outline.getBBox()
+        const center = new DOMPoint(0, y + height / 2).matrixTransform(letter.getScreenCTM()).y
+        return { shape, center }
+      })
+      outline.remove()
+      return samples
+    })
+    assert.equal(new Set(frames.map((f) => f.shape)).size, 3, 'Midway the letter must be a third shape')
+    for (const { center } of [frames[0], frames[2]]) {
+      assert.ok(Math.abs(center - (print.y + print.height / 2)) < 3, 'Both outlines should meet the printed text')
+    }
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
 })

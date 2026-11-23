@@ -14,7 +14,7 @@ const glyphs = LETTERFORMS.map(([print, hand], index) => (
         '--type': `path(evenodd, "${print}")`,
         '--hand': `path(evenodd, "${hand}")`,
         '--lag': `${index * 12}ms`,
-        '--lift': `${Math.round(-46 - 25 * Math.sin(index * 0.75))}px`,
+        '--lift': `${Math.round(-22 - 10 * Math.sin(index * 0.75))}px`,
       } as CSSProperties
     }
   >
@@ -23,7 +23,7 @@ const glyphs = LETTERFORMS.map(([print, hand], index) => (
 ))
 
 export default function Lettering() {
-  const layer = useRef<HTMLSpanElement>(null)
+  const layer = useRef<SVGSVGElement>(null)
   useLayoutEffect(() => {
     const root = layer.current
     const first = root?.querySelector('rect')
@@ -34,32 +34,20 @@ export default function Lettering() {
   }, [])
 
   return (
-    <Layer aria-hidden="true" ref={layer}>
-      <svg focusable="false" viewBox={`0 0 ${NAME_ADVANCE} 540`}>
-        {glyphs}
-      </svg>
+    <Layer aria-hidden="true" focusable="false" ref={layer} viewBox={`0 0 ${NAME_ADVANCE} 540`}>
+      {glyphs}
     </Layer>
   )
 }
 
-// Anchor at the text baseline: the ink can grow ascenders and a flourish without resizing the h1.
-const Layer = styled.span`
-  position: relative;
-  display: inline-block;
-  width: 0;
-  height: 0;
-  vertical-align: baseline;
+const Layer = styled.svg`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   visibility: hidden;
   pointer-events: none;
-
-  svg {
-    position: absolute;
-    top: -1.4em;
-    left: 0;
-    width: ${NAME_ADVANCE / 200}em;
-    height: 2.7em;
-    overflow: visible;
-  }
 
   @media screen and (prefers-reduced-motion: no-preference) {
     @supports (clip-path: path('M0 0L1 1Z')) {
@@ -76,6 +64,8 @@ const Layer = styled.span`
       }
       rect {
         clip-path: var(--type);
+        /* In the 200-unit em, this aligns the printed x-height with the lowercase pen strokes. */
+        transform: translateY(128px);
         transition:
           clip-path var(--return) var(--sweep),
           transform var(--return) var(--sweep);
