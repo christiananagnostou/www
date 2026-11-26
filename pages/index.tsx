@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import Bio from '../components/Home/Bio'
+import GlyphGrove from '../components/Home/grove/GlyphGrove'
 import LinkLedger from '../components/Home/LinkLedger'
 import RecentArt from '../components/Home/RecentArt'
 import RecentArticles from '../components/Home/RecentArticles'
@@ -62,6 +63,7 @@ const Home = ({ posts, fitnessActivities }: Props) => {
       </Head>
 
       <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+        <GlyphGrove />
         <div className="page-inner-container">
           <Bio />
 
@@ -84,15 +86,14 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 export default Home
 
 const Container = styled(m.div)`
-  max-width: var(--max-w-screen);
+  position: relative;
+  isolation: isolate;
   min-height: calc(100vh - var(--nav-height));
-  margin: auto;
-  padding: 2rem 1rem 1rem;
 
   .page-inner-container {
-    /* border: 1px solid var(--accent); */
-    /* background: var(--body-bg); */
-    /* padding: 1rem 1rem 1.5rem; */
+    max-width: var(--max-w-screen);
+    margin: auto;
+    padding: 2rem 1rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: end;

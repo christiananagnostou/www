@@ -105,4 +105,27 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     }
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
+
+  await t.test('paints the grove from top to bottom without intercepting the homepage', async () => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.waitForFunction(() => {
+      const canvas = document.querySelector('main canvas')
+      if (!canvas || canvas.height < 600) return false
+      const ctx = canvas.getContext('2d')
+      return [0.12, 0.84].every((y) => {
+        const strip = ctx.getImageData(0, Math.floor(canvas.height * y), canvas.width, 12)
+        return strip.data.some((byte, i) => i % 4 === 3 && byte > 30)
+      })
+    })
+    const canvas = page.locator('main canvas')
+    assert.equal(await canvas.evaluate((el) => getComputedStyle(el).pointerEvents), 'none')
+    assert.equal(await canvas.evaluate((el) => el.closest('[aria-hidden="true"]') !== null), true)
+    await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .getByRole('link', { name: 'Contact' })
+      .first()
+      .click()
+    await canvas.waitFor({ state: 'detached' })
+  })
 })

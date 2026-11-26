@@ -97,6 +97,14 @@ const Description = styled(m.section)`
   background: var(--dark-bg);
   text-align: left;
 
+  /* On narrow screens the right gutter is only a few pixels. Let a crop of the
+     grove peek through the empty end of the name row, clear of the writing. */
+  @media (width <= 960px) {
+    background:
+      linear-gradient(to bottom, transparent 2rem, var(--dark-bg) 4.25rem),
+      linear-gradient(to right, var(--dark-bg) 49%, transparent 86%);
+  }
+
   em {
     font-weight: normal;
     font-family: 'Georgia', serif;
