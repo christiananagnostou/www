@@ -7,7 +7,7 @@ export const HomepageBox = styled(m.div)`
   padding: 1rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
-  background: var(--dark-bg);
+  background: var(--home-panel);
 
   * {
     font-weight: 200;

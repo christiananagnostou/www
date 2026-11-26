@@ -86,6 +86,8 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 export default Home
 
 const Container = styled(m.div)`
+  --grove-opening: clamp(3.5rem, 7.5vh, 5.5rem);
+  --home-panel: color-mix(in srgb, var(--dark-bg) 92%, transparent);
   position: relative;
   isolation: isolate;
   min-height: calc(100vh - var(--nav-height));
@@ -93,13 +95,21 @@ const Container = styled(m.div)`
   .page-inner-container {
     max-width: var(--max-w-screen);
     margin: auto;
-    padding: 2rem 1rem 1rem;
+    padding: var(--grove-opening) 1rem clamp(2rem, 5vh, 4rem);
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 1rem;
     border-radius: 14px;
     position: relative;
+  }
+
+  /* With little room for side margins, frame the column with sky and trail instead. */
+  @media (width <= 960px) {
+    --grove-opening: clamp(5rem, 12vh, 8rem);
+    .page-inner-container {
+      padding-bottom: clamp(4rem, 9vh, 7rem);
+    }
   }
 `
 

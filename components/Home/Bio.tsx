@@ -94,16 +94,11 @@ const Description = styled(m.section)`
   padding: 0.75rem 1rem 1rem;
   border: 1px solid var(--accent);
   border-radius: var(--border-radius-md);
-  background: var(--dark-bg);
+  /* Open the empty end of the name row to the scene; keep the reading surface quiet. */
+  background:
+    linear-gradient(to bottom, transparent 1.5rem, var(--home-panel) 5rem),
+    linear-gradient(to right, var(--home-panel) 38%, transparent 85%);
   text-align: left;
-
-  /* On narrow screens the right gutter is only a few pixels. Let a crop of the
-     grove peek through the empty end of the name row, clear of the writing. */
-  @media (width <= 960px) {
-    background:
-      linear-gradient(to bottom, transparent 2rem, var(--dark-bg) 4.25rem),
-      linear-gradient(to right, var(--dark-bg) 49%, transparent 86%);
-  }
 
   em {
     font-weight: normal;

@@ -8,8 +8,8 @@ if (sources.length !== 4) throw new Error('Expected four keyframe image paths')
 
 const columns = 156
 const rows = 146
-const mapWidth = 96
-const mapHeight = 72
+const mapWidth = 64
+const mapHeight = 64
 const count = mapWidth * mapHeight
 
 // The same source cell always gets the same sampling priority in every frame.
@@ -20,25 +20,29 @@ function noise(index) {
 }
 
 async function sample(source) {
-  const pixels = await sharp(source)
-    .removeAlpha()
-    .toColourspace('srgb')
-    .resize(columns, rows, { fit: 'fill' })
-    .raw()
-    .toBuffer()
+  const pixels = await sharp(source).removeAlpha().greyscale().resize(columns, rows, { fit: 'fill' }).raw().toBuffer()
   const points = []
   for (let i = 0; i < columns * rows; i++) {
-    const [r, g, b] = pixels.subarray(i * 3, i * 3 + 3)
-    const light = Math.max(r, g, b) - 29
-    if (light < 6) continue
-    const ink = b - r > Math.max(5, light * 0.12) ? 0 : r - b > Math.max(18, light * 0.28) && r - g > 7 ? 2 : 1
-    const shade = Math.round(3 + 12 * Math.sqrt(Math.min(1, light / 122)))
+    const x = i % columns
+    const y = Math.floor(i / columns)
+    // Keep connected strokes in either direction: both fluting and the curved
+    // rim of the trail survive, while isolated flecks have little weight.
+    const vertical = Math.min(pixels[y > 0 ? i - columns : i], pixels[y < rows - 1 ? i + columns : i])
+    const horizontal = Math.min(pixels[x > 0 ? i - 1 : i], pixels[x < columns - 1 ? i + 1 : i])
+    const light = (pixels[i] + Math.max(vertical, horizontal)) / 2 - 26
+    if (light <= 4) continue
+    // Let the road read as an opening, not as a carpet of gravel. Fade its
+    // broadening foreground while leaving the flanking roots and bases intact.
+    const depth = Math.max(0, (y / rows - 0.54) / 0.46)
+    const fromCenter = Math.abs(x / columns - (0.72 - 0.28 * depth))
+    const road = depth * Math.max(0, 1 - fromCenter / (0.045 + 0.65 * depth))
+    const strength = light * (1 - 0.88 * road)
     points.push({
       cell: i,
-      x: i % columns,
-      y: Math.floor(i / columns),
-      tone: (ink << 4) | shade,
-      rank: (0.23 + 0.77 * noise(i)) / light,
+      x,
+      y,
+      tone: Math.round(2 + 13 * Math.min(1, strength / 94)),
+      rank: (0.45 + 0.55 * noise(i)) / strength,
     })
   }
   if (points.length < count) throw new Error('Not enough ink in ' + source)
@@ -94,7 +98,7 @@ for (const [n, points] of frames.entries()) {
 }
 // Store changes against the preceding band; the many stationary coordinates compress to zeros.
 for (let i = map.length - 1; i >= count * 3; i--) map[i] ^= map[i - count * 3]
-// Lossless RGB is data, not a display image: one texel = x, y, ink/strength.
+// Lossless RGB is data, not a display image: one texel = x, y, ink strength.
 const output = fileURLToPath(new URL('../components/Home/grove/keyframes.png', import.meta.url))
 console.log(
   await sharp(map, { raw: { width: mapWidth, height: mapHeight * frames.length, channels: 3 } })

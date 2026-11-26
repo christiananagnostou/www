@@ -106,26 +106,44 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
 
-  await t.test('paints the grove from top to bottom without intercepting the homepage', async () => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await page.waitForFunction(() => {
-      const canvas = document.querySelector('main canvas')
-      if (!canvas || canvas.height < 600) return false
-      const ctx = canvas.getContext('2d')
-      return [0.12, 0.84].every((y) => {
-        const strip = ctx.getImageData(0, Math.floor(canvas.height * y), canvas.width, 12)
-        return strip.data.some((byte, i) => i % 4 === 3 && byte > 30)
+  await t.test(
+    'paints a full-width monochrome grove with keyboard-accessible playback and a still alternative',
+    async () => {
+      await page.setViewportSize({ width: 1440, height: 900 })
+      await page.getByRole('button', { name: 'Pause background animation' }).press('Enter')
+      await page.getByRole('button', { name: 'Resume background animation' }).press('Space')
+      await page.getByRole('button', { name: 'Pause background animation' }).waitFor()
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.getByRole('button', { name: /background animation/ }).waitFor({ state: 'detached' })
+      await page.waitForFunction(() => {
+        const canvas = document.querySelector('main canvas')
+        if (!canvas || canvas.height < 600 || canvas.clientWidth < document.documentElement.clientWidth - 1)
+          return false
+        const ctx = canvas.getContext('2d')
+        const width = Math.floor(canvas.width / 4)
+        return [0.12, 0.84].every((y) => {
+          return [0, canvas.width - width].every((x) => {
+            const { data } = ctx.getImageData(x, Math.floor(canvas.height * y), width, 32)
+            let ink = 0
+            for (let i = 0; i < data.length; i += 4) {
+              if (data[i + 3] < 38) continue
+              if (Math.abs(data[i] - data[i + 2]) > 24) return false
+              ink++
+            }
+            return ink > 0
+          })
+        })
       })
-    })
-    const canvas = page.locator('main canvas')
-    assert.equal(await canvas.evaluate((el) => getComputedStyle(el).pointerEvents), 'none')
-    assert.equal(await canvas.evaluate((el) => el.closest('[aria-hidden="true"]') !== null), true)
-    await page
-      .getByRole('navigation', { name: 'Main Navigation' })
-      .getByRole('link', { name: 'Contact' })
-      .first()
-      .click()
-    await canvas.waitFor({ state: 'detached' })
-  })
+      const canvas = page.locator('main canvas')
+      assert.equal(await canvas.evaluate((el) => getComputedStyle(el).pointerEvents), 'none')
+      assert.equal(await canvas.evaluate((el) => el.closest('[aria-hidden="true"]') !== null), true)
+      await page.setViewportSize({ width: 390, height: 640 })
+      await page.waitForFunction(() => {
+        const el = document.querySelector('main canvas')
+        return el.clientHeight > innerHeight && el.clientHeight === el.parentElement.clientHeight
+      })
+      await page.getByRole('heading', { name: 'Articles', exact: true }).getByRole('link').click()
+      await canvas.waitFor({ state: 'detached' })
+    }
+  )
 })
