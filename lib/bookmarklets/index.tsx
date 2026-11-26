@@ -1,4 +1,4 @@
-import { BrokenGlass, MoneyMagnify, TCDBScout } from '../../components/SVG/bookmarklets'
+import { BrokenGlass, MoneyMagnify, Receipt, TCDBScout } from '../../components/SVG/bookmarklets'
 import { BASE_URL } from '../constants'
 
 export const bookmarkletsData = [
@@ -50,6 +50,40 @@ export const bookmarkletsData = [
       1. Open your TCDB collection page.
       2. Click the TCDB Scout bookmarklet.
       3. Use the Active or Sold buttons, or Open all with a limit.`,
+  },
+  {
+    id: 'baytally',
+    title: 'BayTally',
+    description:
+      'Collects item prices from your eBay Purchase History across pages and shows totals with search + sorting.',
+    githubUrl: 'https://github.com/christiananagnostou/www/blob/master/public/scripts/baytally.js',
+    icon: Receipt,
+    code: /*js*/ `
+      javascript:(function(){
+        var s = document.getElementById('baytally-script');
+        if (!s) {
+          s = document.createElement('script');
+          s.id = 'baytally-script';
+          s.src = '${BASE_URL}/scripts/baytally.js';
+          s.onload = function(){
+            if (window.BayTally) window.BayTally();
+          };
+          document.body.appendChild(s);
+        } else if (window.BayTally) {
+          window.BayTally();
+        }
+      })();`,
+    instructions: `
+      BayTally records item prices on your eBay Purchase History page and adds them up into a running total.
+      -
+      Notes:
+      - Data persists in your browser until you click Clear in the modal.
+      - If eBay uses full page reload pagination, click the bookmarklet again on each page (it will keep the same running list).
+      -
+      Instructions:
+      1. Open your eBay Purchase History page.
+      2. Click the BayTally bookmarklet.
+      3. Page/scroll through your history and use Search/Sort as needed.`,
   },
   // {
   //   title: 'PokeBattle',
