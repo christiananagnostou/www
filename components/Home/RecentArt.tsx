@@ -1,120 +1,85 @@
 import * as m from 'framer-motion/m'
-import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
+
 import { fade, photoAnim, staggerFade } from '../animation'
+
+import { Print, prints } from './photoPrints/Print'
+import styles from './photoPrints/Prints.module.css'
+import { usePrintVisibility } from './photoPrints/usePrintVisibility'
 import { HomepageBox } from './styles'
 
+type Stage = 'still' | 'loading' | 'printing' | 'unavailable'
+
 export default function RecentArt() {
+  const [tile, visible] = usePrintVisibility()
+  const [current, setCurrent] = useState(0)
+  const [stage, setStage] = useState<Stage>('still')
+  const [paused, setPaused] = useState(false)
+  const next = (current + 1) % prints.length
+  const playing = visible && !paused
+
+  useEffect(() => {
+    if (!playing || stage !== 'still') return
+    const timer = window.setTimeout(() => setStage('loading'), 8000)
+    return () => window.clearTimeout(timer)
+  }, [playing, stage])
+
   return (
-    <ArtContainer variants={staggerFade}>
-      <Title variants={fade}>
-        <Link href="/art">Photos</Link>
-      </Title>
+    <Tile ref={tile} variants={staggerFade}>
+      <m.div aria-hidden="true" className={styles.exposure} data-playing={playing} variants={photoAnim}>
+        {prints.map((print, index) => {
+          const arriving = index === next && (stage === 'loading' || stage === 'printing')
+          if (index !== current && !arriving) return null
 
-      <Link href="/art">
-        <div className="recent-art__hover-box">
-          <p>
-            Through the lens,
-            <br />
-            reality becomes art.
-          </p>
-        </div>
-
-        <RecentImage key={StairShadow.src} variants={photoAnim}>
-          <Image
-            alt=""
-            blurDataURL={StairShadow.blurDataURL}
-            loading="eager"
-            placeholder="blur"
-            src={StairShadow}
-            width={300}
-          />
-        </RecentImage>
+          return (
+            <div
+              className={styles.sheet}
+              data-stage={arriving ? stage : undefined}
+              key={index}
+              onAnimationEnd={(event) => {
+                if (!arriving || event.target !== event.currentTarget) return
+                setCurrent(index)
+                setStage('still')
+              }}
+            >
+              <Print
+                print={print}
+                onError={arriving ? () => setStage('unavailable') : undefined}
+                onLoad={arriving ? () => setStage('printing') : undefined}
+              />
+              {arriving && stage === 'printing' && (
+                <div className={styles.screen}>
+                  <Print print={print} />
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </m.div>
+      <Link className={styles.gallery} href="/art">
+        <m.h2 variants={fade}>Photos</m.h2>
       </Link>
-    </ArtContainer>
+      {visible && stage !== 'unavailable' && (
+        <button
+          aria-label={paused ? 'Resume photo rotation' : 'Pause photo rotation'}
+          className={styles.playback}
+          onClick={() => setPaused(!paused)}
+          type="button"
+        >
+          <svg aria-hidden="true" fill="currentColor" viewBox="0 0 16 16">
+            <path d={paused ? 'M5 3 13 8 5 13Z' : 'M4 3h2.5v10H4zM9.5 3H12v10H9.5z'} />
+          </svg>
+        </button>
+      )}
+    </Tile>
   )
 }
 
-const ArtContainer = styled(HomepageBox)`
+const Tile = styled(HomepageBox)`
+  display: grid;
+  padding: 0;
   overflow: hidden;
-
-  .recent-art__hover-box {
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    width: 100%;
-    height: 50px;
-    text-align: center;
-    transition: bottom 0.25s ease-in-out;
-
-    p {
-      padding-bottom: 3px;
-      font-size: 0.8rem;
-      color: var(--text-dark);
-      transition: scale 0.25s ease-in-out;
-      scale: 0.8;
-    }
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent 20%, #171717);
-    pointer-events: none;
-    transition: top 0.28s ease-in-out;
-  }
-
-  &:hover {
-    &::after {
-      top: 0;
-    }
-
-    .recent-art__hover-box {
-      bottom: 0;
-
-      p {
-        scale: 1;
-      }
-    }
-  }
-`
-
-const Title = styled(m.h2)`
-  position: relative;
-  z-index: 1;
-  margin: 0 0 1rem;
-
-  a {
-    display: block;
-    color: inherit;
-  }
-`
-
-const RecentImage = styled(m.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  filter: brightness(0.25);
-
-  img {
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  }
+  isolation: isolate;
 `

@@ -1,0 +1,141 @@
+.exposure,
+.sheet,
+.screen,
+.sheet picture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.exposure {
+  --press-state: paused;
+  z-index: 0;
+}
+
+.exposure[data-playing='true'] {
+  --press-state: running;
+}
+
+.sheet img {
+  object-fit: cover;
+}
+
+.sheet[data-stage] {
+  z-index: 1;
+}
+
+.sheet[data-stage='loading'] {
+  visibility: hidden;
+}
+
+/* The screen and the clean print share a crop. One moving edge leads the other. */
+.sheet[data-stage='printing'],
+.screen {
+  animation: expose 1100ms linear both;
+  animation-play-state: var(--press-state);
+}
+
+.screen {
+  isolation: isolate;
+  filter: contrast(18) contrast(0.78);
+  animation-name: develop;
+}
+
+/* At half opacity the gradient crosses the contrast threshold at a different
+   radius for each underlying tone, so the dots form the actual incoming photo. */
+.screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #ffffff, #000000 72%) 0 0 / 4px 4px;
+  opacity: 0.5;
+}
+
+@keyframes expose {
+  from {
+    clip-path: polygon(0 0, 0 0, -8% 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 123% 0, 115% 100%, 0 100%);
+  }
+}
+
+@keyframes develop {
+  from {
+    clip-path: polygon(-15% 0, 100% 0, 100% 100%, -23% 100%);
+  }
+  to {
+    clip-path: polygon(108% 0, 100% 0, 100% 100%, 100% 100%);
+  }
+}
+
+.gallery {
+  position: relative;
+  display: block;
+  padding: 1rem;
+  border-radius: inherit;
+  background: linear-gradient(105deg, rgb(12 12 12 / 84%), rgb(12 12 12 / 30%) 43%, rgb(12 12 12 / 7%) 72%);
+  text-decoration-color: rgb(245 245 245 / 48%);
+}
+
+.gallery h2 {
+  margin: 0 0 1rem;
+  color: #f6f6f6;
+}
+
+.playback {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 0;
+  background: none;
+  color: #f6f6f6;
+  cursor: pointer;
+}
+
+.playback svg {
+  box-sizing: content-box;
+  width: 12px;
+  height: 12px;
+  padding: 6px;
+  border-radius: 50%;
+  background: rgb(18 18 18 / 80%);
+}
+
+.playback:hover svg {
+  background: #141414;
+}
+
+.gallery:focus-visible,
+.playback:focus-visible svg {
+  outline: 2px solid #f6f6f6;
+}
+
+.gallery:focus-visible {
+  outline-offset: -4px;
+}
+
+.playback:focus-visible {
+  outline: none;
+}
+
+/* Give a short, wide tablet strip the room of a mounted print instead of
+   enlarging the photograph until only a sliver of its subject is left. */
+@media (450px < width <= 768px) {
+  .exposure {
+    left: auto;
+    width: min(100%, 27rem);
+    mask-image: linear-gradient(90deg, transparent, #000000 24%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet[data-stage],
+  .playback {
+    display: none;
+  }
+}
