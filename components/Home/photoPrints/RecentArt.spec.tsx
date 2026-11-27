@@ -184,6 +184,37 @@ it('tracks native touch beyond the edge, but does not claim vertical pans, pinch
   expect(rail.scrollTo).not.toHaveBeenCalled()
 })
 
+it('hands a new outward swipe the last print before the native snap finishes', () => {
+  const { link, rail, show } = openTile()
+  const icon = link.querySelector('svg')!
+  const open = vi.spyOn(link, 'click').mockImplementation(() => {})
+  const start = () => fireEvent.touchStart(rail, { touches: [finger(280)] })
+  const move = (x: number) => fireEvent.touchMove(rail, { touches: [finger(x)] })
+  const lift = (x: number) => fireEvent.touchEnd(rail, { changedTouches: [finger(x)] })
+
+  show(2)
+  start()
+  show(2.65)
+  move(60)
+  lift(60)
+  expect(icon.dataset.pull).toBeUndefined()
+  expect(open).not.toHaveBeenCalled()
+
+  // The browser still has 105px to snap. Those belong to the previous gesture.
+  start()
+  move(198)
+  expect(Number(icon.style.getPropertyValue('--travel'))).toBeCloseTo(0.46, 1)
+  lift(198)
+  expect(open).not.toHaveBeenCalled()
+  start()
+  move(100)
+  expect(icon.dataset.pull).toBe('ready')
+  show(2.95)
+  lift(100)
+  expect(open).toHaveBeenCalledTimes(1)
+  expect(rail.scrollTo).not.toHaveBeenCalled()
+})
+
 it('ignores incoming wheel momentum and only commits a fresh outward burst once it ends', () => {
   vi.useFakeTimers()
   const { link, rail, show } = openTile()
@@ -191,8 +222,9 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
   const icon = link.querySelector('svg')!
   // Browser event timestamps share a monotonic clock, independent of the timer implementation in JSDOM.
   let time = 1000
-  const scroll = (deltaX: number, deltaY = 0, keys: WheelEventInit = {}) => {
+  const scroll = (deltaX: number, deltaY = 0, keys: WheelEventInit & { momentum?: boolean } = {}) => {
     const event = new window.WheelEvent('wheel', { bubbles: true, deltaX, deltaY, ...keys })
+    Object.defineProperty(event, 'momentum', { value: keys.momentum })
     Object.defineProperty(event, 'timeStamp', { value: (time += 12) })
     fireEvent(rail, event)
   }
@@ -200,10 +232,11 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
     time += 250
     act(() => vi.advanceTimersByTime(250))
   }
-  show(2.8)
+  show(2)
   scroll(500)
   show(3)
-  for (let i = 0; i < 5; i++) scroll(50)
+  for (let i = 0; i < 30; i++) scroll(50)
+  expect(icon.dataset.pull).toBeUndefined()
   rest()
   expect(icon.dataset.pull).toBeUndefined()
   scroll(900)
@@ -220,6 +253,7 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
   scroll(-15)
   rest()
   expect(open).not.toHaveBeenCalled()
+  show(2.72)
   for (let i = 0; i < 7; i++) {
     time += 48
     scroll(0, 3, { shiftKey: true, deltaMode: 1 })
@@ -228,4 +262,20 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
   expect(open).not.toHaveBeenCalled()
   rest()
   expect(open).toHaveBeenCalledTimes(1)
+
+  show(2)
+  scroll(120, 0, { momentum: false })
+  show(3)
+  for (let i = 0; i < 30; i++) scroll(60, 0, { momentum: true })
+  expect(icon.dataset.pull).toBeUndefined()
+  // With a native momentum signal, direct input can continue across the edge without an idle gap.
+  show(2)
+  scroll(120, 0, { momentum: false })
+  show(3)
+  for (let i = 0; i < 30; i++) scroll(60, 0, { momentum: false })
+  expect(icon.dataset.pull).toBe('ready')
+  expect(open).toHaveBeenCalledTimes(1)
+  scroll(20, 0, { momentum: true })
+  rest()
+  expect(open).toHaveBeenCalledTimes(2)
 })

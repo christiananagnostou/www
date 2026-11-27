@@ -16,8 +16,10 @@ const WHEEL_IDLE = 180
 
 type Drag = { id: number | null; x: number; y: number; left: number; end: number; fullPull: number }
 
-function atEnd(node: HTMLDivElement) {
-  return node.scrollWidth > node.clientWidth && node.scrollWidth - node.clientWidth - node.scrollLeft <= 2
+function lastPrintInReach(node: HTMLDivElement, reach = FULL_PULL) {
+  const width = node.clientWidth
+  const end = node.scrollWidth - width
+  return end > 0 && end - node.scrollLeft < Math.min(width / 2, reach)
 }
 
 export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
@@ -62,7 +64,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
   }, [cancel])
 
   function release() {
-    const open = travel.current >= 1 && rail.current && atEnd(rail.current)
+    const open = travel.current >= 1 && rail.current && lastPrintInReach(rail.current, drag.current?.fullPull)
     cancel()
     if (open) gallery.current?.click()
   }
@@ -73,7 +75,11 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     // Keep a full pull within a thumb's reach, even from the center of a small phone.
     const width = window.visualViewport?.width || window.innerWidth
     const fullPull = Math.min(FULL_PULL, width * 0.45)
-    drag.current = { id, x, y, left: node.scrollLeft, end: node.scrollWidth - node.clientWidth, fullPull }
+    const end = node.scrollWidth - node.clientWidth
+    // Once the last print is nearest, a new finger pulls from it while the native snap finishes.
+    // A swipe that started on an earlier print still has to travel all the way to the edge first.
+    const left = id === null && lastPrintInReach(node, fullPull) ? end : node.scrollLeft
+    drag.current = { id, x, y, left, end, fullPull }
   }
 
   function move(node: HTMLDivElement, x: number, y: number, id: number | null) {
@@ -94,7 +100,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     // Touch and trackpads scroll natively. Only a mouse needs to move the rail itself.
     if (id !== null) node.scrollTo({ left, behavior: 'instant' })
     const beyond = left - start.end
-    draw(start.end > 0 && beyond > 0 && atEnd(node) ? beyond : 0, start.fullPull)
+    draw(beyond > 0 && lastPrintInReach(node, start.fullPull) ? beyond : 0, start.fullPull)
   }
 
   function cancelPointer(event: PointerEvent<HTMLDivElement>) {
@@ -151,11 +157,20 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
       },
       onTouchCancel: cancel,
       onWheel(event: WheelEvent<HTMLDivElement>) {
+        if (drag.current) return
         const burst = wheel.current
+        const momentum = 'momentum' in event.nativeEvent ? event.nativeEvent.momentum : undefined
+        if (momentum === true) {
+          if (burst.timer) release()
+          burst.last = -Infinity
+          return
+        }
         const elapsed = event.timeStamp - burst.last
         const fresh = elapsed > WHEEL_IDLE
         burst.last = event.timeStamp
-        if (drag.current || (!fresh && !burst.timer)) return
+        // Without an explicit momentum signal, never adopt the tail of an incoming wheel burst.
+        const continuing = !fresh && !burst.timer
+        if (continuing && momentum !== false) return
         const node = event.currentTarget
         const shifted = event.shiftKey && event.deltaX === 0
         const dx = shifted ? event.deltaY : event.deltaX
@@ -164,7 +179,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
           event.metaKey ||
           event.altKey ||
           dx <= (shifted ? 0 : Math.abs(event.deltaY)) ||
-          !atEnd(node)
+          !lastPrintInReach(node, continuing ? 2 : FULL_PULL)
         )
           return cancel()
         const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? node.clientWidth : 1
