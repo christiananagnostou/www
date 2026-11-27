@@ -28,7 +28,7 @@
   overscroll-behavior-x: none;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  scroll-snap-type: x proximity;
+  scroll-snap-type: x mandatory;
   scroll-timeline: --prints x;
 }
 

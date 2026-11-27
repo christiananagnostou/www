@@ -107,7 +107,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
 
-  await t.test('blends both prints at the midpoint, tracks the finger, and snaps near a photograph', async () => {
+  await t.test('blends prints while dragging and settles on a whole photograph after release', async () => {
     await page.reload()
     const gallery = page.getByRole('link', { name: 'Photos', exact: true })
     const tile = gallery.locator('..')
@@ -153,13 +153,24 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const x = frame.x + frame.width * 0.8
     const y = frame.y + frame.height * 0.36
     const half = x - frame.width * 0.5
-    const drag = async (from, to) => {
+    const holdDrag = async (from, to) => {
       await page.mouse.move(from, y)
       await page.mouse.down()
       await page.mouse.move(to, y, { steps: 8 })
-      await page.mouse.up()
     }
-    await drag(x, half)
+    const release = async () => {
+      await page.mouse.up()
+      await page.waitForFunction(
+        () => {
+          const el = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
+          const slide = el.scrollLeft / el.clientWidth
+          return Math.abs(slide - Math.round(slide)) < 0.005
+        },
+        undefined,
+        { timeout: 3000 }
+      )
+    }
+    await holdDrag(x, half)
     const second = gallery.locator('[data-print="1"][data-ready="true"]')
     await second.waitFor({ state: 'attached' })
     const halfPrint = await sample()
@@ -181,23 +192,20 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
           stretch: parseFloat(ink.scale),
         }
       })
-    assert.ok(Math.abs((await position()) - 0.5) < 0.02, 'Halfway should remain a deliberate resting point')
+    assert.ok(Math.abs((await position()) - 0.5) < 0.02, 'The held drag should track the pointer halfway')
     const between = await marker()
     assert.ok(Math.abs(between.position - (await position())) < 0.025 && between.stretch > 1.1)
     assert.equal(await rail.evaluate((el) => getComputedStyle(el).overscrollBehaviorX), 'none')
     await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) invert(1) }' })
     await checkCorner()
-    await drag(x, x - frame.width * 0.43)
-    await page.waitForFunction(() => {
-      const el = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
-      return Math.abs(el.scrollLeft - el.clientWidth) < 2
-    })
+    await page.mouse.move(x - frame.width * 0.58, y)
+    await release()
     const landed = await marker()
     assert.ok(Math.abs(landed.position - 1) < 0.02 && Math.abs(landed.stretch - 1) < 0.02)
-    await drag(half, x)
+    await holdDrag(half, x)
     assert.ok(Math.abs((await position()) - 0.5) < 0.02, 'The same blend should be reachable in reverse')
-    await drag(half, x)
-    await page.waitForFunction(() => document.querySelector('[data-stop]').closest('[tabindex="-1"]').scrollLeft < 2)
+    // Either neighbor may win the exact tie, but the blend must not remain at rest.
+    await release()
     assert.equal(new URL(page.url()).pathname, '/')
   })
 

@@ -61,7 +61,11 @@ export function usePrintReel(count: number) {
   function endDrag(event: PointerEvent<HTMLDivElement>) {
     if (event.pointerId !== drag.current?.id) return
     drag.current = null
-    event.currentTarget.removeAttribute('data-dragging')
+    if (!dragged.current) return
+    const node = event.currentTarget
+    node.removeAttribute('data-dragging')
+    // Give CSS the final offset even if this drag interrupted an earlier Firefox snap.
+    node.scrollTo({ left: node.scrollLeft })
   }
 
   return {
