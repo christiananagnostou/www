@@ -67,7 +67,7 @@ it('uses fractional scroll progress in the fallback and waits for the next photo
   expect(rail.querySelectorAll('img')).toHaveLength(2)
   show(0.25)
   expect(tile.style.getPropertyValue('--print-position')).toBe('0.25')
-  expect(screen.getByRole('status').textContent).toBe('B&W Baseball, 1 of 4')
+  expect(screen.getByRole('status').textContent).toBe('Stair Shadow, 1 of 4')
 })
 
 it('uses native CSS when supported and lets keys and dots navigate from a partial position', () => {
@@ -80,7 +80,7 @@ it('uses native CSS when supported and lets keys and dots navigate from a partia
   show(1.4)
   fireEvent.keyDown(link, { key: 'ArrowLeft' })
   expect(rail.scrollLeft).toBe(300)
-  fireEvent.click(screen.getByRole('button', { name: 'Show Satellite' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Show B&W Baseball' }))
   expect(rail.scrollLeft).toBe(900)
   fireEvent.keyDown(link, { key: 'ArrowLeft', altKey: true })
   expect(rail.scrollLeft).toBe(900)

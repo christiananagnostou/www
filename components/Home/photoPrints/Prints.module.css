@@ -141,7 +141,9 @@
 }
 
 .positions {
-  --dot-step: 18px;
+  --button-step: 18px;
+  --dot-step: var(--button-step);
+  --first-dot: calc(var(--button-step) / 2);
   --dot-inset: 9px;
   --marker-width: 8px;
   position: absolute;
@@ -152,17 +154,15 @@
 
 @media (any-pointer: coarse) {
   .positions {
-    --dot-step: 24px;
+    --button-step: 24px;
   }
 }
 
 .positions button {
-  display: grid;
-  width: var(--dot-step);
+  width: var(--button-step);
   height: 44px;
-  place-items: end center;
   border: 0;
-  padding: 0 0 var(--dot-inset);
+  padding: 0;
   background: none;
   cursor: pointer;
   touch-action: manipulation;
@@ -170,8 +170,12 @@
 
 .positions button::before {
   content: '';
+  position: absolute;
+  bottom: var(--dot-inset);
+  left: calc(var(--first-dot) + var(--index) * var(--dot-step));
   width: 4px;
   height: 4px;
+  translate: -50% 0;
   border-radius: 4px;
   background: rgb(245 245 245 / 64%);
   box-shadow: 0 1px 2px rgb(0 0 0 / 70%);
@@ -183,7 +187,7 @@
   content: '';
   position: absolute;
   bottom: var(--dot-inset);
-  left: calc((var(--dot-step) - var(--marker-width)) / 2);
+  left: calc(var(--first-dot) - var(--marker-width) / 2);
   width: var(--marker-width);
   height: 4px;
   border-radius: 4px;
@@ -257,6 +261,12 @@
 }
 
 @media (width <= 600px), (width <= 768px) and (orientation: landscape) {
+  /* Pull the ink marks together without narrowing the touch buttons. */
+  .positions {
+    --dot-step: min(20px, var(--button-step));
+    --first-dot: calc((100% - var(--print-count) * var(--dot-step) + var(--button-step)) / 2);
+  }
+
   .gallery {
     min-height: 5.75rem;
     aspect-ratio: 3;

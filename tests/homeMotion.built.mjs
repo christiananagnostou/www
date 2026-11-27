@@ -209,17 +209,34 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.equal(new URL(page.url()).pathname, '/')
   })
 
-  await t.test('fills the phone tile with every print without changing its height', async (test) => {
-    const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
+  await t.test('selects each full-frame phone print by tapping its compact dot', async (test) => {
+    const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true })
     test.after(() => phone.close())
     await phone.goto(site.origin)
     const gallery = phone.getByRole('link', { name: 'Photos', exact: true })
     await gallery.scrollIntoViewIfNeeded()
     const frame = await gallery.boundingBox()
-    const titles = ['B&W Baseball', 'Adobe B&W', 'Stair Shadow', 'Satellite']
+    const dots = await phone.getByRole('group', { name: 'Choose a photograph' }).evaluate((group) => {
+      const { left, bottom } = group.getBoundingClientRect()
+      return Array.from(group.children, (button) => {
+        const ink = getComputedStyle(button, '::before')
+        return {
+          x: left + parseFloat(ink.left),
+          y: bottom - parseFloat(ink.bottom) - parseFloat(ink.height) / 2,
+          width: button.clientWidth,
+          height: button.clientHeight,
+        }
+      })
+    })
+    assert.ok(
+      dots.every((dot) => dot.width >= 24 && dot.height >= 44),
+      'Keep the touch targets full size'
+    )
+    assert.ok(dots[1].x - dots[0].x < dots[0].width, 'The visible dots should sit closer than the touch targets')
+    const titles = ['Stair Shadow', 'Satellite', 'Adobe B&W', 'B&W Baseball']
     for (const [index, title] of titles.entries()) {
       const button = phone.getByRole('button', { name: `Show ${title}` })
-      await button.click()
+      await phone.touchscreen.tap(dots[index].x, dots[index].y)
       await phone.waitForFunction((i) => {
         const image = document.querySelector(`[data-print="${i}"][data-ready="true"]`)
         const rail = image?.closest('[tabindex="-1"]')

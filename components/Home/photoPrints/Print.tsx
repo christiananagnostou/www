@@ -13,10 +13,10 @@ import satelliteStrip from './strips/satellite.avif'
 import stairsStrip from './strips/stair_shadow.avif'
 
 export const prints = [
-  { title: 'B&W Baseball', image: Baseball, strip: baseballStrip, position: '50% 56%', treatment: styles.mountedStrip },
-  { title: 'Adobe B&W', image: Adobe, strip: adobeStrip, position: '50% 84%' },
   { title: 'Stair Shadow', image: StairShadow, strip: stairsStrip, position: 'center', treatment: styles.monochrome },
   { title: 'Satellite', image: Satellite, strip: satelliteStrip, position: '50% 93%', treatment: styles.mountedStrip },
+  { title: 'Adobe B&W', image: Adobe, strip: adobeStrip, position: '50% 84%' },
+  { title: 'B&W Baseball', image: Baseball, strip: baseballStrip, position: '50% 56%', treatment: styles.mountedStrip },
 ]
 
 type Photo = (typeof prints)[number]

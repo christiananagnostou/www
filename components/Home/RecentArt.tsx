@@ -57,6 +57,7 @@ export default function RecentArt() {
             aria-label={`Show ${print.title}`}
             key={print.title}
             onClick={() => go(index)}
+            style={{ '--index': index } as CSSProperties}
             type="button"
           />
         ))}
