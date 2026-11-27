@@ -1,6 +1,9 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-dayjs.extend(utc)
+export function formatPhotoDate(isoDate: string) {
+  // Native Date treats an ISO timestamp without an offset as local; photo dates are UTC.
+  const date = new Date(/[T ][\d:.]+$/i.test(isoDate) ? `${isoDate}Z` : isoDate)
+  if (Number.isNaN(date.getTime())) return 'Invalid Date'
 
-export const formatPhotoDate = (date: string) => dayjs.utc(date).format("MMM 'YY")
+  return `${MONTHS[date.getUTCMonth()]} '${String(date.getUTCFullYear()).padStart(2, '0').slice(-2)}`
+}
