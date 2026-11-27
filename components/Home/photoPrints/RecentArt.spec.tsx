@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 
-import { photosForTag } from '../../../lib/art/gallery'
+import { ArtImages } from '../../../lib/art'
 import RecentArt from '../RecentArt'
 
 const source = (img: HTMLImageElement) => new URL(img.src).searchParams.get('url') ?? img.getAttribute('src')
@@ -35,29 +35,28 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-it('prints three distinct gallery B&Ws and promotes each decoded image without replacing its element', async () => {
+it('cycles through the four selected gallery originals in order and promotes the decoded element', async () => {
   const tile = openTile()
-  const collection = photosForTag('B&W').map(({ image }) => (typeof image === 'string' ? image : image.src))
-  const first = source(tile.images()[0])
-  const seen = new Set([first])
-  expect(collection).toContain(first)
+  const rotation = ['arrow_up', 'adobe_bnw', 'stair_shadow', 'satellite'].map((id) => {
+    const { image } = ArtImages.find((photo) => photo.id === id)!
+    return typeof image === 'string' ? image : image.src
+  })
+  const [first, ...rest] = rotation
+  expect(source(tile.images()[0])).toBe(first)
   tile.inView(true)
-  for (let i = 0; i < 3; i++) {
+  for (const expected of [...rest, first]) {
     const [previous] = tile.images()
     tile.wait()
     const incoming = tile.images().find((img) => img !== previous)!
     const sheet = incoming.closest<HTMLElement>('[data-stage]')!
     expect(sheet.dataset.stage).toBe('loading')
-    expect(collection).toContain(source(incoming))
-    seen.add(source(incoming))
+    expect(source(incoming)).toBe(expected)
     await act(async () => fireEvent.load(incoming))
     expect(sheet.dataset.stage).toBe('printing')
     // JSDOM doesn't implement AnimationEvent; React listens for its prefixed event there.
     fireEvent(sheet, new Event('AnimationEvent' in window ? 'animationend' : 'webkitAnimationEnd', { bubbles: true }))
     expect(tile.images()).toEqual([incoming])
   }
-  expect(seen.size).toBe(3)
-  expect(source(tile.images()[0])).toBe(first)
 })
 
 it('does not request another photo offscreen, while paused, or after a failed next image', () => {

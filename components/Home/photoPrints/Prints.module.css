@@ -9,7 +9,9 @@
 
 .exposure {
   --press-state: paused;
-  z-index: 0;
+  z-index: -1;
+  /* Shade the print before the stationary gallery link clips the whole exposure. */
+  mask-image: linear-gradient(105deg, rgb(0 0 0 / 16%), rgb(0 0 0 / 70%) 43%, rgb(0 0 0 / 93%) 72%);
 }
 
 .exposure[data-playing='true'] {
@@ -18,6 +20,15 @@
 
 .sheet img {
   object-fit: cover;
+}
+
+.sheet,
+.screen {
+  background: var(--dark-bg);
+}
+
+.monochrome {
+  filter: grayscale(1);
 }
 
 .sheet[data-stage] {
@@ -74,7 +85,9 @@
   display: block;
   padding: 1rem;
   border-radius: inherit;
-  background: linear-gradient(105deg, rgb(12 12 12 / 84%), rgb(12 12 12 / 30%) 43%, rgb(12 12 12 / 7%) 72%);
+  isolation: isolate;
+  background: var(--dark-bg);
+  clip-path: inset(0 round calc(var(--border-radius-md) - 1px));
   text-decoration-color: rgb(245 245 245 / 48%);
 }
 
@@ -129,7 +142,18 @@
   .exposure {
     left: auto;
     width: min(100%, 27rem);
-    mask-image: linear-gradient(90deg, transparent, #000000 24%);
+    mask-image: linear-gradient(90deg, transparent, rgb(0 0 0 / 93%) 24%);
+  }
+}
+
+@media (width <= 768px) {
+  /* Mount the entire bottom crop, from mast to ground, inside the shallow strip. */
+  .sheet .satellite {
+    left: auto;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 9 / 4;
+    mask-image: linear-gradient(90deg, transparent, #000000 18%);
   }
 }
 

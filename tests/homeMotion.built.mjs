@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
 import { firefox } from 'playwright-core'
+import sharp from 'sharp'
 
 import { startBuiltApp } from './helpers/builtApp.mjs'
 
@@ -104,5 +105,38 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       assert.ok(Math.abs(center - (print.y + print.height / 2)) < 3, 'Both outlines should meet the printed text')
     }
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
+  })
+
+  await t.test('keeps the Photos corner clean at rest and during a print', async () => {
+    await page.clock.install()
+    await page.reload()
+    const tile = page.getByRole('link', { name: 'Photos', exact: true }).locator('..')
+    await tile.getByRole('button', { name: 'Pause photo rotation' }).waitFor()
+    await tile
+      .locator('img')
+      .first()
+      .evaluate((img) => img.decode())
+    // A white print makes a seam visible regardless of which photograph is featured.
+    await tile.evaluate((el) => el.setAttribute('data-corner-test', ''))
+    await page.addStyleTag({ content: '[data-corner-test] img { filter: brightness(0) invert(1) }' })
+    const checkCorner = async () => {
+      const corner = await sharp(await tile.screenshot({ scale: 'css' }))
+        .extract({ left: 0, top: 0, width: 16, height: 16 })
+        .removeAlpha()
+        .greyscale()
+        .raw()
+        .toBuffer()
+      const rim = corner.filter((_, i) => i % 16 < 9 && Math.floor(i / 16) < 9)
+      assert.ok(Math.max(...rim) <= corner[15 * 16 + 15] + 5, 'The curved rim must not outshine the shaded print')
+    }
+    await checkCorner()
+    await page.clock.fastForward(8100)
+    await tile.locator('[data-stage="printing"]').evaluate((sheet) => {
+      for (const edge of sheet.getAnimations({ subtree: true })) {
+        edge.pause()
+        edge.currentTime = Number(edge.effect.getTiming().duration) / 2
+      }
+    })
+    await checkCorner()
   })
 })

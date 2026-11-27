@@ -1,29 +1,32 @@
 import Image from 'next/image'
 
-import FieldWalker from '../../../public/img/art/photography/dad_soccer.jpg'
-import GoldenGate from '../../../public/img/art/photography/golden_gate.jpg'
-import Levels from '../../../public/img/art/photography/levels.jpg'
+import Adobe from '../../../public/img/art/photography/adobe_bnw.jpg'
+import ArrowUp from '../../../public/img/art/photography/arrow_up.jpg'
+import Satellite from '../../../public/img/art/photography/satellite.jpg'
+import StairShadow from '../../../public/img/art/photography/stair_shadow.jpg'
 
-import fieldStrip from './strips/dad_soccer.avif'
-import bridgeStrip from './strips/golden_gate.avif'
-import levelsStrip from './strips/levels.avif'
+import styles from './Prints.module.css'
+import adobeStrip from './strips/adobe_bnw.avif'
+import arrowStrip from './strips/arrow_up.avif'
+import satelliteStrip from './strips/satellite.avif'
+import stairsStrip from './strips/stair_shadow.avif'
 
 export const prints = [
-  { image: GoldenGate, strip: bridgeStrip, position: '50% 53%' },
-  { image: Levels, strip: levelsStrip, position: '50% 46%' },
-  { image: FieldWalker, strip: fieldStrip, position: '50% 49%' },
+  { image: ArrowUp, strip: arrowStrip, position: '50% 56%' },
+  { image: Adobe, strip: adobeStrip, position: '50% 84%' },
+  { image: StairShadow, strip: stairsStrip, position: 'center', treatment: styles.monochrome },
+  { image: Satellite, strip: satelliteStrip, position: 'center bottom', treatment: styles.satellite },
 ]
 
 type Props = { print: (typeof prints)[number]; onLoad?: () => void; onError?: () => void }
 
 export function Print({ print, onLoad, onError }: Props) {
   return (
-    <picture>
+    <picture className={print.treatment}>
       <source media="(max-width: 768px)" srcSet={print.strip.src} type="image/avif" />
       <Image
         alt=""
         fill
-        loading="eager"
         onError={onError}
         onLoad={onLoad}
         sizes="215px"
