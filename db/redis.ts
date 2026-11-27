@@ -1,4 +1,4 @@
-import { createClient } from 'redis'
+import { createClient } from '@redis/client'
 
 // Create Redis client (cached for reuse across requests)
 export const redisClient = createClient({
