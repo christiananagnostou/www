@@ -1,3 +1,7 @@
+.tile {
+  timeline-scope: --prints;
+}
+
 .gallery {
   position: relative;
   display: block;
@@ -21,9 +25,16 @@
   inset: 0;
   z-index: -1;
   overflow: auto hidden;
-  overscroll-behavior-x: contain;
+  overscroll-behavior-x: none;
   scrollbar-width: none;
   scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scroll-timeline: --prints x;
+}
+
+/* Each mousemove is a programmatic scroll; snap only when the mouse lets go. */
+.rail[data-dragging] {
+  scroll-snap-type: none;
 }
 
 .track {
@@ -35,6 +46,10 @@
 
 .track > * {
   grid-row: 1;
+}
+
+.track > [data-stop] {
+  scroll-snap-align: start;
 }
 
 /* The scroll stops move normally; the framed photographs stay registered. */
@@ -49,7 +64,6 @@
 
 .exposure,
 .sheet,
-.screen,
 .sheet picture {
   position: absolute;
   inset: 0;
@@ -65,8 +79,7 @@
   object-fit: cover;
 }
 
-.sheet,
-.screen {
+.sheet {
   background: var(--dark-bg);
 }
 
@@ -78,58 +91,58 @@
   visibility: hidden;
 }
 
-/* Both edges use the same progress, whether supplied by the browser or the fallback. */
-.sheet:not([data-print='0']),
-.screen {
-  animation: expose 1s linear both paused;
+.sheet:not([data-print='0']) {
+  animation: dissolve 1s linear both paused;
   animation-delay: calc((var(--index) - 1 - var(--print-position, 0)) * 1s);
 }
 
-.screen {
-  isolation: isolate;
-  filter: contrast(18) contrast(0.78);
-  animation-name: develop;
-}
-
-.screen::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, #ffffff, #000000 72%) 0 0 / 4px 4px;
-  opacity: 0.5;
-}
-
-@supports (animation-timeline: scroll(nearest x)) and (animation-range: 0% 50%) {
-  .sheet:not([data-print='0']),
-  .screen {
-    animation-duration: auto;
-    animation-delay: 0s;
-    animation-play-state: running;
-    animation-timeline: scroll(nearest x);
-    animation-range: calc((var(--index) - 1) * 100% / (var(--print-count) - 1))
-      calc(var(--index) * 100% / (var(--print-count) - 1));
+/* The dots pick up the next print early; the soft wash fills their gaps.
+   Without composite masks or with reduced motion, the two prints simply dissolve. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (mask-composite: intersect) {
+    .sheet:not([data-print='0']) {
+      mask-image:
+        linear-gradient(90deg, transparent 37%, rgb(0 0 0 / 12%) 47%, rgb(0 0 0 / 68%) 57%, #000000 65%),
+        radial-gradient(circle, #000000 0.75px, transparent 1.65px),
+        linear-gradient(90deg, transparent 34%, rgb(0 0 0 / 76%) 45%, #000000 55%);
+      mask-size:
+        300% 100%,
+        4px 4px,
+        300% 100%;
+      mask-repeat: no-repeat, repeat, no-repeat;
+      mask-composite: add, intersect;
+      animation-name: ink;
+    }
   }
 }
 
-@keyframes expose {
+@keyframes ink {
   from {
-    clip-path: polygon(100% 0, 100% 0, 100% 100%, 108% 100%);
+    mask-position:
+      0% 0,
+      0 0,
+      0% 0;
   }
   to {
-    clip-path: polygon(-23% 0, 100% 0, 100% 100%, -15% 100%);
+    mask-position:
+      100% 0,
+      0 0,
+      100% 0;
   }
 }
 
-@keyframes develop {
+@keyframes dissolve {
   from {
-    clip-path: polygon(0 0, 115% 0, 123% 100%, 0 100%);
+    opacity: 0;
   }
   to {
-    clip-path: polygon(0 0, -8% 0, 0 100%, 0 100%);
+    opacity: 1;
   }
 }
 
 .positions {
+  --dot-step: 26px;
+  --marker-width: 12px;
   position: absolute;
   right: 6px;
   bottom: 0;
@@ -138,7 +151,7 @@
 
 .positions button {
   display: grid;
-  width: 26px;
+  width: var(--dot-step);
   height: 44px;
   place-items: center;
   border: 0;
@@ -157,9 +170,57 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 70%);
 }
 
-.positions button[aria-current]::before {
-  width: 13px;
+/* Fixed dots keep their hit targets. One ink dash follows the actual scroll,
+   stretching slightly between two photographs and contracting as it arrives. */
+.positions::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc((var(--dot-step) - var(--marker-width)) / 2);
+  width: var(--marker-width);
+  height: 4px;
+  border-radius: 4px;
   background: #f6f6f6;
+  pointer-events: none;
+  animation:
+    travel 1s linear both paused,
+    stretch 1s ease-in-out calc(var(--print-count) - 1) both paused;
+  animation-delay:
+    calc(-1s * var(--print-position, 0) / (var(--print-count) - 1)), calc(-1s * var(--print-position, 0));
+}
+
+@keyframes travel {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: calc((var(--print-count) - 1) * var(--dot-step)) 0;
+  }
+}
+
+@keyframes stretch {
+  0%,
+  100% {
+    scale: 1 1;
+  }
+  50% {
+    scale: 1.4 1;
+  }
+}
+
+@supports (timeline-scope: --prints) and (animation-timeline: --prints) and (animation-range: 0% 50%) {
+  .sheet:not([data-print='0']),
+  .positions::after {
+    animation-duration: auto;
+    animation-delay: 0s;
+    animation-play-state: running;
+    animation-timeline: --prints;
+  }
+
+  .sheet:not([data-print='0']) {
+    animation-range: calc((var(--index) - 1) * 100% / (var(--print-count) - 1))
+      calc(var(--index) * 100% / (var(--print-count) - 1));
+  }
 }
 
 .gallery:focus-visible,
@@ -216,7 +277,12 @@
     scroll-behavior: auto;
   }
 
-  .screen {
+  .positions::after {
     display: none;
+  }
+
+  .positions button[aria-current]::before {
+    width: var(--marker-width);
+    background: #f6f6f6;
   }
 }

@@ -11,9 +11,14 @@ import { usePrintReel } from './photoPrints/usePrintReel'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
-  const { current, requested, go, step, railProps, onClick } = usePrintReel(prints.length)
+  const { tile, current, requested, go, step, railProps, onClick } = usePrintReel(prints.length)
   return (
-    <Tile variants={staggerFade}>
+    <Tile
+      ref={tile}
+      className={styles.tile}
+      style={{ '--print-count': prints.length } as CSSProperties}
+      variants={staggerFade}
+    >
       <Link
         aria-description="Swipe or use the arrow keys to change the photograph."
         aria-keyshortcuts="ArrowLeft ArrowRight"
@@ -28,13 +33,7 @@ export default function RecentArt() {
           step(event.key === 'ArrowRight' ? 1 : -1)
         }}
       >
-        <div
-          {...railProps}
-          className={styles.rail}
-          aria-hidden="true"
-          tabIndex={-1}
-          style={{ '--print-count': prints.length } as CSSProperties}
-        >
+        <div {...railProps} className={styles.rail} aria-hidden="true" tabIndex={-1}>
           <div className={styles.track}>
             {prints.map((print, index) => (
               <i data-stop={index} key={print.title} style={{ gridColumn: index + 1 }} />

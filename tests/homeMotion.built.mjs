@@ -107,7 +107,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
 
-  await t.test('scrubs halfway and back without navigating or exposing a seam in the Photos corner', async () => {
+  await t.test('blends both prints at the midpoint, tracks the finger, and snaps near a photograph', async () => {
     await page.reload()
     const gallery = page.getByRole('link', { name: 'Photos', exact: true })
     const tile = gallery.locator('..')
@@ -130,16 +130,26 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     }
     await checkCorner()
     const frame = await gallery.boundingBox()
-    await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) }' })
     const sample = async () => {
       const { data, info } = await sharp(await gallery.screenshot({ scale: 'css' }))
         .removeAlpha()
         .greyscale()
         .raw()
         .toBuffer({ resolveWithObject: true })
-      return [0.25, 0.8].map((x) => data[Math.floor(info.height * 0.6) * info.width + Math.floor(info.width * x)])
+      // Eight pixels cover two ink cells. Average the patch so dot phase and DPR don't pick the result.
+      return [0.25, 0.5, 0.75].map((x) => {
+        const left = Math.floor(info.width * x) - 4
+        const top = Math.floor(info.height * 0.6)
+        const patch = Array.from(
+          { length: 64 },
+          (_, i) => data[(top + Math.floor(i / 8)) * info.width + left + (i % 8)]
+        )
+        return { mean: patch.reduce((a, b) => a + b) / patch.length, contrast: Math.max(...patch) - Math.min(...patch) }
+      })
     }
-    const original = await sample()
+    const white = await sample()
+    await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) }' })
+    const black = await sample()
     const x = frame.x + frame.width * 0.8
     const y = frame.y + frame.height * 0.36
     const half = x - frame.width * 0.5
@@ -153,14 +163,39 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const second = gallery.locator('[data-print="1"][data-ready="true"]')
     await second.waitFor({ state: 'attached' })
     const halfPrint = await sample()
-    assert.ok(
-      Math.abs(original[0] - halfPrint[0]) < 4 && halfPrint[1] - original[1] > 40,
-      'A released half-drag must paint the original photograph on the left and the incoming one on the right'
+    const [left, middle, right] = halfPrint.map(
+      ({ mean }, i) => (mean - black[i].mean) / (white[i].mean - black[i].mean)
     )
+    assert.ok(
+      left > 0.04 && middle > left + 0.12 && right > middle + 0.12 && right < 0.98,
+      `Both prints must contribute across the transition, not meet at a cut: ${[left, middle, right]}`
+    )
+    assert.ok(halfPrint[1].contrast > 15, 'The midpoint should retain ink dots, not just a uniform crossfade')
     const rail = gallery.locator('[tabindex="-1"]')
-    assert.ok(Math.abs((await rail.evaluate((el) => el.scrollLeft / el.clientWidth)) - 0.5) < 0.02)
+    const position = () => rail.evaluate((el) => el.scrollLeft / el.clientWidth)
+    const marker = () =>
+      tile.getByRole('group').evaluate((el) => {
+        const ink = getComputedStyle(el, '::after')
+        return {
+          position: parseFloat(ink.translate) / parseFloat(getComputedStyle(el).getPropertyValue('--dot-step')),
+          stretch: parseFloat(ink.scale),
+        }
+      })
+    assert.ok(Math.abs((await position()) - 0.5) < 0.02, 'Halfway should remain a deliberate resting point')
+    const between = await marker()
+    assert.ok(Math.abs(between.position - (await position())) < 0.025 && between.stretch > 1.1)
+    assert.equal(await rail.evaluate((el) => getComputedStyle(el).overscrollBehaviorX), 'none')
     await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) invert(1) }' })
     await checkCorner()
+    await drag(x, x - frame.width * 0.43)
+    await page.waitForFunction(() => {
+      const el = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
+      return Math.abs(el.scrollLeft - el.clientWidth) < 2
+    })
+    const landed = await marker()
+    assert.ok(Math.abs(landed.position - 1) < 0.02 && Math.abs(landed.stretch - 1) < 0.02)
+    await drag(half, x)
+    assert.ok(Math.abs((await position()) - 0.5) < 0.02, 'The same blend should be reachable in reverse')
     await drag(half, x)
     await page.waitForFunction(() => document.querySelector('[data-stop]').closest('[tabindex="-1"]').scrollLeft < 2)
     assert.equal(new URL(page.url()).pathname, '/')
@@ -182,7 +217,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
         const rail = image?.closest('[tabindex="-1"]')
         return rail && Math.abs(rail.scrollLeft - i * rail.clientWidth) < 2
       }, index)
-      assert.equal(await button.getAttribute('aria-current'), 'true')
+      await button.and(phone.locator('[aria-current="true"]')).waitFor()
       const image = gallery.locator(`[data-print="${index}"] > picture img`)
       await image.evaluate((img) => img.decode())
       assert.deepEqual(await image.boundingBox(), frame, 'Each settled print should cover the same full frame')

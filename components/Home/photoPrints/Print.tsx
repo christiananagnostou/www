@@ -21,25 +21,21 @@ export const prints = [
 
 type Photo = (typeof prints)[number]
 
-function Print({ print, onLoad }: { print: Photo; onLoad?: () => void }) {
-  return (
-    <picture className={print.treatment}>
-      <source media="(max-width: 768px)" srcSet={print.strip.src} type="image/avif" />
-      <Image alt="" fill onLoad={onLoad} sizes="215px" src={print.image} style={{ objectPosition: print.position }} />
-    </picture>
-  )
-}
-
 export function PrintSheet({ print, index }: { print: Photo; index: number }) {
   const [ready, setReady] = useState(index === 0)
   return (
     <div className={styles.sheet} data-print={index} data-ready={ready} style={{ '--index': index } as CSSProperties}>
-      <Print print={print} onLoad={index ? () => setReady(true) : undefined} />
-      {index > 0 && ready && (
-        <div className={styles.screen}>
-          <Print print={print} />
-        </div>
-      )}
+      <picture className={print.treatment}>
+        <source media="(max-width: 768px)" srcSet={print.strip.src} type="image/avif" />
+        <Image
+          alt=""
+          fill
+          onLoad={index ? () => setReady(true) : undefined}
+          sizes="215px"
+          src={print.image}
+          style={{ objectPosition: print.position }}
+        />
+      </picture>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 
 // Touch, trackpads, momentum and vertical page scrolling are all native.
 // Only a mouse needs a hand translating a drag into horizontal scrolling.
 export function usePrintReel(count: number) {
+  const tile = useRef<HTMLDivElement>(null)
   const rail = useRef<HTMLDivElement>(null)
   const drag = useRef<{ id: number; x: number; y: number; left: number } | null>(null)
   const dragged = useRef(false)
@@ -21,18 +22,21 @@ export function usePrintReel(count: number) {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.intersectionRatio > 0) request(Number((entry.target as HTMLElement).dataset.stop))
+          const index = Number((entry.target as HTMLElement).dataset.stop)
+          if (entry.intersectionRatio > 0) request(index)
+          if (entry.intersectionRatio >= 0.5) setCurrent(index)
         }
-        setCurrent(Math.round(progress()))
       },
       { root: node, threshold: [0.001, 0.5, 0.999] }
     )
     node.querySelectorAll('[data-stop]').forEach((stop) => observer.observe(stop))
 
     // Older engines use the same CSS reveal, with one local style write and no React renders per frame.
-    const nativeTimeline = window.CSS?.supports('(animation-timeline: scroll(nearest x)) and (animation-range: 0% 50%)')
+    const nativeTimeline = window.CSS?.supports(
+      '(timeline-scope: --prints) and (animation-timeline: --prints) and (animation-range: 0% 50%)'
+    )
     function sync() {
-      node.style.setProperty('--print-position', String(progress()))
+      tile.current?.style.setProperty('--print-position', String(progress()))
     }
     const resize = !nativeTimeline && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(sync) : null
     if (!nativeTimeline) {
@@ -54,7 +58,14 @@ export function usePrintReel(count: number) {
     node.scrollTo({ left: index * node.clientWidth, behavior: 'auto' })
   }
 
+  function endDrag(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerId !== drag.current?.id) return
+    drag.current = null
+    event.currentTarget.removeAttribute('data-dragging')
+  }
+
   return {
+    tile,
     current,
     requested,
     go,
@@ -89,6 +100,7 @@ export function usePrintReel(count: number) {
         if (!dragged.current) {
           if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(event.clientY - start.y)) return
           event.currentTarget.setPointerCapture?.(event.pointerId)
+          event.currentTarget.setAttribute('data-dragging', '')
           dragged.current = true
         }
         event.currentTarget.scrollTo({ left: start.left - dx, behavior: 'instant' })
@@ -96,15 +108,9 @@ export function usePrintReel(count: number) {
       onPointerLeave() {
         if (!dragged.current) drag.current = null
       },
-      onPointerUp() {
-        drag.current = null
-      },
-      onPointerCancel() {
-        drag.current = null
-      },
-      onLostPointerCapture() {
-        drag.current = null
-      },
+      onPointerUp: endDrag,
+      onPointerCancel: endDrag,
+      onLostPointerCapture: endDrag,
     },
   }
 }

@@ -35,7 +35,7 @@ function openTile() {
       )
     )
   }
-  return { link, rail, container, show }
+  return { tile: link.parentElement!, link, rail, container, show }
 }
 
 afterEach(() => {
@@ -56,24 +56,25 @@ it('keeps the original gallery link and only requests one print while idle', () 
 
 it('uses fractional scroll progress in the fallback and waits for the next photo to decode', async () => {
   vi.stubGlobal('CSS', { supports: () => false })
-  const { rail, show } = openTile()
+  const { tile, rail, show } = openTile()
   show(0.5)
-  expect(rail.style.getPropertyValue('--print-position')).toBe('0.5')
+  expect(tile.style.getPropertyValue('--print-position')).toBe('0.5')
   const second = rail.querySelector<HTMLElement>('[data-print="1"]')!
   expect(second.dataset.ready).toBe('false')
   expect(rail.querySelectorAll('img')).toHaveLength(2)
   await act(async () => fireEvent.load(second.querySelector('img')!))
   expect(second.dataset.ready).toBe('true')
+  expect(rail.querySelectorAll('img')).toHaveLength(2)
   show(0.25)
-  expect(rail.style.getPropertyValue('--print-position')).toBe('0.25')
+  expect(tile.style.getPropertyValue('--print-position')).toBe('0.25')
   expect(screen.getByRole('status').textContent).toBe('B&W Baseball, 1 of 4')
 })
 
 it('uses native CSS when supported and lets keys and dots navigate from a partial position', () => {
   vi.stubGlobal('CSS', { supports: () => true })
-  const { rail, link, show } = openTile()
+  const { tile, rail, link, show } = openTile()
   show(1.4)
-  expect(rail.style.getPropertyValue('--print-position')).toBe('')
+  expect(tile.style.getPropertyValue('--print-position')).toBe('')
   fireEvent.keyDown(link, { key: 'ArrowRight' })
   expect(rail.scrollLeft).toBe(600)
   show(1.4)
@@ -93,15 +94,19 @@ const pointer = (x: number, type = 'mouse') => ({
   clientY: 80,
 })
 
-it('leaves a desktop drag exactly where released, suppresses its click, and leaves touch to the browser', () => {
+it('only suspends snapping during an actual mouse drag and leaves taps and touch scrolling native', () => {
   const { rail, link } = openTile()
   fireEvent.pointerDown(rail, pointer(250))
+  expect(rail.hasAttribute('data-dragging')).toBe(false)
   fireEvent.pointerMove(rail, pointer(100))
+  expect(rail.hasAttribute('data-dragging')).toBe(true)
   fireEvent.pointerUp(rail, pointer(100))
+  expect(rail.hasAttribute('data-dragging')).toBe(false)
   expect(rail.scrollLeft).toBe(150)
   expect(fireEvent.click(link, { detail: 1 })).toBe(false)
   fireEvent.pointerDown(rail, pointer(100, 'touch'))
   fireEvent.pointerMove(rail, pointer(250, 'touch'))
+  expect(rail.hasAttribute('data-dragging')).toBe(false)
   fireEvent.pointerUp(rail, pointer(250, 'touch'))
   expect(rail.scrollLeft).toBe(150)
   expect(rail.scrollTo).toHaveBeenCalledTimes(1)
