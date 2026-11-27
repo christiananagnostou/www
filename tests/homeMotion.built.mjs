@@ -5,6 +5,12 @@ import sharp from 'sharp'
 
 import { startBuiltApp } from './helpers/builtApp.mjs'
 
+async function nextPhotoPrint(page, tile) {
+  // Skip the still frame; the reveal starts after the incoming image loads.
+  await page.clock.fastForward(30_000)
+  return tile.locator('[data-stage="printing"]')
+}
+
 // Start on Contact so the browser sees the very first frame of the Home entrance.
 function observeHomeEntrance() {
   const peak = new Map()
@@ -130,13 +136,17 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       assert.ok(Math.max(...rim) <= corner[15 * 16 + 15] + 5, 'The curved rim must not outshine the shaded print')
     }
     await checkCorner()
-    await page.clock.fastForward(8100)
-    await tile.locator('[data-stage="printing"]').evaluate((sheet) => {
-      for (const edge of sheet.getAnimations({ subtree: true })) {
+    const incoming = await nextPhotoPrint(page, tile)
+    const curves = await incoming.evaluate((sheet) =>
+      sheet.getAnimations({ subtree: true }).map((edge) => {
         edge.pause()
         edge.currentTime = Number(edge.effect.getTiming().duration) / 2
-      }
-    })
+        return getComputedStyle(edge.effect.target).animationTimingFunction
+      })
+    )
+    assert.equal(curves.length, 2)
+    assert.equal(curves[0], curves[1], 'The halftone and clean print should ease together')
+    assert.notEqual(curves[0], 'linear')
     await checkCorner()
   })
 
@@ -151,8 +161,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const frame = await gallery.boundingBox()
     for (let index = 0; index < 4; index++) {
       if (index > 0) {
-        await phone.clock.fastForward(8100)
-        const incoming = gallery.locator('[data-stage="printing"]')
+        const incoming = await nextPhotoPrint(phone, gallery)
         await incoming.evaluate((sheet) => sheet.getAnimations({ subtree: true }).forEach((edge) => edge.finish()))
         await incoming.waitFor({ state: 'detached' })
       }

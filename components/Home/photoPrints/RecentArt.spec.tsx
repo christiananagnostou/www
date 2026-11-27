@@ -25,7 +25,7 @@ function openTile(reduceMotion = false) {
   return {
     images: () => [...container.querySelectorAll('img')],
     inView: (value: boolean) => act(() => notify([{ intersectionRatio: value ? 1 : 0 }])),
-    wait: () => act(() => vi.advanceTimersByTime(8000)),
+    wait: (ms = 30_000) => act(() => vi.advanceTimersByTime(ms)),
   }
 }
 
@@ -35,7 +35,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-it('cycles through the four selected gallery originals in order and promotes the decoded element', async () => {
+it('holds each selected print for ten seconds before loading and revealing the next one', async () => {
   const tile = openTile()
   const rotation = ['bnw_baseball', 'adobe_bnw', 'stair_shadow', 'satellite'].map((id) => {
     const { image } = ArtImages.find((photo) => photo.id === id)!
@@ -46,7 +46,9 @@ it('cycles through the four selected gallery originals in order and promotes the
   tile.inView(true)
   for (const expected of [...rest, first]) {
     const [previous] = tile.images()
-    tile.wait()
+    tile.wait(9_999)
+    expect(tile.images()).toEqual([previous])
+    tile.wait(1)
     const incoming = tile.images().find((img) => img !== previous)!
     const sheet = incoming.closest<HTMLElement>('[data-stage]')!
     expect(sheet.dataset.stage).toBe('loading')

@@ -40,10 +40,10 @@
   visibility: hidden;
 }
 
-/* The screen and the clean print share a crop. One moving edge leads the other. */
+/* Both edges ease together, keeping the halftone just ahead of the clean print. */
 .sheet[data-stage='printing'],
 .screen {
-  animation: expose 1100ms linear both;
+  animation: expose 1.6s cubic-bezier(0.37, 0, 0.63, 1) both;
   animation-play-state: var(--press-state);
 }
 

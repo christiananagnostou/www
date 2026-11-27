@@ -22,7 +22,7 @@ export default function RecentArt() {
 
   useEffect(() => {
     if (!playing || stage !== 'still') return
-    const timer = window.setTimeout(() => setStage('loading'), 8000)
+    const timer = window.setTimeout(() => setStage('loading'), 10_000)
     return () => window.clearTimeout(timer)
   }, [playing, stage])
 
