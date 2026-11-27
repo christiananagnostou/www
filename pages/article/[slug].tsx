@@ -37,9 +37,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug)
-  const content = await markdownToHtml(post.content || '')
-
-  const likes = await getLikes(params.slug)
+  const [likes, content] = await Promise.all([getLikes(params.slug), markdownToHtml(post.content || '')])
 
   const posts = getAllPosts()
   const currentIndex = posts.findIndex((p) => p.slug === params.slug)
