@@ -1,19 +1,17 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import styled from 'styled-components'
 
 import { fade, photoAnim, staggerFade } from '../animation'
-
 import { PrintSheet, prints } from './photoPrints/Print'
-import styles from './photoPrints/Prints.module.css'
 import { usePrintReel } from './photoPrints/usePrintReel'
-import { HomepageBox } from './styles'
+
+import styles from './photoPrints/Prints.module.css'
 
 export default function RecentArt() {
   const { tile, gallery, indicator, current, requested, go, step, railProps, onClick } = usePrintReel(prints.length)
   return (
-    <Tile
+    <m.div
       ref={tile}
       className={styles.tile}
       style={{ '--print-count': prints.length } as CSSProperties}
@@ -66,11 +64,6 @@ export default function RecentArt() {
       <span className={styles.announcement} role="status">
         {prints[current].title}, {current + 1} of {prints.length}
       </span>
-    </Tile>
+    </m.div>
   )
 }
-
-const Tile = styled(HomepageBox)`
-  display: grid;
-  padding: 0;
-`

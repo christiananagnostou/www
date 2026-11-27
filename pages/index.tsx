@@ -1,7 +1,6 @@
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import type { GetStaticProps } from 'next/types'
-import styled from 'styled-components'
 
 import { pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
@@ -13,6 +12,8 @@ import FitnessActivities from '../components/Home/FitnessActivities'
 import { SITE_ORIGIN } from '../lib/constants'
 import { getHomeContent, HOME_REVALIDATE_SECONDS } from '../lib/home/content'
 import { getHomeStructuredData } from '../lib/structured/home'
+
+import styles from '../styles/pages/Home.module.css'
 
 type Props = Awaited<ReturnType<typeof getHomeContent>>
 
@@ -61,14 +62,20 @@ const Home = ({ posts, fitnessActivities }: Props) => {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
-        <div className="page-inner-container">
+      <m.div
+        className={styles.container}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
+        <div className={styles.pageInnerContainer}>
           <Bio />
 
-          <MiddleSection>
+          <section className={styles.middleSection}>
             <RecentArt />
             <RecentArticles posts={posts} />
-          </MiddleSection>
+          </section>
 
           <FitnessActivities activities={fitnessActivities.recent} totalCounts={fitnessActivities.totalCounts} />
 
@@ -76,38 +83,9 @@ const Home = ({ posts, fitnessActivities }: Props) => {
 
           {/* <TVBar onBarFilled={setShowRevealBar} /> */}
         </div>
-      </Container>
+      </m.div>
     </>
   )
 }
 
 export default Home
-
-const Container = styled(m.div)`
-  max-width: var(--max-w-screen);
-  min-height: calc(100vh - var(--nav-height));
-  margin: auto;
-  padding: 2rem 1rem 1rem;
-
-  .page-inner-container {
-    /* border: 1px solid var(--accent); */
-    /* background: var(--body-bg); */
-    /* padding: 1rem 1rem 1.5rem; */
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    gap: 1rem;
-    border-radius: 14px;
-    position: relative;
-  }
-`
-
-const MiddleSection = styled.section`
-  display: flex;
-  width: 100%;
-  gap: 1rem;
-
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-  }
-`

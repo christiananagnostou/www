@@ -1,0 +1,130 @@
+.page {
+  --story-gutter: 2.5rem;
+  width: 100%;
+  max-width: var(--max-w-screen);
+  margin: auto;
+  padding: 2rem 1rem 5rem;
+  color: var(--text);
+  h1,
+  h2 {
+    color: var(--heading);
+    font-weight: 500;
+  }
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+  }
+  p {
+    line-height: 1.65;
+  }
+  header a {
+    color: inherit;
+    text-underline-offset: 0.25em;
+  }
+  a:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: 4px;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.intro {
+  display: grid;
+  gap: 1.6rem;
+  margin-top: 2.8rem;
+  h1 {
+    font-size: clamp(3.4rem, 9vw, 5.3rem);
+    line-height: 1;
+    letter-spacing: -0.055em;
+  }
+  p {
+    max-width: 34rem;
+    margin: 0.9rem 0 1.25rem;
+    font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+  }
+  @media (width >= 1200px) {
+    grid-template-columns: minmax(0, 9fr) minmax(0, 11fr);
+    align-items: center;
+    gap: var(--story-gutter);
+    margin-top: 2.25rem;
+    h1 {
+      font-size: 3.75rem;
+    }
+    p {
+      margin: 0.75rem 0 1.25rem;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1.3rem;
+  align-items: center;
+  font-size: 0.9rem;
+  a:first-child {
+    padding: 0.65rem 1rem;
+    border-radius: var(--border-radius-sm);
+    background: var(--project-color);
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.cover {
+  img {
+    border-radius: var(--border-radius-lg);
+  }
+  @media (width >= 650px) {
+    width: 80%;
+    margin-inline: auto;
+  }
+  @media (width >= 1200px) {
+    .intro > & {
+      width: 100%;
+    }
+  }
+}
+
+.note {
+  display: grid;
+  gap: 0.7rem 2rem;
+  align-items: start;
+  padding: clamp(2rem, 6vw, 3.5rem) 0;
+  @media (width >= 650px) {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 13fr);
+  }
+  @media (width >= 1200px) {
+    column-gap: var(--story-gutter);
+    padding-block: 3rem;
+  }
+}
+
+.progress {
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  background: var(--dark-bg);
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border-radius: var(--border-radius-lg);
+  img {
+    border-radius: var(--border-radius-md);
+  }
+  p {
+    margin-top: 0.8rem;
+  }
+  @media (width >= 650px) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 1.7rem;
+    .progressCopy {
+      grid-area: 1 / 2;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 
 import {
   formatHomeActivityDate,
@@ -14,6 +13,8 @@ import { fade, staggerFade } from '../animation'
 import { indoorCycle, ride, run, swim } from '../SVG/fitness/icons'
 import DistanceMedal from './DistanceMedal'
 import SeeAllActivitiesCard from './SeeAllActivitiesCard'
+
+import styles from './FitnessActivities.module.css'
 
 interface Props {
   activities: HomeActivity[]
@@ -55,7 +56,7 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
   )
 
   return (
-    <Log aria-labelledby="training-title" variants={staggerFade}>
+    <m.section className={styles.log} aria-labelledby="training-title" variants={staggerFade}>
       <header>
         <m.h2 id="training-title" variants={fade}>
           <Link href="/fitness">Fitness</Link>
@@ -77,7 +78,7 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
         </div>
       </header>
       {recent.length === 0 && filter && <p>No {inlineLabel(filter)} activities recorded yet.</p>}
-      <ScrollTrack>
+      <div className={styles.scrollTrack}>
         <ul key={filter} ref={listRef} aria-label="Recent activities" tabIndex={0}>
           {recent.map((activity) => {
             const metric = (label: string) => activity.metrics.find((entry) => entry.label === label)
@@ -97,113 +98,8 @@ export default function FitnessActivities({ activities, totalCounts }: Props) {
           })}
           <SeeAllActivitiesCard />
         </ul>
-        <EdgeFade ref={fadeRef} aria-hidden="true" />
-      </ScrollTrack>
-    </Log>
+        <span className={styles.edgeFade} ref={fadeRef} aria-hidden="true" />
+      </div>
+    </m.section>
   )
 }
-
-const Log = styled(m.section)`
-  width: 100%;
-  padding-block: 1rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-md);
-  background: var(--dark-bg);
-
-  > header,
-  > p,
-  ul {
-    padding-inline: 1rem;
-  }
-  header,
-  [role='group'],
-  ul {
-    display: flex;
-    align-items: baseline;
-  }
-  header {
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-  h2 {
-    font-size: 0.95rem;
-    font-weight: 200;
-  }
-  p,
-  button {
-    font-size: 0.85rem;
-  }
-  header a {
-    color: var(--text);
-  }
-  [role='group'] {
-    gap: 0.25rem;
-    flex-wrap: wrap;
-  }
-  button {
-    background: none;
-    color: var(--text);
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-    padding: 0.25rem;
-    display: grid;
-    place-items: center;
-    min-width: 1.75rem;
-    min-height: 1.75rem;
-    cursor: pointer;
-  }
-  button[aria-pressed='true'] {
-    background: var(--accent);
-    color: var(--heading);
-  }
-  ul {
-    align-items: center;
-    gap: 0.75rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    list-style: none;
-    margin: 0;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-  li {
-    flex: 0 0 9rem;
-  }
-  li:last-child {
-    margin-inline-start: auto;
-  }
-  h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin: 0.35rem 0;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-  h3 svg {
-    flex: none;
-  }
-  time {
-    font-size: 0.75rem;
-  }
-  p,
-  time {
-    color: var(--text-dark);
-  }
-`
-
-const ScrollTrack = styled.div`
-  position: relative;
-`
-
-const EdgeFade = styled.span`
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: 2rem;
-  pointer-events: none;
-  background: linear-gradient(to right, transparent, var(--dark-bg));
-  opacity: 0;
-`

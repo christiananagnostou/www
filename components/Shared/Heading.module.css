@@ -1,7 +1,4 @@
-import * as m from 'framer-motion/m'
-import styled from 'styled-components'
-
-export const Heading = styled(m.div)`
+.heading {
   margin-bottom: 3.5rem;
 
   h1 {
@@ -15,4 +12,4 @@ export const Heading = styled(m.div)`
     font-size: 0.9rem;
     line-height: 1.4;
   }
-`
+}

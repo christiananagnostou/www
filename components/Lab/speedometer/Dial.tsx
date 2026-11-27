@@ -1,6 +1,9 @@
+import type { CSSProperties } from 'react'
+import * as m from 'framer-motion/m'
 import { type MotionValue, useSpring, useTransform } from 'framer-motion'
 import { Fragment, memo, useMemo } from 'react'
-import { DialShell, Label, Marker, Needle, RedlineArc, Tick } from './styles'
+
+import styles from './Speedometer.module.css'
 
 interface DialProps {
   speed: MotionValue<number>
@@ -42,23 +45,31 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
   const redEnd = startAngle + 1.0 * angleRange
 
   return (
-    <DialShell $size={diameter}>
-      <RedlineArc $end={redEnd} $size={diameter} $start={redStart} />
+    <div className={styles.dialShell}>
+      <div
+        style={{ '--red-start': `${redStart}deg`, '--red-end': `${redEnd}deg` } as CSSProperties}
+        className={styles.redlineArc}
+      />
 
       {ticks.map(({ angle, major, med, label }, i) => {
         const len = major ? TICK_MAJOR : med ? TICK_MED : TICK_MINOR
         const rotate = `rotate(${angle}deg)`
         return (
           <Fragment key={`tick-${i}`}>
-            <Tick $len={len} $major={major} style={{ transform: `${rotate} translateY(-${tickInner - len}px)` }} />
+            <div
+              style={{ height: len, transform: `${rotate} translateY(-${tickInner - len}px)` }}
+              data-major={major || undefined}
+              className={styles.tick}
+            />
             {label ? (
-              <Label
+              <span
+                className={styles.label}
                 style={{
                   transform: `${rotate} translateY(-${labelRadius}px) rotate(${-angle}deg)`,
                 }}
               >
                 {label}
-              </Label>
+              </span>
             ) : null}
           </Fragment>
         )
@@ -67,11 +78,15 @@ const Dial: React.FC<DialProps> = ({ speed, maxSpeed, diameter }) => {
       {ticks
         .filter((t) => t.major)
         .map(({ angle }, i) => (
-          <Marker key={`m${i}`} style={{ transform: `rotate(${angle}deg) translateY(-${radius - 8}px)` }} />
+          <div
+            className={styles.marker}
+            key={`m${i}`}
+            style={{ transform: `rotate(${angle}deg) translateY(-${radius - 8}px)` }}
+          />
         ))}
 
-      <Needle style={{ rotate: needleAngle }} />
-    </DialShell>
+      <m.div className={styles.needle} style={{ rotate: needleAngle }} />
+    </div>
   )
 }
 

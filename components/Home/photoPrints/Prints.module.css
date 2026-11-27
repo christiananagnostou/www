@@ -1,4 +1,7 @@
 .tile {
+  composes: box from '../HomepageBox.module.css';
+  display: grid;
+  padding: 0;
   /* Leave room for the same thumb stroke to pull past the final photograph. */
   --last-stride: 0.4;
   --intervals: calc(var(--print-count) - 2 + var(--last-stride));

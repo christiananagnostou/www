@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
+
 import { getDayDiff } from '../utils'
-import { TodayCursorStyle } from './styles'
+
+import styles from './TodayCursor.module.css'
 
 interface Props {
   dateWidth: number
@@ -11,7 +13,12 @@ const TodayCursor = ({ dateWidth, itemsDateRange }: Props) => {
   const { firstDate } = itemsDateRange
   const offsetDaysStart = getDayDiff(firstDate, dayjs())
   const barWidth = 2
-  return <TodayCursorStyle dateWidth={dateWidth} offsetDays={offsetDaysStart} width={barWidth} />
+  return (
+    <div
+      style={{ left: offsetDaysStart * dateWidth + dateWidth / 2 - barWidth / 2, width: barWidth }}
+      className={styles.todayCursor}
+    />
+  )
 }
 
 export default TodayCursor

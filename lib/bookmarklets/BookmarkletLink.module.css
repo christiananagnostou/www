@@ -1,0 +1,12 @@
+.link {
+  font-weight: 300;
+  color: var(--heading);
+  text-decoration: underline solid var(--accent);
+  text-underline-offset: 3px;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: underline solid var(--text-dark);
+  }
+}

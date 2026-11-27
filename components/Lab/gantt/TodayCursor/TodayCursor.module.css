@@ -1,0 +1,9 @@
+.todayCursor {
+  position: absolute;
+  bottom: 0;
+
+  z-index: 20;
+
+  height: calc(100% - var(--date-bar-height) + 0.5rem);
+  background-color: var(--accent-color);
+}

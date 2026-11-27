@@ -1,0 +1,50 @@
+.socialLinkList {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: fit-content;
+  height: fit-content;
+  margin: 0;
+  padding: 0.05rem 0.75rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-sm);
+  background: var(--dark-bg);
+  list-style: none;
+
+  li {
+    flex: 1;
+
+    a {
+      display: block;
+      padding: 0.5rem 0.25rem;
+      color: var(--text-dark);
+      cursor: alias;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--text);
+      }
+
+      * {
+        display: block;
+      }
+    }
+  }
+
+  &[data-unboxed] {
+    gap: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    li a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: max(44px, 2.75rem);
+      min-height: max(44px, 2.75rem);
+      padding: 0;
+      cursor: pointer;
+    }
+  }
+}

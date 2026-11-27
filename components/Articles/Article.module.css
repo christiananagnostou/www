@@ -1,7 +1,4 @@
-import * as m from 'framer-motion/m'
-import { styled } from 'styled-components'
-
-export const ArticleStyle = styled(m.section)`
+.article {
   color: var(--text);
   max-width: var(--max-w-screen);
   padding: 0 1rem;
@@ -11,9 +8,9 @@ export const ArticleStyle = styled(m.section)`
   @media (max-width: 1000px) {
     padding: 0.5rem 1rem;
   }
-`
+}
 
-export const TopBar = styled.div`
+.topBar {
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -26,13 +23,13 @@ export const TopBar = styled.div`
     gap: 0.25rem;
   }
 
-  .top-bar__right-side {
+  :global(.top-bar__right-side) {
     display: flex;
     flex-direction: column;
     align-items: end;
     gap: 0.5rem;
 
-    .top-bar__right-side__buttons {
+    :global(.top-bar__right-side__buttons) {
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -42,9 +39,9 @@ export const TopBar = styled.div`
   @media (max-width: 768px) {
     margin-bottom: 3rem;
   }
-`
+}
 
-export const TopBarButton = styled(m.button)`
+.topBarButton {
   background: transparent;
   border: 1px solid var(--accent);
   color: inherit;
@@ -68,9 +65,9 @@ export const TopBarButton = styled(m.button)`
     font-weight: inherit;
     min-width: max-content;
   }
-`
+}
 
-export const TitleWrap = styled.div`
+.titleWrap {
   left: 1rem;
   border-radius: 5px;
   text-align: left;
@@ -87,9 +84,9 @@ export const TitleWrap = styled.div`
       font-size: 1.75rem;
     }
   }
-`
+}
 
-export const ArticleContent = styled.article`
+.articleContent {
   text-align: left;
   margin: auto;
   position: relative;
@@ -299,18 +296,18 @@ export const ArticleContent = styled.article`
       Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
     */
 
-  code.hljs {
+  code:global(.hljs) {
     padding: 3px 5px;
     width: 100%;
     max-width: 100%;
   }
-  pre code.hljs {
+  pre code:global(.hljs) {
     display: block;
     overflow-x: auto;
     padding: 1em;
   }
 
-  .hljs {
+  :global(.hljs) {
     /* var(--highlight-color) */
     color: #c9d1d9;
     /* var(--highlight-bg) */
@@ -321,113 +318,113 @@ export const ArticleContent = styled.article`
     margin-bottom: 0.75rem;
   }
 
-  .hljs-subst {
+  :global(.hljs-subst) {
     /* var(--highlight-color) */
     color: #ffffff;
   }
 
-  .hljs-comment {
+  :global(.hljs-comment) {
     /* var(--highlight-comment) */
     color: #999999;
   }
 
-  .hljs-keyword,
-  .hljs-selector-tag,
-  .hljs-meta .hljs-keyword,
-  .hljs-doctag,
-  .hljs-section {
+  :global(.hljs-keyword),
+  :global(.hljs-selector-tag),
+  :global(.hljs-meta) :global(.hljs-keyword),
+  :global(.hljs-doctag),
+  :global(.hljs-section) {
     /* var(--highlight-keyword) */
     color: #88aece;
   }
 
-  .hljs-attr {
+  :global(.hljs-attr) {
     /* var(--highlight-attribute); */
     color: #88aece;
   }
 
-  .hljs-attribute {
+  :global(.hljs-attribute) {
     /* var(--highlight-symbol) */
     color: #c59bc1;
   }
 
-  .hljs-name,
-  .hljs-type,
-  .hljs-number,
-  .hljs-selector-id,
-  .hljs-quote,
-  .hljs-template-tag {
+  :global(.hljs-name),
+  :global(.hljs-type),
+  :global(.hljs-number),
+  :global(.hljs-selector-id),
+  :global(.hljs-quote),
+  :global(.hljs-template-tag) {
     /* var(--highlight-namespace) */
     color: #f08d49;
   }
 
-  .hljs-selector-class {
+  :global(.hljs-selector-class) {
     /* var(--highlight-keyword) */
     color: #88aece;
   }
 
-  .hljs-string,
-  .hljs-regexp,
-  .hljs-symbol,
-  .hljs-variable,
-  .hljs-template-variable,
-  .hljs-link,
-  .hljs-selector-attr {
+  :global(.hljs-string),
+  :global(.hljs-regexp),
+  :global(.hljs-symbol),
+  :global(.hljs-variable),
+  :global(.hljs-template-variable),
+  :global(.hljs-link),
+  :global(.hljs-selector-attr) {
     /* var(--highlight-variable) */
     color: #b5bd68;
   }
 
-  .hljs-meta,
-  .hljs-selector-pseudo {
+  :global(.hljs-meta),
+  :global(.hljs-selector-pseudo) {
     /* var(--highlight-keyword) */
     color: #88aece;
   }
 
-  .hljs-built_in,
-  .hljs-title,
-  .hljs-literal {
+  :global(.hljs-built_in),
+  :global(.hljs-title),
+  :global(.hljs-literal) {
     /* var(--highlight-literal) */
     color: #f08d49;
   }
 
-  .hljs-bullet,
-  .hljs-code {
+  :global(.hljs-bullet),
+  :global(.hljs-code) {
     /* var(--highlight-punctuation) */
     color: #cccccc;
   }
 
-  .hljs-meta .hljs-string {
+  :global(.hljs-meta) :global(.hljs-string) {
     /* var(--highlight-variable) */
     color: #b5bd68;
   }
 
-  .hljs-deletion {
+  :global(.hljs-deletion) {
     /* var(--highlight-deletion) */
     color: #de7176;
   }
 
-  .hljs-addition {
+  :global(.hljs-addition) {
     /* var(--highlight-addition) */
     color: #76c490;
   }
 
-  .hljs-emphasis {
+  :global(.hljs-emphasis) {
     font-style: italic;
   }
 
-  .hljs-strong {
+  :global(.hljs-strong) {
     font-weight: bold;
   }
 
-  .hljs-formula,
-  .hljs-operator,
-  .hljs-params,
-  .hljs-property,
-  .hljs-punctuation,
-  .hljs-tag {
+  :global(.hljs-formula),
+  :global(.hljs-operator),
+  :global(.hljs-params),
+  :global(.hljs-property),
+  :global(.hljs-punctuation),
+  :global(.hljs-tag) {
     /* purposely ignored */
   }
 
   @media (max-width: 1000px) {
     font-size: 90%;
   }
-`
+}

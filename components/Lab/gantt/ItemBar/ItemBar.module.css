@@ -1,35 +1,27 @@
-import styled from 'styled-components'
-
-export const ItemBarContainer = styled.div<{ $height: number }>`
+.itemBarContainer {
   display: inline-flex;
   align-items: center;
   width: 100%;
-  height: ${({ $height }) => `${$height}px`};
+
   user-select: none;
 
-  &.hovered {
+  &:global(.hovered) {
     background: rgb(0 0 0 / 10%);
   }
-`
+}
 
-export const BarWrap = styled.div<{ $rightMargin: number }>`
-  margin-right: ${({ $rightMargin }) => `${$rightMargin}px`};
-`
-
-export const Bar = styled.div<{ $width: number; $height: number; $marginLeft: number; $backgroundColor: string }>`
+.bar {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: ${({ $width }) => `${$width}px`};
-  height: ${({ $height }) => `${$height}px`};
-  margin-left: ${({ $marginLeft }) => `${$marginLeft}px`};
-  border-radius: 4px;
-  background-color: ${({ $backgroundColor }) => $backgroundColor};
-  font-size: 0.65rem;
-`
 
-export const BarLabel = styled.span`
+  border-radius: 4px;
+
+  font-size: 0.65rem;
+}
+
+.barLabel {
   position: sticky;
   left: 0;
   width: 100%;
@@ -38,25 +30,25 @@ export const BarLabel = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-`
+}
 
-export const StartLabel = styled.span`
+.startLabel {
   position: absolute;
   right: calc(100% + 0.3rem);
   z-index: 15;
   min-width: max-content;
   opacity: 0.5;
-`
+}
 
-export const EndLabel = styled.span`
+.endLabel {
   position: absolute;
   left: calc(100% + 0.3rem);
   z-index: 15;
   min-width: max-content;
   opacity: 0.5;
-`
+}
 
-export const Tooltip = styled.span`
+.tooltip {
   position: absolute;
   top: -0.5rem;
   left: 50%;
@@ -72,7 +64,7 @@ export const Tooltip = styled.span`
   transform: translate(-50%, -100%);
   transition: opacity 0.15s;
 
-  ${Bar}:hover & {
+  .bar:hover & {
     opacity: 1;
   }
 
@@ -86,4 +78,4 @@ export const Tooltip = styled.span`
     content: '';
     transform: translateX(-50%);
   }
-`
+}

@@ -1,8 +1,10 @@
 import type { Dayjs } from 'dayjs'
+
 import X from '../../SVG/X'
 import type { DailyEventT } from './DailyCalendar'
-import { DailyEventContainer, DailyEventInner, DailyEventRelative, DeleteButton, ResizeBar, TimeRange } from './styles'
 import { dateToTime, timeToPx } from './utils'
+
+import styles from './Calendar.module.css'
 
 interface LayoutStyle {
   left: string
@@ -82,36 +84,48 @@ const DailyEvent = ({
   }
 
   return (
-    <DailyEventContainer
-      className={selectedEventId === dailyEvent.id ? 'selected' : ''}
+    <div
+      className={`${styles.dailyEventContainer} ${selectedEventId === dailyEvent.id ? 'selected' : ''}`}
       style={getDailyEventBoxStyles(dailyEvent, layoutStyle)}
       onClick={onContainerClick}
     >
-      <DailyEventRelative>
+      <div className={styles.dailyEventRelative}>
         {dailyEvent.start.valueOf() !== dailyEvent.end.valueOf() && (
-          <DailyEventInner>
-            <TimeRange>
+          <div className={styles.dailyEventInner}>
+            <p>
               {dailyEvent.start.isBefore(dailyEvent.end)
                 ? `${dateToTime(dailyEvent.start, 12)} - ${dateToTime(dailyEvent.end, 12)}`
                 : `${dateToTime(dailyEvent.end, 12)} - ${dateToTime(dailyEvent.start, 12)}`}
-            </TimeRange>
+            </p>
 
             {/* Delete */}
             {selectedEventId === dailyEvent.id && (
-              <DeleteButton aria-label="Delete event" onClick={() => deleteDailyEvent?.(dailyEvent)}>
+              <button
+                className={styles.deleteButton}
+                aria-label="Delete event"
+                onClick={() => deleteDailyEvent?.(dailyEvent)}
+              >
                 <X />
-              </DeleteButton>
+              </button>
             )}
-          </DailyEventInner>
+          </div>
         )}
         {selectedEventId === dailyEvent.id && (
           <>
-            <ResizeBar style={{ top: 'calc(var(--height) / -2)' }} onMouseDown={(e) => onResizeDown(e, 'start')} />
-            <ResizeBar style={{ bottom: 'calc(var(--height) / -2)' }} onMouseDown={(e) => onResizeDown(e, 'end')} />
+            <div
+              className={styles.resizeBar}
+              style={{ top: 'calc(var(--height) / -2)' }}
+              onMouseDown={(e) => onResizeDown(e, 'start')}
+            />
+            <div
+              className={styles.resizeBar}
+              style={{ bottom: 'calc(var(--height) / -2)' }}
+              onMouseDown={(e) => onResizeDown(e, 'end')}
+            />
           </>
         )}
-      </DailyEventRelative>
-    </DailyEventContainer>
+      </div>
+    </div>
   )
 }
 

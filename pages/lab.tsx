@@ -1,6 +1,6 @@
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
-import styled from 'styled-components'
+
 import { fade, pageAnimation } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import DailyCalendar from '../components/Lab/calendar/DailyCalendar'
@@ -8,6 +8,8 @@ import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
+
+import styles from '../styles/pages/Lab.module.css'
 
 export default function lab() {
   const pageTransitionInitial = usePageTransitionInitial()
@@ -20,7 +22,13 @@ export default function lab() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+      <m.div
+        className={styles.container}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
         <Heading variants={fade}>
           <h1>Lab</h1>
           <p>
@@ -30,81 +38,32 @@ export default function lab() {
           </p>
         </Heading>
 
-        <LabItems>
+        <m.div className={styles.labItems}>
           {/* Throttle */}
-          <Item variants={fade}>
-            <DateStyle>Apr 2025</DateStyle>
-            <Inner>
+          <m.div className={styles.item} variants={fade}>
+            <div className={styles.dateStyle}>Apr 2025</div>
+            <div className={styles.inner}>
               <Speedometer />
-            </Inner>
-          </Item>
+            </div>
+          </m.div>
 
           {/* Gantt */}
-          <Item variants={fade}>
-            <DateStyle>May 2024</DateStyle>
-            <Inner>
+          <m.div className={styles.item} variants={fade}>
+            <div className={styles.dateStyle}>May 2024</div>
+            <div className={styles.inner}>
               <Gantt chartTitle={ganttProps.chartTitle} defaultZoom={ganttProps.defaultZoom} items={ganttProps.items} />
-            </Inner>
-          </Item>
+            </div>
+          </m.div>
 
           {/* Calendar */}
-          <Item variants={fade}>
-            <DateStyle>Apr 2024</DateStyle>
-            <Inner>
+          <m.div className={styles.item} variants={fade}>
+            <div className={styles.dateStyle}>Apr 2024</div>
+            <div className={styles.inner}>
               <DailyCalendar />
-            </Inner>
-          </Item>
-        </LabItems>
-      </Container>
+            </div>
+          </m.div>
+        </m.div>
+      </m.div>
     </>
   )
 }
-
-const Container = styled(m.div)`
-  overflow: hidden;
-  color: var(--text);
-  max-width: var(--max-w-screen);
-  padding: 0 1rem;
-  margin: 2rem auto;
-
-  @media (width <= 768px) {
-    padding: 2rem 1rem 4rem;
-  }
-`
-
-const LabItems = styled(m.div)`
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-
-  @media (width <= 768px) {
-    gap: 2rem;
-  }
-`
-
-const Item = styled(m.div)`
-  width: 100%;
-  max-width: var(--max-w-screen);
-`
-
-const DateStyle = styled.div`
-  width: 100%;
-  text-align: right;
-  color: var(--text-dark);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-
-  @media (width <= 768px) {
-    padding-right: 1rem;
-  }
-`
-
-const Inner = styled.div`
-  padding: 4rem;
-  background: var(--dark-bg);
-  border-radius: var(--border-radius-lg);
-
-  @media (width <= 768px) {
-    padding: 1rem;
-  }
-`

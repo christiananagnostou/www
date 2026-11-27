@@ -1,0 +1,7 @@
+.listing {
+  max-width: var(--max-w-screen);
+  margin: 2rem auto;
+  padding: 0 1rem;
+  overflow: hidden;
+  color: var(--text);
+}

@@ -1,8 +1,10 @@
 import dayjs from 'dayjs'
+
 import type { ItemProps } from '..'
 import { RowHeight } from '..'
 import { getDayDiff } from '../utils'
-import { Bar, BarLabel, BarWrap, EndLabel, ItemBarContainer, StartLabel, Tooltip } from './styles'
+
+import styles from './ItemBar.module.css'
 
 const MIN_INLINE_LABEL_WIDTH = 100
 
@@ -29,27 +31,34 @@ const ItemBar = (props: RenderItemBarProps) => {
 
   return (
     <>
-      <ItemBarContainer
-        className="gantt-bar"
+      <div
+        style={{ height: RowHeight }}
+        className={`${styles.itemBarContainer} gantt-bar`}
         data-item-id={item.id}
-        $height={RowHeight}
         onMouseEnter={() => handleRowMouseOver(item.id)}
       >
-        <BarWrap $rightMargin={dateWidth * 7}>
-          <Bar
-            $backgroundColor={item.barColor || '#3350E8'}
-            $height={RowHeight / 2}
-            $marginLeft={
-              offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2
-            }
-            $width={barWidth || minWidth}
+        <div style={{ marginRight: dateWidth * 7 }}>
+          <div
+            style={{
+              backgroundColor: item.barColor || '#3350E8',
+              height: RowHeight / 2,
+              marginLeft:
+                offsetDaysStart * dateWidth - (barWidth || (startsAndEndsToday ? minWidth : 0)) + dateWidth / 2,
+              width: barWidth || minWidth,
+            }}
+            className={styles.bar}
           >
-            {item.barLabel && (showTooltip ? <Tooltip>{item.barLabel}</Tooltip> : <BarLabel>{item.barLabel}</BarLabel>)}
-            <StartLabel>{dayjs(item.startDate).format('MMM D')}</StartLabel>
-            <EndLabel>{dayjs(item.endDate).format('MMM D')}</EndLabel>
-          </Bar>
-        </BarWrap>
-      </ItemBarContainer>
+            {item.barLabel &&
+              (showTooltip ? (
+                <span className={styles.tooltip}>{item.barLabel}</span>
+              ) : (
+                <span className={styles.barLabel}>{item.barLabel}</span>
+              ))}
+            <span className={styles.startLabel}>{dayjs(item.startDate).format('MMM D')}</span>
+            <span className={styles.endLabel}>{dayjs(item.endDate).format('MMM D')}</span>
+          </div>
+        </div>
+      </div>
 
       {itemsChildrenMap.get(item.id)?.map((child) => (
         <ItemBar key={`${child.id}_bar-fragment`} {...props} item={child} />

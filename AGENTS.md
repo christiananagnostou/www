@@ -5,7 +5,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 ## Project Snapshot
 
 - Next.js (pages router) + React 19 + TypeScript.
-- Styling uses `styled-components` (plus Framer Motion in UI).
+- Styles are static CSS Modules; Framer Motion coordinates page and UI transitions.
 - Tests run with Vitest in Node by default; DOM tests opt into JSDOM.
 - Linting uses `oxlint` for JS/TS and `stylelint` for styles.
 
@@ -38,7 +38,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 ## Linting & Formatting
 
 - JS/TS lint: `npm run lint`
-- CSS/styled-components lint: `npm run lint:css`
+- CSS lint: `npm run lint:css`
 - Format with Oxfmt: `npm run format`
 - Format check: `npm run format:check`
 
@@ -102,9 +102,10 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 - Ensure interactive elements are keyboard accessible.
 - Maintain heading hierarchy when adding new sections.
 
-## Styled Components & CSS
+## CSS
 
-- Styled components live at the bottom of component files.
+- Colocate component styles in `.module.css`; route styles live in `styles/pages/`. Global tokens and resets belong in `styles/globals.css`.
+- Use data attributes for finite states and inline styles or CSS custom properties for values computed at runtime.
 - Use nested selectors sparingly; keep specificity low.
 - Prefer CSS variables already defined (e.g., `var(--accent)`).
 - `stylelint` rules enforce:

@@ -3,10 +3,9 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { GetStaticProps } from 'next/types'
-import styled from 'styled-components'
+
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
-import { ButtonRow } from '../components/Shared/ButtonRow'
 import { Heading } from '../components/Shared/Heading'
 import { type ArticleSummary, getArticleSummaries } from '../lib/articles'
 import { X_HANDLE } from '../lib/constants'
@@ -16,6 +15,9 @@ import {
   articlesUrl,
   getArticlesListStructuredData,
 } from '../lib/structured/articles'
+
+import styles from '../styles/pages/Articles.module.css'
+import controls from '../components/Shared/ButtonRow.module.css'
 
 interface Props {
   posts: ArticleSummary[]
@@ -61,7 +63,13 @@ const Articles = ({ posts }: Props) => {
         <script dangerouslySetInnerHTML={getArticlesListStructuredData(posts)} type="application/ld+json" />
       </Head>
 
-      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+      <m.section
+        className={styles.container}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
         <Heading variants={fade}>
           <h1>Articles</h1>
           <p>
@@ -71,7 +79,7 @@ const Articles = ({ posts }: Props) => {
           </p>
         </Heading>
 
-        <ButtonRow>
+        <div className={controls.buttonRow}>
           {Array.from(new Set(posts.flatMap((post) => post.categories))).map((category) => (
             <button
               key={category}
@@ -85,101 +93,26 @@ const Articles = ({ posts }: Props) => {
               {category}
             </button>
           ))}
-        </ButtonRow>
+        </div>
 
-        <PostsContainer variants={staggerFade}>
+        <m.div className={styles.postsContainer} variants={staggerFade}>
           {posts
             .filter((post) => (queriedCategory ? post.categories?.includes(queriedCategory) : true))
             .map(({ title, dateCreated, slug, summary }) => (
-              <PostItem key={slug} variants={fade}>
+              <m.div className={styles.postItem} key={slug} variants={fade}>
                 <p className="date">{dateCreated}</p>
-                <Link className="inner-link" href={`/article/${slug}`}>
+                <Link className={styles.innerLink} href={`/article/${slug}`}>
                   <div className="content">
                     <h2 className="title">{title}</h2>
                     {summary ? <p className="summary">{summary}</p> : null}
                   </div>
                 </Link>
-              </PostItem>
+              </m.div>
             ))}
-        </PostsContainer>
-      </Container>
+        </m.div>
+      </m.section>
     </>
   )
 }
 
 export default Articles
-
-const Container = styled(m.section)`
-  overflow: hidden;
-  color: var(--text);
-  max-width: var(--max-w-screen);
-  padding: 0 1rem;
-  margin: 2rem auto;
-`
-
-const PostsContainer = styled(m.div)`
-  display: flex;
-  flex-direction: column;
-  place-content: center center;
-  margin: auto;
-  gap: 2.5rem;
-`
-
-const PostItem = styled(m.div)`
-  display: flex;
-  width: 100%;
-
-  .date {
-    font-size: 0.7rem;
-    font-weight: 300;
-    margin-top: 0.7rem;
-    min-width: 100px;
-  }
-
-  .inner-link {
-    display: block;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    border-radius: var(--border-radius-sm);
-    padding: 0.5rem 1rem;
-    flex: 1;
-
-    &:hover {
-      background: #262626;
-    }
-
-    .content {
-      display: flex;
-      flex-direction: column;
-
-      h2 {
-        font-weight: 300;
-        width: fit-content;
-        font-size: 1rem;
-        color: #ffffff;
-      }
-
-      p {
-        font-size: 0.8rem;
-        margin: 0.5rem 0 0;
-        font-weight: 300;
-      }
-    }
-  }
-
-  @media screen and (width <= 500px) {
-    flex-direction: column-reverse;
-
-    .date {
-      margin-top: 0.25rem;
-    }
-
-    .inner-link {
-      padding: 0.25rem 0;
-
-      &:hover {
-        background: none;
-      }
-    }
-  }
-`

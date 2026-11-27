@@ -1,13 +1,15 @@
 import * as m from 'framer-motion/m'
-import styled from 'styled-components'
+
 import { fade } from './animation'
 import Github from './SVG/GitHub'
 import LinkedIn from './SVG/LinkedIn'
 import Twitter from './SVG/Twitter'
 
+import styles from './SocialLinks.module.css'
+
 function SocialLinks({ unboxed = false }: { unboxed?: boolean }) {
   return (
-    <SocialLinkList $unboxed={unboxed} variants={fade}>
+    <m.ul data-unboxed={unboxed || undefined} className={styles.socialLinkList} variants={fade}>
       <li>
         <a aria-label="GitHub" href="https://github.com/ChristianAnagnostou" rel="noreferrer" target="_blank">
           <Github />
@@ -23,61 +25,8 @@ function SocialLinks({ unboxed = false }: { unboxed?: boolean }) {
           <Twitter />
         </a>
       </li>
-    </SocialLinkList>
+    </m.ul>
   )
 }
-
-const SocialLinkList = styled(m.ul)<{ $unboxed: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  width: fit-content;
-  height: fit-content;
-  margin: 0;
-  padding: 0.05rem 0.75rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-sm);
-  background: var(--dark-bg);
-  list-style: none;
-
-  li {
-    flex: 1;
-
-    a {
-      display: block;
-      padding: 0.5rem 0.25rem;
-      color: var(--text-dark);
-      cursor: alias;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: var(--text);
-      }
-
-      * {
-        display: block;
-      }
-    }
-  }
-
-  ${({ $unboxed }) =>
-    $unboxed &&
-    `
-    gap: 0;
-    padding: 0;
-    border: none;
-    background: none;
-    li a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-width: max(44px, 2.75rem);
-      min-height: max(44px, 2.75rem);
-      padding: 0;
-      cursor: pointer;
-    }
-  `}
-`
 
 export default SocialLinks

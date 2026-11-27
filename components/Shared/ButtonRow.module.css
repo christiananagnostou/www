@@ -1,6 +1,4 @@
-import styled from 'styled-components'
-
-export const ButtonRow = styled.div`
+.buttonRow {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -23,9 +21,9 @@ export const ButtonRow = styled.div`
     cursor: pointer;
     transition: all 0.25s ease;
 
-    &.selected {
+    &:global(.selected) {
       background: var(--accent);
       color: #ffffff;
     }
   }
-`
+}

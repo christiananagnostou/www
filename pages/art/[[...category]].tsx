@@ -3,18 +3,19 @@ import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
 
 import { fade, pageAnimation } from '../../components/animation'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import FullscreenModal from '../../components/Art/FullScreenModal'
-import PhotoFilters, { photoTagStyles } from '../../components/Art/PhotoFilters'
+import PhotoFilters from '../../components/Art/PhotoFilters'
 import PhotoGrid from '../../components/Art/PhotoGrid'
 import { Heading } from '../../components/Shared/Heading'
 import type { ArtImage } from '../../lib/art'
 import { photoFilters, photosForTag } from '../../lib/art/gallery'
 import { BASE_URL } from '../../lib/constants'
 import { getArtStructuredData } from '../../lib/structured/art'
+
+import styles from '../../styles/pages/Photography.module.css'
 
 type Props = { initialTag: string | null }
 type Params = { category?: string[] }
@@ -91,7 +92,13 @@ export default function Art({ initialTag }: Props) {
         <script dangerouslySetInnerHTML={{ __html: structuredData }} type="application/ld+json" />
       </Head>
 
-      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+      <m.section
+        className={styles.container}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
         <Heading variants={fade}>
           <h1>Photography</h1>
           <p>
@@ -103,19 +110,9 @@ export default function Art({ initialTag }: Props) {
 
         <PhotoFilters activeTag={tag} activeButtonRef={activeButton} onSelect={selectTag} />
         <PhotoGrid photos={photos} tag={tag} onOpen={setOpenPhoto} onSelectTag={selectPhotoTag} />
-      </Container>
+      </m.section>
 
       {index !== -1 && <FullscreenModal initialIndex={index} images={photos} onClose={closeViewer} />}
     </>
   )
 }
-
-const Container = styled(m.section)`
-  overflow: hidden;
-  color: var(--text);
-  max-width: var(--max-w-screen);
-  padding: 0 1rem;
-  margin: 2rem auto;
-
-  ${photoTagStyles}
-`

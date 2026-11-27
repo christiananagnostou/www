@@ -1,6 +1,14 @@
 /** @type {import('stylelint').Config} */
 export default {
-  overrides: [{ files: ['**/*.{tsx,js,ts}'], customSyntax: 'postcss-styled-syntax' }],
+  overrides: [
+    {
+      files: ['**/*.module.css'],
+      rules: {
+        'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
+        'property-no-unknown': [true, { ignoreProperties: ['composes'] }],
+      },
+    },
+  ],
   extends: ['stylelint-config-recommended'],
   rules: {
     'at-rule-no-unknown': [true, { ignoreAtRules: ['extends'] }],

@@ -1,9 +1,10 @@
 import * as m from 'framer-motion/m'
 import { useEffect, useRef, useState } from 'react'
 import type { ComponentType, PointerEvent } from 'react'
-import styled from 'styled-components'
 
 import { fade } from '../animation'
+
+import styles from './Signature.module.css'
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 
@@ -66,7 +67,8 @@ export default function Signature() {
   }
 
   return (
-    <Title
+    <m.h1
+      className={styles.title}
       onPointerCancel={() => (touch.current = null)}
       onPointerDown={(event) => {
         touch.current = event.pointerType === 'touch' && event.isPrimary ? { x: event.clientX, y: event.clientY } : null
@@ -75,7 +77,8 @@ export default function Signature() {
       onPointerUp={() => (touch.current = null)}
       variants={fade}
     >
-      <Name
+      <button
+        className={styles.name}
         aria-description="Reveal my handwritten signature"
         data-ink={ink === 'hover' || ink === 'touch' || undefined}
         onClick={() => setInk((current) => (current === 'hover' ? current : 'touch'))}
@@ -91,56 +94,7 @@ export default function Signature() {
       >
         {Lettering && <Lettering />}
         <span className="print">Christian Anagnostou</span>
-      </Name>
-    </Title>
+      </button>
+    </m.h1>
   )
 }
-
-const Title = styled(m.h1)`
-  touch-action: pan-y pinch-zoom;
-`
-
-const Name = styled.button`
-  position: relative;
-  display: block;
-  width: fit-content;
-  max-width: 100%;
-  /* The 2.7em writing area has more room above the lowercase ink for the tall C and A. */
-  padding: 1.05em 0 0.4em;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  line-height: 1.25;
-  letter-spacing: inherit;
-  text-align: start;
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: 0.25rem;
-  }
-
-  .print {
-    font-weight: inherit;
-  }
-
-  @media screen and (prefers-reduced-motion: reduce) {
-    &:is([data-ink], :focus-visible) {
-      .print {
-        opacity: 0;
-      }
-      &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        aspect-ratio: 556 / 320;
-        background: currentColor;
-        mask: url('/signature.svg') center / contain no-repeat;
-        pointer-events: none;
-        content: '';
-      }
-    }
-  }
-`

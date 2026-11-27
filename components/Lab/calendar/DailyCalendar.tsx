@@ -1,26 +1,16 @@
+import type { CSSProperties } from 'react'
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import DailyEvent from './DailyEvent'
-import {
-  CurrentDate,
-  CurrentDay,
-  CurrentTimeBar,
-  DailyCalendarStyle,
-  DateWrap,
-  EventWrap,
-  HOUR_BAR_HEIGHT,
-  HourBar,
-  HourBarTime,
-  HourBarWrap,
-  HourListWrap,
-  StickyHeader,
-  Timezone,
-} from './styles'
+import { HOUR_BAR_HEIGHT } from './utils'
 import { addMinutes, computeLayoutStyles, dateToTime, formatTime, getRandomColor, timeToPx } from './utils'
+
+import styles from './Calendar.module.css'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -161,17 +151,22 @@ const DailyCalendar = () => {
   const layoutMapping = computeLayoutStyles(allEvents)
 
   return (
-    <DailyCalendarStyle>
-      <StickyHeader>
-        <Timezone>{DATE.format('z')}</Timezone>
-        <DateWrap>
-          <CurrentDay>{WEEKDAYS[DATE.day()].substring(0, 3)}</CurrentDay>
-          <CurrentDate>{DATE.date()}</CurrentDate>
-        </DateWrap>
-      </StickyHeader>
+    <div style={{ '--hour-bar-height': `${HOUR_BAR_HEIGHT}px` } as CSSProperties} className={styles.calendar}>
+      <div className={styles.stickyHeader}>
+        <span className={styles.timezone}>{DATE.format('z')}</span>
+        <div className={styles.dateWrap}>
+          <div className={styles.currentDay}>{WEEKDAYS[DATE.day()].substring(0, 3)}</div>
+          <div className={styles.currentDate}>{DATE.date()}</div>
+        </div>
+      </div>
 
-      <HourListWrap ref={eventListRef} onMouseDown={onListMouseDown} onTouchStart={onListTouchStart}>
-        <EventWrap>
+      <div
+        className={styles.hourListWrap}
+        ref={eventListRef}
+        onMouseDown={onListMouseDown}
+        onTouchStart={onListTouchStart}
+      >
+        <div className={styles.eventWrap}>
           {/* Existing Events */}
           {dailyEvents.map((dailyEvent) => (
             <DailyEvent
@@ -188,21 +183,23 @@ const DailyCalendar = () => {
 
           {/* New Event */}
           {newEvent ? <DailyEvent dailyEvent={newEvent} layoutStyle={layoutMapping[newEvent.id]} /> : null}
-        </EventWrap>
+        </div>
 
         {/* Current Time */}
-        <CurrentTimeBar id="CurrentTime" style={{ top: timeToPx(dateToTime(dayjs())) }} />
+        <div className={styles.currentTimeBar} id="CurrentTime" style={{ top: timeToPx(dateToTime(dayjs())) }} />
 
         {/* Hours */}
-        <HourBarWrap>
+        <div>
           {HOURS.map((hour) => (
-            <HourBar key={hour} data-hour={hour} data-list-events>
-              <HourBarTime data-list-events>{formatTime(hour)}</HourBarTime>
-            </HourBar>
+            <div className={styles.hourBar} key={hour} data-hour={hour} data-list-events>
+              <span className={styles.hourBarTime} data-list-events>
+                {formatTime(hour)}
+              </span>
+            </div>
           ))}
-        </HourBarWrap>
-      </HourListWrap>
-    </DailyCalendarStyle>
+        </div>
+      </div>
+    </div>
   )
 }
 
