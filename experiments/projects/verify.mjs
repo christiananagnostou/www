@@ -137,7 +137,10 @@ for (const name of browsers) {
           const page = await nojs.newPage()
           await page.goto(origin + path)
           assert.equal(await rows(page).count(), 13)
-          await category(page, 'Commercial').click()
+          const commercial = category(page, 'Commercial')
+          const destination = new URL(await commercial.getAttribute('href'), page.url()).href
+          await Promise.all([page.waitForURL(destination, { waitUntil: 'load' }), commercial.click()])
+          await rows(page).first().waitFor()
           assert.deepEqual(await rows(page).allTextContents(), expected)
           await page.close()
         }
