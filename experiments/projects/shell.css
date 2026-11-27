@@ -1,0 +1,31 @@
+#directory li[hidden],
+[data-lab-submenu][hidden] {
+  display: none;
+}
+
+#directory li[data-first] {
+  border-top: 0;
+}
+
+[data-lab-submenu] {
+  list-style: none;
+  background: var(--dark-bg);
+}
+
+@media (width >= 768px) {
+  [data-lab-submenu] {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 120px;
+    padding: 0.25rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+  }
+}
+
+@media (width < 768px) {
+  [data-lab-submenu] a {
+    padding-right: 3rem;
+  }
+}
