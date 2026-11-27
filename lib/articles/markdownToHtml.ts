@@ -6,14 +6,15 @@ import parse from 'remark-parse'
 import rehype from 'remark-rehype'
 import { unified } from 'unified'
 
+const articleProcessor = unified()
+  .use(parse)
+  .use(rehype)
+  .use(slug)
+  .use(toc)
+  .use(rehypeHighlight)
+  .use(stringify)
+  .freeze()
+
 export default async function markdownToHtml(markdown: string) {
-  const result = await unified()
-    .use(parse)
-    .use(rehype)
-    .use(slug)
-    .use(toc)
-    .use(rehypeHighlight)
-    .use(stringify)
-    .process(markdown)
-  return result.toString()
+  return (await articleProcessor.process(markdown)).toString()
 }
