@@ -141,21 +141,28 @@
 }
 
 .positions {
-  --dot-step: 26px;
-  --marker-width: 12px;
+  --dot-step: 18px;
+  --dot-inset: 9px;
+  --marker-width: 8px;
   position: absolute;
-  right: 6px;
+  right: 1px;
   bottom: 0;
   display: flex;
+}
+
+@media (any-pointer: coarse) {
+  .positions {
+    --dot-step: 24px;
+  }
 }
 
 .positions button {
   display: grid;
   width: var(--dot-step);
   height: 44px;
-  place-items: center;
+  place-items: end center;
   border: 0;
-  padding: 0;
+  padding: 0 0 var(--dot-inset);
   background: none;
   cursor: pointer;
   touch-action: manipulation;
@@ -175,7 +182,7 @@
 .positions::after {
   content: '';
   position: absolute;
-  top: calc(50% - 2px);
+  bottom: var(--dot-inset);
   left: calc((var(--dot-step) - var(--marker-width)) / 2);
   width: var(--marker-width);
   height: 4px;
