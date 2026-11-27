@@ -9,10 +9,10 @@
 
 .exposure {
   --press-state: paused;
-  --bright-edge: rgb(0 0 0 / 78%);
+  --bright-edge: rgb(0 0 0 / 71%);
   z-index: -1;
   /* Shade the print before the stationary gallery link clips the whole exposure. */
-  mask-image: linear-gradient(105deg, rgb(0 0 0 / 14%), rgb(0 0 0 / 59%) 43%, var(--bright-edge) 72%);
+  mask-image: linear-gradient(105deg, rgb(0 0 0 / 14%), rgb(0 0 0 / 54%) 43%, var(--bright-edge) 72%);
 }
 
 .exposure[data-playing='true'] {
