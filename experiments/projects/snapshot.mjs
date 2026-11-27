@@ -1,9 +1,26 @@
-import { readFile } from 'node:fs/promises'
+import { glob, readFile } from 'node:fs/promises'
 import { JSDOM } from 'jsdom'
+
+// Next's default builder and Vercel's Build Output adapter store the same prerender in different places.
+async function builtProjects() {
+  const outputs = ['.next/server/pages/projects.html', '.next/export/projects.html']
+  for (const root of ['.next/output', '.vercel/output']) {
+    for await (const file of glob(root + '/**/projects{,.html,.prerender-fallback.html}')) outputs.push(file)
+  }
+  for (const file of outputs) {
+    try {
+      const html = await readFile(file, 'utf8')
+      if (html.includes('id="__NEXT_DATA__"') && html.includes('aria-label="Project categories"')) return html
+    } catch (error) {
+      if (error.code !== 'ENOENT' && error.code !== 'EISDIR') throw error
+    }
+  }
+  throw new Error('No pre-rendered Next Projects document in ' + outputs.join(', '))
+}
 
 // Build input only. No DOM emulator, static SVG compiler, _app, or Next router goes to either client.
 export async function snapshot() {
-  const dom = new JSDOM(await readFile('.next/server/pages/projects.html', 'utf8'))
+  const dom = new JSDOM(await builtProjects())
   const doc = dom.window.document
   const props = JSON.parse(doc.querySelector('#__NEXT_DATA__').textContent).props.pageProps
   const root = doc.querySelector('#main-content').firstElementChild
