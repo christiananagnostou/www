@@ -221,6 +221,7 @@
   bottom: var(--dot-inset);
   height: 4px;
   border-radius: 4px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 70%);
 }
 
 .positions button::before {
@@ -228,7 +229,6 @@
   width: 4px;
   translate: -50% 0;
   background: rgb(245 245 245 / 64%);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 70%);
 }
 
 /* Fixed dots keep their hit targets. One ink dash follows the actual scroll,
