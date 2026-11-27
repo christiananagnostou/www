@@ -9,7 +9,6 @@
 
   @media screen and (prefers-reduced-motion: no-preference) {
     @supports (clip-path: path('M0 0L1 1Z')) {
-      --return: 430ms;
       --flow: 650ms;
       --sweep: cubic-bezier(0.77, 0, 0.175, 1);
       transition: visibility 0s var(--return);

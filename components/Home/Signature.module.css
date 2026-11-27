@@ -3,6 +3,8 @@
 }
 
 .name {
+  /* The SVG and the printed name are siblings; both inherit the handoff timing here. */
+  --return: 430ms;
   position: relative;
   display: block;
   width: fit-content;

@@ -70,7 +70,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(entry.neverFaded, [], 'Every link should still participate in the entrance')
   })
 
-  await t.test('interpolates the letter contours on the same writing line', async () => {
+  await t.test('morphs on the same writing line and returns to print without overlapping it', async () => {
     const name = page.getByRole('button', { name: 'Christian Anagnostou', exact: true })
     await page.evaluate(() => document.fonts.ready.then(() => true))
     const bounds = await name.boundingBox()
@@ -105,6 +105,33 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       assert.ok(Math.abs(center - (print.y + print.height / 2)) < 3, 'Both outlines should meet the printed text')
     }
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
+
+    const layers = () =>
+      name.evaluate((button) => ({
+        ink: getComputedStyle(button.querySelector('svg')).visibility,
+        print: getComputedStyle(button.querySelector('.print')).opacity,
+      }))
+    const finishMorph = () =>
+      name.evaluate((button) => button.getAnimations({ subtree: true }).forEach((a) => a.finish()))
+    await finishMorph()
+    await page.mouse.move(0, 0)
+    await name.evaluate(async (button) => {
+      const transitions = button.getAnimations({ subtree: true })
+      const morph = transitions.find((a) => a.transitionProperty === 'clip-path')
+      if (!morph) throw new Error('Pointer exit did not start a reverse morph')
+      transitions.forEach((a) => a.pause())
+      await Promise.all(transitions.map((a) => a.ready))
+      const halfway = morph.effect.getTiming().duration / 2
+      transitions.forEach((a) => (a.currentTime = halfway))
+    })
+    const onlyInk = { ink: 'visible', print: '0' }
+    assert.deepEqual(await layers(), onlyInk, 'The printed name must stay hidden during the return')
+    await name.hover()
+    await finishMorph()
+    assert.deepEqual(await layers(), onlyInk, 'Re-entering mid-return must keep the signature visible alone')
+    await page.mouse.move(0, 0)
+    await name.locator('svg').waitFor({ state: 'hidden' })
+    assert.deepEqual(await layers(), { ink: 'hidden', print: '1' }, 'The native name must take over at rest')
   })
 
   await t.test('blends prints while dragging and settles on a whole photograph after release', async () => {
