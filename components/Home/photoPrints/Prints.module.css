@@ -136,6 +136,12 @@
   outline: none;
 }
 
+@media (width <= 450px) {
+  .gallery {
+    min-height: 5.75rem;
+  }
+}
+
 /* Give a short, wide tablet strip the room of a mounted print instead of
    enlarging the photograph until only a sliver of its subject is left. */
 @media (450px < width <= 768px) {
