@@ -231,6 +231,10 @@
   background: rgb(245 245 245 / 64%);
 }
 
+.positions button[aria-current='true']::before {
+  box-shadow: none;
+}
+
 /* Fixed dots keep their hit targets. One ink dash follows the actual scroll,
    stretching slightly between two photographs and contracting as it arrives. */
 .positions::after {
