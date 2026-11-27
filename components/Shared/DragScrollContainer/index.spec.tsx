@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { fireEvent, render } from '@testing-library/react'
 import { Profiler } from 'react'
 import { expect, it, vi } from 'vitest'

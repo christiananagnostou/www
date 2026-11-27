@@ -6,7 +6,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 - Next.js (pages router) + React 19 + TypeScript.
 - Styling uses `styled-components` (plus Framer Motion in UI).
-- Tests run with Vitest and JSDOM.
+- Tests run with Vitest in Node by default; DOM tests opt into JSDOM.
 - Linting uses `oxlint` for JS/TS and `stylelint` for styles.
 
 ## Repo Layout
@@ -52,7 +52,7 @@ This guide orients agentic coders working in this repo. Keep it concise, follow 
 
 ## Test Conventions
 
-- Vitest + JSDOM (`vitest.config.mts`).
+- Use Node for logic and server tests. Add `// @vitest-environment jsdom` at the top of a test file that needs the DOM.
 - Tests live next to code, usually `*.spec.ts`.
 - Favor explicit fixtures and clear expectation blocks.
 
