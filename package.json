@@ -41,8 +41,6 @@
     "@types/negotiator": "^0.6.5",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
-    "@vitejs/plugin-react": "^6.3.0",
-    "baseline-browser-mapping": "^2.11.39",
     "jsdom": "^31.0.1",
     "oxfmt": "^0.79.0",
     "oxlint": "^1.94.0",
