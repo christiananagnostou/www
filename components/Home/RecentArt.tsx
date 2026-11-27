@@ -40,11 +40,9 @@ export default function RecentArt() {
           )}
         </m.div>
         <div {...railProps} className={styles.rail} aria-hidden="true" tabIndex={-1}>
-          <div className={styles.track}>
-            {prints.map((print, index) => (
-              <i data-stop={index} key={print.title} />
-            ))}
-          </div>
+          {prints.map((print, index) => (
+            <i data-stop={index} key={print.title} />
+          ))}
         </div>
         <m.h2 variants={fade}>Photos</m.h2>
         <svg ref={indicator} className={styles.pull} aria-hidden="true" focusable="false" viewBox="0 0 36 36">

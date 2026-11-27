@@ -1,11 +1,13 @@
-// The first stops are a frame apart. Measure the shorter final stride from the
-// actual scroll range so input and fallback rendering use the CSS layout.
-export function printPosition(rail: HTMLDivElement, count: number) {
+export function measureRail(rail: HTMLDivElement) {
   const width = rail.clientWidth
+  return { width, end: rail.scrollWidth - width }
+}
+
+// The first stops are a frame apart; the last uses the space left in the actual rail.
+export function printPosition(offset: number, count: number, { width, end }: ReturnType<typeof measureRail>) {
   if (!width) return 0
   const penultimate = count - 2
-  const end = rail.scrollWidth - width
-  const left = Math.max(0, Math.min(end, rail.scrollLeft))
+  const left = Math.max(0, Math.min(end, offset))
   if (end - left < 1 && end > 0) return count - 1
   const split = penultimate * width
   if (left <= split) return left / width

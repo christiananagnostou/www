@@ -9,14 +9,14 @@ import {
   type WheelEvent,
 } from 'react'
 
-import { printPosition } from './printPosition'
+import { measureRail, printPosition } from './printPosition'
 
 const DEAD_ZONE = 10
 const FULL_PULL = 168
 // A wheel does not have a portable finger-up event.
 const WHEEL_IDLE = 220
 
-type Drag = { id: number | null; x: number; y: number; left: number; end: number; fullPull: number }
+type Drag = { id: number | null; x: number; y: number; left: number; applied: number; end: number; fullPull: number }
 
 export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: number) {
   const gallery = useRef<HTMLAnchorElement>(null)
@@ -36,8 +36,11 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: 
     const icon = indicator.current
     if (!icon) return
     icon.style.setProperty('--travel', String(value))
-    if (value) icon.dataset.pull = value >= 1 ? 'ready' : 'tracking'
-    else delete icon.dataset.pull
+    const phase = value >= 1 ? 'ready' : value > 0 ? 'tracking' : undefined
+    if (icon.dataset.pull !== phase) {
+      if (phase) icon.dataset.pull = phase
+      else delete icon.dataset.pull
+    }
   }, [])
 
   const cancel = useCallback(() => {
@@ -62,12 +65,13 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: 
     }
   }, [cancel])
 
-  function lastPrintIsNearest(node: HTMLDivElement) {
-    return printPosition(node, count) > count - 1.5
+  function lastPrintIsNearest(left: number, bounds: ReturnType<typeof measureRail>) {
+    return printPosition(left, count, bounds) > count - 1.5
   }
 
   function release() {
-    const open = travel.current >= 1 && rail.current && lastPrintIsNearest(rail.current)
+    const node = rail.current
+    const open = travel.current >= 1 && node && lastPrintIsNearest(node.scrollLeft, measureRail(node))
     cancel()
     if (open) gallery.current?.click()
   }
@@ -78,11 +82,12 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: 
     // Keep a full pull within a thumb's reach, even from the center of a small phone.
     const width = window.visualViewport?.width || window.innerWidth
     const fullPull = Math.min(FULL_PULL, width * 0.45)
-    const end = node.scrollWidth - node.clientWidth
+    const bounds = measureRail(node)
+    const applied = Math.max(0, Math.min(bounds.end, node.scrollLeft))
     // Once the last print is nearest, a new finger pulls from it while the native snap finishes.
     // A swipe that started on an earlier print still has to travel all the way to the edge first.
-    const left = id === null && lastPrintIsNearest(node) ? end : Math.max(0, Math.min(end, node.scrollLeft))
-    drag.current = { id, x, y, left, end, fullPull }
+    const left = id === null && lastPrintIsNearest(applied, bounds) ? bounds.end : applied
+    drag.current = { id, x, y, left, applied, end: bounds.end, fullPull }
   }
 
   function move(node: HTMLDivElement, x: number, y: number, id: number | null) {
@@ -101,10 +106,14 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: 
     }
     const left = start.left + dx
     // Touch and trackpads scroll natively. Only a mouse needs to move the rail itself.
-    if (id !== null) node.scrollTo({ left, behavior: 'instant' })
-    const beyond = left - start.end
-    // Once a drag crosses the edge, only the finger drives the ring, not a settling scroll offset.
-    draw(start.end > 0 ? beyond : 0, start.fullPull)
+    if (id !== null) {
+      const offset = Math.max(0, Math.min(start.end, left))
+      if (offset !== start.applied) {
+        node.scrollTo({ left: offset, behavior: 'instant' })
+        start.applied = offset
+      }
+    }
+    draw(start.end > 0 ? left - start.end : 0, start.fullPull)
   }
 
   function cancelPointer(event: PointerEvent<HTMLDivElement>) {
@@ -191,11 +200,17 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: 
         else if (delta >= 6) burst.falling = Math.max(0, burst.falling - 1)
         burst.previousDelta = delta
         const coasting = momentum !== false && burst.falling >= 2
-        const remaining = Math.max(0, node.scrollWidth - node.clientWidth - node.scrollLeft)
-        if (!burst.timer && (!lastPrintIsNearest(node) || delta <= 0 || coasting)) return
+        let excess = delta
+        // Once we're pulling, only input matters; don't remeasure the rail each wheel event.
+        if (!burst.timer) {
+          if (delta <= 0 || coasting) return
+          const bounds = measureRail(node)
+          const left = node.scrollLeft
+          if (!lastPrintIsNearest(left, bounds)) return
+          if (!fresh) excess = Math.max(0, delta - Math.max(0, bounds.end - left))
+          if (!excess) return
+        }
         if (!coasting) {
-          const excess = burst.timer || fresh ? delta : Math.max(0, delta - remaining)
-          if (!excess && !burst.timer) return
           // A single wheel notch cannot arm the link; a long hold has bounded elastic travel.
           const change = Math.sign(excess) * Math.min(24, Math.abs(excess), Math.max(0, elapsed) * 0.5)
           const base = change < 0 ? Math.min(FULL_PULL, burst.distance) : burst.distance

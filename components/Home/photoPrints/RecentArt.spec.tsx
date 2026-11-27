@@ -7,7 +7,10 @@ function openTile() {
   const { container } = render(<RecentArt />)
   const link = screen.getByRole('link', { name: 'Photos' })
   const rail = link.querySelector<HTMLElement>('[tabindex="-1"]')!
-  Object.defineProperties(rail, { clientWidth: { value: 300 }, scrollWidth: { value: 1020 } })
+  Object.defineProperties(rail, {
+    clientWidth: { value: 300, configurable: true },
+    scrollWidth: { value: 1020, configurable: true },
+  })
   rail.scrollTo = vi.fn(({ left }: ScrollToOptions) => {
     rail.scrollLeft = Math.max(0, Math.min(720, left ?? 0))
   }) as typeof rail.scrollTo
@@ -70,6 +73,30 @@ it('uses native CSS when supported and lets keys and dots navigate from a partia
   expect(rail.scrollLeft).toBe(600)
 })
 
+it('refreshes the cached scroll range after a resize, including the shorter final stride', () => {
+  let resized: () => void
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      constructor(callback: () => void) {
+        resized = callback
+      }
+      observe() {}
+      disconnect() {}
+    }
+  )
+  vi.stubGlobal('CSS', { supports: () => false })
+  const { tile, rail } = openTile()
+  act(() => resized())
+  Object.defineProperties(rail, { clientWidth: { value: 400 }, scrollWidth: { value: 1360 } })
+  rail.scrollLeft = 880
+  act(() => resized())
+  expect(tile.style.getPropertyValue('--print-position')).toBe('2.5')
+  rail.scrollLeft = 920
+  fireEvent.scroll(rail)
+  expect(tile.style.getPropertyValue('--print-position')).toBe('2.75')
+})
+
 const pointer = (x: number, type = 'mouse') => ({
   pointerId: 1,
   pointerType: type,
@@ -110,6 +137,7 @@ it('counts only the distance past the last print, lets a pull unwind, and opens 
   fireEvent.pointerMove(rail, pointer(180))
   expect(rail.scrollLeft).toBe(720)
   expect(icon.dataset.pull).toBeUndefined()
+  vi.mocked(rail.scrollTo).mockClear()
   // An 82px pull used to commit; it should now be just under halfway.
   fireEvent.pointerMove(rail, pointer(98))
   expect(icon.dataset.pull).toBe('tracking')
@@ -117,6 +145,7 @@ it('counts only the distance past the last print, lets a pull unwind, and opens 
   fireEvent.pointerMove(rail, pointer(8))
   expect(icon.dataset.pull).toBe('ready')
   expect(open).not.toHaveBeenCalled()
+  expect(rail.scrollTo).not.toHaveBeenCalled()
   fireEvent.pointerMove(rail, pointer(160))
   fireEvent.pointerUp(rail, pointer(160))
   expect(icon.dataset.pull).toBeUndefined()

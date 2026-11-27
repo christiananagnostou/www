@@ -255,10 +255,27 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
         assert.ok(remainingArc > 0.5 && remainingArc < 0.6, 'The old trigger should now fill less than half the ring')
       } else {
         assert.equal(remainingArc, 0, 'The full 360° ring must be visible before navigation')
+        const colorDurations = () =>
+          icon.evaluate((svg) =>
+            [
+              [svg.querySelector('circle'), 'fill'],
+              [svg.querySelector('path'), 'stroke'],
+            ].map(([part, color]) => {
+              const style = getComputedStyle(part)
+              const i = style.transitionProperty.split(', ').indexOf(color)
+              return i < 0 ? 0 : parseFloat(style.transitionDuration.split(', ')[i])
+            })
+          )
+        assert.ok(
+          (await colorDurations()).every((s) => s >= 0.16 && s <= 0.3),
+          'The ready colors ease in'
+        )
         const ready = await icon.boundingBox()
         await page.mouse.move(x - approach - distance - 40, y, { steps: 4 })
         const give = ready.x - (await icon.boundingBox()).x
         assert.ok(give > 1 && give < 8, 'The marker should still yield a few pixels under tension after 100%')
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        assert.deepEqual(await colorDurations(), [0, 0], 'Reduced motion shows the ready colors immediately')
       }
       assert.equal(new URL(page.url()).pathname, '/')
       await page.mouse.up()
