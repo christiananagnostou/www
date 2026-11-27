@@ -22,7 +22,10 @@
 
 /* Only the edge marker moves. The last print and its snap point stay put. */
 .pull {
-  --pull: 0;
+  --travel: 0;
+  --pull: min(1, var(--travel));
+  /* The ring stops at one; the marker can still yield a little beyond it. */
+  --stretch: calc(var(--travel) / (1 + 2 * var(--travel)));
   position: absolute;
   top: 50%;
   right: 0.75rem;
@@ -36,14 +39,8 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: min(1, calc(3 * var(--pull)));
-  transform: translate(calc(2.8rem * (1 - var(--pull)) * (1 - var(--pull))), -50%);
-  transition:
-    transform 180ms ease-out,
-    opacity 140ms ease-out;
-}
-
-.pull[data-pull] {
-  transition: none;
+  transform: translate(calc(2.8rem - 9.6rem * var(--stretch)), -50%);
+  transition: var(--instrument-transition);
 }
 
 .rim {
@@ -57,6 +54,12 @@
   stroke-dashoffset: calc(1px - 1px * var(--pull));
   transform-origin: center;
   transform: rotate(calc(-135deg + 45deg * var(--pull)));
+  transition: stroke-dashoffset 160ms ease-out;
+}
+
+.pull[data-pull],
+.pull[data-pull] .sweep {
+  transition: none;
 }
 
 .pull[data-pull='ready'] .rim {
@@ -344,6 +347,7 @@
 
   .sweep {
     transform: rotate(-90deg);
+    transition: none;
   }
 
   .rail {

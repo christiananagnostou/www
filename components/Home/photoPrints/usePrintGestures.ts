@@ -10,11 +10,11 @@ import {
 } from 'react'
 
 const DEAD_ZONE = 10
-const FULL_PULL = 82
+const FULL_PULL = 168
 // Wheels have no release event. A quiet gap separates a new pull from the previous swipe's momentum.
 const WHEEL_IDLE = 180
 
-type Drag = { id: number | null; x: number; y: number; left: number; end: number }
+type Drag = { id: number | null; x: number; y: number; left: number; end: number; fullPull: number }
 
 function atEnd(node: HTMLDivElement) {
   return node.scrollWidth > node.clientWidth && node.scrollWidth - node.clientWidth - node.scrollLeft <= 2
@@ -25,17 +25,17 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
   const indicator = useRef<SVGSVGElement>(null)
   const drag = useRef<Drag | null>(null)
   const dragged = useRef(false)
-  const progress = useRef(0)
+  const travel = useRef(0)
   const wheel = useRef({ last: -Infinity, timer: 0, distance: 0 })
 
-  const draw = useCallback((distance: number) => {
-    const value = Math.min(1, Math.max(0, (distance - DEAD_ZONE) / (FULL_PULL - DEAD_ZONE)))
-    if (value === progress.current) return
-    progress.current = value
+  const draw = useCallback((distance: number, fullPull = FULL_PULL) => {
+    const value = Math.max(0, (distance - DEAD_ZONE) / (fullPull - DEAD_ZONE))
+    if (value === travel.current) return
+    travel.current = value
     const icon = indicator.current
     if (!icon) return
-    icon.style.setProperty('--pull', String(value))
-    if (value) icon.dataset.pull = value === 1 ? 'ready' : 'tracking'
+    icon.style.setProperty('--travel', String(value))
+    if (value) icon.dataset.pull = value >= 1 ? 'ready' : 'tracking'
     else delete icon.dataset.pull
   }, [])
 
@@ -62,7 +62,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
   }, [cancel])
 
   function release() {
-    const open = progress.current === 1 && rail.current && atEnd(rail.current)
+    const open = travel.current >= 1 && rail.current && atEnd(rail.current)
     cancel()
     if (open) gallery.current?.click()
   }
@@ -70,7 +70,9 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
   function begin(node: HTMLDivElement, x: number, y: number, id: number | null) {
     cancel()
     dragged.current = false
-    drag.current = { id, x, y, left: node.scrollLeft, end: node.scrollWidth - node.clientWidth }
+    // Keep a full pull within a thumb's reach, even from the center of a small phone.
+    const fullPull = Math.min(FULL_PULL, window.innerWidth * 0.45)
+    drag.current = { id, x, y, left: node.scrollLeft, end: node.scrollWidth - node.clientWidth, fullPull }
   }
 
   function move(node: HTMLDivElement, x: number, y: number, id: number | null) {
@@ -91,7 +93,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     // Touch and trackpads scroll natively. Only a mouse needs to move the rail itself.
     if (id !== null) node.scrollTo({ left, behavior: 'instant' })
     const beyond = left - start.end
-    draw(start.end > 0 && beyond > 0 && atEnd(node) ? beyond : 0)
+    draw(start.end > 0 && beyond > 0 && atEnd(node) ? beyond : 0, start.fullPull)
   }
 
   function cancelPointer(event: PointerEvent<HTMLDivElement>) {
@@ -149,7 +151,8 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
       onTouchCancel: cancel,
       onWheel(event: WheelEvent<HTMLDivElement>) {
         const burst = wheel.current
-        const fresh = event.timeStamp - burst.last > WHEEL_IDLE
+        const elapsed = event.timeStamp - burst.last
+        const fresh = elapsed > WHEEL_IDLE
         burst.last = event.timeStamp
         if (drag.current || (!fresh && !burst.timer)) return
         const node = event.currentTarget
@@ -164,8 +167,8 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
         )
           return cancel()
         const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? node.clientWidth : 1
-        // One wheel notch or a large synthesized delta should never open another page.
-        burst.distance += Math.min(32, dx * unit)
+        // Limit both a single notch and a flurry of accelerated trackpad events (0.5px/ms).
+        burst.distance += Math.min(24, dx * unit, Math.max(0, elapsed) * 0.5)
         draw(burst.distance)
         window.clearTimeout(burst.timer)
         burst.timer = window.setTimeout(release, WHEEL_IDLE)

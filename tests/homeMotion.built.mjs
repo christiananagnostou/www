@@ -220,18 +220,25 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const box = await gallery.boundingBox()
     const x = box.x + box.width * 0.8
     const y = box.y + box.height * 0.4
-    for (const distance of [48, 100]) {
+    for (const distance of [82, 184]) {
       await page.mouse.move(x, y)
       await page.mouse.down()
       await page.mouse.move(x - distance, y, { steps: 6 })
       const remainingArc = await icon
         .locator('[pathLength]')
         .evaluate((circle) => parseFloat(getComputedStyle(circle).strokeDashoffset))
-      if (distance === 48) assert.ok(remainingArc > 0 && remainingArc < 1)
-      else assert.equal(remainingArc, 0, 'The full 360° ring must be visible before navigation')
+      if (distance === 82) {
+        assert.ok(remainingArc > 0.5 && remainingArc < 0.6, 'The old trigger should now fill less than half the ring')
+      } else {
+        assert.equal(remainingArc, 0, 'The full 360° ring must be visible before navigation')
+        const ready = await icon.boundingBox()
+        await page.mouse.move(x - distance - 40, y, { steps: 4 })
+        const give = ready.x - (await icon.boundingBox()).x
+        assert.ok(give > 1 && give < 8, 'The marker should still yield a few pixels under tension after 100%')
+      }
       assert.equal(new URL(page.url()).pathname, '/')
       await page.mouse.up()
-      if (distance === 48) assert.equal(await icon.getAttribute('data-pull'), null)
+      if (distance === 82) assert.equal(await icon.getAttribute('data-pull'), null)
     }
     await page.waitForURL('**/art')
   })
