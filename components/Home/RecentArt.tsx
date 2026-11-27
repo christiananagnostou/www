@@ -1,78 +1,70 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import type { CSSProperties } from 'react'
 import styled from 'styled-components'
 
 import { fade, photoAnim, staggerFade } from '../animation'
 
-import { Print, prints } from './photoPrints/Print'
+import { PrintSheet, prints } from './photoPrints/Print'
 import styles from './photoPrints/Prints.module.css'
-import { usePrintVisibility } from './photoPrints/usePrintVisibility'
+import { usePrintReel } from './photoPrints/usePrintReel'
 import { HomepageBox } from './styles'
 
-type Stage = 'still' | 'loading' | 'printing' | 'unavailable'
-
 export default function RecentArt() {
-  const [tile, visible] = usePrintVisibility()
-  const [current, setCurrent] = useState(0)
-  const [stage, setStage] = useState<Stage>('still')
-  const [paused, setPaused] = useState(false)
-  const next = (current + 1) % prints.length
-  const playing = visible && !paused
-
-  useEffect(() => {
-    if (!playing || stage !== 'still') return
-    const timer = window.setTimeout(() => setStage('loading'), 10_000)
-    return () => window.clearTimeout(timer)
-  }, [playing, stage])
-
+  const { current, requested, go, step, railProps, onClick } = usePrintReel(prints.length)
   return (
-    <Tile ref={tile} variants={staggerFade}>
-      <Link className={styles.gallery} href="/art">
-        <m.div aria-hidden="true" className={styles.exposure} data-playing={playing} variants={photoAnim}>
-          {prints.map((print, index) => {
-            const arriving = index === next && (stage === 'loading' || stage === 'printing')
-            if (index !== current && !arriving) return null
-
-            return (
-              <div
-                className={styles.sheet}
-                data-stage={arriving ? stage : undefined}
-                key={index}
-                onAnimationEnd={(event) => {
-                  if (!arriving || event.target !== event.currentTarget) return
-                  setCurrent(index)
-                  setStage('still')
-                }}
-              >
-                <Print
-                  print={print}
-                  onError={arriving ? () => setStage('unavailable') : undefined}
-                  onLoad={arriving ? () => setStage('printing') : undefined}
-                />
-                {arriving && stage === 'printing' && (
-                  <div className={styles.screen}>
-                    <Print print={print} />
-                  </div>
+    <Tile variants={staggerFade}>
+      <Link
+        aria-description="Swipe or use the arrow keys to change the photograph."
+        aria-keyshortcuts="ArrowLeft ArrowRight"
+        className={styles.gallery}
+        draggable={false}
+        href="/art"
+        onClick={onClick}
+        onKeyDown={(event) => {
+          if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+          if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+          event.preventDefault()
+          step(event.key === 'ArrowRight' ? 1 : -1)
+        }}
+      >
+        <div
+          {...railProps}
+          className={styles.rail}
+          aria-hidden="true"
+          tabIndex={-1}
+          style={{ '--print-count': prints.length } as CSSProperties}
+        >
+          <div className={styles.track}>
+            {prints.map((print, index) => (
+              <i data-stop={index} key={print.title} style={{ gridColumn: index + 1 }} />
+            ))}
+            <div className={styles.pinned}>
+              <m.div className={styles.exposure} variants={photoAnim}>
+                {prints.map(
+                  (print, index) =>
+                    requested.includes(index) && <PrintSheet key={print.title} print={print} index={index} />
                 )}
-              </div>
-            )
-          })}
-        </m.div>
+              </m.div>
+            </div>
+          </div>
+        </div>
         <m.h2 variants={fade}>Photos</m.h2>
       </Link>
-      {visible && stage !== 'unavailable' && (
-        <button
-          aria-label={paused ? 'Resume photo rotation' : 'Pause photo rotation'}
-          className={styles.playback}
-          onClick={() => setPaused(!paused)}
-          type="button"
-        >
-          <svg aria-hidden="true" fill="currentColor" viewBox="0 0 16 16">
-            <path d={paused ? 'M5 3 13 8 5 13Z' : 'M4 3h2.5v10H4zM9.5 3H12v10H9.5z'} />
-          </svg>
-        </button>
-      )}
+      <div className={styles.positions} role="group" aria-label="Choose a photograph">
+        {prints.map((print, index) => (
+          <button
+            aria-current={index === current ? 'true' : undefined}
+            aria-label={`Show ${print.title}`}
+            key={print.title}
+            onClick={() => go(index)}
+            type="button"
+          />
+        ))}
+      </div>
+      <span className={styles.announcement} role="status">
+        {prints[current].title}, {current + 1} of {prints.length}
+      </span>
     </Tile>
   )
 }

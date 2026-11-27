@@ -1,88 +1,108 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 
-import { ArtImages } from '../../../lib/art'
 import RecentArt from '../RecentArt'
 
-const source = (img: HTMLImageElement) => new URL(img.src).searchParams.get('url') ?? img.getAttribute('src')
-
-function openTile(reduceMotion = false) {
-  vi.useFakeTimers()
-  const preference = Object.assign(new EventTarget(), { matches: reduceMotion })
-  vi.stubGlobal('matchMedia', () => preference)
-  let notify: (entries: { intersectionRatio: number }[]) => void
+function openTile() {
+  let intersect: (entries: { target: Element; intersectionRatio: number }[]) => void
   vi.stubGlobal(
     'IntersectionObserver',
     class {
-      constructor(callback: typeof notify) {
-        notify = callback
+      constructor(callback: typeof intersect) {
+        intersect = callback
       }
       observe() {}
       disconnect() {}
     }
   )
   const { container } = render(<RecentArt />)
-  return {
-    images: () => [...container.querySelectorAll('img')],
-    inView: (value: boolean) => act(() => notify([{ intersectionRatio: value ? 1 : 0 }])),
-    wait: (ms = 30_000) => act(() => vi.advanceTimersByTime(ms)),
+  const link = screen.getByRole('link', { name: 'Photos' })
+  const rail = link.querySelector<HTMLElement>('[tabindex="-1"]')!
+  Object.defineProperty(rail, 'clientWidth', { value: 300 })
+  rail.scrollTo = vi.fn(({ left }: ScrollToOptions) => {
+    rail.scrollLeft = left ?? 0
+  }) as typeof rail.scrollTo
+  const stop = (index: number) => rail.querySelector(`[data-stop="${index}"]`)!
+  const show = (position: number) => {
+    rail.scrollLeft = position * rail.clientWidth
+    fireEvent.scroll(rail)
+    act(() =>
+      intersect(
+        Array.from({ length: 4 }, (_, index) => ({
+          target: stop(index),
+          intersectionRatio: Math.max(0, 1 - Math.abs(position - index)),
+        }))
+      )
+    )
   }
+  return { link, rail, container, show }
 }
 
 afterEach(() => {
   cleanup()
-  vi.useRealTimers()
   vi.unstubAllGlobals()
+  vi.useRealTimers()
 })
 
-it('holds each selected print for ten seconds before loading and revealing the next one', async () => {
-  const tile = openTile()
-  const rotation = ['bnw_baseball', 'adobe_bnw', 'stair_shadow', 'satellite'].map((id) => {
-    const { image } = ArtImages.find((photo) => photo.id === id)!
-    return typeof image === 'string' ? image : image.src
-  })
-  const [first, ...rest] = rotation
-  expect(source(tile.images()[0])).toBe(first)
-  tile.inView(true)
-  for (const expected of [...rest, first]) {
-    const [previous] = tile.images()
-    tile.wait(9_999)
-    expect(tile.images()).toEqual([previous])
-    tile.wait(1)
-    const incoming = tile.images().find((img) => img !== previous)!
-    const sheet = incoming.closest<HTMLElement>('[data-stage]')!
-    expect(sheet.dataset.stage).toBe('loading')
-    expect(source(incoming)).toBe(expected)
-    await act(async () => fireEvent.load(incoming))
-    expect(sheet.dataset.stage).toBe('printing')
-    // JSDOM doesn't implement AnimationEvent; React listens for its prefixed event there.
-    fireEvent(sheet, new Event('AnimationEvent' in window ? 'animationend' : 'webkitAnimationEnd', { bubbles: true }))
-    expect(tile.images()).toEqual([incoming])
-  }
+it('keeps the original gallery link and only requests one print while idle', () => {
+  vi.useFakeTimers()
+  const { container, link, show } = openTile()
+  show(0)
+  act(() => vi.advanceTimersByTime(60_000))
+  expect(container.querySelectorAll('img')).toHaveLength(1)
+  expect(link.getAttribute('href')).toBe('/art')
+  expect(screen.queryByRole('button', { name: /pause|play|resume/i })).toBeNull()
 })
 
-it('does not request another photo offscreen, while paused, or after a failed next image', () => {
-  const tile = openTile()
-  const first = tile.images()[0]
-  tile.wait()
-  expect(tile.images()).toEqual([first])
-  tile.inView(true)
-  fireEvent.click(screen.getByRole('button', { name: 'Pause photo rotation' }))
-  tile.wait()
-  expect(tile.images()).toEqual([first])
-  fireEvent.click(screen.getByRole('button', { name: 'Resume photo rotation' }))
-  tile.wait()
-  fireEvent.error(tile.images()[1])
-  tile.wait()
-  expect(tile.images()).toEqual([first])
-  expect(screen.getByRole('link', { name: 'Photos' }).getAttribute('href')).toBe('/art')
+it('uses fractional scroll progress in the fallback and waits for the next photo to decode', async () => {
+  vi.stubGlobal('CSS', { supports: () => false })
+  const { rail, show } = openTile()
+  show(0.5)
+  expect(rail.style.getPropertyValue('--print-position')).toBe('0.5')
+  const second = rail.querySelector<HTMLElement>('[data-print="1"]')!
+  expect(second.dataset.ready).toBe('false')
+  expect(rail.querySelectorAll('img')).toHaveLength(2)
+  await act(async () => fireEvent.load(second.querySelector('img')!))
+  expect(second.dataset.ready).toBe('true')
+  show(0.25)
+  expect(rail.style.getPropertyValue('--print-position')).toBe('0.25')
+  expect(screen.getByRole('status').textContent).toBe('B&W Baseball, 1 of 4')
 })
 
-it('offers a still print and a working gallery link when reduced motion is requested', () => {
-  const tile = openTile(true)
-  tile.inView(true)
-  tile.wait()
-  expect(tile.images()).toHaveLength(1)
-  expect(screen.queryByRole('button')).toBeNull()
-  expect(screen.getByRole('link', { name: 'Photos' }).getAttribute('href')).toBe('/art')
+it('uses native CSS when supported and lets keys and dots navigate from a partial position', () => {
+  vi.stubGlobal('CSS', { supports: () => true })
+  const { rail, link, show } = openTile()
+  show(1.4)
+  expect(rail.style.getPropertyValue('--print-position')).toBe('')
+  fireEvent.keyDown(link, { key: 'ArrowRight' })
+  expect(rail.scrollLeft).toBe(600)
+  show(1.4)
+  fireEvent.keyDown(link, { key: 'ArrowLeft' })
+  expect(rail.scrollLeft).toBe(300)
+  fireEvent.click(screen.getByRole('button', { name: 'Show Satellite' }))
+  expect(rail.scrollLeft).toBe(900)
+  fireEvent.keyDown(link, { key: 'ArrowLeft', altKey: true })
+  expect(rail.scrollLeft).toBe(900)
+})
+
+const pointer = (x: number, type = 'mouse') => ({
+  pointerId: 1,
+  pointerType: type,
+  button: 0,
+  clientX: x,
+  clientY: 80,
+})
+
+it('leaves a desktop drag exactly where released, suppresses its click, and leaves touch to the browser', () => {
+  const { rail, link } = openTile()
+  fireEvent.pointerDown(rail, pointer(250))
+  fireEvent.pointerMove(rail, pointer(100))
+  fireEvent.pointerUp(rail, pointer(100))
+  expect(rail.scrollLeft).toBe(150)
+  expect(fireEvent.click(link, { detail: 1 })).toBe(false)
+  fireEvent.pointerDown(rail, pointer(100, 'touch'))
+  fireEvent.pointerMove(rail, pointer(250, 'touch'))
+  fireEvent.pointerUp(rail, pointer(250, 'touch'))
+  expect(rail.scrollLeft).toBe(150)
+  expect(rail.scrollTo).toHaveBeenCalledTimes(1)
 })

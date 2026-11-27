@@ -5,12 +5,6 @@ import sharp from 'sharp'
 
 import { startBuiltApp } from './helpers/builtApp.mjs'
 
-async function nextPhotoPrint(page, tile) {
-  // Skip the still frame; the reveal starts after the incoming image loads.
-  await page.clock.fastForward(30_000)
-  return tile.locator('[data-stage="printing"]')
-}
-
 // Start on Contact so the browser sees the very first frame of the Home entrance.
 function observeHomeEntrance() {
   const peak = new Map()
@@ -113,11 +107,10 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(await name.boundingBox(), bounds, 'The name must not shift the bio')
   })
 
-  await t.test('keeps the Photos corner clean at rest and during a print', async () => {
-    await page.clock.install()
+  await t.test('scrubs halfway and back without navigating or exposing a seam in the Photos corner', async () => {
     await page.reload()
-    const tile = page.getByRole('link', { name: 'Photos', exact: true }).locator('..')
-    await tile.getByRole('button', { name: 'Pause photo rotation' }).waitFor()
+    const gallery = page.getByRole('link', { name: 'Photos', exact: true })
+    const tile = gallery.locator('..')
     await tile
       .locator('img')
       .first()
@@ -136,36 +129,61 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       assert.ok(Math.max(...rim) <= corner[15 * 16 + 15] + 5, 'The curved rim must not outshine the shaded print')
     }
     await checkCorner()
-    const incoming = await nextPhotoPrint(page, tile)
-    const curves = await incoming.evaluate((sheet) =>
-      sheet.getAnimations({ subtree: true }).map((edge) => {
-        edge.pause()
-        edge.currentTime = Number(edge.effect.getTiming().duration) / 2
-        return getComputedStyle(edge.effect.target).animationTimingFunction
-      })
+    const frame = await gallery.boundingBox()
+    await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) }' })
+    const sample = async () => {
+      const { data, info } = await sharp(await gallery.screenshot({ scale: 'css' }))
+        .removeAlpha()
+        .greyscale()
+        .raw()
+        .toBuffer({ resolveWithObject: true })
+      return [0.25, 0.8].map((x) => data[Math.floor(info.height * 0.6) * info.width + Math.floor(info.width * x)])
+    }
+    const original = await sample()
+    const x = frame.x + frame.width * 0.8
+    const y = frame.y + frame.height * 0.36
+    const half = x - frame.width * 0.5
+    const drag = async (from, to) => {
+      await page.mouse.move(from, y)
+      await page.mouse.down()
+      await page.mouse.move(to, y, { steps: 8 })
+      await page.mouse.up()
+    }
+    await drag(x, half)
+    const second = gallery.locator('[data-print="1"][data-ready="true"]')
+    await second.waitFor({ state: 'attached' })
+    const halfPrint = await sample()
+    assert.ok(
+      Math.abs(original[0] - halfPrint[0]) < 4 && halfPrint[1] - original[1] > 40,
+      'A released half-drag must paint the original photograph on the left and the incoming one on the right'
     )
-    assert.equal(curves.length, 2)
-    assert.equal(curves[0], curves[1], 'The halftone and clean print should ease together')
-    assert.notEqual(curves[0], 'linear')
+    const rail = gallery.locator('[tabindex="-1"]')
+    assert.ok(Math.abs((await rail.evaluate((el) => el.scrollLeft / el.clientWidth)) - 0.5) < 0.02)
+    await page.addStyleTag({ content: '[data-corner-test] [data-print="0"] img { filter: brightness(0) invert(1) }' })
     await checkCorner()
+    await drag(half, x)
+    await page.waitForFunction(() => document.querySelector('[data-stop]').closest('[tabindex="-1"]').scrollLeft < 2)
+    assert.equal(new URL(page.url()).pathname, '/')
   })
 
   await t.test('fills the phone tile with every print without changing its height', async (test) => {
     const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
     test.after(() => phone.close())
-    await phone.clock.install()
     await phone.goto(site.origin)
     const gallery = phone.getByRole('link', { name: 'Photos', exact: true })
     await gallery.scrollIntoViewIfNeeded()
-    await phone.getByRole('button', { name: 'Pause photo rotation' }).waitFor()
     const frame = await gallery.boundingBox()
-    for (let index = 0; index < 4; index++) {
-      if (index > 0) {
-        const incoming = await nextPhotoPrint(phone, gallery)
-        await incoming.evaluate((sheet) => sheet.getAnimations({ subtree: true }).forEach((edge) => edge.finish()))
-        await incoming.waitFor({ state: 'detached' })
-      }
-      const image = gallery.locator('img')
+    const titles = ['B&W Baseball', 'Adobe B&W', 'Stair Shadow', 'Satellite']
+    for (const [index, title] of titles.entries()) {
+      const button = phone.getByRole('button', { name: `Show ${title}` })
+      await button.click()
+      await phone.waitForFunction((i) => {
+        const image = document.querySelector(`[data-print="${i}"][data-ready="true"]`)
+        const rail = image?.closest('[tabindex="-1"]')
+        return rail && Math.abs(rail.scrollLeft - i * rail.clientWidth) < 2
+      }, index)
+      assert.equal(await button.getAttribute('aria-current'), 'true')
+      const image = gallery.locator(`[data-print="${index}"] > picture img`)
       await image.evaluate((img) => img.decode())
       assert.deepEqual(await image.boundingBox(), frame, 'Each settled print should cover the same full frame')
     }
