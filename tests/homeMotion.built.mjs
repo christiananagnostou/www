@@ -209,6 +209,33 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.equal(new URL(page.url()).pathname, '/')
   })
 
+  await t.test('opens photography only after releasing a full pull at the end of the reel', async () => {
+    const gallery = page.getByRole('link', { name: 'Photos', exact: true })
+    const icon = gallery.locator('svg')
+    await page.getByRole('button', { name: 'Show B&W Baseball' }).click()
+    await page.waitForFunction(() => {
+      const rail = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
+      return Math.abs(rail.scrollWidth - rail.clientWidth - rail.scrollLeft) <= 1
+    })
+    const box = await gallery.boundingBox()
+    const x = box.x + box.width * 0.8
+    const y = box.y + box.height * 0.4
+    for (const distance of [48, 100]) {
+      await page.mouse.move(x, y)
+      await page.mouse.down()
+      await page.mouse.move(x - distance, y, { steps: 6 })
+      const remainingArc = await icon
+        .locator('[pathLength]')
+        .evaluate((circle) => parseFloat(getComputedStyle(circle).strokeDashoffset))
+      if (distance === 48) assert.ok(remainingArc > 0 && remainingArc < 1)
+      else assert.equal(remainingArc, 0, 'The full 360° ring must be visible before navigation')
+      assert.equal(new URL(page.url()).pathname, '/')
+      await page.mouse.up()
+      if (distance === 48) assert.equal(await icon.getAttribute('data-pull'), null)
+    }
+    await page.waitForURL('**/art')
+  })
+
   await t.test('selects each full-frame phone print by tapping its compact dot', async (test) => {
     const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true })
     test.after(() => phone.close())

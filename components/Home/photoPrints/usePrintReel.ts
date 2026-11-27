@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-// Touch, trackpads, momentum and vertical page scrolling are all native.
-// Only a mouse needs a hand translating a drag into horizontal scrolling.
+import { usePrintGestures } from './usePrintGestures'
+
 export function usePrintReel(count: number) {
   const tile = useRef<HTMLDivElement>(null)
   const rail = useRef<HTMLDivElement>(null)
-  const drag = useRef<{ id: number; x: number; y: number; left: number } | null>(null)
-  const dragged = useRef(false)
+  const { gallery, indicator, cancel, handlers, onClick } = usePrintGestures(rail)
   const [current, setCurrent] = useState(0)
   const [requested, setRequested] = useState<number[]>([0])
 
@@ -54,22 +53,17 @@ export function usePrintReel(count: number) {
   function go(index: number) {
     const node = rail.current
     if (!node || index < 0 || index >= count) return
+    cancel()
     request(index)
     node.scrollTo({ left: index * node.clientWidth, behavior: 'auto' })
   }
 
-  function endDrag(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerId !== drag.current?.id) return
-    drag.current = null
-    if (!dragged.current) return
-    const node = event.currentTarget
-    node.removeAttribute('data-dragging')
-    // Give CSS the final offset even if this drag interrupted an earlier Firefox snap.
-    node.scrollTo({ left: node.scrollLeft })
-  }
-
   return {
     tile,
+    gallery,
+    indicator,
+    onClick,
+    railProps: { ref: rail, ...handlers },
     current,
     requested,
     go,
@@ -77,44 +71,6 @@ export function usePrintReel(count: number) {
       const node = rail.current!
       const position = Math.round((node.scrollLeft / (node.clientWidth || 1)) * 100) / 100
       go(direction === 1 ? Math.floor(position) + 1 : Math.ceil(position) - 1)
-    },
-    onClick(event: MouseEvent<HTMLAnchorElement>) {
-      if (dragged.current && event.detail !== 0) event.preventDefault()
-      dragged.current = false
-    },
-    railProps: {
-      ref: rail,
-      onPointerDown(event: PointerEvent<HTMLDivElement>) {
-        dragged.current = false
-        if (
-          event.pointerType !== 'mouse' ||
-          event.button !== 0 ||
-          event.ctrlKey ||
-          event.metaKey ||
-          event.shiftKey ||
-          event.altKey
-        )
-          return
-        drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, left: event.currentTarget.scrollLeft }
-      },
-      onPointerMove(event: PointerEvent<HTMLDivElement>) {
-        const start = drag.current
-        if (!start || start.id !== event.pointerId) return
-        const dx = event.clientX - start.x
-        if (!dragged.current) {
-          if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(event.clientY - start.y)) return
-          event.currentTarget.setPointerCapture?.(event.pointerId)
-          event.currentTarget.setAttribute('data-dragging', '')
-          dragged.current = true
-        }
-        event.currentTarget.scrollTo({ left: start.left - dx, behavior: 'instant' })
-      },
-      onPointerLeave() {
-        if (!dragged.current) drag.current = null
-      },
-      onPointerUp: endDrag,
-      onPointerCancel: endDrag,
-      onLostPointerCapture: endDrag,
     },
   }
 }

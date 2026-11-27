@@ -18,9 +18,9 @@ function openTile() {
   const { container } = render(<RecentArt />)
   const link = screen.getByRole('link', { name: 'Photos' })
   const rail = link.querySelector<HTMLElement>('[tabindex="-1"]')!
-  Object.defineProperty(rail, 'clientWidth', { value: 300 })
+  Object.defineProperties(rail, { clientWidth: { value: 300 }, scrollWidth: { value: 1200 } })
   rail.scrollTo = vi.fn(({ left }: ScrollToOptions) => {
-    rail.scrollLeft = left ?? 0
+    rail.scrollLeft = Math.max(0, Math.min(900, left ?? 0))
   }) as typeof rail.scrollTo
   const stop = (index: number) => rail.querySelector(`[data-stop="${index}"]`)!
   const show = (position: number) => {
@@ -94,6 +94,8 @@ const pointer = (x: number, type = 'mouse') => ({
   clientY: 80,
 })
 
+const finger = (x: number, y = 50) => ({ clientX: x, clientY: y })
+
 it('only suspends snapping during an actual mouse drag and leaves taps and touch scrolling native', () => {
   const { rail, link } = openTile()
   fireEvent.pointerDown(rail, pointer(250))
@@ -113,4 +115,109 @@ it('only suspends snapping during an actual mouse drag and leaves taps and touch
   expect(rail.hasAttribute('data-dragging')).toBe(false)
   fireEvent.pointerUp(rail, pointer(250, 'touch'))
   expect(rail.scrollTo).not.toHaveBeenCalled()
+})
+
+it('counts only the distance past the last print, lets a pull unwind, and opens the gallery on release', () => {
+  const { link, rail, show } = openTile()
+  const icon = link.querySelector('svg')!
+  const open = vi.spyOn(link, 'click').mockImplementation(() => {})
+  show(2.8)
+  fireEvent.pointerDown(rail, pointer(240))
+  fireEvent.pointerMove(rail, pointer(180))
+  expect(rail.scrollLeft).toBe(900)
+  expect(icon.dataset.pull).toBeUndefined()
+  fireEvent.pointerMove(rail, pointer(136))
+  expect(icon.dataset.pull).toBe('tracking')
+  expect(Number(icon.style.getPropertyValue('--pull'))).toBeCloseTo(0.47, 1)
+  fireEvent.pointerMove(rail, pointer(80))
+  expect(icon.dataset.pull).toBe('ready')
+  expect(open).not.toHaveBeenCalled()
+  fireEvent.pointerMove(rail, pointer(160))
+  fireEvent.pointerUp(rail, pointer(160))
+  expect(icon.dataset.pull).toBeUndefined()
+  expect(open).not.toHaveBeenCalled()
+
+  fireEvent.pointerDown(rail, pointer(240))
+  fireEvent.pointerMove(rail, pointer(140))
+  fireEvent.pointerUp(rail, pointer(140))
+  fireEvent.lostPointerCapture(rail, pointer(140))
+  expect(open).toHaveBeenCalledTimes(1)
+  expect(fireEvent.click(link, { detail: 1 })).toBe(false)
+})
+
+it('tracks native touch beyond the edge, but does not claim vertical pans, pinches, or canceled touches', () => {
+  const { link, rail, show } = openTile()
+  const icon = link.querySelector('svg')!
+  const open = vi.spyOn(link, 'click').mockImplementation(() => {})
+  const begin = () => fireEvent.touchStart(rail, { touches: [finger(200)] })
+  const move = (x: number, y = 50) => fireEvent.touchMove(rail, { touches: [finger(x, y)] })
+  show(3)
+  begin()
+  expect(move(175, 100)).toBe(true)
+  move(90)
+  expect(icon.dataset.pull).toBeUndefined()
+  fireEvent.touchEnd(rail)
+  begin()
+  move(100)
+  fireEvent.touchStart(rail, { touches: [finger(100), finger(80)] })
+  expect(icon.dataset.pull).toBeUndefined()
+  fireEvent.touchEnd(rail)
+  begin()
+  move(100)
+  fireEvent.touchCancel(rail)
+  begin()
+  move(100)
+  fireEvent.touchEnd(rail, { changedTouches: [finger(170)] })
+  expect(open).not.toHaveBeenCalled()
+
+  begin()
+  fireEvent.pointerCancel(rail, pointer(190, 'touch'))
+  expect(move(105)).toBe(true)
+  expect(icon.dataset.pull).toBe('ready')
+  fireEvent.touchEnd(rail)
+  expect(open).toHaveBeenCalledTimes(1)
+  expect(rail.scrollTo).not.toHaveBeenCalled()
+})
+
+it('ignores incoming wheel momentum and only commits a fresh outward burst once it ends', () => {
+  vi.useFakeTimers()
+  const { link, rail, show } = openTile()
+  const open = vi.spyOn(link, 'click').mockImplementation(() => {})
+  const icon = link.querySelector('svg')!
+  // Browser event timestamps share a monotonic clock, independent of the timer implementation in JSDOM.
+  let time = 1000
+  const scroll = (deltaX: number, deltaY = 0, keys: WheelEventInit = {}) => {
+    const event = new window.WheelEvent('wheel', { bubbles: true, deltaX, deltaY, ...keys })
+    Object.defineProperty(event, 'timeStamp', { value: (time += 12) })
+    fireEvent(rail, event)
+  }
+  const rest = () => {
+    time += 250
+    act(() => vi.advanceTimersByTime(250))
+  }
+  show(2.8)
+  scroll(500)
+  show(3)
+  for (let i = 0; i < 5; i++) scroll(50)
+  rest()
+  expect(icon.dataset.pull).toBeUndefined()
+  scroll(900)
+  expect(icon.dataset.pull).toBe('tracking')
+  rest()
+  scroll(40, 80)
+  rest()
+  scroll(60, 0, { ctrlKey: true })
+  rest()
+  scroll(55)
+  scroll(55)
+  scroll(55)
+  expect(icon.dataset.pull).toBe('ready')
+  scroll(-15)
+  rest()
+  expect(open).not.toHaveBeenCalled()
+  for (let i = 0; i < 3; i++) scroll(0, 3, { shiftKey: true, deltaMode: 1 })
+  expect(icon.dataset.pull).toBe('ready')
+  expect(open).not.toHaveBeenCalled()
+  rest()
+  expect(open).toHaveBeenCalledTimes(1)
 })
