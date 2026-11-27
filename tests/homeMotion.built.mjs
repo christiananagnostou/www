@@ -139,4 +139,26 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     })
     await checkCorner()
   })
+
+  await t.test('fills the phone tile with every print without changing its height', async (test) => {
+    const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
+    test.after(() => phone.close())
+    await phone.clock.install()
+    await phone.goto(site.origin)
+    const gallery = phone.getByRole('link', { name: 'Photos', exact: true })
+    await gallery.scrollIntoViewIfNeeded()
+    await phone.getByRole('button', { name: 'Pause photo rotation' }).waitFor()
+    const frame = await gallery.boundingBox()
+    for (let index = 0; index < 4; index++) {
+      if (index > 0) {
+        await phone.clock.fastForward(8100)
+        const incoming = gallery.locator('[data-stage="printing"]')
+        await incoming.evaluate((sheet) => sheet.getAnimations({ subtree: true }).forEach((edge) => edge.finish()))
+        await incoming.waitFor({ state: 'detached' })
+      }
+      const image = gallery.locator('img')
+      await image.evaluate((img) => img.decode())
+      assert.deepEqual(await image.boundingBox(), frame, 'Each settled print should cover the same full frame')
+    }
+  })
 })

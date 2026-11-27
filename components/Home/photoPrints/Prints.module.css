@@ -9,9 +9,10 @@
 
 .exposure {
   --press-state: paused;
+  --bright-edge: rgb(0 0 0 / 78%);
   z-index: -1;
   /* Shade the print before the stationary gallery link clips the whole exposure. */
-  mask-image: linear-gradient(105deg, rgb(0 0 0 / 16%), rgb(0 0 0 / 70%) 43%, rgb(0 0 0 / 93%) 72%);
+  mask-image: linear-gradient(105deg, rgb(0 0 0 / 14%), rgb(0 0 0 / 59%) 43%, var(--bright-edge) 72%);
 }
 
 .exposure[data-playing='true'] {
@@ -136,29 +137,27 @@
   outline: none;
 }
 
-@media (width <= 450px) {
+@media (width <= 600px), (width <= 768px) and (orientation: landscape) {
   .gallery {
     min-height: 5.75rem;
+    aspect-ratio: 3;
   }
 }
 
 /* Give a short, wide tablet strip the room of a mounted print instead of
    enlarging the photograph until only a sliver of its subject is left. */
-@media (450px < width <= 768px) {
+@media (600px < width <= 768px) and (orientation: portrait) {
   .exposure {
     left: auto;
     width: min(100%, 27rem);
-    mask-image: linear-gradient(90deg, transparent, rgb(0 0 0 / 93%) 24%);
+    mask-image: linear-gradient(90deg, transparent, var(--bright-edge) 24%);
   }
-}
 
-@media (width <= 768px) {
-  /* Mount the entire bottom crop, from mast to ground, inside the shallow strip. */
   .sheet .satellite {
     left: auto;
     height: 100%;
     max-width: 100%;
-    aspect-ratio: 9 / 4;
+    aspect-ratio: 3;
     mask-image: linear-gradient(90deg, transparent, #000000 18%);
   }
 }

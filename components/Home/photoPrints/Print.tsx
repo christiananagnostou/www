@@ -15,7 +15,7 @@ export const prints = [
   { image: ArrowUp, strip: arrowStrip, position: '50% 56%' },
   { image: Adobe, strip: adobeStrip, position: '50% 84%' },
   { image: StairShadow, strip: stairsStrip, position: 'center', treatment: styles.monochrome },
-  { image: Satellite, strip: satelliteStrip, position: 'center bottom', treatment: styles.satellite },
+  { image: Satellite, strip: satelliteStrip, position: '50% 93%', treatment: styles.satellite },
 ]
 
 type Props = { print: (typeof prints)[number]; onLoad?: () => void; onError?: () => void }
