@@ -34,19 +34,16 @@ export default function RecentArt() {
           step(event.key === 'ArrowRight' ? 1 : -1)
         }}
       >
+        <m.div className={styles.exposure} variants={photoAnim} aria-hidden="true">
+          {prints.map(
+            (print, index) => requested.includes(index) && <PrintSheet key={print.title} print={print} index={index} />
+          )}
+        </m.div>
         <div {...railProps} className={styles.rail} aria-hidden="true" tabIndex={-1}>
           <div className={styles.track}>
             {prints.map((print, index) => (
-              <i data-stop={index} key={print.title} style={{ gridColumn: index + 1 }} />
+              <i data-stop={index} key={print.title} />
             ))}
-            <div className={styles.pinned}>
-              <m.div className={styles.exposure} variants={photoAnim}>
-                {prints.map(
-                  (print, index) =>
-                    requested.includes(index) && <PrintSheet key={print.title} print={print} index={index} />
-                )}
-              </m.div>
-            </div>
           </div>
         </div>
         <m.h2 variants={fade}>Photos</m.h2>

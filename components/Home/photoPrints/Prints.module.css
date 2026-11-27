@@ -1,4 +1,8 @@
 .tile {
+  /* Leave room for the same thumb stroke to pull past the final photograph. */
+  --last-stride: 0.4;
+  --intervals: calc(var(--print-count) - 2 + var(--last-stride));
+  --last-start: calc((var(--print-count) - 2) * 100% / var(--intervals));
   timeline-scope: --prints;
 }
 
@@ -6,6 +10,7 @@
   position: relative;
   display: block;
   padding: 1rem;
+  overflow: clip;
   border-radius: inherit;
   isolation: isolate;
   background: var(--dark-bg);
@@ -28,7 +33,7 @@
   --stretch: calc(var(--travel) / (1 + 2 * var(--travel)));
   position: absolute;
   top: 50%;
-  right: 0.75rem;
+  right: 0;
   width: 2.25rem;
   height: 2.25rem;
   pointer-events: none;
@@ -39,7 +44,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: min(1, calc(3 * var(--pull)));
-  transform: translate(calc(2.8rem - 9.6rem * var(--stretch)), -50%);
+  transform: translate(calc(-3.8rem * var(--stretch)), -50%);
   transition: var(--instrument-transition);
 }
 
@@ -89,27 +94,15 @@
 
 .track {
   display: grid;
-  width: calc(var(--print-count) * 100%);
+  width: calc((var(--intervals) + 1) * 100%);
   height: 100%;
-  grid-template: 100% / repeat(var(--print-count), minmax(0, 1fr));
-}
-
-.track > * {
-  grid-row: 1;
+  grid-template:
+    100% / repeat(calc(var(--print-count) - 2), minmax(0, 1fr))
+    calc(100% * var(--last-stride) / (var(--intervals) + 1)) minmax(0, 1fr);
 }
 
 .track > [data-stop] {
   scroll-snap-align: start;
-}
-
-/* The scroll stops move normally; the framed photographs stay registered. */
-.pinned {
-  position: sticky;
-  left: 0;
-  grid-column: 1 / -1;
-  justify-self: start;
-  width: calc(100% / var(--print-count));
-  pointer-events: none;
 }
 
 .exposure,
@@ -121,6 +114,8 @@
 }
 
 .exposure {
+  /* The prints belong to the frame; only the transparent snap stops scroll. */
+  z-index: -2;
   --bright-edge: rgb(0 0 0 / 71%);
   mask-image: linear-gradient(105deg, rgb(0 0 0 / 14%), rgb(0 0 0 / 54%) 43%, var(--bright-edge) 72%);
 }
@@ -279,8 +274,23 @@
   }
 
   .sheet:not([data-print='0']) {
-    animation-range: calc((var(--index) - 1) * 100% / (var(--print-count) - 1))
-      calc(var(--index) * 100% / (var(--print-count) - 1));
+    animation-range: calc((var(--index) - 1) * 100% / var(--intervals))
+      min(100%, calc(var(--index) * 100% / var(--intervals)));
+  }
+
+  .positions::after {
+    /* The dot travels one mark per print even though the final snap is closer. */
+    animation-name: travel, stretch, stretch;
+    animation-iteration-count: 1, calc(var(--print-count) - 2), 1;
+    animation-timing-function:
+      linear(0, calc((var(--print-count) - 2) / (var(--print-count) - 1)) var(--last-start), 1), ease-in-out,
+      ease-in-out;
+    animation-range:
+      0% 100%,
+      0% var(--last-start),
+      var(--last-start) 100%;
+    animation-fill-mode: both, none, none;
+    scale: 1;
   }
 }
 
@@ -341,6 +351,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pull {
+    right: 0.75rem;
     transform: translateY(-50%);
     transition: none;
   }

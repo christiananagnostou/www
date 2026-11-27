@@ -4,36 +4,16 @@ import { afterEach, expect, it, vi } from 'vitest'
 import RecentArt from '../RecentArt'
 
 function openTile() {
-  let intersect: (entries: { target: Element; intersectionRatio: number }[]) => void
-  vi.stubGlobal(
-    'IntersectionObserver',
-    class {
-      constructor(callback: typeof intersect) {
-        intersect = callback
-      }
-      observe() {}
-      disconnect() {}
-    }
-  )
   const { container } = render(<RecentArt />)
   const link = screen.getByRole('link', { name: 'Photos' })
   const rail = link.querySelector<HTMLElement>('[tabindex="-1"]')!
-  Object.defineProperties(rail, { clientWidth: { value: 300 }, scrollWidth: { value: 1200 } })
+  Object.defineProperties(rail, { clientWidth: { value: 300 }, scrollWidth: { value: 1020 } })
   rail.scrollTo = vi.fn(({ left }: ScrollToOptions) => {
-    rail.scrollLeft = Math.max(0, Math.min(900, left ?? 0))
+    rail.scrollLeft = Math.max(0, Math.min(720, left ?? 0))
   }) as typeof rail.scrollTo
-  const stop = (index: number) => rail.querySelector(`[data-stop="${index}"]`)!
   const show = (position: number) => {
-    rail.scrollLeft = position * rail.clientWidth
+    rail.scrollLeft = position <= 2 ? position * 300 : 600 + (position - 2) * 120
     fireEvent.scroll(rail)
-    act(() =>
-      intersect(
-        Array.from({ length: 4 }, (_, index) => ({
-          target: stop(index),
-          intersectionRatio: Math.max(0, 1 - Math.abs(position - index)),
-        }))
-      )
-    )
   }
   return { tile: link.parentElement!, link, rail, container, show }
 }
@@ -56,15 +36,15 @@ it('keeps the original gallery link and only requests one print while idle', () 
 
 it('uses fractional scroll progress in the fallback and waits for the next photo to decode', async () => {
   vi.stubGlobal('CSS', { supports: () => false })
-  const { tile, rail, show } = openTile()
+  const { tile, show } = openTile()
   show(0.5)
   expect(tile.style.getPropertyValue('--print-position')).toBe('0.5')
-  const second = rail.querySelector<HTMLElement>('[data-print="1"]')!
+  const second = tile.querySelector<HTMLElement>('[data-print="1"]')!
   expect(second.dataset.ready).toBe('false')
-  expect(rail.querySelectorAll('img')).toHaveLength(2)
+  expect(tile.querySelectorAll('img')).toHaveLength(2)
   await act(async () => fireEvent.load(second.querySelector('img')!))
   expect(second.dataset.ready).toBe('true')
-  expect(rail.querySelectorAll('img')).toHaveLength(2)
+  expect(tile.querySelectorAll('img')).toHaveLength(2)
   show(0.25)
   expect(tile.style.getPropertyValue('--print-position')).toBe('0.25')
   expect(screen.getByRole('status').textContent).toBe('Stair Shadow, 1 of 4')
@@ -81,9 +61,13 @@ it('uses native CSS when supported and lets keys and dots navigate from a partia
   fireEvent.keyDown(link, { key: 'ArrowLeft' })
   expect(rail.scrollLeft).toBe(300)
   fireEvent.click(screen.getByRole('button', { name: 'Show B&W Baseball' }))
-  expect(rail.scrollLeft).toBe(900)
+  expect(rail.scrollLeft).toBe(720)
   fireEvent.keyDown(link, { key: 'ArrowLeft', altKey: true })
-  expect(rail.scrollLeft).toBe(900)
+  expect(rail.scrollLeft).toBe(720)
+  show(2.6)
+  expect(screen.getByRole('status').textContent).toBe('B&W Baseball, 4 of 4')
+  fireEvent.keyDown(link, { key: 'ArrowLeft' })
+  expect(rail.scrollLeft).toBe(600)
 })
 
 const pointer = (x: number, type = 'mouse') => ({
@@ -121,10 +105,10 @@ it('counts only the distance past the last print, lets a pull unwind, and opens 
   const { link, rail, show } = openTile()
   const icon = link.querySelector('svg')!
   const open = vi.spyOn(link, 'click').mockImplementation(() => {})
-  show(2.8)
+  show(2.5)
   fireEvent.pointerDown(rail, pointer(240))
   fireEvent.pointerMove(rail, pointer(180))
-  expect(rail.scrollLeft).toBe(900)
+  expect(rail.scrollLeft).toBe(720)
   expect(icon.dataset.pull).toBeUndefined()
   // An 82px pull used to commit; it should now be just under halfway.
   fireEvent.pointerMove(rail, pointer(98))
@@ -200,7 +184,7 @@ it('hands a new outward swipe the last print before the native snap finishes', (
   expect(icon.dataset.pull).toBeUndefined()
   expect(open).not.toHaveBeenCalled()
 
-  // The browser still has 105px to snap. Those belong to the previous gesture.
+  // The browser still has some distance to snap. That belongs to the previous gesture.
   start()
   move(198)
   expect(Number(icon.style.getPropertyValue('--travel'))).toBeCloseTo(0.46, 1)
@@ -215,7 +199,31 @@ it('hands a new outward swipe the last print before the native snap finishes', (
   expect(rail.scrollTo).not.toHaveBeenCalled()
 })
 
-it('ignores incoming wheel momentum and only commits a fresh outward burst once it ends', () => {
+it('hands one held touch from Adobe through Baseball to the ring and only opens on release', () => {
+  const { link, rail, show } = openTile()
+  const icon = link.querySelector('svg')!
+  const open = vi.spyOn(link, 'click').mockImplementation(() => {})
+  for (const reverse of [true, false]) {
+    show(2)
+    fireEvent.touchStart(rail, { touches: [finger(310)] })
+    const move = (x: number) => fireEvent.touchMove(rail, { touches: [finger(x)] })
+    move(190)
+    expect(icon.dataset.pull).toBeUndefined()
+    show(2.9)
+    move(108)
+    expect(Number(icon.style.getPropertyValue('--travel'))).toBeCloseTo(0.46, 1)
+    show(3)
+    move(18)
+    expect(icon.dataset.pull).toBe('ready')
+    expect(open).not.toHaveBeenCalled()
+    if (reverse) move(125)
+    fireEvent.touchEnd(rail, { changedTouches: [finger(reverse ? 125 : 18)] })
+    expect(open).toHaveBeenCalledTimes(reverse ? 0 : 1)
+  }
+  expect(rail.scrollTo).not.toHaveBeenCalled()
+})
+
+it('accepts continuous trackpad pressure across the edge but not coasting, vertical scroll or a single notch', () => {
   vi.useFakeTimers()
   const { link, rail, show } = openTile()
   const open = vi.spyOn(link, 'click').mockImplementation(() => {})
@@ -235,10 +243,10 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
   show(2)
   scroll(500)
   show(3)
-  for (let i = 0; i < 30; i++) scroll(50)
-  expect(icon.dataset.pull).toBeUndefined()
+  for (const decay of [70, 54, 42, 32, 22, 16, 11, 7, 4, 2, 1]) scroll(decay)
   rest()
   expect(icon.dataset.pull).toBeUndefined()
+  expect(open).not.toHaveBeenCalled()
   scroll(900)
   expect(icon.dataset.pull).toBe('tracking')
   rest()
@@ -253,11 +261,16 @@ it('ignores incoming wheel momentum and only commits a fresh outward burst once 
   scroll(-15)
   rest()
   expect(open).not.toHaveBeenCalled()
-  show(2.72)
-  for (let i = 0; i < 7; i++) {
+  show(2)
+  scroll(60)
+  show(3)
+  for (let i = 0; i < 9; i++) {
     time += 48
     scroll(0, 3, { shiftKey: true, deltaMode: 1 })
   }
+  scroll(18, 20)
+  scroll(0, 2)
+  scroll(-2)
   expect(icon.dataset.pull).toBe('ready')
   expect(open).not.toHaveBeenCalled()
   rest()

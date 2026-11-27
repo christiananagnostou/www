@@ -9,29 +9,28 @@ import {
   type WheelEvent,
 } from 'react'
 
+import { printPosition } from './printPosition'
+
 const DEAD_ZONE = 10
 const FULL_PULL = 168
-// Wheels have no release event. A quiet gap separates a new pull from the previous swipe's momentum.
-const WHEEL_IDLE = 180
+// A wheel does not have a portable finger-up event.
+const WHEEL_IDLE = 220
 
 type Drag = { id: number | null; x: number; y: number; left: number; end: number; fullPull: number }
 
-function lastPrintInReach(node: HTMLDivElement, reach = FULL_PULL) {
-  const width = node.clientWidth
-  const end = node.scrollWidth - width
-  return end > 0 && end - node.scrollLeft < Math.min(width / 2, reach)
-}
-
-export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
+export function usePrintGestures(rail: RefObject<HTMLDivElement | null>, count: number) {
   const gallery = useRef<HTMLAnchorElement>(null)
   const indicator = useRef<SVGSVGElement>(null)
   const drag = useRef<Drag | null>(null)
   const dragged = useRef(false)
   const travel = useRef(0)
-  const wheel = useRef({ last: -Infinity, timer: 0, distance: 0 })
+  const wheel = useRef({ last: -Infinity, timer: 0, distance: 0, previousDelta: 0, falling: 0 })
 
   const draw = useCallback((distance: number, fullPull = FULL_PULL) => {
-    const value = Math.max(0, (distance - DEAD_ZONE) / (fullPull - DEAD_ZONE))
+    const raw = (distance - DEAD_ZONE) / (fullPull - DEAD_ZONE)
+    // A few pixels of hand tremor shouldn't toggle the filled ring on and off.
+    const minimum = travel.current >= 1 && distance >= fullPull - 4 ? 1 : 0
+    const value = Math.min(2, Math.max(minimum, raw))
     if (value === travel.current) return
     travel.current = value
     const icon = indicator.current
@@ -63,8 +62,12 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     }
   }, [cancel])
 
+  function lastPrintIsNearest(node: HTMLDivElement) {
+    return printPosition(node, count) > count - 1.5
+  }
+
   function release() {
-    const open = travel.current >= 1 && rail.current && lastPrintInReach(rail.current, drag.current?.fullPull)
+    const open = travel.current >= 1 && rail.current && lastPrintIsNearest(rail.current)
     cancel()
     if (open) gallery.current?.click()
   }
@@ -78,7 +81,7 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     const end = node.scrollWidth - node.clientWidth
     // Once the last print is nearest, a new finger pulls from it while the native snap finishes.
     // A swipe that started on an earlier print still has to travel all the way to the edge first.
-    const left = id === null && lastPrintInReach(node, fullPull) ? end : node.scrollLeft
+    const left = id === null && lastPrintIsNearest(node) ? end : Math.max(0, Math.min(end, node.scrollLeft))
     drag.current = { id, x, y, left, end, fullPull }
   }
 
@@ -100,7 +103,8 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     // Touch and trackpads scroll natively. Only a mouse needs to move the rail itself.
     if (id !== null) node.scrollTo({ left, behavior: 'instant' })
     const beyond = left - start.end
-    draw(beyond > 0 && lastPrintInReach(node, start.fullPull) ? beyond : 0, start.fullPull)
+    // Once a drag crosses the edge, only the finger drives the ring, not a settling scroll offset.
+    draw(start.end > 0 ? beyond : 0, start.fullPull)
   }
 
   function cancelPointer(event: PointerEvent<HTMLDivElement>) {
@@ -168,23 +172,35 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
         const elapsed = event.timeStamp - burst.last
         const fresh = elapsed > WHEEL_IDLE
         burst.last = event.timeStamp
-        // Without an explicit momentum signal, never adopt the tail of an incoming wheel burst.
-        const continuing = !fresh && !burst.timer
-        if (continuing && momentum !== false) return
         const node = event.currentTarget
         const shifted = event.shiftKey && event.deltaX === 0
         const dx = shifted ? event.deltaY : event.deltaX
-        if (
-          event.ctrlKey ||
-          event.metaKey ||
-          event.altKey ||
-          dx <= (shifted ? 0 : Math.abs(event.deltaY)) ||
-          !lastPrintInReach(node, continuing ? 2 : FULL_PULL)
-        )
-          return cancel()
+        const dy = shifted ? 0 : Math.abs(event.deltaY)
+        if (event.ctrlKey || event.metaKey || event.altKey) return cancel()
+        if (dy > Math.abs(dx) * (burst.timer ? 2 : 1)) {
+          if (!burst.timer || dy >= 8) cancel()
+          return
+        }
+        if (!dx) return
         const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? node.clientWidth : 1
-        // Limit both a single notch and a flurry of accelerated trackpad events (0.5px/ms).
-        burst.distance += Math.min(24, dx * unit, Math.max(0, elapsed) * 0.5)
+        const delta = dx * unit
+        // Older trackpads don't label inertia. Ignore a tapering tail, but let sustained input
+        // cross the edge without lifting. A diagonal sample or tiny reversal mustn't reset the ring.
+        if (fresh || delta > burst.previousDelta + 1 || delta <= 0) burst.falling = 0
+        else if (delta < burst.previousDelta - 0.5) burst.falling = Math.min(2, burst.falling + 1)
+        else if (delta >= 6) burst.falling = Math.max(0, burst.falling - 1)
+        burst.previousDelta = delta
+        const coasting = momentum !== false && burst.falling >= 2
+        const remaining = Math.max(0, node.scrollWidth - node.clientWidth - node.scrollLeft)
+        if (!burst.timer && (!lastPrintIsNearest(node) || delta <= 0 || coasting)) return
+        if (!coasting) {
+          const excess = burst.timer || fresh ? delta : Math.max(0, delta - remaining)
+          if (!excess && !burst.timer) return
+          // A single wheel notch cannot arm the link; a long hold has bounded elastic travel.
+          const change = Math.sign(excess) * Math.min(24, Math.abs(excess), Math.max(0, elapsed) * 0.5)
+          const base = change < 0 ? Math.min(FULL_PULL, burst.distance) : burst.distance
+          burst.distance = Math.max(0, Math.min(FULL_PULL * 2, base + change))
+        }
         draw(burst.distance)
         window.clearTimeout(burst.timer)
         burst.timer = window.setTimeout(release, WHEEL_IDLE)

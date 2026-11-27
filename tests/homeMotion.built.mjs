@@ -221,9 +221,33 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const x = box.x + box.width * 0.8
     const y = box.y + box.height * 0.4
     for (const distance of [82, 184]) {
+      let approach = 0
+      if (distance === 184) {
+        await page.getByRole('button', { name: 'Show Adobe B&W' }).click()
+        const rail = gallery.locator('[tabindex="-1"]')
+        await page.waitForFunction(() => {
+          const r = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
+          return Math.abs(r.scrollLeft - 2 * r.clientWidth) < 2
+        })
+        approach = await rail.evaluate((r) => r.scrollWidth - r.clientWidth - r.scrollLeft)
+        assert.ok(approach > 0 && approach < box.width / 2, 'Leave room to continue pulling in the same drag')
+      }
       await page.mouse.move(x, y)
       await page.mouse.down()
-      await page.mouse.move(x - distance, y, { steps: 6 })
+      if (approach) {
+        await page.mouse.move(x - approach / 2, y, { steps: 6 })
+        const dot = await gallery
+          .locator('..')
+          .getByRole('group')
+          .evaluate(
+            (el) =>
+              parseFloat(getComputedStyle(el, '::after').translate) /
+              parseFloat(getComputedStyle(el).getPropertyValue('--dot-step'))
+          )
+        assert.ok(Math.abs(dot - 2.5) < 0.03, 'The dot tracks the shorter final transition')
+        assert.equal(await icon.getAttribute('data-pull'), null, 'Finish revealing Baseball before showing the arrow')
+      }
+      await page.mouse.move(x - approach - distance, y, { steps: 12 })
       const remainingArc = await icon
         .locator('[pathLength]')
         .evaluate((circle) => parseFloat(getComputedStyle(circle).strokeDashoffset))
@@ -232,7 +256,7 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       } else {
         assert.equal(remainingArc, 0, 'The full 360° ring must be visible before navigation')
         const ready = await icon.boundingBox()
-        await page.mouse.move(x - distance - 40, y, { steps: 4 })
+        await page.mouse.move(x - approach - distance - 40, y, { steps: 4 })
         const give = ready.x - (await icon.boundingBox()).x
         assert.ok(give > 1 && give < 8, 'The marker should still yield a few pixels under tension after 100%')
       }
@@ -250,6 +274,12 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     const gallery = phone.getByRole('link', { name: 'Photos', exact: true })
     await gallery.scrollIntoViewIfNeeded()
     const frame = await gallery.boundingBox()
+    const arrow = await gallery.locator('svg').boundingBox()
+    assert.ok(arrow.x + arrow.width <= frame.x + frame.width + 1, 'The hidden arrow must rest inside the frame')
+    assert.ok(
+      await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      'The reel must not widen the page'
+    )
     const dots = await phone.getByRole('group', { name: 'Choose a photograph' }).evaluate((group) => {
       const { left, bottom } = group.getBoundingClientRect()
       return Array.from(group.children, (button) => {
@@ -273,8 +303,10 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       await phone.touchscreen.tap(dots[index].x, dots[index].y)
       await phone.waitForFunction((i) => {
         const image = document.querySelector(`[data-print="${i}"][data-ready="true"]`)
-        const rail = image?.closest('[tabindex="-1"]')
-        return rail && Math.abs(rail.scrollLeft - i * rail.clientWidth) < 2
+        const rail = document.querySelector('[data-stop]').closest('[tabindex="-1"]')
+        return (
+          image && Math.abs(rail.scrollLeft - Math.min(i * rail.clientWidth, rail.scrollWidth - rail.clientWidth)) < 2
+        )
       }, index)
       await button.and(phone.locator('[aria-current="true"]')).waitFor()
       const image = gallery.locator(`[data-print="${index}"] > picture img`)
