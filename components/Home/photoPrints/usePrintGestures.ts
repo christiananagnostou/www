@@ -71,7 +71,8 @@ export function usePrintGestures(rail: RefObject<HTMLDivElement | null>) {
     cancel()
     dragged.current = false
     // Keep a full pull within a thumb's reach, even from the center of a small phone.
-    const fullPull = Math.min(FULL_PULL, window.innerWidth * 0.45)
+    const width = window.visualViewport?.width || window.innerWidth
+    const fullPull = Math.min(FULL_PULL, width * 0.45)
     drag.current = { id, x, y, left: node.scrollLeft, end: node.scrollWidth - node.clientWidth, fullPull }
   }
 

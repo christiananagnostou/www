@@ -171,7 +171,8 @@ it('tracks native touch beyond the edge, but does not claim vertical pans, pinch
   fireEvent.touchEnd(rail, { changedTouches: [finger(170)] })
   expect(open).not.toHaveBeenCalled()
 
-  vi.stubGlobal('innerWidth', 320)
+  vi.stubGlobal('innerWidth', 375)
+  vi.stubGlobal('visualViewport', { width: 320 })
   begin()
   fireEvent.pointerCancel(rail, pointer(190, 'touch'))
   expect(move(105)).toBe(true)
