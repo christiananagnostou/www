@@ -37,7 +37,7 @@ afterEach(() => {
 
 it('cycles through the four selected gallery originals in order and promotes the decoded element', async () => {
   const tile = openTile()
-  const rotation = ['arrow_up', 'adobe_bnw', 'stair_shadow', 'satellite'].map((id) => {
+  const rotation = ['bnw_baseball', 'adobe_bnw', 'stair_shadow', 'satellite'].map((id) => {
     const { image } = ArtImages.find((photo) => photo.id === id)!
     return typeof image === 'string' ? image : image.src
   })
