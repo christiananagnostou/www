@@ -1,120 +1,76 @@
 import * as m from 'framer-motion/m'
-import Image from 'next/image'
 import Link from 'next/link'
+import type { CSSProperties } from 'react'
 import styled from 'styled-components'
-import StairShadow from '../../public/img/art/photography/stair_shadow.jpg'
+
 import { fade, photoAnim, staggerFade } from '../animation'
+
+import { PrintSheet, prints } from './photoPrints/Print'
+import styles from './photoPrints/Prints.module.css'
+import { usePrintReel } from './photoPrints/usePrintReel'
 import { HomepageBox } from './styles'
 
 export default function RecentArt() {
+  const { tile, gallery, indicator, current, requested, go, step, railProps, onClick } = usePrintReel(prints.length)
   return (
-    <ArtContainer variants={staggerFade}>
-      <Title variants={fade}>
-        <Link href="/art">Photos</Link>
-      </Title>
-
-      <Link href="/art">
-        <div className="recent-art__hover-box">
-          <p>
-            Through the lens,
-            <br />
-            reality becomes art.
-          </p>
+    <Tile
+      ref={tile}
+      className={styles.tile}
+      style={{ '--print-count': prints.length } as CSSProperties}
+      variants={staggerFade}
+    >
+      <Link
+        ref={gallery}
+        aria-description="Swipe or use the arrow keys to change the photograph. Open this link to see all photography."
+        aria-keyshortcuts="ArrowLeft ArrowRight"
+        className={styles.gallery}
+        draggable={false}
+        href="/art"
+        onClick={onClick}
+        onKeyDown={(event) => {
+          if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+          if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+          event.preventDefault()
+          step(event.key === 'ArrowRight' ? 1 : -1)
+        }}
+      >
+        <m.div className={styles.exposure} variants={photoAnim} aria-hidden="true">
+          {prints.map(
+            (print, index) => requested.includes(index) && <PrintSheet key={print.title} print={print} index={index} />
+          )}
+        </m.div>
+        <div {...railProps} className={styles.rail} aria-hidden="true" tabIndex={-1}>
+          {prints.map((print, index) => (
+            <i data-stop={index} key={print.title} />
+          ))}
         </div>
-
-        <RecentImage key={StairShadow.src} variants={photoAnim}>
-          <Image
-            alt=""
-            blurDataURL={StairShadow.blurDataURL}
-            loading="eager"
-            placeholder="blur"
-            src={StairShadow}
-            width={300}
-          />
-        </RecentImage>
+        <m.h2 variants={fade}>Photos</m.h2>
+        <svg ref={indicator} className={styles.pull} aria-hidden="true" focusable="false" viewBox="0 0 36 36">
+          <circle className={styles.rim} cx="18" cy="18" r="16" />
+          <circle className={styles.sweep} cx="18" cy="18" r="16" pathLength="1" />
+          <path d="M11.5 18h13m-5-5 5 5-5 5" />
+        </svg>
       </Link>
-    </ArtContainer>
+      <div className={styles.positions} role="group" aria-label="Choose a photograph">
+        {prints.map((print, index) => (
+          <button
+            aria-current={index === current ? 'true' : undefined}
+            aria-label={`Show ${print.title}`}
+            key={print.title}
+            onClick={() => go(index)}
+            style={{ '--index': index } as CSSProperties}
+            type="button"
+          />
+        ))}
+      </div>
+      <span className={styles.announcement} role="status">
+        {prints[current].title}, {current + 1} of {prints.length}
+      </span>
+    </Tile>
   )
 }
 
-const ArtContainer = styled(HomepageBox)`
-  overflow: hidden;
-
-  .recent-art__hover-box {
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    width: 100%;
-    height: 50px;
-    text-align: center;
-    transition: bottom 0.25s ease-in-out;
-
-    p {
-      padding-bottom: 3px;
-      font-size: 0.8rem;
-      color: var(--text-dark);
-      transition: scale 0.25s ease-in-out;
-      scale: 0.8;
-    }
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent 20%, #171717);
-    pointer-events: none;
-    transition: top 0.28s ease-in-out;
-  }
-
-  &:hover {
-    &::after {
-      top: 0;
-    }
-
-    .recent-art__hover-box {
-      bottom: 0;
-
-      p {
-        scale: 1;
-      }
-    }
-  }
-`
-
-const Title = styled(m.h2)`
-  position: relative;
-  z-index: 1;
-  margin: 0 0 1rem;
-
-  a {
-    display: block;
-    color: inherit;
-  }
-`
-
-const RecentImage = styled(m.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  filter: brightness(0.25);
-
-  img {
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  }
+const Tile = styled(HomepageBox)`
+  display: grid;
+  padding: 0;
 `
