@@ -4,7 +4,9 @@ import { firefox } from 'playwright-core'
 
 import { startBuiltApp } from './helpers/builtApp.mjs'
 
-it('ships the site font and leaves the Gantt timeline scrollable with its scrollbar hidden', async (t) => {
+const isFocused = (locator) => locator.evaluate((el) => el === document.activeElement)
+
+it('preserves no-JS styles and keyboard navigation across breakpoints', async (t) => {
   const site = await startBuiltApp()
   t.after(() => site.close())
   const browser = await firefox.launch()
@@ -31,4 +33,23 @@ it('ships the site font and leaves the Gantt timeline scrollable with its scroll
       return null
     })
   assert.deepEqual(timeline, { scrollLeft: 64, scrollbar: 'none' })
+
+  const interactive = await browser.newPage()
+  for (const width of [1280, 390]) {
+    await interactive.setViewportSize({ width, height: 844 })
+    await interactive.goto(`${site.origin}/contact`)
+    await interactive.waitForFunction(() => window.next?.router?.isReady)
+    const nav = interactive.getByRole('navigation', { name: 'Main Navigation' })
+    if (width === 390) await nav.getByRole('button', { name: 'Toggle navigation menu' }).click()
+    const works = nav.getByRole('button', { name: 'Works' })
+    await works.focus()
+    await works.press('Tab')
+    assert.ok(await isFocused(nav.getByRole('link', { name: 'Contact' })), 'Tab skips the closed submenu')
+    await works.press('Enter')
+    await interactive.keyboard.press('Tab')
+    assert.ok(await isFocused(nav.getByRole('link', { name: 'Fitness' })), 'Tab enters the open submenu')
+    await interactive.keyboard.press('Escape')
+    assert.ok(await isFocused(works))
+    assert.equal(await works.getAttribute('aria-expanded'), 'false')
+  }
 })

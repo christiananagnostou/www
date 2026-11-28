@@ -1,6 +1,7 @@
 ---
 title: 'Bookmarklets in React'
 dateCreated: 'Apr 05, 2025'
+lastUpdated: 'Nov 28, 2026'
 summary: 'A quick and practical guide to creating bookmarklets in React'
 coverImg: '/img/articles/bookmarklets/bookmarklets.webp'
 hidden: false
@@ -121,7 +122,7 @@ The JavaScript URL gets set after mounting, bypassing React's security measures.
 
 ## When Bookmarklets Make Sense
 
-Bookmarklets really shine when you need quick hacks or customizations, especially handy for developers tweaking third-party sites or rapidly testing new scripts. However, if you need a stable, long-term solution, look into browser extensions or directly integrating the functionality into your app.
+I keep a few [bookmarklets you can try](/bookmarklets) for tasks I do in the browser. If a shortcut needs to run all the time instead of when you click it, a browser extension is usually a better fit.
 
 ---
 
