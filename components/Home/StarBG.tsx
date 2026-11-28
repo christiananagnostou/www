@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react'
 import { type ReactNode, useEffect, useState } from 'react'
-import styled from 'styled-components'
+
 import { useWindowSize } from '../Hooks'
+
+import styles from './StarBG.module.css'
 
 interface Props {
   show: boolean
@@ -38,18 +40,22 @@ const StarBG = ({ show }: Props) => {
     return () => clearInterval(interval)
   }, [width, height, show])
 
-  return <Container show={show}>{stars}</Container>
+  return (
+    <div data-show={show || undefined} className={styles.container}>
+      {stars}
+    </div>
+  )
 }
 
 export default StarBG
 
 const Star = ({ style, index }: { style: CSSProperties; index: number }) => {
   return (
-    <SparkleSVG style={style}>
+    <span className={styles.sparkle} style={style}>
       {index % 3 === 0 && BaseballSVG}
       {index % 3 === 1 && MusicNoteSVG}
       {index % 3 === 2 && SineWaveSVG}
-    </SparkleSVG>
+    </span>
   )
 }
 
@@ -94,47 +100,3 @@ const SineWaveSVG = (
     <path d="M239.24,131.4c-22,46.8-41.4,68.6-61.2,68.6-25.1,0-40.73-33.32-57.28-68.6C107.7,103.56,92.9,72,78,72c-16.4,0-36.31,37.21-46.72,59.4a8,8,0,0,1-14.48-6.8C38.71,77.8,58.16,56,78,56c25.1,0,40.73,33.32,57.28,68.6C148.3,152.44,163.1,184,178,184c16.4,0,36.31-37.21,46.72-59.4a8,8,0,0,1,14.48,6.8Z" />
   </svg>
 )
-
-const SparkleSVG = styled.span`
-  position: absolute;
-  top: var(--top);
-  left: var(--left);
-  opacity: 0;
-  color: #414141;
-  animation: sparkle 5s linear forwards;
-  rotate: var(--initial-rotate);
-
-  --initial-rotate: var(--rotate);
-
-  @keyframes sparkle {
-    0% {
-      opacity: 0;
-      rotate: var(--initial-rotate);
-      scale: 0;
-    }
-    70% {
-      opacity: 0.8;
-      scale: 1;
-    }
-    100% {
-      top: calc(var(--top) + 300px);
-      opacity: 0;
-      rotate: calc(var(--initial-rotate) * -1);
-      scale: 0.7;
-    }
-  }
-`
-
-const Container = styled.div<{ show: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(var(--body-bg) 50%, rgb(10 10 10));
-  background-position: ${({ show }) => (show ? 'bottom' : 'top')};
-  background-size: 100% 200%;
-  pointer-events: none;
-  transition: background-position 1.5s ease;
-`

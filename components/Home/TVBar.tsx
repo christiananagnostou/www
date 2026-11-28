@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+
 import { useWindowSize } from '../Hooks'
 import StarBG from './StarBG'
+
+import styles from './TVBar.module.css'
 
 const Sections = [
   'craft',
@@ -95,26 +97,27 @@ const TVBar = ({ onBarFilled }: Props) => {
 
   return (
     <>
-      <TVControls>
-        <Knob
+      <div className={styles.tVControls}>
+        <div
+          className={styles.knob}
           onPointerCancel={endPointerDrag}
           onPointerDown={onDragStart}
           onPointerMove={onDragMove}
           onPointerUp={endPointerDrag}
         >
           <div ref={knobRef} className="knob" style={{ filter: isBarFull ? 'brightness(90%)' : 'brightness(100%)' }} />
-        </Knob>
+        </div>
 
         <div
           ref={barsRef}
-          className="bar-wrap"
+          className={styles.barWrap}
           onPointerCancel={endPointerDrag}
           onPointerDown={(width ?? Number.POSITIVE_INFINITY) < 768 ? onDragStart : undefined}
           onPointerMove={onDragMove}
           onPointerUp={endPointerDrag}
         >
           <div className="bar">
-            <div ref={barFillRef} className="bar-inner" style={{ background: BAR_GRADIENT }} />
+            <div ref={barFillRef} className={styles.barInner} style={{ background: BAR_GRADIENT }} />
           </div>
         </div>
 
@@ -136,7 +139,7 @@ const TVBar = ({ onBarFilled }: Props) => {
             ))}
           </button>
         </div>
-      </TVControls>
+      </div>
 
       <StarBG show={isBarFull} />
     </>
@@ -144,143 +147,3 @@ const TVBar = ({ onBarFilled }: Props) => {
 }
 
 export default TVBar
-
-const Knob = styled.div`
-  --knob-border-width: 1px;
-  --knob-size: 24px;
-  --s: rgb(58 59 65);
-  --s1: 42 44 50;
-  --s2: rgb(54 56 60);
-  --s3: rgb(30 31 34);
-  --s4: 24 26 32;
-  position: relative;
-  width: var(--knob-size);
-  height: var(--knob-size);
-
-  margin-right: var(--item-spacing);
-  padding: var(--knob-border-width);
-  border-radius: 50%;
-  background: linear-gradient(to top, var(--s3), var(--s2));
-  box-shadow: 0 1px 3px rgb(0 0 0);
-
-  cursor: ew-resize;
-  -webkit-overflow-scrolling: touch;
-  rotate: 0deg;
-
-  touch-action: pan-y;
-
-  .knob {
-    width: 100%;
-    height: 100%;
-
-    border-radius: 50%;
-    background: linear-gradient(
-      90deg,
-      var(--s2) 10%,
-      rgb(var(--s4)) 40.8%,
-      var(--s) 42%,
-      var(--s) 58%,
-      rgb(var(--s1)) 59.2%,
-      var(--s2) 90%
-    );
-    box-shadow:
-      0 0.1em 0.2em 0 rgb(var(--s1) / 90%) inset,
-      0 -0.1em 0.3em 0 rgb(var(--s1) / 30%) inset,
-      0 0.08em 0.3em 0 rgb(0 0 17 / 30%),
-      0.5em 0 1em 0 rgb(var(--s1) / 50%) inset,
-      -0.5em 0 1em 0 rgb(var(--s4) / 30%) inset,
-      0 4em 1em -3.5em rgb(0 0 34 / 30%);
-    transform: translateZ(0) scale(1, 1);
-
-    /* Prevent 1px shift */
-    backface-visibility: hidden;
-
-    transition: filter 2s ease;
-  }
-
-  .knob::before {
-    content: '';
-    position: absolute;
-    left: calc((var(--knob-size) / 2) - 2px);
-    width: 2px;
-    height: 30%;
-    border-radius: 0 0 1px 1px;
-    background: rgb(187 68 68 / 75%);
-  }
-`
-
-const TVControls = styled.div`
-  position: relative;
-  position: absolute;
-  bottom: 0;
-  left: 1rem;
-  display: flex;
-  align-items: stretch;
-  width: calc(100% - 2rem);
-
-  user-select: none;
-  transform: translateY(calc(50% + 0.5px));
-  * {
-    user-select: none;
-  }
-
-  .bar-wrap {
-    display: flex;
-    flex: 1;
-    align-items: center;
-
-    .bar {
-      position: relative;
-      width: 100%;
-      height: 0.5px;
-      background: var(--accent);
-      overflow: hidden;
-
-      .bar-inner {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transform: translateX(-100%);
-        will-change: transform;
-      }
-    }
-  }
-
-  .button {
-    position: relative;
-    display: block;
-    min-width: 60px;
-    height: 100%;
-    padding: 0 1rem;
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-    background: var(--body-bg);
-    text-align: center;
-    cursor: not-allowed;
-    overflow: hidden;
-    transition: all 0.5s ease;
-
-    .inner {
-      position: absolute;
-      display: grid;
-      opacity: 0 !important;
-      font-weight: 200;
-      font-size: 0.9rem;
-      line-height: 1rem;
-      color: #888888;
-      transition: all 0.5s ease;
-      inset: 0;
-      place-items: center;
-    }
-
-    &.highlight {
-      cursor: pointer;
-
-      .inner {
-        opacity: 1 !important;
-        color: rgb(255 255 255 / 90%);
-      }
-    }
-  }
-`

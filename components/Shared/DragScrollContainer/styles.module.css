@@ -1,4 +1,4 @@
-.container {
+:where(.container) {
   overflow: auto;
 }
 
@@ -12,8 +12,6 @@
 }
 
 .hideScrollbars {
-  overflow: hidden;
-  overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -24,8 +22,4 @@
   width: 0 !important;
   background: transparent !important;
   -webkit-appearance: none !important;
-}
-
-.nativeScroll {
-  overflow: auto;
 }

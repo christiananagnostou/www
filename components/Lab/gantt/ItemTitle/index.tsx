@@ -1,8 +1,10 @@
 import dayjs from 'dayjs'
+
 import type { ItemProps } from '..'
 import { RowHeight } from '..'
 import ChildArrow from '../ChildArrow'
-import { TitleButton, TitleSpan } from './styles'
+
+import styles from './ItemTitle.module.css'
 
 interface ItemTitleProps {
   item: ItemProps
@@ -35,11 +37,10 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
 
   return (
     <>
-      <TitleButton
-        $paddingLeft={paddingLeft}
-        className="gantt-title"
+      <button
+        style={{ height: RowHeight, paddingLeft: `calc(${paddingLeft}px + 0.25rem)` }}
+        className={`${styles.titleButton} gantt-title`}
         data-item-id={item.id}
-        height={RowHeight}
         onClick={() => scrollToDate(item.startDate || dayjs().format('YYYY-MM-DD'), 'smooth')}
         onMouseEnter={() => handleRowMouseOver(item.id)}
         onMouseLeave={() => handleRowMouseOver(-1)}
@@ -54,8 +55,8 @@ const ItemTitle = ({ item, idx, level, itemsChildrenMap, handleRowMouseOver, scr
             />
           </span>
         ) : null}
-        <TitleSpan>{item.title}</TitleSpan>
-      </TitleButton>
+        <span className={styles.titleSpan}>{item.title}</span>
+      </button>
 
       {children?.map((child, i) => (
         <ItemTitle

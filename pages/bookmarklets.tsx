@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion'
 import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+
 import { dropdown, fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
@@ -16,6 +16,8 @@ import BookmarkletLink from '../lib/bookmarklets/BookmarkletLink'
 import { getMetrics } from '../lib/bookmarklets/metrics'
 import { BASE_URL } from '../lib/constants'
 import { getBookmarkletsStructuredData } from '../lib/structured/bookmarklets'
+
+import styles from '../styles/pages/Bookmarklets.module.css'
 
 const PageTitle = 'Bookmarklets | Christian Anagnostou'
 const PageDescription = 'A handy list of Bookmarklets by Christian Anagnostou'
@@ -145,7 +147,13 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
         />
       </Head>
 
-      <Container animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+      <m.section
+        className={styles.container}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
         <Heading variants={fade}>
           <h1>Bookmarklets</h1>
           <p>
@@ -154,7 +162,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
           </p>
         </Heading>
 
-        <BookmarkletsContainer variants={staggerFade}>
+        <m.div className={styles.bookmarkletsContainer} variants={staggerFade}>
           {bookmarkletsWithMetrics.map((bookmarklet, index) => {
             const { id, title, description, code, githubUrl, instructions } = bookmarklet
             const originalBookmarklet = bookmarkletsData.find((b) => b.id === id)
@@ -166,10 +174,10 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
             const installCount = isInstalled ? Math.max(serverCount, localCount) : serverCount
 
             return (
-              <BookmarkletItem key={id} variants={fade}>
+              <m.div className={styles.bookmarkletItem} key={id} variants={fade}>
                 <div className="main-content">
                   {/* Top row: icon + "title link" */}
-                  <div className="top-row">
+                  <div className={styles.topRow}>
                     <div aria-hidden="true" className="icon">
                       {icon}
                     </div>
@@ -183,12 +191,12 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                       </BookmarkletLink>
                     </h2>
 
-                    <div className="right-side">
+                    <div className={styles.rightSide}>
                       {/* GitHub link */}
                       {githubUrl ? (
                         <a
                           aria-label={`View the ${title} bookmarklet on GitHub.`}
-                          className="github-url"
+                          className={styles.githubUrl}
                           href={githubUrl}
                           rel="noopener noreferrer"
                           target="_blank"
@@ -199,15 +207,15 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                       ) : null}
 
                       {/* Install tracking button */}
-                      <InstallButton
-                        className={isInstalled ? 'installed' : ''}
+                      <button
+                        className={`${styles.installButton} ${isInstalled ? 'installed' : ''}`}
                         disabled={isInstalled}
                         title={isInstalled ? 'Already marked as installed' : 'Mark as installed'}
                         onClick={() => handleInstallClick(id)}
                       >
                         {isInstalled ? <FilledBookmark /> : <BookWithBookmark />}
                         <span>{installCount}</span>
-                      </InstallButton>
+                      </button>
                     </div>
                   </div>
 
@@ -215,11 +223,11 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                   <button
                     aria-controls={`instructions-${index}`}
                     aria-expanded={isOpen}
-                    className="toggle-area"
+                    className={styles.toggleArea}
                     onClick={() => toggleOpen(index)}
                   >
                     <p className="summary">{description}</p>
-                    <span className="toggle-arrow">{isOpen ? <UpArrow /> : <DownArrow />}</span>
+                    <span className={styles.toggleArrow}>{isOpen ? <UpArrow /> : <DownArrow />}</span>
                   </button>
 
                   {/* Instructions panel, if open */}
@@ -235,7 +243,7 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                         role="region"
                         variants={dropdown}
                       >
-                        <div className="instructions">
+                        <div className={styles.instructions}>
                           {instructions.split('\n').map((line, i) => (
                             <p key={`${title}-line-${i}`}>{line}</p>
                           ))}
@@ -244,197 +252,11 @@ export default function Bookmarklets({ bookmarkletsWithMetrics }: Props) {
                     ) : null}
                   </AnimatePresence>
                 </div>
-              </BookmarkletItem>
+              </m.div>
             )
           })}
-        </BookmarkletsContainer>
-      </Container>
+        </m.div>
+      </m.section>
     </>
   )
 }
-
-const Container = styled(m.section)`
-  max-width: var(--max-w-screen);
-  margin: 2rem auto;
-  padding: 0 1rem;
-  color: var(--text);
-  overflow: hidden;
-`
-
-const BookmarkletsContainer = styled(m.div)`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin: auto;
-  place-content: center center;
-`
-
-const BookmarkletItem = styled(m.div)`
-  display: flex;
-  width: 100%;
-
-  .main-content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .top-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    .icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-width: 25px;
-      font-size: 1.25rem;
-    }
-
-    .title {
-      margin: 0;
-      font-weight: normal;
-      font-size: 1rem;
-
-      & * {
-        cursor: grab;
-      }
-      & *:active {
-        cursor: grabbing;
-      }
-    }
-
-    .github-url {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-left: auto;
-      font-size: 0.85rem;
-      color: var(--text-dark);
-      text-decoration: none;
-      cursor: alias;
-      transition: color 0.2s ease;
-
-      &:hover,
-      &:focus {
-        color: var(--text);
-      }
-    }
-
-    .right-side {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-left: auto;
-    }
-  }
-
-  .toggle-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    background: transparent;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.2s ease;
-
-    .summary {
-      margin: 0;
-      font-weight: 300;
-      font-size: 0.9rem;
-      color: var(--text);
-    }
-
-    .toggle-arrow {
-      margin-left: 1rem;
-      color: var(--text-dark);
-      transition: color 0.2s ease;
-
-      svg {
-        width: 1.2em;
-        height: 1.2em;
-      }
-    }
-
-    &:hover,
-    &:focus {
-      outline: none;
-      background: #262626;
-
-      .toggle-arrow {
-        color: var(--text);
-      }
-    }
-  }
-
-  .instructions {
-    padding: 0.75rem;
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-    background: var(--dark-bg);
-
-    p {
-      margin: 0.25rem 0;
-      font-weight: 300;
-      font-size: 0.8rem;
-      line-height: 1.3;
-    }
-  }
-
-  @media screen and (width <= 500px) {
-    flex-direction: column;
-
-    .top-row {
-      .icon {
-        margin: 0 0.5rem 0 0;
-      }
-    }
-
-    .toggle-area {
-      padding: 0.4rem 0.6rem;
-    }
-  }
-`
-
-const InstallButton = styled.button<{ disabled?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--accent);
-  border-radius: var(--border-radius-sm);
-  background: transparent;
-  font-size: 0.8rem;
-  color: var(--text-dark);
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:disabled,
-  &.installed {
-    background: var(--accent);
-    opacity: 0.8;
-    color: var(--text);
-    cursor: default;
-  }
-
-  &:hover:not(:disabled) {
-    background: var(--accent);
-    color: var(--text);
-  }
-
-  span {
-    font-weight: 500;
-    font-size: 0.75rem;
-  }
-
-  svg {
-    max-width: 0.875rem;
-    max-height: 0.875rem;
-  }
-`

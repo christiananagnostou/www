@@ -6,12 +6,13 @@ import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import { useRouter } from 'next/router'
 
-import GlobalStyle from '../components/GlobalStyle'
 import Layout from '../components/Layout'
 import MotionProvider from '../components/animation/MotionProvider'
 import { BASE_URL } from '../lib/constants'
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+import '../styles/globals.css'
+
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' })
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -25,15 +26,16 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta key="og:description" content="Christian Anagnostou's personal website" property="og:description" />
         <meta key="og:url" content={BASE_URL + routeKey.split('#')[0]} property="og:url" />
       </Head>
-      <GlobalStyle $fontFamily={inter.style.fontFamily} />
       <Analytics />
       <SpeedInsights />
 
-      <Layout>
-        <AnimatePresence initial={false} mode="wait">
-          <Component {...pageProps} key={routeKey} />
-        </AnimatePresence>
-      </Layout>
+      <div className={`${inter.variable} site`}>
+        <Layout>
+          <AnimatePresence initial={false} mode="wait">
+            <Component {...pageProps} key={routeKey} />
+          </AnimatePresence>
+        </Layout>
+      </div>
     </MotionProvider>
   )
 }

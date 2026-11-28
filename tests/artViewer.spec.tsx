@@ -15,6 +15,7 @@ const photos: ArtImage[] = ['Pier', 'Tower', 'Beach', 'Bridge'].map((title) => (
 
 function openViewer(images = photos, initialIndex = 0) {
   const close = vi.fn()
+  const trigger = document.createElement('button')
   render(
     <div
       ref={(node) => {
@@ -30,7 +31,7 @@ function openViewer(images = photos, initialIndex = 0) {
         }
       }}
     >
-      <FullscreenModal images={images} initialIndex={initialIndex} onClose={close} />
+      <FullscreenModal images={images} initialIndex={initialIndex} trigger={trigger} onClose={close} />
     </div>
   )
   const dialog = screen.getByRole('dialog')

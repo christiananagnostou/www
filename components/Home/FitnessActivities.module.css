@@ -1,0 +1,107 @@
+.log {
+  width: 100%;
+  padding-block: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--border-radius-md);
+  background: var(--dark-bg);
+
+  > header,
+  > p,
+  ul {
+    padding-inline: 1rem;
+  }
+  header,
+  [role='group'],
+  ul {
+    display: flex;
+    align-items: baseline;
+  }
+  header {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  h2 {
+    font-size: 0.95rem;
+    font-weight: 200;
+  }
+  p,
+  button {
+    font-size: 0.85rem;
+  }
+  header a {
+    color: var(--text);
+  }
+  [role='group'] {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  button {
+    background: none;
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    padding: 0.25rem;
+    display: grid;
+    place-items: center;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    cursor: pointer;
+  }
+  button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--heading);
+  }
+  ul {
+    align-items: center;
+    gap: 0.75rem;
+    overflow-x: auto;
+    /* Keep scrolling ink off the frame when WebKit rounds the fade to a different pixel. */
+    border-inline-end: 1px solid transparent;
+    padding-inline-end: calc(1rem - 1px);
+    scrollbar-width: none;
+    list-style: none;
+    margin: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  li {
+    flex: 0 0 9rem;
+  }
+  li:last-child {
+    margin-inline-start: auto;
+  }
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin: 0.35rem 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  h3 svg {
+    flex: none;
+  }
+  time {
+    font-size: 0.75rem;
+  }
+  p,
+  time {
+    color: var(--text-dark);
+  }
+}
+
+.scrollTrack {
+  position: relative;
+}
+
+.edgeFade {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2rem;
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--dark-bg));
+  opacity: 0;
+}

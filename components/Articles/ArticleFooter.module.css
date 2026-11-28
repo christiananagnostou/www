@@ -1,0 +1,43 @@
+.footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--accent);
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text);
+}
+
+.navLinks {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin: 0 auto;
+}
+
+.footerLink {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.linkRows {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  a {
+    display: flex;
+    align-items: start;
+    gap: 0.25rem;
+    width: fit-content;
+    margin: 0 auto;
+    color: var(--text);
+  }
+}
+
+.copyright {
+  font-size: 0.8rem;
+}

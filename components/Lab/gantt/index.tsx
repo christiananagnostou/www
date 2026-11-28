@@ -8,24 +8,9 @@ import ItemBar from './ItemBar'
 import ItemTitle from './ItemTitle'
 import TodayCursor from './TodayCursor'
 import { getItemsChildrenMap, getItemsDateRange, getNumDaysShown } from './utils'
-
 import DragScrollContainer from '../../Shared/DragScrollContainer'
-import {
-  Chart,
-  GanttContainer,
-  Label,
-  LeftSide,
-  Legend,
-  LegendColor,
-  LegendItem,
-  Resizer,
-  RightSide,
-  ScrollToTodayBtn,
-  Title,
-  TopBar,
-  ZoomInput,
-  ZoomTitle,
-} from './styles'
+
+import styles from './Gantt.module.css'
 
 dayjs.extend(relativeTime)
 dayjs.extend(minMax)
@@ -130,12 +115,13 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
   }, [scrollToDate])
 
   return (
-    <GanttContainer>
-      <TopBar>
-        <Title>{chartTitle}</Title>
-        <Label>
-          <ZoomTitle>Zoom:</ZoomTitle>
-          <ZoomInput
+    <div className={styles.ganttContainer}>
+      <div className={styles.topBar}>
+        <p className={styles.title}>{chartTitle}</p>
+        <label className={styles.label}>
+          <span className={styles.zoomTitle}>Zoom:</span>
+          <input
+            className={styles.zoomInput}
             max="40"
             min="10"
             step="1"
@@ -143,14 +129,14 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
             value={dateWidth}
             onChange={(e) => setDateWidth(parseInt(e.target.value))}
           />
-        </Label>
-      </TopBar>
+        </label>
+      </div>
 
-      <Chart>
-        <LeftSide ref={leftSide}>
-          <ScrollToTodayBtn onClick={() => scrollToDate(dayjs(), 'smooth')}>
+      <div className={styles.chart}>
+        <div className={styles.leftSide} ref={leftSide}>
+          <button className={styles.scrollToTodayBtn} onClick={() => scrollToDate(dayjs(), 'smooth')}>
             {dayjs().format('ddd, MMM D')}
-          </ScrollToTodayBtn>
+          </button>
 
           {itemsChildrenMap.get('root')?.map((item, i) => (
             <ItemTitle
@@ -163,11 +149,16 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
               scrollToDate={scrollToDate}
             />
           ))}
-        </LeftSide>
+        </div>
 
-        <Resizer ref={resizer} onMouseDown={handleResizeStart} onTouchStart={handleResizeStart} />
+        <div
+          className={styles.resizer}
+          ref={resizer}
+          onMouseDown={handleResizeStart}
+          onTouchStart={handleResizeStart}
+        />
 
-        <DragScrollContainer component={RightSide} hideScrollbars innerRef={rightSide}>
+        <DragScrollContainer className={styles.rightSide} hideScrollbars innerRef={rightSide}>
           <div style={{ width: dateWidth * numDaysShown, position: 'relative' }}>
             <TodayCursor dateWidth={dateWidth} itemsDateRange={itemsDateRange} />
 
@@ -190,19 +181,19 @@ const Gantt = ({ items, defaultZoom = 10, chartTitle, legend }: GanttProps) => {
             ))}
           </div>
         </DragScrollContainer>
-      </Chart>
+      </div>
 
       {legend ? (
-        <Legend>
+        <div className={styles.legend}>
           {legend.map((symbol) => (
-            <LegendItem key={symbol.color}>
-              <LegendColor style={{ backgroundColor: symbol.color }} />
+            <div className={styles.legendItem} key={symbol.color}>
+              <span className={styles.legendColor} style={{ backgroundColor: symbol.color }} />
               {symbol.label}
-            </LegendItem>
+            </div>
           ))}
-        </Legend>
+        </div>
       ) : null}
-    </GanttContainer>
+    </div>
   )
 }
 

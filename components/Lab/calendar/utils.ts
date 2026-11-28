@@ -1,6 +1,8 @@
 import type { Dayjs } from 'dayjs'
+
 import type { DailyEventT } from './DailyCalendar'
-import { HOUR_BAR_HEIGHT } from './styles'
+
+export const HOUR_BAR_HEIGHT = 60
 
 /**
  * @param date Dayjs object

@@ -1,0 +1,47 @@
+.sparkle {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  opacity: 0;
+  color: #414141;
+  animation: sparkle 5s linear forwards;
+  rotate: var(--initial-rotate);
+
+  --initial-rotate: var(--rotate);
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    rotate: var(--initial-rotate);
+    scale: 0;
+  }
+  70% {
+    opacity: 0.8;
+    scale: 1;
+  }
+  100% {
+    top: calc(var(--top) + 300px);
+    opacity: 0;
+    rotate: calc(var(--initial-rotate) * -1);
+    scale: 0.7;
+  }
+}
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(var(--body-bg) 50%, rgb(10 10 10));
+  background-position: top;
+  background-size: 100% 200%;
+  pointer-events: none;
+  transition: background-position 1.5s ease;
+
+  &[data-show] {
+    background-position: bottom;
+  }
+}

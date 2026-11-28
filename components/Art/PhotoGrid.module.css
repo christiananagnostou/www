@@ -1,0 +1,101 @@
+.columns {
+  display: flex;
+  gap: 17px;
+}
+
+.column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: inherit;
+  min-width: 0;
+}
+
+.photoButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: -2px;
+  }
+}
+
+.hoverBox {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  transform: translateY(100%);
+  transition: transform 0.25s ease-in-out;
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 90%));
+  padding: 50px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--heading);
+
+  p,
+  button {
+    text-shadow: 0 0 5px rgb(0 0 0 / 50%);
+  }
+
+  :global(.title-date) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  :global(.title) {
+    font-size: 1rem;
+    color: #ffffff;
+  }
+
+  :global(.date) {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  :global(.tags) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  :global(.tags) button {
+    padding: 2px 5px;
+    font-size: 0.7rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    text-transform: capitalize;
+    min-width: max-content;
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (hover: hover) {
+    &:hover .hoverBox,
+    &:focus .hoverBox,
+    &:focus-within .hoverBox {
+      transform: translateY(0);
+    }
+  }
+}

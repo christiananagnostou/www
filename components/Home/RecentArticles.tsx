@@ -1,9 +1,10 @@
 import * as m from 'framer-motion/m'
 import Link from 'next/link'
-import styled from 'styled-components'
+
 import type { ArticleSummary } from '../../lib/articles'
 import { fade, staggerFade } from '../animation'
-import { HomepageBox } from './styles'
+
+import styles from './RecentArticles.module.css'
 
 interface ArticlesProps {
   posts: ArticleSummary[]
@@ -11,76 +12,21 @@ interface ArticlesProps {
 
 export default function RecentArticles({ posts }: ArticlesProps) {
   return (
-    <ArticlesContainer variants={staggerFade}>
-      <Title variants={fade}>
+    <m.div className={styles.articlesContainer} variants={staggerFade}>
+      <m.h2 className={styles.title} variants={fade}>
         <Link href="/articles">Articles</Link>
-      </Title>
+      </m.h2>
 
       <ul>
         {posts.slice(0, 3).map((article, index) => (
           <m.li key={article.slug} variants={fade}>
             <Link href={`/article/${article.slug}`}>
-              <p className="recent-article__title">{article.title}</p>
-              {index === 0 && <p className="recent-article__summary">{article.summary}</p>}
+              <p className={styles.recentArticle__title}>{article.title}</p>
+              {index === 0 && <p className={styles.recentArticle__summary}>{article.summary}</p>}
             </Link>
           </m.li>
         ))}
       </ul>
-    </ArticlesContainer>
+    </m.div>
   )
 }
-
-const Title = styled(m.h2)`
-  margin: 0 0 1rem;
-
-  a {
-    display: block;
-    color: inherit;
-  }
-`
-
-const ArticlesContainer = styled(HomepageBox)`
-  flex: 1;
-  min-width: 0;
-  color: var(--text);
-
-  @media (width > 768px) {
-    min-width: 70%;
-  }
-
-  ul {
-    padding: 0;
-    list-style: none;
-
-    li {
-      margin-top: 0.75rem;
-
-      a {
-        display: block;
-        text-decoration: none;
-
-        .recent-article__title {
-          font-weight: normal;
-          text-decoration: underline solid var(--accent);
-          transition: all 0.2s ease;
-          text-underline-offset: 3px;
-        }
-
-        &:hover .recent-article__title,
-        &:active .recent-article__title {
-          color: var(--heading);
-          text-decoration: underline solid var(--text);
-        }
-      }
-
-      .recent-article__summary {
-        margin-top: 0.25rem;
-        font-weight: normal;
-        font-size: 0.8rem;
-        color: var(--text-dark);
-        text-decoration: none;
-        line-height: 1.5;
-      }
-    }
-  }
-`

@@ -1,4 +1,4 @@
-import type { CSSProperties, ElementType, ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
@@ -38,8 +38,7 @@ interface Props {
   style?: CSSProperties
   ignoreElements?: string
   nativeMobileScroll?: boolean
-  component?: ElementType
-  innerRef?: React.Ref<HTMLElement>
+  innerRef?: React.Ref<HTMLDivElement>
   stopPropagation?: boolean
   buttons?: number[]
 }
@@ -59,12 +58,11 @@ const DragScrollContainer = ({
   style,
   ignoreElements,
   nativeMobileScroll = true,
-  component: Component = 'div',
   innerRef,
   stopPropagation = false,
   buttons = DEFAULT_BUTTONS,
 }: Props) => {
-  const containerRef = useRef<HTMLElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [pressed, setPressed] = useState(false)
   const [started, setStarted] = useState(false)
   const [scrolling, setScrolling] = useState(false)
@@ -280,21 +278,22 @@ const DragScrollContainer = ({
   ])
 
   return (
-    <Component
+    <div
       ref={containerRef}
-      className={`
-        ${className} 
-        ${styles.container} 
-        ${pressed ? `${styles.dragging} ${draggingClassName}` : ''} 
-        ${isMobile ? styles.nativeScroll : ''} 
-        ${hideScrollbars ? styles.hideScrollbars : ''}
-      `}
+      className={[
+        styles.container,
+        className,
+        pressed && styles.dragging,
+        pressed && draggingClassName,
+        hideScrollbars && styles.hideScrollbars,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={style}
       onScroll={handleScroll}
     >
       {children}
-      <style>{'.body-dragging { cursor: grab; }'}</style>
-    </Component>
+    </div>
   )
 }
 

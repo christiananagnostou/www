@@ -1,0 +1,121 @@
+.modalOverlay {
+  --viewer-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  border: 0;
+  background: var(--dark-bg);
+  color: var(--text);
+
+  &[open] {
+    display: flex;
+  }
+
+  > * {
+    width: 100%;
+    max-width: var(--max-w-screen);
+  }
+
+  &::backdrop {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[open] {
+      transition: opacity 200ms var(--viewer-ease);
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+.metadata {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    margin-right: auto;
+    color: var(--heading);
+    overflow-wrap: anywhere;
+    /* The caption is the initial reading position, not a control. */
+    outline: none;
+  }
+
+  time,
+  span {
+    white-space: nowrap;
+  }
+
+  span {
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--accent);
+    font-weight: normal;
+  }
+}
+
+.stage {
+  --travel: clamp(1.5rem, 5vw, 3rem);
+  --entry-x: var(--travel);
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: clip;
+
+  &[data-direction='previous'] {
+    --entry-x: calc(0px - var(--travel));
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.375rem 0.5rem;
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    min-height: 44px;
+    border: 0;
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  @media (hover: hover) {
+    button:enabled:hover {
+      background: var(--accent);
+      color: var(--heading);
+    }
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
+.modalOverlay button:focus-visible {
+  outline: 2px solid var(--heading);
+  outline-offset: -2px;
+}

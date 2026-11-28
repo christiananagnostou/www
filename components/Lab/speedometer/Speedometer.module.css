@@ -1,16 +1,9 @@
-import * as m from 'framer-motion/m'
-import styled from 'styled-components'
-
-/*
-DIAL 
-*/
-export const DialShell = styled.div<{ $size: number }>`
-  --diameter: ${({ $size }) => $size}px;
+.dialShell {
   --border-width: 3px;
 
   position: relative;
-  width: var(--diameter);
-  height: var(--diameter);
+  width: var(--dial-size);
+  height: var(--dial-size);
   border-radius: 50%;
 
   /* Enhanced inner gloss and metallic look with off-center highlights */
@@ -35,46 +28,39 @@ export const DialShell = styled.div<{ $size: number }>`
     border-top-left-radius: 100% 200%;
     border-top-right-radius: 100% 200%;
   }
-`
+}
 
-export const RedlineArc = styled.div<{ $size: number; $start: number; $end: number }>`
+.redlineArc {
   position: absolute;
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    transparent ${({ $start }) => $start}deg,
-    var(--accent-light) ${({ $start }) => $start}deg ${({ $end }) => $end}deg,
-    transparent ${({ $end }) => $end}deg
+    transparent var(--red-start),
+    var(--accent-light) var(--red-start) var(--red-end),
+    transparent var(--red-end)
   );
   filter: drop-shadow(0 0 4px var(--accent-light));
   pointer-events: none;
   inset: 0;
-  mask-image: radial-gradient(
-    circle,
-    transparent 0,
-    transparent ${({ $size }) => $size * 0.3}px,
-    // Start of visible ring
-    var(--black) calc(${({ $size }) => $size / 2}px - var(--border-width)),
-    // End of visible ring
-    transparent calc(${({ $size }) => $size / 2}px - var(--border-width) + 1px),
-    // Start of outer transparent
-    transparent 100%
-  );
-`
+}
 
-export const Tick = styled.div<{ $major: boolean; $len: number }>`
+.tick {
   position: absolute;
   bottom: 50%;
   left: 50%;
   width: 1px;
-  height: ${({ $len }) => $len}px;
-  background: ${({ $major }) => ($major ? 'var(--off-white)' : 'var(--accent-dim)')};
+
+  background: var(--accent-dim);
   transform-origin: center;
   translate: -50% 50%;
-`
 
-export const Label = styled.span`
+  &[data-major] {
+    background: var(--off-white);
+  }
+}
+
+.label {
   position: absolute;
   bottom: 50%;
   left: 50%;
@@ -85,9 +71,9 @@ export const Label = styled.span`
   pointer-events: none;
   user-select: none;
   translate: -50% 50%;
-`
+}
 
-export const Marker = styled.div`
+.marker {
   position: absolute;
   bottom: 50%;
   left: 50%;
@@ -98,9 +84,9 @@ export const Marker = styled.div`
   filter: drop-shadow(0 0 2px var(--off-white));
   transform-origin: center;
   translate: -50% 50%;
-`
+}
 
-export const Needle = styled(m.div)`
+.needle {
   position: absolute;
   bottom: 50%;
   left: 50%;
@@ -124,31 +110,27 @@ export const Needle = styled(m.div)`
     background: var(--gray-light);
     transform: translate(-50%, -50%);
   }
-`
+}
 
-/*
-READOUT
-*/
-export const Readout = styled.div`
+.readout {
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
   line-height: 1.2;
   text-align: left;
-`
-export const SpeedText = styled.span`
+}
+
+.speedText {
   font-size: 1rem;
   color: var(--off-white);
-`
-export const ThrottleText = styled.span`
+}
+
+.throttleText {
   font-size: 0.9rem;
   color: var(--text-dark);
-`
+}
 
-/*
-PEDAL 
-*/
-export const PedalBtn = styled.button`
+.pedalBtn {
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
@@ -165,9 +147,9 @@ export const PedalBtn = styled.button`
   cursor: pointer;
   perspective: 900px;
   touch-action: none;
-`
+}
 
-export const PedalFace = styled(m.div)`
+.pedalFace {
   position: relative;
   width: 100%;
   height: 100%;
@@ -194,9 +176,9 @@ export const PedalFace = styled(m.div)`
       rgb(255 255 255 / 10%) 20px
     );
   }
-`
+}
 
-export const ThrottleBar = styled.div`
+.throttleBar {
   position: absolute;
   right: calc(0.5rem + var(--pedal-w) + 0.5rem);
   bottom: 0.5rem;
@@ -205,9 +187,9 @@ export const ThrottleBar = styled.div`
   border-radius: 5px;
   background: var(--gray-dark);
   overflow: hidden;
-`
+}
 
-export const ThrottleFill = styled(m.div)`
+.throttleFill {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -215,12 +197,9 @@ export const ThrottleFill = styled(m.div)`
   transform-origin: bottom;
   inset: 0;
   will-change: transform;
-`
+}
 
-/*
-LAYOUT 
-*/
-export const DashboardPanel = styled.div<{ $size: number }>`
+.dashboardPanel {
   position: relative;
   display: flex;
   justify-content: center;
@@ -245,11 +224,11 @@ export const DashboardPanel = styled.div<{ $size: number }>`
     --pedal-w: 60px;
     --pedal-h: 90px;
 
-    padding-bottom: ${({ $size }) => $size * 0.3}px;
+    padding-bottom: calc(var(--dial-size) * 0.3);
   }
 
   * {
     opacity: 1;
     user-select: none;
   }
-`
+}

@@ -1,16 +1,17 @@
 import * as m from 'framer-motion/m'
 import Image from 'next/image'
 import Link from 'next/link'
-import styled from 'styled-components'
 
 import JukeboxLogo from '../../public/logo-jukebox.webp'
 import LiftClubLogo from '../../public/logo-liftclub.webp'
 import { fade } from '../animation'
 
+import styles from './FeaturedProjects.module.css'
+
 const VuoriLogo = () => (
   <svg
     aria-hidden="true"
-    className="darker"
+    className={styles.darker}
     fill="currentColor"
     height="18"
     viewBox="0 0 457.89 457.89"
@@ -38,7 +39,7 @@ const projects = [
   {
     name: 'Jukebox',
     href: '/work/jukebox',
-    icon: <Image alt="" className="darker" loading="eager" src={JukeboxLogo} />,
+    icon: <Image alt="" className={styles.darker} loading="eager" src={JukeboxLogo} />,
   },
 ]
 
@@ -47,7 +48,7 @@ const ProjectLink = m.create(Link)
 
 export default function FeaturedProjects() {
   return (
-    <ProjectList aria-label="Selected projects" variants={entrance}>
+    <m.nav className={styles.projectList} aria-label="Selected projects" variants={entrance}>
       {projects.map(({ name, href, icon }) => (
         <ProjectLink
           key={name}
@@ -59,51 +60,6 @@ export default function FeaturedProjects() {
           {name}
         </ProjectLink>
       ))}
-    </ProjectList>
+    </m.nav>
   )
 }
-
-const ProjectList = styled(m.nav)`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  column-gap: 1.25rem;
-  min-width: 0;
-  padding: 0.25rem 1rem;
-
-  a {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    min-height: max(44px, 2.75rem);
-    font-size: 0.9rem;
-    color: var(--heading);
-    text-underline-offset: 0.22em;
-    /* Motion owns opacity; letting link CSS transition it replays the entrance in Firefox. */
-    transition-property: color, text-decoration-color;
-  }
-  @media (width < 768px) {
-    display: grid;
-    justify-content: stretch;
-    padding-block: 0;
-    a + a {
-      border-top: 1px solid var(--accent);
-    }
-  }
-  img,
-  svg {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-    filter: grayscale(1);
-    transition: filter 0.2s ease;
-    &.darker {
-      filter: grayscale(1) brightness(0.7);
-    }
-  }
-  a:is(:hover, :focus-visible) :is(img, svg) {
-    filter: none;
-  }
-`

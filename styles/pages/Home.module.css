@@ -1,0 +1,25 @@
+.container {
+  max-width: var(--max-w-screen);
+  min-height: calc(100vh - var(--nav-height));
+  margin: auto;
+  padding: 2rem 1rem 1rem;
+
+  .pageInnerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+    border-radius: 14px;
+    position: relative;
+  }
+}
+
+.middleSection {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+}

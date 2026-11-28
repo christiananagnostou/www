@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
-import { DateBarContainer, DateButton, DateLabel, DaySpan } from './styles'
+
+import styles from './DateBar.module.css'
 
 interface DatesProps {
   itemsDateRange: { lastDate: dayjs.Dayjs }
@@ -32,24 +33,30 @@ const DateBar = ({ itemsDateRange, numDaysShown, dateWidth, scrollToDate }: Date
   ).toReversed()
 
   return (
-    <DateBarContainer>
+    <div className={styles.dateBarContainer}>
       {dates.map((date) => {
         const [_, month, day] = date.split('-')
         const isToday = Today === date
 
         return (
-          <DateButton key={date} dateWidth={dateWidth} id={date} onClick={() => scrollToDate(date, 'smooth')}>
-            <DateLabel dateWidth={dateWidth}>
+          <button
+            style={{ width: dateWidth }}
+            className={styles.dateButton}
+            key={date}
+            id={date}
+            onClick={() => scrollToDate(date, 'smooth')}
+          >
+            <div className={styles.dateLabel}>
               {day === '1' && <span>{month}</span>}
 
-              <DaySpan isToday={isToday} opacity={getOpacity(day)}>
+              <span style={{ opacity: getOpacity(day) }} data-today={isToday || undefined} className={styles.daySpan}>
                 {day}
-              </DaySpan>
-            </DateLabel>
-          </DateButton>
+              </span>
+            </div>
+          </button>
         )
       })}
-    </DateBarContainer>
+    </div>
   )
 }
 

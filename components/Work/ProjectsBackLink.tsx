@@ -1,20 +1,11 @@
 import Link from 'next/link'
-import styled from 'styled-components'
+
+import styles from './ProjectsBackLink.module.css'
 
 export default function ProjectsBackLink() {
-  return <Back href="/projects">/ Projects</Back>
+  return (
+    <Link className={styles.back} href="/projects">
+      / Projects
+    </Link>
+  )
 }
-
-const Back = styled(Link)`
-  display: inline-flex;
-  font-size: 0.85rem;
-  color: var(--project-accent);
-  text-decoration: none;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--project-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.25em;
-  }
-`

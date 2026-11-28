@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
 import type { ArtImage } from '../../lib/art'
+
+import styles from './ViewerPhoto.module.css'
 
 type Props = {
   index: number
@@ -21,7 +22,7 @@ export default function ViewerPhoto({ index, photo, requested, visible, onPresen
   }, [requested, status, index, onPresent])
 
   return (
-    <Frame aria-hidden={!visible} inert={!visible}>
+    <div className={styles.frame} aria-hidden={!visible} inert={!visible}>
       {status === 'error' ? (
         <div>
           <p>This photo couldn’t load.</p>
@@ -43,55 +44,6 @@ export default function ViewerPhoto({ index, photo, requested, visible, onPresen
           onLoad={() => setStatus('ready')}
         />
       )}
-    </Frame>
+    </div>
   )
 }
-
-const Frame = styled.div`
-  position: absolute;
-  inset: 0;
-  display: none;
-  place-items: center;
-  opacity: 0;
-
-  &[aria-hidden='false'] {
-    display: grid;
-    z-index: 1;
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    [data-direction] > & {
-      transform: translateX(calc(0px - var(--entry-x)));
-      transition:
-        opacity 240ms ease,
-        transform 260ms var(--viewer-ease),
-        display 260ms allow-discrete;
-
-      &[aria-hidden='false'] {
-        transform: none;
-
-        @starting-style {
-          opacity: 0;
-          transform: translateX(var(--entry-x));
-        }
-      }
-    }
-  }
-
-  div {
-    text-align: center;
-  }
-
-  button {
-    min-height: 44px;
-    padding: 0 0.75rem;
-    border: 0;
-    border-radius: var(--border-radius-md);
-    background: none;
-    color: var(--text);
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`

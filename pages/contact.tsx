@@ -3,13 +3,15 @@ import * as m from 'framer-motion/m'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
-import styled from 'styled-components'
+
 import { fade, pageAnimation, staggerFade } from '../components/animation'
 import { usePageTransitionInitial } from '../components/animation/MotionProvider'
 import { Heading } from '../components/Shared/Heading'
 import SocialLinks from '../components/SocialLinks'
 import { BASE_URL } from '../lib/constants'
 import { getContactStructuredData } from '../lib/structured/contact'
+
+import styles from '../styles/pages/Contact.module.css'
 
 const PageTitle = 'Contact | Christian Anagnostou'
 const PageDescription = 'Get in touch with Christian Anagnostou for inquiries, collaborations, or just to say hello.'
@@ -99,7 +101,13 @@ const Contact = () => {
         />
       </Head>
 
-      <ContactStyle animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
+      <m.div
+        className={styles.page}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
         <Heading variants={fade}>
           <h1>Contact</h1>
           <p>
@@ -108,133 +116,58 @@ const Contact = () => {
           </p>
         </Heading>
 
-        <StyledForm method="POST" variants={staggerFade} onSubmit={handleSubmit}>
+        <m.form className={styles.form} method="POST" variants={staggerFade} onSubmit={handleSubmit}>
           <m.div variants={fade}>
-            <FormGroup>
+            <div className={styles.formGroup}>
               <label htmlFor="name">
                 Name <span>*</span>
               </label>
               <input className="form-input custom-focus" id="name" name="name" required type="text" />
-            </FormGroup>
+            </div>
           </m.div>
           <m.div variants={fade}>
-            <FormGroup>
+            <div className={styles.formGroup}>
               <label htmlFor="email">Email</label>
               <input className="form-input custom-focus" id="email" name="email" type="email" />
-            </FormGroup>
+            </div>
           </m.div>
           <m.div variants={fade}>
-            <FormGroup>
+            <div className={styles.formGroup}>
               <label htmlFor="subject">Subject</label>
               <input autoComplete="off" className="form-input custom-focus" id="subject" name="subject" type="text" />
-            </FormGroup>
+            </div>
           </m.div>
           <m.div variants={fade}>
-            <FormGroup>
+            <div className={styles.formGroup}>
               <label htmlFor="message">Message</label>
               <textarea className="form-input custom-focus" id="message" name="message" rows={6} />
-            </FormGroup>
+            </div>
           </m.div>
           <m.div variants={fade}>
-            <FormGroup>
+            <div className={styles.formGroup}>
               <button className="form-btn custom-focus" type="submit">
                 SEND
               </button>
-            </FormGroup>
+            </div>
           </m.div>
-        </StyledForm>
-        <PrivacyLink href="/privacy">Privacy</PrivacyLink>
+        </m.form>
+        <Link className={styles.privacyLink} href="/privacy">
+          Privacy
+        </Link>
 
-        <p className="success-message" style={{ opacity: sentSuccessful ? 1 : 0 }}>
+        <p className={styles.successMessage} style={{ opacity: sentSuccessful ? 1 : 0 }}>
           Sent successfully. You&apos;ll hear from me soon!
         </p>
-        <p className="error-message" style={{ opacity: errorMessage ? 1 : 0 }}>
+        <p className={styles.errorMessage} style={{ opacity: errorMessage ? 1 : 0 }}>
           {errorMessage}
         </p>
 
         <m.div variants={fade}>
           <SocialLinks />
         </m.div>
-      </ContactStyle>
+      </m.div>
     </>
   )
 }
 
 export default Contact
-
-const ContactStyle = styled(m.div)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  max-width: 500px;
-  padding: 0 1rem;
-  margin: 2rem auto;
-
-  .success-message {
-    transition: opacity 0.3s ease;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  .error-message {
-    transition: opacity 0.3s ease;
-    text-align: center;
-    width: 100%;
-    color: #ff6b6b;
-    margin-bottom: 2rem;
-  }
-`
-
-const StyledForm = styled(m.form)`
-  width: 100%;
-  margin-top: -1rem;
-`
-
-const PrivacyLink = styled(Link)`
-  margin-top: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--text-dark);
-  text-decoration-color: currentcolor;
-`
-
-const FormGroup = styled.div`
-  margin: auto;
-  width: 100%;
-  max-width: var(--max-w-screen);
-  display: flex;
-  flex-direction: column;
-
-  label {
-    color: var(--text);
-    margin: 1rem 0 0.2rem;
-  }
-  .form-input {
-    background: var(--dark-bg);
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-    padding: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: 300;
-    color: var(--heading);
-    font-family: inherit;
-    letter-spacing: 0.5px;
-  }
-  textarea {
-    resize: vertical;
-    overflow: auto;
-    border-radius: var(--border-radius-sm);
-  }
-  .form-btn {
-    padding: 1rem;
-    color: var(--heading);
-    background: var(--accent);
-    border-radius: var(--border-radius-sm);
-    border: none;
-    margin-top: 1rem;
-    cursor: pointer;
-  }
-`

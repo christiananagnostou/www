@@ -1,5 +1,7 @@
+import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+
 import { ArticleType, getAllPosts, getPostBySlug } from '../../lib/articles'
 import markdownToHtml from '../../lib/articles/markdownToHtml'
 import { BASE_URL } from '../../lib/constants'
@@ -11,9 +13,10 @@ import ChainLink from '../../components/SVG/ChainLink'
 import Checkmark from '../../components/SVG/Checkmark'
 import HeartEmpty from '../../components/SVG/HeartEmpty'
 import ArticleHead from '../../components/Articles/ArticleHead'
-import { ArticleContent, ArticleStyle, TitleWrap, TopBar, TopBarButton } from '../../components/Articles/ArticleStyles'
 import HeartFull from '../../components/SVG/HeartFull'
 import { getLikes } from '../../lib/articles/likes'
+
+import styles from '../../components/Articles/Article.module.css'
 
 interface ArticleWithLikes extends ArticleType {
   likes: number
@@ -205,8 +208,14 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
     <>
       <ArticleHead post={post} prevArticle={prevArticle} nextArticle={nextArticle} />
 
-      <ArticleStyle animate="show" exit="exit" initial={pageTransitionInitial} variants={pageAnimation}>
-        <TopBar>
+      <m.section
+        className={styles.article}
+        animate="show"
+        exit="exit"
+        initial={pageTransitionInitial}
+        variants={pageAnimation}
+      >
+        <div className={styles.topBar}>
           <Link href="/articles">
             <LeftArrow />
             All Articles
@@ -215,7 +224,8 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
           <div className="top-bar__right-side">
             <p className="date">{dateCreated}</p>
             <div className="top-bar__right-side__buttons">
-              <TopBarButton
+              <m.button
+                className={styles.topBarButton}
                 animate={copied ? 'copied' : 'notCopied'}
                 aria-label="Copy URL"
                 title="Copy URL"
@@ -230,23 +240,23 @@ const ArticleSlug = ({ post, prevArticle, nextArticle }: Props) => {
                 ) : (
                   <ChainLink />
                 )}
-              </TopBarButton>
-              <TopBarButton aria-label="Like" title="Like" onClick={handleLike}>
+              </m.button>
+              <m.button className={styles.topBarButton} aria-label="Like" title="Like" onClick={handleLike}>
                 {liked ? <HeartFull /> : <HeartEmpty />}
                 <span>{likeCount}</span>
-              </TopBarButton>
+              </m.button>
             </div>
           </div>
-        </TopBar>
+        </div>
 
-        <TitleWrap>
+        <div className={styles.titleWrap}>
           <h1 className="heading-gradient">{title}</h1>
-        </TitleWrap>
+        </div>
 
-        <ArticleContent ref={contentRef} dangerouslySetInnerHTML={{ __html: content }} />
+        <article className={styles.articleContent} ref={contentRef} dangerouslySetInnerHTML={{ __html: content }} />
 
         <ArticleFooter prevArticle={prevArticle} nextArticle={nextArticle} />
-      </ArticleStyle>
+      </m.section>
     </>
   )
 }

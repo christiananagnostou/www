@@ -1,11 +1,11 @@
 # WWW
 
-This repo houses my personal site, www.christiancodes.co. It’s a straightforward Next.js app with TypeScript, Intervals.icu workout sync, Styled Components for styling, and Framer Motion for a bit of polish — nothing fancy, just a clean log of what I’ve been up to.
+This repo houses my personal site, www.christiancodes.co. It’s a straightforward Next.js app with TypeScript, Intervals.icu workout sync, CSS Modules for styling, and Framer Motion for a bit of polish — nothing fancy, just a clean log of what I’ve been up to.
 
 ## Tech Stack
 
 - [Next.js](https://github.com/vercel/next.js), [React](https://github.com/facebook/react), [TypeScript](https://github.com/microsoft/TypeScript)
-- [Styled Components](https://github.com/styled-components/styled-components), [Framer Motion](https://github.com/framer/motion)
+- [CSS Modules](https://nextjs.org/docs/pages/getting-started/css), [Framer Motion](https://github.com/framer/motion)
 - [Intervals.icu](https://intervals.icu/) workout sync
 - [rehype](https://github.com/rehypejs/rehype) / [remark](https://github.com/remarkjs/remark)
 

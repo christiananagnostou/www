@@ -3,12 +3,16 @@ import * as m from 'framer-motion/m'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+
 import { getBreadcrumbStructuredData } from '../lib/structured/breadcrumbs'
 import { getSiteNavigationStructuredData } from '../lib/structured/navigation'
 import { dropdown, fade, staggerFade } from './animation'
 import A from './SVG/A'
 import DownArrow from './SVG/DownArrow'
+
+import styles from './Nav.module.css'
+
+const LogoLink = m.create(Link)
 
 interface SubLink {
   href: string
@@ -127,7 +131,9 @@ const Nav: React.FC = () => {
   return (
     <>
       {/* Skip link for accessibility */}
-      <SkipLink href="#main-content">Skip to main content</SkipLink>
+      <a className={styles.skipLink} href="#main-content">
+        Skip to main content
+      </a>
 
       {/* Structured Data for Navigation */}
       <script dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationData) }} type="application/ld+json" />
@@ -136,20 +142,22 @@ const Nav: React.FC = () => {
         <script dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} type="application/ld+json" />
       )}
 
-      <StyledNav
+      <nav
+        className={styles.nav}
         aria-label="Main Navigation"
         itemScope
         itemType="https://schema.org/SiteNavigationElement"
         style={hidden ? { top: '-10vh' } : { top: 0 }}
       >
         <m.div animate="show" className="nav-inner max-w-screen" exit="exit" initial={false} variants={staggerFade}>
-          <LogoWrapper aria-label="Home" href="/" variants={fade}>
+          <LogoLink className={styles.logoWrapper} aria-label="Home" href="/" variants={fade}>
             <A height="30px" width="30px" />
-          </LogoWrapper>
+          </LogoLink>
 
           <AnimatePresence initial={false}>
             {menuOpen || isDesktop !== false ? (
-              <Menu
+              <m.ul
+                className={styles.menu}
                 key="main-menu"
                 animate="show"
                 data-menu-open={menuOpen}
@@ -165,7 +173,8 @@ const Nav: React.FC = () => {
                   const isSubmenuOpen = isDesktop ? hoverIndex === index : !!openSubmenus[title]
 
                   return (
-                    <MenuItem
+                    <m.li
+                      className={styles.menuItem}
                       key={title}
                       variants={fade}
                       onMouseEnter={() => handleMouseEnter(index)}
@@ -177,7 +186,8 @@ const Nav: React.FC = () => {
                         </Link>
                       ) : (
                         <>
-                          <DropdownToggle
+                          <button
+                            className={styles.dropdownToggle}
                             aria-expanded={isSubmenuOpen}
                             aria-haspopup="true"
                             type="button"
@@ -185,12 +195,13 @@ const Nav: React.FC = () => {
                           >
                             {title}
                             <DownArrow />
-                          </DropdownToggle>
+                          </button>
 
                           {/* Animate submenu in/out */}
                           <AnimatePresence>
                             {isSubmenuOpen ? (
-                              <Submenu
+                              <m.ul
+                                className={styles.submenu}
                                 key={`${title}-submenu`}
                                 animate="show"
                                 aria-label={`${title} Submenu`}
@@ -208,46 +219,37 @@ const Nav: React.FC = () => {
                                     </li>
                                   )
                                 })}
-                              </Submenu>
+                              </m.ul>
                             ) : null}
                           </AnimatePresence>
                         </>
                       )}
-                    </MenuItem>
+                    </m.li>
                   )
                 })}
-              </Menu>
+              </m.ul>
             ) : null}
           </AnimatePresence>
 
           {/* Hamburger (mobile) */}
-          <Hamburger aria-expanded={menuOpen} aria-label="Toggle navigation menu" variants={fade} onClick={toggleMenu}>
+          <m.button
+            className={styles.hamburger}
+            aria-expanded={menuOpen}
+            aria-label="Toggle navigation menu"
+            variants={fade}
+            onClick={toggleMenu}
+          >
             <span />
             <span />
             <span />
-          </Hamburger>
+          </m.button>
         </m.div>
-      </StyledNav>
+      </nav>
     </>
   )
 }
 
 export default Nav
-
-const SkipLink = styled.a`
-  position: absolute;
-  top: -40px;
-  left: 0;
-  z-index: 10000;
-  padding: 8px 16px;
-  border-radius: var(--border-radius-sm);
-  background: var(--accent);
-  color: var(--text);
-  transition: top 0.3s;
-  &:focus {
-    top: 0;
-  }
-`
 
 const menuAnimation = {
   hidden: { opacity: 0, y: -8, scaleY: 0.98 },
@@ -260,211 +262,3 @@ const desktopSubmenuAnimation = {
   show: { opacity: 1, y: 0, pointerEvents: 'auto', transition: { duration: 0.2 } },
   exit: { opacity: 0, y: -5, pointerEvents: 'none', transition: { duration: 0.15 } },
 } as const
-
-const StyledNav = styled.nav`
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-  border-bottom: 1px solid var(--accent);
-  background: var(--dark-bg);
-  transition: top 0.4s ease;
-
-  .nav-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: var(--nav-height);
-    margin: auto;
-    padding: 0;
-  }
-`
-
-const LogoWrapper = styled(m.create(Link))`
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  fill: var(--text);
-
-  svg {
-    pointer-events: none;
-    user-select: none;
-  }
-`
-
-const Hamburger = styled(m.button)`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: end;
-  gap: 0.4rem;
-  height: 100%;
-  padding: 0 1rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-
-  span {
-    display: block;
-    width: 22px;
-    height: 1px;
-    border-radius: 1px;
-    background: var(--text-dark);
-    transition: all 0.3s ease;
-  }
-
-  &[aria-expanded='true'] {
-    span:nth-child(1) {
-      transform: rotate(45deg) translateY(5px) translateX(5px);
-      transform-origin: center;
-    }
-    span:nth-child(2) {
-      opacity: 0;
-    }
-    span:nth-child(3) {
-      transform: rotate(-45deg) translateY(-5px) translateX(5px);
-      transform-origin: center;
-    }
-  }
-
-  @media (width >= 768px) {
-    display: none;
-  }
-`
-
-const Menu = styled(m.ul)`
-  position: relative;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  /* Desktop */
-  @media (width >= 768px) {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    height: auto !important;
-    opacity: 1 !important;
-  }
-
-  /* Mobile */
-  @media (width <= 767px) {
-    position: absolute;
-    top: var(--nav-height);
-    right: 0;
-    left: 0;
-    border-top: 1px solid var(--accent);
-    border-bottom: 1px solid var(--accent);
-    background: var(--dark-bg);
-    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
-    transform-origin: top;
-    overflow: hidden;
-
-    &[data-menu-open='false'] {
-      display: none;
-    }
-  }
-`
-
-const MenuItem = styled(m.li)`
-  position: relative;
-
-  /* Mobile */
-  @media (width <= 767px) {
-    &:last-child {
-      margin-bottom: 0.5rem;
-    }
-  }
-
-  & a,
-  & button {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background: none;
-    font-size: 1rem;
-    color: var(--heading);
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.3s;
-
-    @media (width <= 767px) {
-      flex-direction: row-reverse;
-      justify-content: end;
-      width: 100%;
-      padding: 0.75rem 1rem;
-    }
-  }
-`
-
-const DropdownToggle = styled.button`
-  width: 100%;
-  text-align: left;
-  cursor: s-resize !important;
-
-  /* Mobile */
-  @media (width <= 767px) {
-    &[aria-expanded='true'] {
-      svg {
-        transform: rotate(180deg);
-      }
-    }
-  }
-`
-
-const Submenu = styled(m.ul)`
-  margin: 0;
-  padding: 0;
-
-  /* Shared */
-  list-style: none;
-  overflow: hidden;
-
-  li a {
-    color: var(--heading);
-    text-decoration: none;
-
-    @media (hover: hover) {
-      &:hover,
-      &:focus {
-        background: var(--body-bg);
-      }
-    }
-  }
-
-  /* Desktop dropdown */
-  @media (width >= 768px) {
-    position: absolute;
-    top: 100%;
-    left: -0;
-    min-width: 120px;
-    border: 1px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-    background: var(--dark-bg);
-    box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
-
-    li a {
-      font-size: 0.95rem;
-    }
-  }
-
-  /* Mobile dropdown */
-  @media (width <= 767px) {
-    li a {
-      position: relative;
-      padding: 0.5rem 3rem;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 1.5rem;
-        width: 1px;
-        height: 100%;
-        background: var(--accent);
-      }
-    }
-  }
-`

@@ -1,16 +1,11 @@
+import type { CSSProperties } from 'react'
+import * as m from 'framer-motion/m'
 import { animate, type MotionValue, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+
 import Dial from './Dial'
-import {
-  DashboardPanel,
-  PedalBtn,
-  PedalFace,
-  Readout,
-  SpeedText,
-  ThrottleBar,
-  ThrottleFill,
-  ThrottleText,
-} from './styles'
+
+import styles from './Speedometer.module.css'
 
 const READOUT_INTERVAL_MS = 100
 
@@ -144,20 +139,21 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
   }, [])
 
   return (
-    <DashboardPanel $size={diameter}>
+    <div style={{ '--dial-size': `${diameter}px` } as CSSProperties} className={styles.dashboardPanel}>
       <Dial diameter={diameter} maxSpeed={maxSpeed} speed={speedMv} />
 
-      <Readout>
-        <SpeedText>{Math.round(speed)} mph</SpeedText>
+      <div className={styles.readout}>
+        <span className={styles.speedText}>{Math.round(speed)} mph</span>
         <br />
-        <ThrottleText>{Math.round(throttle * 100)}% throttle</ThrottleText>
-      </Readout>
+        <span className={styles.throttleText}>{Math.round(throttle * 100)}% throttle</span>
+      </div>
 
-      <ThrottleBar>
-        <ThrottleFill style={{ scaleY: throttleMv }} />
-      </ThrottleBar>
+      <div className={styles.throttleBar}>
+        <m.div className={styles.throttleFill} style={{ scaleY: throttleMv }} />
+      </div>
 
-      <PedalBtn
+      <button
+        className={styles.pedalBtn}
         ref={pedalRef}
         aria-label="Gas pedal"
         onPointerCancel={onThrottleEnd}
@@ -165,9 +161,9 @@ const Speedometer: React.FC<SpeedometerProps> = ({ maxSpeed = 220, diameter = 28
         onPointerMove={onThrottleMove}
         onPointerUp={onThrottleEnd}
       >
-        <PedalFace style={{ y: pedalY, rotateX: pedalRotateX }} />
-      </PedalBtn>
-    </DashboardPanel>
+        <m.div className={styles.pedalFace} style={{ y: pedalY, rotateX: pedalRotateX }} />
+      </button>
+    </div>
   )
 }
 

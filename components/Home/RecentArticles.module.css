@@ -1,0 +1,55 @@
+.title {
+  margin: 0 0 1rem;
+
+  a {
+    display: block;
+    color: inherit;
+  }
+}
+
+.articlesContainer {
+  composes: box from './HomepageBox.module.css';
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+
+  @media (width > 768px) {
+    min-width: 70%;
+  }
+
+  ul {
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin-top: 0.75rem;
+
+      a {
+        display: block;
+        text-decoration: none;
+
+        .recentArticle__title {
+          font-weight: normal;
+          text-decoration: underline solid var(--accent);
+          transition: all 0.2s ease;
+          text-underline-offset: 3px;
+        }
+
+        &:hover .recentArticle__title,
+        &:active .recentArticle__title {
+          color: var(--heading);
+          text-decoration: underline solid var(--text);
+        }
+      }
+
+      .recentArticle__summary {
+        margin-top: 0.25rem;
+        font-weight: normal;
+        font-size: 0.8rem;
+        color: var(--text-dark);
+        text-decoration: none;
+        line-height: 1.5;
+      }
+    }
+  }
+}
