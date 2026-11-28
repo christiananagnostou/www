@@ -70,6 +70,33 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
     assert.deepEqual(entry.neverFaded, [], 'Every link should still participate in the entrance')
   })
 
+  await t.test('serves the featured work and directory link without JavaScript at each breakpoint', async (subtest) => {
+    const staticPage = await browser.newPage({ javaScriptEnabled: false })
+    subtest.after(() => staticPage.close())
+    await staticPage.goto(site.origin)
+    const links = staticPage.getByRole('navigation', { name: 'Selected projects' }).getByRole('link')
+    assert.deepEqual(await links.evaluateAll((items) => items.map((a) => a.pathname)), [
+      '/projects',
+      '/work/liftclub',
+      '/work/jukebox',
+      '/work/imgpress',
+    ])
+    for (const width of [320, 768, 1440]) {
+      await staticPage.setViewportSize({ width, height: 844 })
+      const targetsFit = await links.evaluateAll((items) =>
+        items.every((a) => {
+          const rect = a.getBoundingClientRect()
+          const bounds = a.closest('nav').getBoundingClientRect()
+          return rect.height >= 44 && rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1
+        })
+      )
+      assert.ok(targetsFit, `Project links fit at ${width}px`)
+    }
+    await staticPage.getByRole('link', { name: 'All projects' }).click()
+    await staticPage.waitForURL('**/projects')
+    assert.ok(await staticPage.getByRole('heading', { level: 1, name: 'Projects' }).isVisible())
+  })
+
   await t.test('morphs on the same writing line and returns to print without overlapping it', async () => {
     const name = page.getByRole('button', { name: 'Christian Anagnostou', exact: true })
     await page.evaluate(() => document.fonts.ready.then(() => true))
