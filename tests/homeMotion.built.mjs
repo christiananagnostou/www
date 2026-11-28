@@ -358,4 +358,53 @@ it('preserves homepage motion after client navigation in Firefox', { timeout: 30
       assert.deepEqual(await image.boundingBox(), frame, 'Each settled print should cover the same full frame')
     }
   })
+
+  await t.test('keeps workout ink off the right frame without moving the final card', async (test) => {
+    const phone = await browser.newPage({ viewport: { width: 393, height: 852 }, deviceScaleFactor: 3 })
+    test.after(() => phone.close())
+    await phone.route('**/_next/data/**/index.json', async (route) => {
+      const recent = Array.from({ length: 5 }, (_, i) => ({
+        id: String(i),
+        category: 'swim',
+        startedAt: '2025-04-01',
+        distanceRank: null,
+        metrics: [],
+      }))
+      const fitnessActivities = { recent, totalCounts: { swim: 5, run: 0, cycle: 0, indoorCycle: 0 } }
+      await route.fulfill({ json: { pageProps: { posts: [], fitnessActivities }, __N_SSG: true } })
+    })
+    await phone.goto(`${site.origin}/contact`)
+    await phone.waitForFunction(() => window.next?.router?.isReady)
+    await phone.evaluate(() => window.next.router.push('/'))
+    const panel = phone.getByRole('region', { name: 'Fitness' })
+    const list = panel.getByRole('list', { name: 'Recent activities' })
+    await list.scrollIntoViewIfNeeded()
+    await phone.waitForFunction(
+      () => getComputedStyle(document.getElementById('training-title').closest('section')).opacity === '1'
+    )
+    await list.evaluate((el) => {
+      const card = el.children[2]
+      card.replaceChildren()
+      card.style.cssText = 'align-self:stretch;background:linear-gradient(transparent 50%, white 50%)'
+      // Exercise WebKit's fractional-pixel failure even in the Firefox CI job.
+      el.nextElementSibling.style.clipPath = 'inset(0 1px 0 0)'
+      const { x, width } = card.getBoundingClientRect()
+      el.scrollLeft += x + width / 2 - el.getBoundingClientRect().right
+    })
+    const { data, info } = await sharp(await list.screenshot())
+      .removeAlpha()
+      .greyscale()
+      .raw()
+      .toBuffer({ resolveWithObject: true })
+    const pixel = (y, fromRight) => data[(Math.floor(info.height * y) + 1) * info.width - fromRight]
+    const contrast = (fromRight) => Math.abs(pixel(0.75, fromRight) - pixel(0.25, fromRight))
+    assert.ok(contrast(12) > 10, 'The test card should be visible just inside the fade')
+    assert.ok(contrast(2) <= 1 && contrast(3) <= 1, 'No ink should reach the inside edge of the frame')
+    await list.evaluate((el) => {
+      el.scrollLeft = el.scrollWidth
+    })
+    const last = await panel.getByRole('link', { name: 'See All Activities' }).boundingBox()
+    const filters = await panel.getByRole('group', { name: 'Filter training by sport' }).boundingBox()
+    assert.ok(Math.abs(last.x + last.width - filters.x - filters.width) <= 1, 'Align the last card with the filters')
+  })
 })

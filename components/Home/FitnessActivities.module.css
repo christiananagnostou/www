@@ -57,6 +57,9 @@
     align-items: center;
     gap: 0.75rem;
     overflow-x: auto;
+    /* Keep scrolling ink off the frame when WebKit rounds the fade to a different pixel. */
+    border-inline-end: 1px solid transparent;
+    padding-inline-end: calc(1rem - 1px);
     scrollbar-width: none;
     list-style: none;
     margin: 0;
