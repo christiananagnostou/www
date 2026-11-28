@@ -12,6 +12,7 @@ import styles from './FullScreenModal.module.css'
 interface FullscreenModalProps {
   images: ArtImage[]
   initialIndex: number
+  trigger: HTMLButtonElement
   onClose: () => void
 }
 
@@ -19,8 +20,9 @@ type View = { requested: number; displayed: number | null; previous: number | nu
 
 const adjacentIndex = (index: number, step: -1 | 1, count: number) => (index + step + count) % count
 
-export default function FullscreenModal({ images, initialIndex, onClose }: FullscreenModalProps) {
+export default function FullscreenModal({ images, initialIndex, trigger, onClose }: FullscreenModalProps) {
   const dialog = useRef<HTMLDialogElement>(null)
+  const title = useRef<HTMLElement>(null)
   const [view, setView] = useState<View>({ requested: initialIndex, displayed: null, previous: null })
   const visible = view.displayed ?? view.requested
   const photo = images[visible]
@@ -53,21 +55,33 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
   }
 
   useEffect(() => {
-    const element = dialog.current
-    const opener = document.activeElement
-    element?.showModal()
-    return () => {
-      element?.close()
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true })
+    // Safari doesn't focus tapped buttons. Register this tile for native dialog restoration.
+    trigger.focus({ preventScroll: true })
+    // Set native autofocus before showModal; React's autoFocus doesn't reach a client-mounted caption.
+    if (title.current) title.current.autofocus = true
+    dialog.current?.showModal()
+  }, [trigger])
+
+  const dismiss = (focusVisible: boolean) => {
+    // Close while connected so Safari can't restore focus to the page after React unmounts.
+    dialog.current?.close()
+    if (trigger.isConnected) {
+      // WebKit can restore a keyboard ring after a tap. focus() is a no-op on an already focused tile.
+      if (!focusVisible && trigger.matches(':focus-visible')) trigger.blur()
+      trigger.focus({ preventScroll: true, focusVisible })
     }
-  }, [])
+    onClose()
+  }
 
   return (
     <dialog
       className={styles.modalOverlay}
       ref={dialog}
       aria-label="Full screen photograph"
-      onCancel={onClose}
+      onCancel={(event) => {
+        event.preventDefault()
+        dismiss(true)
+      }}
       onKeyDown={(event) => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
           event.preventDefault()
@@ -76,7 +90,9 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
       }}
     >
       <div className={styles.metadata} role="status" aria-atomic="true">
-        <strong>{photo.title}</strong>
+        <strong ref={title} tabIndex={-1}>
+          {photo.title}
+        </strong>
         <time dateTime={photo.date}>{formatPhotoDate(photo.date)}</time>
         <span>
           {visible + 1} of {count}
@@ -98,7 +114,7 @@ export default function FullscreenModal({ images, initialIndex, onClose }: Fulls
         <button type="button" aria-label="Previous image" disabled={!canNavigate} onClick={() => navigate(-1)}>
           <LeftArrow />
         </button>
-        <button type="button" aria-label="Close full screen view" onClick={onClose}>
+        <button type="button" aria-label="Close full screen view" onClick={(event) => dismiss(event.detail === 0)}>
           <X />
         </button>
         <button type="button" aria-label="Next image" disabled={!canNavigate} onClick={() => navigate(1)}>

@@ -8,9 +8,8 @@ import { fade, pageAnimation } from '../../components/animation'
 import { usePageTransitionInitial } from '../../components/animation/MotionProvider'
 import FullscreenModal from '../../components/Art/FullScreenModal'
 import PhotoFilters from '../../components/Art/PhotoFilters'
-import PhotoGrid from '../../components/Art/PhotoGrid'
+import PhotoGrid, { type PhotoSelection } from '../../components/Art/PhotoGrid'
 import { Heading } from '../../components/Shared/Heading'
-import type { ArtImage } from '../../lib/art'
 import { photoFilters, photosForTag } from '../../lib/art/gallery'
 import { BASE_URL } from '../../lib/constants'
 import { getArtStructuredData } from '../../lib/structured/art'
@@ -40,9 +39,9 @@ export default function Art({ initialTag }: Props) {
   const photos = useMemo(() => photosForTag(tag), [tag])
   const structuredData = useMemo(() => JSON.stringify(getArtStructuredData(photos)), [photos])
   const ogImage = photos[0] && `${BASE_URL}${photos[0].image.src}`
-  const [openPhoto, setOpenPhoto] = useState<ArtImage | null>(null)
+  const [selection, setSelection] = useState<PhotoSelection | null>(null)
   const activeButton = useRef<HTMLButtonElement>(null)
-  const closeViewer = useCallback(() => setOpenPhoto(null), [])
+  const closeViewer = useCallback(() => setSelection(null), [])
 
   useEffect(() => {
     router.events.on('routeChangeStart', closeViewer)
@@ -67,7 +66,7 @@ export default function Art({ initialTag }: Props) {
     [selectTag]
   )
 
-  const index = openPhoto ? photos.indexOf(openPhoto) : -1
+  const index = selection ? photos.indexOf(selection.photo) : -1
 
   return (
     <>
@@ -109,10 +108,12 @@ export default function Art({ initialTag }: Props) {
         </Heading>
 
         <PhotoFilters activeTag={tag} activeButtonRef={activeButton} onSelect={selectTag} />
-        <PhotoGrid photos={photos} tag={tag} onOpen={setOpenPhoto} onSelectTag={selectPhotoTag} />
+        <PhotoGrid photos={photos} tag={tag} onOpen={setSelection} onSelectTag={selectPhotoTag} />
       </m.section>
 
-      {index !== -1 && <FullscreenModal initialIndex={index} images={photos} onClose={closeViewer} />}
+      {selection && index !== -1 && (
+        <FullscreenModal initialIndex={index} images={photos} trigger={selection.trigger} onClose={closeViewer} />
+      )}
     </>
   )
 }

@@ -11,10 +11,12 @@ import styles from './PhotoGrid.module.css'
 
 const THUMBNAIL_SIZES = '(min-width: 800px) 376px, calc(50vw - 1rem - 8.5px)'
 
+export type PhotoSelection = { photo: ArtImage; trigger: HTMLButtonElement }
+
 type GridProps = {
   photos: ArtImage[]
   tag: string | null
-  onOpen: (photo: ArtImage) => void
+  onOpen: (selection: PhotoSelection) => void
   onSelectTag: (tag: string | null) => void
 }
 
@@ -97,7 +99,7 @@ const PhotoCard = memo(function PhotoCard({
         aria-label={`Open full screen image: ${photo.title}`}
         data-deferred-photo={loading ? undefined : photo.id}
         style={{ aspectRatio: `${photo.image.width} / ${photo.image.height}` }}
-        onClick={() => onOpen(photo)}
+        onClick={(event) => onOpen({ photo, trigger: event.currentTarget })}
       >
         {loading ? thumbnail : <noscript>{thumbnail}</noscript>}
       </button>

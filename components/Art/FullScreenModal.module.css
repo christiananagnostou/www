@@ -51,6 +51,8 @@
     margin-right: auto;
     color: var(--heading);
     overflow-wrap: anywhere;
+    /* The caption is the initial reading position, not a control. */
+    outline: none;
   }
 
   time,

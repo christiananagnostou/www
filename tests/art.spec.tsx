@@ -91,7 +91,7 @@ describe('photography gallery', () => {
     expect(within(bridge).getByRole('img').getAttribute('loading')).toBe('eager')
     expect(unobserve).toHaveBeenCalledWith(bridge)
     fireEvent.click(bridge)
-    expect(open).toHaveBeenCalledWith(photos[2])
+    expect(open).toHaveBeenCalledWith({ photo: photos[2], trigger: bridge })
     view.unmount()
     expect(disconnect).toHaveBeenCalled()
   })

@@ -18,6 +18,11 @@
   border: 0;
   background: transparent;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--heading);
+    outline-offset: -2px;
+  }
 }
 
 .hoverBox {
