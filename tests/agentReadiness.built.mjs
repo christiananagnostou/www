@@ -129,6 +129,29 @@ it('publishes a usable llms.txt and a sitemap for the pages that exist', async (
   const locations = Array.from(xml.querySelectorAll('loc'), (loc) => loc.textContent)
   assert.ok(!locations.includes(canonical + '/about'))
   for (const route of ['/contact', '/privacy']) assert.ok(locations.includes(canonical + route), route)
+
+  for (const entry of xml.querySelectorAll('url')) {
+    const path = new URL(entry.querySelector('loc').textContent).pathname
+    const modified = entry.querySelector('lastmod')?.textContent
+    if (!path.startsWith('/article/')) assert.equal(modified, undefined, path)
+    if (modified) assert.match(modified, /^\d{4}-\d{2}-\d{2}$/, path)
+    if (path === '/article/bookmarklets-in-react') {
+      const article = await documentAt(path)
+      const updated = article.querySelector('meta[property="article:modified_time"]').content
+      assert.equal(modified, new Date(updated).toLocaleDateString('en-CA'))
+      assert.ok(article.querySelector('main a[href="/bookmarklets"]'))
+    }
+  }
+})
+
+it('serves Works links in the closed navigation and declares the Lab canonical', async () => {
+  const lab = await documentAt('/lab')
+  assert.equal(lab.querySelector('link[rel="canonical"]').href, canonical + '/lab')
+  const works = lab.querySelector('nav button[aria-controls="nav-works-links"]')
+  assert.equal(works.getAttribute('aria-expanded'), 'false')
+  const submenu = lab.getElementById(works.getAttribute('aria-controls'))
+  assert.ok(submenu.hasAttribute('inert'))
+  for (const path of ['/projects', '/lab', '/bookmarklets']) assert.ok(submenu.querySelector(`a[href="${path}"]`), path)
 })
 
 it('puts one Privacy link directly below the original contact form', async () => {

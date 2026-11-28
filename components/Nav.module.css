@@ -113,7 +113,9 @@
     overflow: hidden;
 
     &[data-menu-open='false'] {
-      display: none;
+      visibility: hidden;
+      pointer-events: none;
+      transition: visibility 0s 0.15s;
     }
   }
 }
@@ -190,7 +192,7 @@
   @media (width >= 768px) {
     position: absolute;
     top: 100%;
-    left: -0;
+    left: 0;
     min-width: 120px;
     border: 1px solid var(--accent);
     border-radius: var(--border-radius-sm);

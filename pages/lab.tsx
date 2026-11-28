@@ -8,6 +8,7 @@ import Gantt from '../components/Lab/gantt'
 import ganttProps from '../components/Lab/gantt/mockProps'
 import Speedometer from '../components/Lab/speedometer/Speedometer'
 import { Heading } from '../components/Shared/Heading'
+import { SITE_ORIGIN } from '../lib/constants'
 
 import styles from '../styles/pages/Lab.module.css'
 
@@ -18,6 +19,7 @@ export default function lab() {
     <>
       <Head>
         <title>Lab</title>
+        <link rel="canonical" href={`${SITE_ORIGIN}/lab`} />
         <meta content="Christian Anagnostou's Laboratory" name="description" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>

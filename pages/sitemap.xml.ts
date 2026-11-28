@@ -17,31 +17,25 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     console.error('Failed to build sitemap:', err)
   }
 
-  const now = dayjs().toISOString()
-
-  const staticRoutes = [
-    { path: '/', lastmod: now },
-    { path: '/art', lastmod: now },
-    { path: '/articles', lastmod: now },
-    { path: '/bookmarklets', lastmod: now },
-    { path: '/contact', lastmod: now },
-    { path: '/fitness', lastmod: now },
-    { path: '/lab', lastmod: now },
-    { path: '/privacy', lastmod: now },
-    { path: '/projects', lastmod: now },
+  const staticPaths = [
+    '/',
+    '/art',
+    '/articles',
+    '/bookmarklets',
+    '/contact',
+    '/fitness',
+    '/lab',
+    '/privacy',
+    '/projects',
   ]
-
-  const articleRoutes = articles.map((a) => ({
-    path: `/article/${a.slug}`,
-    lastmod: a.dateCreated ? dayjs(a.dateCreated).toISOString() : now,
-  }))
-
-  const projectRoutes = ProjectState.map((p) => ({
-    path: `/work/${p.slug}`,
-    lastmod: undefined,
-  }))
-
-  const allRoutes = [...staticRoutes, ...articleRoutes, ...projectRoutes]
+  const allRoutes: { path: string; lastmod?: string }[] = [
+    ...staticPaths.map((path) => ({ path })),
+    ...articles.map(({ slug, lastUpdated, dateCreated }) => {
+      const date = lastUpdated || dateCreated
+      return { path: `/article/${slug}`, lastmod: date ? dayjs(date).format('YYYY-MM-DD') : undefined }
+    }),
+    ...ProjectState.map(({ slug }) => ({ path: `/work/${slug}` })),
+  ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${allRoutes
     .map(
